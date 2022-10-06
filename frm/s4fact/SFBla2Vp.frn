@@ -1,0 +1,47 @@
+! ษออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+! บ                     (c) ฎเฏฎเ ๆจ๏ €€’€, 1997-2000                    บ
+! บ เฎฅชโ        : €€’€                                                  บ
+! บ ‘จแโฅฌ        : โคฅซ เ งเ กฎโชจ ชฎญโใเ  ซฎฃจแโจชจ                         บ
+! บ ฅเแจ๏        : 5.71                                                       บ
+! บ  งญ ็ฅญจฅ    : VIP ชฎค คซ๏ ฏฎซใ็ฅญจ๏ เฅชขจงจโฎข C” "‘โเ ญ  ฏเฎจแๅ-๏" จ    บ
+! บ               : "ฎฌฅเ ’"                                                บ
+! บ โขฅโแโขฅญญ๋ฉ : ‘ฎเฎช   ซฅเจฉ  แจซ์ฅขจ็ (ValeraS)                        บ
+! ศออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+/* var ExAttrFun  : iExAttr; 
+ var ExClassFun : iExClass;
+ var ExAttrFun  : iExtAttr;
+ var ExClassFun : iExtClass;
+ var cAttr      : comp;
+ var wTypAttr, wClassCode : word;
+ var sRet: string;
+
+ sRet := '';
+ if GetVIPInterface( ExClassFun ) {
+   wClassCode := ExClassFun.GetCode( coKatParty, '‘โเ ญ  ฏเฎจแๅฎฆคฅญจ๏' );
+   sRet := ExClassFun.GetSegName( coKatParty, wClassCode, vSpSchF.KatParty.nRec );
+   SrcCountry := if(sRet = '', '-', sRet);
+   FreeVIPInterface( ExClassFun );
+ }
+ if GetVIPInterface( ExAttrFun ) {
+   if ExAttrFun.GetAttr( coKatParty, '’', cAttr, wTypAttr ) = 0 {
+      sRet := ExAttrFun.GetValue( coKatParty, cAttr, vSpSchF.KatParty.nRec, wTypAttr );
+      GTDNumber := if(sRet = '', '-', sRet);
+    }
+    else GTDNumber := '-';
+   FreeVIPInterface( ExAttrFun );
+  }
+ wClassCode := ExClassFun.GetClassCode( coKatParty, '‘โเ ญ  ฏเฎจแๅฎฆคฅญจ๏' );
+ sRet       := ExClassFun.GetSegName(wClassCode, vSpSchF.KatParty.nRec );
+ SrcCountry := if(sRet = '', '-', sRet);
+ sRet := '';
+ sRet := ExAttrFun.sGetAttr( coKatParty, vSpSchF.KatParty.nRec, '’');
+ GTDNumber := if(sRet = '', '-', sRet);
+*/
+var iCountry: MCOriginCountry;
+  if (vSpSchF.SpSchF.PrMC = 1) {
+    SrcCountry := #f_(iCountry.getCountryName(vSpSchF.SpSchF.cMCUsl, vSpSchF.SpSchF.cParty));
+    GTDNumber  := #f_(iCountry.getGTDNumber(vSpSchF.SpSchF.cParty));
+  } else {
+    SrcCountry := '-';
+    GTDNumber  := '-';
+  }

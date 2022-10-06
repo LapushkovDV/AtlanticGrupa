@@ -1,0 +1,272 @@
+#ifdef ComponentVersion
+#component "L_Remont"
+#end
+
+VipInterface ActCateg                       licensed (FREE) Parameters (Tkod : Comp);
+VipInterface AktRemont                      licensed (
+  #include AktRemont.lih
+) Parameters (TypeSopr: word;  pNRec: comp;  pStepDoc: comp;  vwDoc: word; recGraf: comp;  pObjRem: comp);
+VipInterface AktRemSpis                     licensed (
+  #include AktRemSpis.lih
+) Parameters (TypeSopr: word;  pNRec: comp;  pStepDoc: comp;  vwDoc: word; recGraf: comp;  pObjRem: comp);
+VipInterface Analis1                        licensed (FREE) Parameters (pUserDeskRep: comp);
+VipInterface analis2                        licensed (FREE) Parameters (NReport: word; pUserDeskRep: comp);
+VipInterface Analis4                        licensed (FREE) Parameters (pUserDeskRep: comp);
+VipInterface Analis42                       licensed (FREE) Parameters (pUserDeskRep: comp);
+VipInterface Analis5                        licensed (FREE) Parameters (pUserDeskRep: comp);
+VipInterface AnalZatr                       licensed (FREE) Parameters (NReport: word; pUserDeskRep: comp);
+VipInterface ChkObjRem                      licensed (FREE) ;
+VipInterface Convert_Remont_711_712         licensed (FREE) ;
+VipInterface DocRemArch                     licensed (FREE) Parameters (Tkod: comp);
+VipInterface EditNastObjRem                 licensed (FREE) Parameters (ObjNRec : comp; TuneNrec : comp);
+VipInterface GenObjTree                     licensed (FREE) ;
+VipInterface GetActCateg                    licensed (FREE) Parameters (wIntMode : word; Tkod : Comp; pr_KillPick : Boolean);
+VipInterface GetAktRem                      licensed (FREE) Parameters (TypeSopr: word;  wIntMode: word;  Tkod: comp;  tBounds: boolean;  pr_KillPick: boolean);
+VipInterface GetDocRem                      licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetGrafRem                     licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  tCall: boolean;  tVidGraf: word;  pr_KillPick: boolean);
+VipInterface GetGrObj                       licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetIndicate                    licensed (FREE) Parameters (wIntMode : word; Tkod : Comp; pr_KillPick : Boolean);
+VipInterface GetIndicObj                    licensed (FREE) Parameters (wIntMode : word; ObjNRec : Comp; ObjSpNRec : Comp; IndNRec : Comp; pr_KillPick : Boolean);
+VipInterface GetIspRem                      licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetKatDef                      licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetKatKompl                    licensed (FREE) Parameters (wIntMode : word; Tkod : Comp; pr_KillPick : Boolean);
+VipInterface GetKatMark                     licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetKatPost                     licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetKatPrich                    licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetKatRTex                     licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetKatTexN                     licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetKlRabRes                    licensed (FREE) Parameters (wIntMode : word; Tkod : comp; pr_KillPick : Boolean; wPrMc : word);
+VipInterface GetKurRem                      licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetMCUSLSopr551                licensed (FREE) Parameters (pStepDoc: comp;    pTypeSopr: comp;    pPrMC: word);
+VipInterface GetNastrObjRem                 licensed (FREE) Parameters (wIntMode : word; NrecTune : comp; pr_KillPick : Boolean);
+VipInterface GetNorma                       licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  tCall: boolean;  pr_KillPick: boolean; _vcTipObj,_vcVidObj,_vcKatMark,_vcGrObj, _vcVidRem: comp; _vwFitr: word);
+VipInterface GetObjRem                      licensed (FREE) Parameters (wIntMode: word;  myGetRec: comp;  tCall: boolean;  pr_Rec: boolean;  pr_GetTreeObj: boolean;  pr_KillPick: boolean);
+VipInterface GetObjRemSp                    licensed (FREE) Parameters (wIntMode : word; ObjNRec : comp; Tkod : Comp; pr_KillPick : Boolean);
+VipInterface GetObjTree                     licensed (FREE) Parameters (N : comp);
+VipInterface GetPrichOsm                    licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetPrichRem                    licensed (FREE) Parameters (wIntMode: word;  Tkod: string;  pr_KillPick: boolean);
+VipInterface GetRemKat                      licensed (FREE) Parameters (SysKodRemKat : word; wIntMode : word; Tkod : Comp; pr_KillPick : Boolean);
+VipInterface GetRemPriceList                licensed (FREE) Parameters (TypeMCnRec: comp; KatMCnRec: comp; rPriceMc: double);
+VipInterface GetRemState                    licensed (FREE) Parameters (wIntMode: word;  Tkod: string);
+VipInterface GetSposRem                     licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetTipObj                      licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetTVedRem                     licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  tBounds: boolean;  pr_KillPick: boolean; _vcTipObj, _vcVidObj, _vcKatMark, _vcGrObj, _vcVidRem: comp; _vwFitr: word);
+VipInterface GetVidContr                    licensed (FREE) Parameters (wIntMode : word; Tkod : Comp; pr_KillPick : Boolean);
+VipInterface GetVidInfer                    licensed (FREE) Parameters (wIntMode : word; Tkod : Comp; pr_KillPick : Boolean);
+VipInterface GetVidObj                      licensed (FREE) Parameters (wIntMode : word; Tkod : Comp; pr_KillPick : Boolean);
+VipInterface GetVidOst                      licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  pr_KillPick: boolean);
+VipInterface GetVidRem                      licensed (FREE) Parameters (wIntMode: word;  myGetRec: comp;  pr_KillPick: boolean);
+VipInterface GetZRem                        licensed (FREE) Parameters (wIntMode: word;  Tkod: comp;  tBounds: boolean;  pr_KillPick: boolean);
+VipInterface Grafik1                        licensed (FREE) Parameters (NReport: word;  pUserDeskRep: comp);
+VipInterface Grafik2                        licensed (FREE) Parameters (NReport: word;  pUserDeskRep: comp);
+VipInterface GrafMtg1                       licensed (FREE) Parameters (pUserDeskRep : Comp);
+VipInterface GrafRem                        licensed (
+  #include GrafRem.lih
+) Parameters (Tkod: comp;  Trec: comp;  tCall: boolean);
+VipInterface GrObj                          licensed (FREE) Parameters (Tkod: comp);
+VipInterface Indicate                       licensed (FREE) Parameters (Tkod : Comp);
+VipInterface InRemont                       licensed (
+  #include InRemont.lih
+) Parameters(TypeSopr : word; pNRec, pStepDoc : comp;vwDoc: word);
+VipInterface IspRem                         licensed (FREE) Parameters (Tkod: comp);
+VipInterface JourDef                        licensed (
+  #include JourDef.lih
+) Parameters (Tkod: comp;  Trec: comp;  tCall: boolean; SpKod: comp; vwGet: word; vcDocNRec: comp);
+VipInterface JourDefp                       licensed (FREE) Parameters (pUserDeskRep: comp);
+VipInterface JourObj                        licensed (
+  #include JourObj.lih
+) Parameters (Tkod: comp;  Trec: comp;  tCall: boolean);
+VipInterface JourObjp                       licensed (FREE) Parameters (pUserDeskRep: comp);
+VipInterface KatDef                         licensed (FREE) Parameters (Tkod: comp);
+VipInterface KatKompl                       licensed (FREE) Parameters (Tkod : comp);
+VipInterface KatKompl_Filtr                 licensed (FREE) Parameters (NRecFilt : comp; NameFilt : string);
+VipInterface KatMark                        licensed (FREE) Parameters (Tkod: comp);
+VipInterface KatPost                        licensed (FREE) Parameters (Tkod: comp);
+VipInterface KatPrich                       licensed (FREE) Parameters (Tkod: comp);
+VipInterface KatRTex                        licensed (FREE) Parameters (Tkod: comp);
+VipInterface KatTexN                        licensed (FREE) Parameters (Tkod: comp);
+VipInterface KlRabRes                       licensed (FREE) Parameters (Tkod : Comp);
+VipInterface KurRem                         licensed (FREE) Parameters (Tkod: comp);
+VipInterface MaskUF                         licensed (FREE) Parameters (NReport: word; pNRec: comp);
+VipInterface MolRem                         licensed (FREE) Parameters (Tkod: comp;  Trec: comp;  tCall: boolean);
+VipInterface Nast_Rep                       licensed (remont) Parameters (NReport: word);
+VipInterface Norma                          licensed (FREE) Parameters (Tkod: comp;  tCall: boolean);
+VipInterface NormRem                        licensed (FREE) Parameters (Tkod: comp;  Trec: comp;  tCall: boolean;  tSkip: boolean);
+VipInterface ObjRem                         licensed (
+  #include ObjRem.lih
+) Parameters (Tkod: comp;  PrObj: word);
+VipInterface ObjRemAttr                     licensed (FREE) Parameters (wTab: comp;  cNrec: comp;  cRecAttrNam: comp  );
+VipInterface ObjRemAttrNames                licensed (FREE) Parameters (w1: comp;  cRecAttrNam: comp; wIntMode : word);
+VipInterface ObjRemDescr_Filtr              licensed (FREE) Parameters (NRecFilt : comp; NameFilt : string);
+VipInterface ObjRem_Filtr                   licensed (FREE) Parameters (NRecFilt : comp; NameFilt : string);
+VipInterface OutRemont                      licensed (
+  #include OutRemont.lih
+) Parameters(TypeSopr : word; pNRec, pStepDoc : comp;vwDoc: word);
+VipInterface PrichOsm                       licensed (FREE) Parameters (Tkod: comp);
+VipInterface PrichRem                       licensed (FREE) Parameters (Tkod: string);
+VipInterface PrintActCateg                  licensed (FREE) ;
+VipInterface PrintDocRemArch                licensed (FREE) ;
+VipInterface PrintGrObj                     licensed (FREE) ;
+VipInterface PrintIndicate                  licensed (FREE) ;
+VipInterface PrintIspRem                    licensed (FREE) ;
+VipInterface PrintKatDef                    licensed (FREE) ;
+VipInterface PrintKatMark                   licensed (FREE) ;
+VipInterface PrintKatPost                   licensed (FREE) ;
+VipInterface PrintKatPrich                  licensed (FREE) ;
+VipInterface PrintKatRTex                   licensed (FREE) ;
+VipInterface PrintKatTexN                   licensed (FREE) ;
+VipInterface PrintKlRabRes                  licensed (FREE) ;
+VipInterface PrintKurRem                    licensed (FREE) ;
+VipInterface PrintPrichOsm                  licensed (FREE) ;
+VipInterface PrintPrichRem                  licensed (FREE) ;
+VipInterface PrintRemKat                    licensed (FREE) ;
+VipInterface PrintSposRem                   licensed (FREE) ;
+VipInterface PrintTipObj                    licensed (FREE) ;
+VipInterface PrintVidContr                  licensed (FREE) ;
+VipInterface PrintVidInfer                  licensed (FREE) ;
+VipInterface PrintVidObj                    licensed (FREE) ;
+VipInterface PrintVidOst                    licensed (FREE) ;
+VipInterface PrintVidRem                    licensed (FREE) ;
+VipInterface Prog1                          licensed (FREE) Parameters (NReport: word; pUserDeskRep: comp);
+VipInterface raschet1                       licensed (
+  #include Raschet1.lih
+) Parameters (Tkod: word; NrecRemKat: comp; NrecObjRem: comp);
+VipInterface RemArxZatr                     licensed (FREE) ;
+VipInterface RemImpOs                       licensed (FREE) ;
+VipInterface RemiPriceList                  licensed (FREE) ;
+VipInterface RemiPriceList1                 licensed (FREE) Parameters (TypeMCnRec: comp; KatMCnRec: comp);
+VipInterface RemKat                         licensed (FREE) Parameters (SysKodRemKat : word; Tkod : Comp);
+VipInterface RemObjChAt                     licensed (FREE) ;
+VipInterface RemObjState                    licensed (FREE) ;
+VipInterface RemOperOs                      licensed (remont);
+VipInterface RemState                       licensed (FREE) Parameters (Tkod: string);
+VipInterface SposRem                        licensed (FREE) Parameters (Tkod: comp);
+VipInterface SprObj                         licensed (FREE) Parameters (pUserDeskRep: comp);
+VipInterface SvodZatr                       licensed (FREE) Parameters (NReport: word; pUserDeskRep: comp);
+VipInterface TipObj                         licensed (FREE) Parameters (Tkod: comp);
+VipInterface TVedRem                        licensed (FREE) Parameters (Tkod: comp;  tBounds: boolean);
+VipInterface vedro1                         licensed (FREE) Parameters (pUserDeskRep: comp);
+VipInterface vedro2                         licensed (FREE) Parameters (pUserDeskRep: comp);
+VipInterface Vedro3                         licensed (FREE) Parameters (NReport: word; pUserDeskRep: comp);
+VipInterface Vedro30                        licensed (FREE) Parameters (NReport: word; pUserDeskRep: comp);
+VipInterface VidContr                       licensed (FREE) Parameters (Tkod : Comp);
+VipInterface VidInfer                       licensed (FREE) Parameters (Tkod : Comp);
+VipInterface VidObj                         licensed (FREE) Parameters (Tkod : Comp);
+VipInterface VidOst                         licensed (FREE) Parameters (Tkod: comp);
+VipInterface VidRem                         licensed (FREE) Parameters (Tkod: comp);
+VipInterface ObjRemFromTC                   licensed (FREE) Parameters (pcNRec: comp);
+VipInterface ZRem                           licensed (
+  #include ZRem.lih
+) Parameters (Tkod: comp;  tBounds: boolean;  recGraf: comp;  pObjRem: comp; vwParam: word);
+VipInterface Remont02_MakeHierKat           licensed (FREE);
+VipInterface RaschSrProbeg                  licensed (remont);
+VipInterface InsNevypRab                    licensed (FREE) Parameters (pBD : comp; pDate : date; pObj : comp; pVidRem : comp);
+VipInterface ZremStatusEdit                 licensed (remont);
+VipInterface VipMaxRem                      licensed (FREE) ;
+VipInterface VipMaxRemList                  licensed (FREE) ;
+VipInterface PrintRemontList                licensed (FREE) Parameters (viParamInt1: integer; vcParamInt2: comp; vcParamInt3: comp);
+VipInterface PrintRemontTransport           licensed (FREE) Parameters (viParamInt : integer; viParamInt2: integer);
+VipInterface StatusOR                       licensed (FREE) ;
+VipInterface VidRemFunc                     licensed (FREE) ;
+VipInterface NormRemFunc                    licensed (FREE) ;
+VipInterface GrafRemFunc                    licensed (FREE) ;
+VipInterface RemStatus                      licensed (FREE) ;
+VipInterface RemStatistic                   licensed (FREE) ;
+VipInterface JourObjFunc                    licensed (FREE) Parameters (vwParam: word);
+VipInterface KlassOR                        licensed (FREE) Parameters (CatType: word; cur_CATALPSD : comp; ES : boolean);
+
+//VipInterface SeeAktRem                      licensed (FREE) Parameters (_vcParam1: comp; _vwParam2: word; wIntMode: word; pr_KillPick: boolean);
+//VipInterface SeeNaklRem                     licensed (FREE) Parameters (TypeSopr : word; pNRec: comp; pStepDoc : comp; vwDoc: word);
+//VipInterface SeeDO                          licensed (FREE) Parameters (_vcParam1: comp; _vwParam2: word);
+VipInterface ObjRemFunc                     licensed (FREE) ;
+VipInterface ZremContr                      licensed (FREE) Parameters (vwParam: word);
+//VipInterface KonvForStatDoc                 licensed (FREE) ;
+//VipInterface PoiskIspOrKurFunc              licensed (FREE) ;
+VipInterface iRasNeotgRem                   licensed (FREE) Parameters (c1: comp; D1: double; vwParam: word);
+VipInterface iRasNeotgRemByNakl             licensed (FREE) Parameters (vcBaseDoc: comp; c1: comp; D1: double; vwParam: word);
+VipInterface GetGroupMTR                    licensed (FREE) Parameters (pTable: word; pMark: Longint);
+VipInterface FiltZremToRF                   licensed (FREE) Parameters (vwParam: word; vbProtocol: boolean; vbClose: boolean);
+VipInterface MolRemOnOR                     licensed (FREE) ;
+
+VipInterface AktPredpisania                 licensed (FREE) Parameters (vcKatSopr: comp; vwView: word);
+VipInterface AktSdachiVExpl                 licensed (FREE) ;
+VipInterface AktSdachiVRemont               licensed (FREE) ;
+VipInterface AktSrokRemont                  licensed (FREE) ;
+VipInterface ObjDefVedomost                 licensed (FREE) ;
+VipInterface GetMemoObjRem                  licensed (FREE) Parameters (ObjNRec, ObjTable, vcObjRemDoc: comp);
+VipInterface GetNrecUser                    licensed (FREE) Parameters (s1: Comp);
+VipInterface Users_Filtr                    licensed (FREE) Parameters (NRecFilt: comp; NameFilt: string);
+VipInterface iCorrectAktRem                 licensed (FREE) ;
+VipInterface FormDObyZrem                   licensed (FREE) ;
+VipInterface FormZremByGrafRem              licensed (FREE) ;
+VipInterface FormZremByTipRem               licensed (FREE) ;
+VipInterface GetMCSoprOR                    licensed (FREE) Parameters (cStepDoc: comp; wPrMC: word);
+VipInterface GetObjRem_Sub                  licensed (FREE) Parameters (wIntMode: word; vcObjRem, vcGetObjRemSub: comp; vwParam: word);
+VipInterface DateFaktInGrafRem              licensed (FREE) ;
+VipInterface KorrectGrafRemDF               licensed (FREE) ;
+VipInterface RulesForKatOR                  licensed (FREE) ;
+VipInterface CheckBMP                       licensed (FREE) ;
+VipInterface iPopravKoef                    licensed (FREE) Parameters (_vwGetParam: word; _wIntMode: word; _vcReturtNrec: comp);
+VipInterface iSootvGrOs_GrOR                licensed (FREE) Parameters (_vwGetParam: word; _wIntMode: word; _vcReturtNrec: comp);
+//------------------------------------------------------------------------------
+
+Menu RemontGet_HotKeys;
+Menu RemontGetObjTree_HotKeys;
+Menu RemontGetObj_HotKeys;
+Menu RemInServisKatSopr_HotKeys;
+Menu RemInServis_HotKeys;
+Menu RemInServis_HotKeys_Specif;
+Menu RemOutServis_HotKeys_Specif;
+Menu RemAddNewDescr;
+Menu RemNoObjPan_HotKeys;
+Menu RemObj1_HotKeys;
+Menu RemObj2_HotKeys;
+Menu RemObjPan2_HotKeys;
+Menu RemObjPanAtr_HotKeys;
+Menu RemObjTree_HotKeys;
+Menu Remont2_HotKeys;
+Menu Remont2_1_HotKeys;
+Menu Remont1Graf_HotKeys;
+Menu Remont3_HotKeys;
+Menu MetodRem;
+Menu Remont1_HotKeys;
+Menu Remont2Graf_HotKeys;
+Menu Remont4_HotKeys;
+Menu RemObjPanAtr2_HotKeys;
+Menu RemArxZD_HotKeys;
+Menu RemArxZ_HotKeys;
+Menu GetKat_HotKeys;
+Menu EditKat_HotKeys;
+Menu Katal_HotKeys;
+Menu EditKat2_HotKeys;
+Menu InsKatPost;
+Menu KorrKatPost;
+Menu GenTree;
+
+Dialog AboutRem;
+
+DIALOG DelTreeObjRem;
+
+DIALOG RemAddNewRecDescr
+(
+  Str : string;
+  Nom : string
+);
+
+DIALOG RemGetHourLong
+(
+  Hour : double;
+  str : string
+);
+
+DIALOG RemGetHourPeriod
+(
+  Period : double;
+  str : string
+);
+
+DIALOG RemKorrName
+(
+  kName : string
+);
+

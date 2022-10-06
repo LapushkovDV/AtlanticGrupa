@@ -1,0 +1,31 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 9.1 - Логистика
+//
+//********************************************************************************
+#ifndef __SpOrdSerialN_vih__
+#define __SpOrdSerialN_vih__
+
+#ifdef ComponentVersion
+#component "L_SKLAD"
+#end
+
+//******************************************************************************
+
+ObjInterface ObjSpOrdSerialN;
+
+#doc
+  Процедура инициализации интерфейса выбора серийных номеров.
+#end
+Procedure SetSpOrdSerialN(cSpOrder: comp);
+
+//Event Procedure RereadRecordSpSopr;
+
+//Event Procedure RereadRecordKatSopr;
+end;
+
+VipInterface SpOrdSerialN implements ObjSpOrdSerialN
+  licensed (FREE)
+  Parameters (pSpOrd : comp);
+
+#end // __SpOrdSerialN_vih__

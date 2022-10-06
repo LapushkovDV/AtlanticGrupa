@@ -1,0 +1,80 @@
+//  пункт меню в отчетах пользователя
+#include userReport.vih
+vipInterface UserReport_droga_salesRep implements IUserReport licensed(free);
+interface UserReport_droga_salesRep;
+create view;
+
+procedure run;
+begin
+  runInterface('droga::salesReport');
+end;
+
+function getReportName: string;
+begin
+  getReportName := 'Отчет о реализации (скидки, премии, каналы сбыта) c учетом возвратов';
+end;
+
+function getGroupName(level: word): string;
+begin
+  getGroupName := '';
+  case level of
+  1: getGroupName := 'Droga Продажи';
+//  2: getGroupName := '';
+  end;
+end;
+
+function getPriority: integer;
+begin
+  getPriority := 0;
+end;
+
+function visibleInModule(ind: byte): string;
+begin
+  visibleInModule := '';
+  case ind of
+    1 : visibleInModule := 'SELL';
+    2 : visibleInModule := 'DOGOVOR';
+    3 : visibleInModule := 'B_FINANS'; //ФРО
+  end;
+end;
+end.
+//--------------------------------------------------------------------------
+vipInterface UserReport_droga_checkPr implements IUserReport licensed(free);
+interface UserReport_droga_checkPr;
+create view;
+
+procedure run;
+begin
+  runInterface('droga::checkPrice');
+end;
+
+function getReportName: string;
+begin
+  getReportName := 'Проверка пересечения срока действия прайс-листов';
+end;
+
+function getGroupName(level: word): string;
+begin
+  getGroupName := '';
+  case level of
+  1: getGroupName := 'Droga Продажи';
+//  2: getGroupName := '';
+  end;
+end;
+
+function getPriority: integer;
+begin
+  getPriority := 0;
+end;
+
+function visibleInModule(ind: byte): string;
+begin
+  visibleInModule := '';
+  case ind of
+    1 : visibleInModule := 'SELL';
+    2 : visibleInModule := 'DOGOVOR';
+    3 : visibleInModule := 'B_FINANS'; //ФРО
+  end;
+end;
+!-------------------------------------------------------------------------------
+end.

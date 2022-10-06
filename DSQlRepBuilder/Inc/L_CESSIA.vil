@@ -1,0 +1,12 @@
+#ifdef ComponentVersion
+#component "L_CESSIA"
+#end
+
+vipinterface Cessia
+  licensed
+  (
+  #include CESSIA.lih
+  )
+  Parameters(myTiDkGal:word; NRecFinDoc:comp);
+
+vipinterface Ces_NalogReg licensed (FREE);

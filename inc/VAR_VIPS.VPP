@@ -1,0 +1,21 @@
+  // переменные для работы с проводками и сальдо
+  myPlansNo      : comp;            // текущий план счетов
+  myValNo        : comp;            // валюта для serv_val.vpp
+  myDate         : date;            // дата курса для serv_val.vpp
+  myRec          : comp;
+  OkUserDate,
+  OkInitKau,
+  ModOborot      : boolean;
+  dFormNa,
+  BegDate,
+  EndDate        : date;
+  TecNameFilter  : string;
+  CurListGd      : comp;            // текущий список групп дескрипторов
+  CurDesGr       : string[4];
+  CurDescr       : string[20];
+  CurVisible,
+  IntDatFil      : word;
+  CurProcProtect : byte;           // 1 - по доступу к таблицам Need85
+                                   // 2 - по CurVisible
+                                   // 3 - по отчетному периоду
+  AllPick        : word;           // Всего выбрано записей

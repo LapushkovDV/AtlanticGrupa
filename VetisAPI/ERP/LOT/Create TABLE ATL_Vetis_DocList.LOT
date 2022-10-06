@@ -1,0 +1,42 @@
+Create table ATL_Vetis_DocList "Запросы список документов"
+with table_Code = 31629
+with replace
+with tableoptions Branched
+(
+   NREC               : comp   "Идентификатор",
+   requestDate        : date   "Дата запроса",
+   requestTime        : time   "Дата запроса",
+   applicationID      : string "ID запроса",
+   requestStatus      : string "Статус запроса",
+   UUID               : string "UUID ЭВСД",
+   DataEVSD           : date   "дата оформления ЭВСД",
+   STATUS             : string "Статус",
+   BusinessEntityGuid : string "consignee.businessEntity.guid",
+   EnterpriseGuid     : string "consignee.enterprise.guid",
+   Trasporttype       : string "Тип транспортного средства",
+   Car                : string "Автомобиль",
+   ProductGlobalID    : string "GlobalID продукции",
+   ProductName        : string "Наименование продукции",
+   Volume             : double "Объем",
+   KatEd              : string "Единица объема",
+   DataProizv         : date   "Дата производства",
+   SrokGodn           : date   "Срок годности",
+   BatchID            : string "batchID",
+   Level_2            : string "Уровень упаковки(2)",
+   PACKINGTYPEID_2    : string "Идентификатор упаковки(2)",
+   Quantity_2         : double "Количество штук",
+   EAN13_2            : string "EAN13(2)",
+   Level_4            : string "Уровень упаковки(4)",
+   PACKINGTYPEID_4    : string "Идентификатор упаковки(4)",
+   Quantity_4         : double "Количество коробок",
+   EAN13_4            : string "EAN13(4)",
+   EAN128_4           : string "EAN128(4)"
+)
+with index
+(
+    i_NREC     = NREC(Unique, Surrogate, Journal)
+   ,i_appId    = applicationID
+   ,i_DateTime = requestDate + requestTime
+   ,iUUID  = UUID;
+)
+;

@@ -1,0 +1,27 @@
+
+#ifndef __CreateOrd_vih__
+#define __CreateOrd_vih__
+
+#ifdef ComponentVersion
+#component "L_Sklad"
+#end
+
+#doc
+Формирование ордеров по таблице TmpSaldo1
+#end
+
+ObjInterface CreateOrdsObj;
+
+#doc
+Формирование ордеров по таблице TmpSaldo1 - в Pick заносит SklOrder.nRec для созданных ордеров (Pick.wList = 61234)
+#end
+  function CreateOrders(SP_: word; dForm: date;  prih: boolean): boolean;   // true - если всё ок
+end;
+
+
+VipInterface CreateOrds implements CreateOrdsObj
+licensed (FREE)
+//Parameters (SPTypeSopr: word; pNRec: comp)
+;
+
+#end // __CreateOrd_vih__

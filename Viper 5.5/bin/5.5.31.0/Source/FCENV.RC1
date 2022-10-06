@@ -1,0 +1,203 @@
+  (scArdMain..scArdMain)
+  {
+    '~Shift+F9~ Выполнение', cmRun  , kbShiftF9;
+    '', cmHelp,kbF1;
+    '', cmRdSave,kbF2;
+    '', cmRdCopyFile,kbAltF2;
+    '', cmRdPrint, kbCtrlP;
+    '~Alt+F10~ Меню',cmRdLocalMenu,kbAltF10;
+    '~ESC~ Закрыть',cmClose,kbEsc;
+    '', cmCalculator,kbShiftF2;
+    '', cmResize,kbCtrlF5;
+    '', cmZoom,kbF5;
+    '', cmNext,kbF6;
+    '', cmLastHelp,kbAltF1;
+    '', cmEvaluateAndModify,kbCtrlF4;
+    '', cmSysMenu,kbCtrlF10;
+//    '', cmCallIndex,kbShiftF1;
+    '', cmFindTopic, kbCtrlF1;
+    '', cmQuit, kbAltX;
+  }
+ 
+  (scFComMain..scFComMain)
+  {
+    '~Ctrl+F9~ Компиляция', cmRunFCom  , kbCtrlF9;
+    '~Shift+F9~ Выполнение', cmfRun  , kbShiftF9;
+    '', cmHelp,kbF1;
+    '', cmRdSave,kbF2;
+    '', cmRdCopyFile,kbAltF2;
+    '', cmRdPrint, kbCtrlP;
+    '~Alt+F10~ Меню',cmRdLocalMenu,kbAltF10;
+    '~ESC~ Закрыть',cmClose,kbEsc;
+    '', cmCalculator,kbShiftF2;
+    '', cmResize,kbCtrlF5;
+    '', cmZoom,kbF5;
+    '', cmNext,kbF6;
+    '', cmLastHelp,kbAltF1;
+    '', cmEvaluateAndModify,kbCtrlF4;
+    '', cmSysMenu,kbCtrlF10;
+//    '', cmCallIndex,kbShiftF1;
+    '', cmFindTopic, kbCtrlF1;
+    '', cmQuit, kbAltX;
+    '', cmSetFCEnvOpt, kbAltF7;
+    '', cmSeeProto,kbShiftF6;
+    '', cmRunService,kbShiftF5;
+  }
+
+  (scFCPickNodeDialog..scFCPickNodeDialog)
+  {
+    '~+~  Все',cmFCMarkAll,kbPlus;
+    '', cmFCMarkAll,kbGrayPlus;
+    '~-~  Все',cmFCUnMarkAll,kbMinus;
+    '', cmFCUnMarkAll,kbGrayMinus;
+    '~Ins~ Пометить',cmFCMarkUno,kbIns;
+    '', cmFCUnMarkUno,kbDel;
+
+!    '~Alt+плюс~ +Распахнуть',cmFCExpandNode,kbAltEqual;
+!    '', cmFCExpandNode,kbAltGrayPlus;
+!    '~Alt+минус~ Свернуть',cmFCCollapseNode,kbAltMinus;
+!    '', cmFCCollapseNode,kbAltGrayMinus;
+
+    '~Ctrl+Enter~ Открыть',      cmFCExpandNode,   kbCtrlEnter;
+    '~Ctrl+Backspace~ Закрыть',    cmFCCollapseNode, kbCtrlBack;
+
+    '~Ctrl+плюс~ Все',cmFCExpandAll,kbCtrlEqual;
+    '', cmFCExpandAll,kbCtrlGrayPlus;
+    '~Ctrl+минус~ Все',cmFCCollapseAll,kbCtrlMinus;
+    '', cmFCCollapseAll,kbCtrlGrayMinus;
+    '~F3~ Алфавитный выбор',cmFCSwitchOrder,kbF3;
+
+    '', cmClose,kbAltF3;
+    '', cmHelp,kbF1;
+    '', cmCalculator,kbShiftF2;
+    '', cmLastHelp,kbAltF1;
+//    '', cmCallIndex,kbShiftF1;
+    '', cmResize,kbCtrlF5;
+  }
+
+  (scTreeReport..scTreeReport)                             
+  { 
+    '~F1~ Справка',cmHelp,kbF1;
+    '~Enter~ Сформировать', cmOk, kbEnter;
+
+    '~Ins~ Выбрать', cmFCMarkUno, kbIns;                                                                            
+    '', cmFCUnMarkUno, kbDel;
+
+!    '~Alt+плюс~ Развернуть', cmFCExpandNode, kbAltGrayPlus;                      
+!    '', cmFCExpandNode, kbAltEqual;
+!    '~Alt+минус~ Свернуть', cmFCCollapseNode, kbAltGrayMinus;                      
+!    '', cmFCCollapseNode, kbAltMinus;
+
+    '~Ctrl+Enter~ Открыть',      cmFCExpandNode,   kbCtrlEnter;
+    '~Ctrl+Backspace~ Закрыть',    cmFCCollapseNode, kbCtrlBack;
+
+
+    '', cmFCExpandAll, kbCtrlGrayPlus;
+    '', cmFCExpandAll, kbCtrlEqual;                      
+    '', cmFCCollapseAll, kbCtrlGrayMinus;
+    '', cmFCCollapseAll, kbCtrlMinus;
+
+!    '~+~ Все', cmFCMarkAll, kbPlus;                      
+    '~Gray+~ Все', cmFCMarkAll, kbGrayPlus;                      
+!    '~-~ Снять', cmFCUnmarkAll, kbMinus;                      
+    '~Gray-~ Снять', cmFCUnmarkAll, kbGrayMinus;                      
+  }                                                        
+
+  (scTreeReportOptions..scTreeReportOptions)  
+  {                                                         
+    '~F1~ Справка',cmHelp,kbF1;
+    '~F4~ Редакт.', cmEditReport, kbF4;                       
+
+    '~Ins~ Выбрать', cmFCMarkUno, kbIns;                                                                            
+    '', cmFCUnMarkUno, kbDel;
+
+!    '~Alt+плюс~ Развернуть', cmFCExpandNode, kbAltGrayPlus;                      
+!    '', cmFCExpandNode, kbAltEqual;
+!    '~Alt+минус~ Свернуть', cmFCCollapseNode, kbAltGrayMinus;                      
+!    '', cmFCCollapseNode, kbAltMinus;
+
+    '~Ctrl+Enter~ Открыть',      cmFCExpandNode,   kbCtrlEnter;
+    '~Ctrl+Backspace~ Закрыть',    cmFCCollapseNode, kbCtrlBack;
+
+
+    '', cmFCExpandAll, kbCtrlGrayPlus;
+    '', cmFCExpandAll, kbCtrlEqual;                      
+    '', cmFCCollapseAll, kbCtrlGrayMinus;
+    '', cmFCCollapseAll, kbCtrlMinus;
+
+!    '~+~ Все', cmFCMarkAll, kbPlus;                      
+    '~Gray+~ Все', cmFCMarkAll, kbGrayPlus;                      
+!    '~-~ Снять', cmFCUnmarkAll, kbMinus;                      
+    '~Gray-~ Снять', cmFCUnmarkAll, kbGrayMinus;                      
+!    'List1', cmFCTreeToList, kbCtrlS;
+  }
+
+  (scTreeGroupOptions..scTreeGroupOptions)
+  {
+    '', cmFCMarkGroupUno, kbIns;                                                                            
+    '', cmFCMarkGroupUno, kbDel;
+    '', cmFCMarkGroupAll, kbGrayPlus;                      
+    '', cmFCUnmarkGroupAll, kbGrayMinus;                      
+    '', cmFCTreeToList, kbCtrlS;
+    '~Ctrl+минус~ Снять фильтр', cmFCDisable, kbCtrlMinus;
+    '', cmFCDisable, kbCtrlGrayMinus;
+    '~Ctrl+плюс~ Установить фильтр', cmFCUnDisable, kbCtrlGrayPlus;
+    '', cmFCUnDisable, kbCtrlEqual;
+  }
+  (scTreeRGroupOptions..scTreeRGroupOptions)
+  {
+    '~F1~ Справка',cmHelp,kbF1;
+    '~Enter~ Сформировать', cmOk, kbEnter;
+    '~Ctrl+S~ Режим просмотра', cmFCTreeToList, kbCtrlS;
+  }                                           
+
+  (scbrReports..scbrReports) 
+  {
+    '~Enter~ Сформировать', cmOk, kbEnter;
+    '~F4~ Редактировать', cmEditReport, kbF4;
+    '~Ctrl+F9~ Компиляция', cmRunFCom  , kbCtrlF9;
+    '~Alt+B~ Фильтры', cmFDFilters, kbAltB;
+    '~Alt+N~ Свойства', cmFDTunes, kbAltN;
+    '~Ctrl+S~ Режим просмотра', cmFCTreeToList, kbCtrlS;
+  }
+
+  (sctrReports..sctrReports) 
+  {
+    '~Enter~ Сформировать', cmOk, kbEnter;
+    '~F4~ Редактировать', cmEditReport, kbF4;
+    '~Alt+B~ Фильтры', cmFDFilters, kbAltB;
+    '~Alt+N~ Свойства', cmFDTunes, kbAltN;
+    '~Ctrl+S~ Режим просмотра', cmFCTreeToList, kbCtrlS;
+
+    '', cmFCExpandAll, kbCtrlGrayPlus;
+    '', cmFCExpandAll, kbCtrlEqual;                      
+    '', cmFCCollapseAll, kbCtrlGrayMinus;
+    '', cmFCCollapseAll, kbCtrlMinus;
+  }
+
+  (scEditReportFileName..scEditReportFileName)
+  {
+    '~F1~ Справка', cmHelp, kbF1;
+    '~F3~ Выбрать файл', cmPick, kbF3;                  
+    '', cmCancel, kbEsc; 
+  } 
+
+  (scEditReportOptions..scEditReportOptions)
+  {
+    '~F1~ Справка', cmHelp, kbF1;
+    '', cmCancel, kbEsc; 
+  }
+
+  (scHelpEsc..scHelpEsc)
+  {
+   '~F1~ Справка', cmHelp, kbF1;
+   '~Esc~ Закрыть',cmCancel,kbEsc;
+  }
+  (scHelpEscF3..scHelpEscF3)
+  {
+   '~F1~ Справка', cmHelp, kbF1;
+   '~F3~ Выбрать', cmPick, kbF3; 
+   '~Esc~ Закрыть',cmCancel,kbEsc;
+  }
+
+                                    

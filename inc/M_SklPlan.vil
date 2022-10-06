@@ -1,0 +1,21 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 8.1 - Производство
+// Проектный файл сборки компоненты M_SklPlan
+//******************************************************************************
+
+#ifdef ComponentVersion
+#component "M_SklPlan"
+#end
+#ifdef ComponentVersionInDict
+#include iSpOrder.vih
+#end
+
+VipInterface IPlanByOrder licensed(FREE) Parameters(pwMode : word; ppSpOrder : type$P_SpOrder);
+#ifdef ComponentVersion
+VipInterface IfcPlanMove  licensed(FREE);
+#else
+VipInterface IPlanMove    licensed(FREE);
+#end
+VipInterface IPlanAdd     licensed(FREE) Parameters(pbPlanMove : type$PlanMove);
+VipInterface IGetTake     licensed(FREE) Parameters(pbMove : type$P_PlanMove; pwSheet : word);

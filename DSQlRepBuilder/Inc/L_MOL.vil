@@ -1,0 +1,8 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компоненты
+
+#ifdef ComponentVersion
+#component "L_MOL"
+#end
+
+VipInterface KatMOL       licensed (FREE) Parameters (c1 : comp; SavedSkl : comp);

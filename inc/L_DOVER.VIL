@@ -1,0 +1,17 @@
+
+#ifdef ComponentVersion
+#component "L_DOVER"
+#end
+
+//#include DovEdit.Vih
+VipInterface GetDover   licensed (FREE)  Parameters (dov_direct: word; pNRec: comp);
+VipInterface GetDOVFIO  licensed (FREE)  Parameters (c0 : comp);
+VipInterface GetMCDoc   licensed (FREE)  Parameters (Cod: comp);
+VipInterface KatDov     licensed (FREE)  Parameters (c1 : comp);
+VipInterface MdfKatDV   licensed (FREE)  Parameters (pnRec: comp);
+
+VipInterface GetSoprDoc licensed (FREE)  Parameters (RecStepDoc: comp; SoprTip: word;
+                                                     RecKatsopr: comp);
+VipInterface DativI     licensed (FREE)  Parameters (c1:comp; sFIO:string; Padej:word; Str:string);
+VipInterface iCheckNODover licensed (FREE)  Parameters (pRec : comp; pNoDoc : string; pCanEdit : boolean); 
+VipInterface iPrnReestrDover licensed (FREE)  Parameters (TypeDover : word);

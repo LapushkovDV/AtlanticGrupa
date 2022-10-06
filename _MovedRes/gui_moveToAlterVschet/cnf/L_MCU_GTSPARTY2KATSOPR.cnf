@@ -1,0 +1,25 @@
+//доп баркод для МЦ в интерфейс выбора МЦ из остатков
+object 'L_MCU::GTSPARTY2KATSOPR' : InterfaceWindow {
+
+
+  object GET_NAL_MC : Browser {
+
+    object 'Field: KATMC2.BARKOD2' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Доп. код';
+      HelpLine = 'Доп. код';
+      FieldName = 'Field: KATMC2.BARKOD2';
+      Index = 3;
+      DefaultWidth = 26;
+      ButtonType = 0;
+    } // string(maravt.nrec) : Column
+
+  } // MARAVTGET : Browser
+
+
+} // M_TRANSP::GET_DOR : InterfaceWindow
+//-----------------------------------------------------------------------------

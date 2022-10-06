@@ -1,0 +1,8 @@
+// Грузополучатель в СФ Дрога
+ if(trim(GruzTo)!='') { //Кроме актов на Услуги и поПлатежам
+    if (vSchf.GetFirst OrgPol where(( GruzToNRec ==OrgPol.nRec ))= 0) {
+       if (vSchf.OrgPol.Addr <> '') {
+         GruzTo := trim(vSchf.OrgPol.TipOrg)+ ' ' + trim(vSchf.OrgPol.Name) + ', ' + trim(vSchf.OrgPol.Addr) ;
+       }
+    } //OrgPol
+ }

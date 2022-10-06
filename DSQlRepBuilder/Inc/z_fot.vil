@@ -1,0 +1,25 @@
+#ifdef ComponentVersion
+#component "z_fot"
+#end
+
+vipinterface klLgott licensed(free) parameters(RetNom: longint; Retrec: comp);
+vipinterface klLgottV licensed(free) parameters(RetNom: longint; Retrec: comp);
+
+vipinterface IkSocNal licensed(free);
+vipinterface IkSocNal_Doc licensed(free);
+
+vipinterface NalDekl licensed(free);
+
+vipinterface FSS4 licensed(free);
+vipinterface fss4_1 licensed(free) parameters(VKakoiOtch: word; MarkersPodr: longint);
+vipinterface fss4_2 licensed(free) parameters(VKakoiOtch: word; MarkersPodr: longint; VidFormul: word);
+
+vipinterface SocOtchF licensed(free) parameters(VKakoiOtch: word);
+vipinterface SocOtch
+  licensed (menuzarp,menuzarp2) parameters(VKakoiOtch: word);
+
+vipinterface StrVznF licensed(free) parameters(VKakoiOtch: word; user_type : word);
+vipinterface StrVzn
+  licensed (menuzarp,menuzarp2) parameters(VKakoiOtch: word; user_type : word);
+vipinterface FillLgotFotService licensed(free);
+vipinterface CheckFOT licensed(free);

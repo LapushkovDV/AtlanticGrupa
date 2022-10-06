@@ -1,0 +1,19 @@
+#param /linc:autoexec.vpp
+
+#include galnet.inc end;
+#include dictypes.def
+type TPtr = longint;
+//#include glovars.inc
+
+#define ComponentVersion // для vih
+#include RepBarCode.vih
+#include ExtAttr.vih
+#include ExtClass.vih
+#include MCOriginCountry.vih
+#include Commission.vih
+#include adrfunc.vih
+
+#include feeSigners.inc
+#include feeSigners.vih
+
+#make "ReportOrg.vip"

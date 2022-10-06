@@ -1,0 +1,17 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компоненты
+
+#ifdef ComponentVersion
+#component "L_KatParty"
+#end
+
+VipInterface DelPart            licensed (FREE);
+VipInterface DelPart1           licensed (FREE);
+VipInterface GetGrParty         licensed (FREE)  Parameters (c1 : comp; s1 : string[20]);
+VipInterface GetPar__           licensed (FREE)  Parameters (c1 : comp; c2 : comp);
+VipInterface GetParty           licensed (FREE)  Parameters (c1 : comp);
+VipInterface GetSomGP           licensed (FREE);
+VipInterface GetSomeParty       licensed (FREE)  Parameters (Mode : word);
+VipInterface KatParty           licensed (FREE)  Parameters (c1 : comp);
+VipInterface GetWhoSertifParty  licensed (FREE)  Parameters (n: string[80]);
+VipInterface CheckPartyOnUnique licensed (FREE);

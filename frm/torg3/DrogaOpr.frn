@@ -1,0 +1,23 @@
+.begin
+  Nedostacha := 0;
+  Izlishki   := 0;
+  D_Brak     := 0;
+  KolAddInStr (Название, 22, true);
+  KolAddInStr (КодМЦ, 6, true);
+
+ // If (КолФ>КолОпл)
+ //   Nedostacha := КолФ - КолОпл
+ // Else
+ //   Izlishki := КолОпл - КолФ;
+  drogaOpr._Loop   sOprOrdB
+    {  // Izlishki :=  drogaOpr.sOprOrdB.Kol;
+      case  drogaOpr.sOprOrdB.cPodr of
+      03E8000000000004h :     D_Brak     := drogaOpr.sOprOrdB.Kol ;  //Склад брака
+      03E8000000000074h :     Nedostacha := drogaOpr.sOprOrdB.Kol ;  //Склад недостач
+// 30.09.2015 
+      03E80000000001FAh :     D_Brak     := drogaOpr.sOprOrdB.Kol ;  //Склад брака Домодедово (СТС Логистикс)
+      end; 
+     }
+//  if ОтпЕд = 'штука'
+  Kol_Pr := '[|-]3666666666666666';
+end.

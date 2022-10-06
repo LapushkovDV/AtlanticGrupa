@@ -1,0 +1,367 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 5.80 - модуль "Платежный календарь"
+// Определение Глобальных для ОФП переменных as Record
+//------------------------------------------------------------------------------
+
+#ifndef __OFPRECS_VPP__
+#define __OFPRECS_VPP__
+// инф.из SoprHoz
+
+// всего записей - 10
+
+// Ошибки
+type TLastError = record
+  sName : string;
+  wType : word;   // ceNoError            - 0 без ошибок
+                  // ceWarningWithCorrect - 1 предупреждение без прерывания (самокорекция)
+                  // ceWarningNoCorrect   - 2 предупреждение без прерывания (пропускание без коррекции)
+                  // ceWarningWithBreak   - 4 предупреждение с прерыванием  (критическое)
+                  // ceError              - 5 ошибка (критическое с остановкой)
+end;
+
+// идентификаторы маркера
+Type mrkRec = record
+  lAdr  : LongInt;
+  sName : String;
+  wCount: word;
+end;
+
+// макет создания Доумента - ФинОбязательства
+type TMaketOFP = record
+  Alg_wCourse                 // для расчета курса
+  , Alg_Def_dDoc
+  , Alg_Def_dFirst    : Date; // для расчета Даты
+  Alg_wFld_dFirst
+  , Alg_wFld_wCourse
+  , Alg_wFld_dDoc             // (√) был в старом алгоритме
+  , Alg_UpDay_dDoc
+  , Alg_wFld_NoDoc
+  , Alg_wFld_PlanPay          // схема платежей
+  , Alg_wFld_TypePlat
+  , Alg_wFld_Prior
+  , Alg_wFld_Course
+  , Alg_wFld_CoursePrc
+                       : word;
+  cGroupOfp
+  , cPlanPay
+  , cKatNazna
+  , cDogovor
+  , cBaseDoc
+  , cKatOrg
+  , cFpStBud
+  , cFpCO
+  , cPersons
+  , cAktSum
+                    : tNrec;
+end;
+
+// параметры пользовательского алг. расчета суммы
+type TMaketSumma = record
+  wPartySum
+  , wTipSum       // Sпоз/налог
+  , wFlKau: word;
+  cKau    : tNrec;
+  wMinus_Exists
+  , wRlt  : word;
+  dArg    : double;
+end;
+
+type TClearInfo = record
+  TiDkGal   : word;
+  dDoc      : date;
+  Direct    : word;
+  ClearType : word;
+  MeanType  : word;
+  MeanType2 : word;
+  cPlatMean : comp;
+  cPlatMean2: comp;
+  cVal      : comp;
+  Summa     : double;
+end;
+
+// для промежуточного хранения инф. о ПС
+type TSaldo = record
+  cSaldo   : comp;
+  cModel   : comp;
+  MeanType : word;
+  cPlatMean: comp;
+  cVal     : comp;
+  SumIn    : double;
+  SumOut   : double;
+  dDoc     : date;
+end;
+
+// -----------------------------------------------------------------------------
+type TTuneFObyDO = record
+  Title       : string;   // заголовок (инт.просмотра, печатных форм отчетов)
+  Name        : string;   // название настройки
+  wMode       : word;     // режим - пока всегда = cgMode_MakeNew
+  // настройка
+  cTune       : comp;     // UserDeskRep.nRec - может пригодиться для поз-ния
+  nReport     : word;
+  cSortLeafs  : comp;     // сортировка листьев
+  cTuneLevels : comp;     // ссылка на настройки
+  ItogoExists : boolean;  // есть доп.нулевой уровень UserDeskRep.ResWord[9]
+  ItogoName   : TName;    // его название UserDeskRep.ResName[9]
+
+  // множественные фильтры
+  OpenKauKatOrg     : word; // 1 - раскрывать иерархию организаций
+  OpenKauKatOrgNum  : word; // кол-во раскрываемых уровней, 0 - все
+  OpenKauFpCO       : word; // 1 - раскрывать иерархию ЦО
+  OpenKauFpCONum    : word; // кол-во раскрываемых уровней, 0 - все
+  OpenKauFpStBud    : word; // 1 - раскрывать иерархию статей
+  OpenKauFpStBudNum : word; // кол-во раскрываемых уровней, 0 - все
+  OpenKauGroupDO    : word; // 1 - раскрывать иерархию Групп ДО
+  OpenKauGroupDONum : word; // кол-во раскрываемых уровней, 0 - все
+  //
+  Filter
+  , FltDO
+  , FltDog    : word;
+  DateBeg
+  , DateEnd   : date;
+  Direct      : word;
+  StatusDO    : word; // ссылка при одиночном выборе
+  StatusNDO   : word; // количество выбранных записей в фильтре
+  DOType      : word; // тип заявки (для реестра заявок)
+  KatOrgDO    : comp; // ссылка при одиночном выборе
+  KatOrgNDO   : word; // количество выбранных записей в фильтре
+/*
+  AktCO       : comp;
+  AktCON      : word;
+  AktBaseDoc  : comp;
+  AktBaseDocN : word;
+  AktDogovor  : comp;
+  AktDogovorN : word;
+  AktCurator  : comp;
+  AktCuratorN : word;
+*/
+end;
+
+// -----------------------------------------------------------------------------
+// настройка ФО (для построения деревьев, отчетов по ним)
+type TTuneFO = record
+  Title       : string; // заголовок (инт.просмотра, печатных форм отчетов)
+  // настройка
+  cTune       : comp; // UserDeskRep.nRec - может пригодиться для поз-ния
+  nReport     : word;
+  IsArchived  : word; // архив или не архив
+  cModel      : comp; // UserDeskRep.ResComp[6]
+
+  cFpPeriodT  : comp; // тип периода планирования UserDeskRep.ResComp[14]
+  cFpPeriodTU : comp; // верхий тип для выбранного типа периода
+  cFpPeriod   : comp; // период планирования UserDeskRep.ResComp[8];
+
+!  #ifdef __OFP_RepTuneSort__
+  cSortLeafs  : comp; // сортировка листьев
+!  #end //__OFP_RepTuneSort__
+  cTuneLevels : comp; // ссылка на настройки UserDeskRep.ResComp[9]
+
+  cDiapSum               // диапазоны сумм UserDeskRep.ResComp[11],
+  , cCatZadolj           // категории задолженности UserDeskRep.ResComp[13]
+!  #IfDef  __Ofp_prcZadolj__
+  , cPrcZadolj           // диапазоны задолженности UserDeskRep.ResComp[15]
+!  #End // __Ofp_prcZadolj__
+              : comp;
+  HasStBudAn  : boolean; // есть уровень с ан-кой статей UserDeskRep.ResWord[10]
+  ItogoExists : boolean; // есть доп.нулевой уровень UserDeskRep.ResWord[9]
+  ItogoName   : TName;   // его название UserDeskRep.ResName[9]
+  cTreeVal    : comp;    // валюта дерева //UserDeskRep.ResWord[6]
+  // для заявок
+  isByRecType : boolean; // фильтр по модулю (из которого запускается отчет)
+  RecType     : word;    //
+!#ifdef __OFP_PkOpenKau__
+  OpenKauKatOrg     : word; // 1 - раскрывать иерархию организаций
+  OpenKauKatOrgNum  : word; // кол-во раскрываемых уровней, 0 - все
+  OpenKauFpCO       : word; // 1 - раскрывать иерархию ЦО
+  OpenKauFpCONum    : word; // кол-во раскрываемых уровней, 0 - все
+  OpenKauFpStBud    : word; // 1 - раскрывать иерархию статей
+  OpenKauFpStBudNum : word; // кол-во раскрываемых уровней, 0 - все
+  OpenKauGroupOfp   : word; // 1 - раскрывать иерархию Групп ФОб
+  OpenKauGroupOfpNum: word; // кол-во раскрываемых уровней, 0 - все
+!#end
+  // установленный фильтр
+  Filter
+  , UnFilter  : word;
+  DateBeg
+  , DateEnd
+  , FactBeg
+  , FactEnd   : date;
+  AktDirect   : comp;
+  DocType     : word; // тип заявки (для реестра заявок)
+  AktStatus   : word;
+  AktPrior    : word;
+  AktPriorN   : comp;
+  AktTypePlat : word;
+//  AktKontrGr  : comp;
+  AktKatNotes : comp; // ссылка при одиночном выборе
+  AktKatNotesN: word; // количество выбранных записей в фильтре
+  AktKontr    : comp;
+  AktKontrN   : word;
+  AktStBud    : comp;
+  AktStBudN   : word;
+  AktCO       : comp;
+  AktCON      : word;
+  AktBaseDoc  : comp;
+  AktBaseDocN : word;
+  AktDogovor  : comp;
+  AktDogovorN : word;
+  AktCurator  : comp;
+  AktCuratorN : word;
+  AktGroupOfp : comp; // множественный выбор
+  AktGroupOfpN: word; //
+  AktAktSum   : comp; // множественный выбор
+  AktAktSumN  : word; //
+  AktcAktSum  : comp; // множественный выбор
+  AktcAktSumN : word; //
+  AktKatDoc   : comp; // множественный выбор
+  AktKatDocN  : word; //
+  //>>Фильтр по аналитике бюджетирования
+  AktKauBudW  : word;// WKAU
+  AktKauBud   : comp;// CKAU
+  AktKauBudN  : word;// NKAU
+  //<<
+end;
+
+// Настройка ПК
+type TTunePK = record
+
+  cTune       : comp;        // cUserDeskRep
+  nReport     : word;
+  _Version    : word;
+  StatusFop   : word;        // статус Фоп
+
+  isValTar    : boolean;     // валюта группы
+
+  cValGroup   : comp;        //
+  sValGroup   : string[6];   //
+
+  HasBudget   : boolean;     // есть ли бюджет в гр-ке
+  HasFpCO     : boolean;     // есть ли ЦО в гр-ке
+  HasUserPM   : boolean;     //         группа ПС
+  HasAktOfp   : boolean;     //         ФО
+  HasPeriods  : boolean;     // строим ПК по периодам (не по дням)
+  HasDates    : boolean;     // есть уровень с датами
+  DateLevel   : word;        // N уровня с датой
+  LastDateLevel: word;       // последний уровень с датами (дата или вид периода)
+!  #ifdef __OFP_VIDPERIODINPK__
+  HasVidPeriod: boolean;     // есть уровень с видами периодов
+  levVidPeriod: word;        //
+!  #end //__OFP_VIDPERIODINPK__
+  cPeriodType : comp;        // тип периода (если не перевыбрали - из настр.)
+  cPeriodTypeU: comp;        // верхий тип для выбранного типа периода
+  cPeriod     : comp;        // период
+  NumPeriods  : word;        // число периодов
+  levMaxPeriod: word;        // номер последнего уровня, на котором есть период
+
+  PeriodHasDays: boolean;    // есть уровень с днями
+!  #ifdef __PK_Color__
+
+  SumFormat   : String;
+!  #end // __PK_Color__
+!  #ifdef __OFP_RepTuneSort__
+  NumSorts    : word;        // число уровней сортировки листьев
+!  #end
+  NumLevels   : word;        // число уровней группировки
+  levDate     : word;
+  levPlatMean : word;
+  levVidPM    : word;
+  levVal      : word;
+  cModel      : comp;
+  HasSpecif   : boolean;     // отображать спецификацию в ПК
+  Name        : string;      // название настройки
+  AllRest     : boolean;     // остатки по всем ПС
+!#ifdef __OFP_VALPSINPK__
+  PsInOwnVal  : boolean;     // отображение остатков по ПС в валюте ПС
+!#end //__OFP_VALPSINPK__
+  wMode       : word;        // режим - пока всегда = cgMode_MakeNew
+
+  cDiapSum                   // диапазоны сумм UserDeskRep.ResComp[11],
+  , cCatZadolj               // категории задолженности UserDeskRep.ResComp[13]
+!  #IfDef  __Ofp_prcZadolj__
+  , cPrcZadolj               // диапазоны задолженности UserDeskRep.ResComp[15]
+!  #End // __Ofp_prcZadolj__
+              : comp;
+!#ifdef __OFP_PkOpenKau__
+  OpenKauKatOrg     : word; // 1 - раскрывать иерархию организаций
+  OpenKauKatOrgNum  : word; // кол-во раскрываемых уровней, 0 - все
+  OpenKauFpCO       : word; // 1 - раскрывать иерархию ЦО
+  OpenKauFpCONum    : word; // кол-во раскрываемых уровней, 0 - все
+  OpenKauFpStBud    : word; // 1 - раскрывать иерархию статей
+  OpenKauFpStBudNum : word; // кол-во раскрываемых уровней, 0 - все
+  OpenKauGroupOfp   : word; // 1 - раскрывать иерархию Групп ФОб
+  OpenKauGroupOfpNum: word; // кол-во раскрываемых уровней, 0 - все
+!#end
+
+// 1- сформировать новый; 0- показать старый
+  // фильтры
+  Filter
+  , UnFilter  : word;        // установленный фильтр
+  BegDate, EndDate: date;
+  AktTypePlat : word;
+  AktKatNotes : comp; // ссылка при одиночном выборе
+  AktKatNotesN: word; // количество выбранных записей в фильтре
+  AktKontr    : comp; // ссылка при одиночном выборе
+  AktKontrN   : word; // количество выбранных записей в фильтре
+  AktKontrGr  : comp; //
+  AktStBud    : comp; //
+  AktStBudN   : word; //
+  AktCO       : comp; //
+  AktCON      : word; //
+  AktCurator  : comp; // множественный выбор
+  AktCuratorN : word; //
+  AktDogovor  : comp; // множественный выбор
+  AktDogovorN : word; //
+  AktBaseDoc  : comp; // множественный выбор
+  AktBaseDocN : word; //
+  AktGroupOfp : comp; // множественный выбор
+  AktGroupOfpN: word; //
+  AktPrior    : comp; // множественный выбор
+  AktPriorN   : word; //
+  AktKatDoc   : comp; // множественный выбор
+  AktKatDocN  : word; //
+!  AktStatus    : word; // множественный выбор
+!  AktStatusN   : word;
+
+  FopDirect   : word;
+  FopStatus   : word;
+  FopPsLikv   : word;
+  FopMeanType : word;
+  FopPlatMean : comp;
+  //>>Фильтр по аналитике бюджетирования
+  AktKauBudW  : word;// WKAU
+  AktKauBud   : comp;// CKAU
+  AktKauBudN  : word;// NKAU
+  //<<
+
+end;
+
+// команды локального меню ПК
+type TOfpPKCommands = record // ofpconst.inc cgOfp_com-константы
+    comChangeDate           // перенос даты
+  , comChangePS             // замена ПС
+  , comChangeStat           // изм.статуса Фоп
+  , comFormPlatDoc          // форм.плат.док-та
+  , comRecountSaldo         // пересчет остатков
+  , comCloseDay             // закрытие дня/откат
+  , comMoveToArc            // перенос в архив
+  , comCompare              // сравнение с моделью
+  , comCompareOld: boolean; // сравнение с ОРП (старый вариант)
+end;
+
+!#ifdef __OFP_Dogovor_Fields__
+// для взаимодействия ПК с договором
+type TOfpDog = record
+    wModul     : word; // модуль
+    wTypePlat  : word  // Вид платежа
+    cDogovor   : comp; // договор
+    cAppDogovor: comp; // доп.согл.
+    cCalPlan   : comp; // ПКП
+    // поля из Договора
+    cProg      : comp; // назначение
+    cKontr     : comp; // контрагент
+    cCO        : comp; // ЦО
+end;
+!#end //__OFP_Dogovor_Fields__
+
+#end //__OFPRECS_VPP__

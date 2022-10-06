@@ -1,0 +1,219 @@
+ID;PWXL;N;E
+P;PGeneral
+P;P0
+P;P0.00
+P;P#,##0
+P;P#,##0.00
+P;P#,##0\ _?;;\-#,##0\ _?
+P;P#,##0\ _?;;[Red]\-#,##0\ _?
+P;P#,##0.00\ _?;;\-#,##0.00\ _?
+P;P#,##0.00\ _?;;[Red]\-#,##0.00\ _?
+P;P#,##0\ "$";;\-#,##0\ "$"
+P;P#,##0\ "$";;[Red]\-#,##0\ "$"
+P;P#,##0.00\ "$";;\-#,##0.00\ "$"
+P;P#,##0.00\ "$";;[Red]\-#,##0.00\ "$"
+P;P0%
+P;P0.00%
+P;P0.00E+00
+P;P##0.0E+0
+P;P#" "?/?
+P;P#" "??/??
+P;Pdd/mm/yyyy
+P;Pdd/mmm/yy
+P;Pdd/mmm
+P;Pmmm/yy
+P;Ph:mm\ AM/PM
+P;Ph:mm:ss\ AM/PM
+P;Ph:mm
+P;Ph:mm:ss
+P;Pdd/mm/yyyy\ h:mm
+P;Pmm:ss
+P;Pmm:ss.0
+P;P@
+P;P[h]:mm:ss
+P;P_-* #,##0\ "$"_-;;\-* #,##0\ "$"_-;;_-* "-"\ "$"_-;;_-@_-
+P;P_-* #,##0\ _?_-;;\-* #,##0\ _?_-;;_-* "-"\ _?_-;;_-@_-
+P;P_-* #,##0.00\ "$"_-;;\-* #,##0.00\ "$"_-;;_-* "-"??\ "$"_-;;_-@_-
+P;P_-* #,##0.00\ _?_-;;\-* #,##0.00\ _?_-;;_-* "-"??\ _?_-;;_-@_-
+P;P#,##0\ _?;;\-#,##0\ _?
+P;P#,##0\ _?;;[Red]\-#,##0\ _?
+P;P#,##0.00\ _?;;\-#,##0.00\ _?
+P;P#,##0.00\ _?;;[Red]\-#,##0.00\ _?
+P;P_-* #,##0\ _?_-;;\-* #,##0\ _?_-;;_-* "-"\ _?_-;;_-@_-
+P;P_-* #,##0.00\ _?_-;;\-* #,##0.00\ _?_-;;_-* "-"??\ _?_-;;_-@_-
+P;P#,##0;;[Red]#,##0
+P;FCalibri;M220;L9
+P;FCalibri;M220;L9
+P;FCalibri;M220;L9
+P;FCalibri;M220;L9
+P;ECalibri;M220;L9
+P;ECambria;M360;SB;L57
+P;ECalibri;M300;SB;L57
+P;ECalibri;M260;SB;L57
+P;ECalibri;M220;SB;L57
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECambria;M360;SB;L57
+P;ECalibri;M300;SB;L57
+P;ECalibri;M260;SB;L57
+P;ECalibri;M220;SB;L57
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECambria;M360;SB;L57
+P;ECalibri;M300;SB;L57
+P;ECalibri;M260;SB;L57
+P;ECalibri;M220;SB;L57
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M200;L9
+P;ECalibri;M200;SB;L9
+P;ECalibri;M200;SB;L9
+P;ECalibri;M200;L9
+F;P0;DG0G8;SM56;M255
+B;Y51;X9;D0 0 50 8
+O;L;D;V0;K47;G100 0.001
+F;W2 4 10
+F;W5 5 20
+F;W6 7 10
+F;W8 8 60
+F;SM59;Y1;X1
+C;K".linkForm 'ENGSKLAD_01' Prototype is 'ENGSKLAD'"
+F;SM59;Y2
+C;K".group 'AUN'"
+C;Y3;K".nameInList '[NAANAoNHeNAaNBiNAoNAeNCe] NHANCANAENaNJANBINAENJA NHINCI NDNNCENHENAANHANAANAI'"
+C;Y4;K".slkNumber"
+C;Y5;K".defo landscape"
+F;SM59;Y6
+C;K".create view t1 as select * from katmc where ((barcode==katmc.barkod));;"
+F;SM59;Y7
+C;K".create view t2 as select * from katsopr, stepdoc, basedoc where (("
+F;SM59;Y8
+C;K" NREC_KATSOPR == KATSOPR.NREC and"
+F;SM59;Y9
+C;K" KATSOPR.CSTEPDOC == STEPDOC.NREC and"
+F;SM59;Y10
+C;K" STEPDOC.CBASEDOC == BASEDOC.NREC"
+C;Y11;K"));;"
+C;Y12;K".fields"
+C;Y13;K" if(kolpr>0,'NHiNsNAeNDoNCiNHa','NsNAaNDnNDoNCiNHa')"
+C;Y14;K" dateToStr(t2.KATSOPR.DSOPR,'DD.MM.YYYY')"
+C;Y15;K" t2.KATSOPR.NSOPR+' '"
+C;Y16;K" t2.BASEDOC.NODOC+' '"
+C;Y17;K" string(t2.BASEDOC.NREC)+ ' '"
+C;Y18;K" barcode"
+C;Y19;K" t1.KatMC.Barkod2"
+C;Y20;K" namemat"
+F;SM59;Y21
+C;K" doubleToStr(kolpr-kolra,'\d.\3p[|-]36666666666666666667^999')"
+C;Y22;K".endfields"
+F;SDLTBM58;Y23
+C;K"NHANCINCENBONAINJANBINAO"
+F;SDTBM58;X2
+F;SDTBM58;X3
+F;SDTBM58;X4
+F;SDRTBM58;X5
+F;SDLTBM58;X6
+C;K"NAONCINCANAANb"
+F;SDTBM58;X7
+F;SDTBM58;X8
+F;SDLRTM58;X9
+C;K"NCENCINHE-NCANCI"
+F;SDLRTBM58;Y24;X1
+C;K"NAoNAeNHi"
+F;SDLRTBM58;X2
+C;K"NHaNAaNAoNAa"
+F;SDLRTBM58;X3
+C;K"NQATL"
+F;SDLRTBM58;X4
+C;K"NQNHANCI"
+F;SDLRTBM58;X5
+C;K"NQNDNNAONDN"
+F;SDLRTBM58;X6
+C;K"NAaNsNAo.ATL"
+F;SDLRTBM58;X7
+C;K"NAaNsNAo.NDNNAONDN"
+F;SDLTBM58;X8
+C;K"NBiNAaNAeNAiNJaNBiNCiNCaNAaNBiNAeNJa"
+F;SDLRBM57;X9
+C;K"NyNAoNBoNCe"
+C;Y25;X1;K".{"
+C;Y26;K".{"
+F;SM59;Y27
+C;K".begin if(t1.getfirst KatMC != 0) {} end."
+C;Y28;K".{"
+C;Y29;K".begin"
+F;SM59;Y30
+C;K" if (t2.getfirst katSopr = 0)"
+F;SM59;Y31
+C;K"   if (t2.getfirst stepdoc = 0)"
+F;SM59;Y32
+C;K"     if (t2.getfirst basedoc != 0) {}"
+C;Y33;K"end."
+F;SBM56;Y34
+C;K"^"
+F;P0;FG0C;SBM56;X2
+C;K"^"
+F;P0;FG0C;SBM56;X3
+C;K"^"
+F;P0;FG0C;SBM56;X4
+C;K"^"
+F;P0;FG0C;SBM56;X5
+C;K"^"
+F;P0;FG0C;SBM56;X6
+C;K"^"
+F;P0;FG0C;SBM56;X7
+C;K"^"
+F;P0;FG0L;SBM56;X8
+C;K"^"
+F;P42;FI0R;SBM56;X9
+C;K"^"
+C;Y35;X1;K".}"
+C;Y36;K".}"
+C;Y37;K".if DETSKL"
+C;Y38;K".{CheckEnter DETSKLC"
+C;Y39;K".}"
+C;Y40;K".else"
+C;Y41;K".end"
+C;Y42;K".}"
+C;Y43;K".if ENGSKLAD01"
+C;Y44;K".if DETORG"
+C;Y45;K".{CheckEnter DETORGC"
+C;Y46;K".}"
+C;Y47;K".else"
+C;Y48;K".end"
+C;Y49;K".else"
+C;Y50;K".end"
+C;Y51;K".endform"
+E

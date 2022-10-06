@@ -1,0 +1,648 @@
+/*************************************************************************************************\
+* Наименование: Аннулирование позиций заявок/РП                                                 *
+* Контур/Модуль: КОУ                                                                              *
+* Примечание:                                                                                     *
+*                                                                                                 *
+* Вид работы  |Номер         |Дата    |Исполнитель              |Проект                           *
+* ----------------------------------------------------------------------------------------------- *
+* Разработка  |EM-356        |26/08/20|Кольцов К.В.               |НПО Энергомаш                  *
+\*************************************************************************************************/
+#component "M_MNPLAN"
+#include AlgCalc.vih
+#include oAlgFldSys.vih
+#include TMnPlan.vih
+#include oAlgInDocList.vih
+#include Algor.vih
+#include MnfDskFuncs.vih
+#include ExtAttr.vih
+#include oCalcMnPlan.vih
+#include SaldoFuncs.vih
+#include ProtPlan_CF.vih
+#include UksFuns.vih
+#include StatLog.vih    // Работа со статусами документов
+#include marker.vih
+#include DEIfuns.vih
+#include GP_DocToSPDocStateLink.vih
+#include GP_EmailRun.Vih
+
+
+#define OBJINT_ALGORITM
+#include objintpl.vin
+
+#include GP_CONST.inc
+
+
+
+VipInterface Algoritm_5654 Implements oAlgoritm_Sys;
+
+Interface Algoritm_5654 'Алгоритм Проставление номера ПЗ в ПКП договора' (,hcNoContext,) EscClose, Cyan;
+
+Table Struct local tmp_err
+( sMessage:string
+)
+with index
+( tmp_err01 = sMessage
+);
+
+Table Struct local tmpClaim
+( cRec:comp,
+  tZ:string,
+  Descr:string
+)
+with index
+( tmpClaim01 = Tz
+);
+
+Table Struct local tmpSpClaim
+( cRec:comp,
+  s1:string,
+  s2:string,
+  s3:string,
+  kol:double,
+  s4:string
+)
+with index
+( tmpSpClaim01 = crec
+);
+
+var iState : GP_DocToSPDocStateLink;
+var iprot  : oProtPlan_CF;
+    gcProtPlan,cOldS: comp;
+    vr_ProtPlan: type$ProtPlan;           // Структура записи таблицы ProtPlan
+    email_num_row: longint;//счетчик строк в email;
+create view
+var
+  _cPlan   : comp;
+  _cSpMnPlan :comp;
+  _cFormPL : comp;
+  cRP_OfStatus,cRP_AnulStatus,cKP_AnulStatus,cZ_AnulStatus,cAttr_Com:comp;
+  filters,sp_kol:longint;
+  DD,Bdate,Edate:date;
+  MakeProt,fl_f:boolean;
+  sCom,tZ:string;
+  Usrv  : oUtil_Service;
+  gldt  : GlobData;
+  RPDoc:boolean;
+
+as Select
+  FormPl.nrec
+from formpl,mnplan,pick,spmnplan ,MnPlan  IstPlan , GP_PLANNEDRECEIPTS, valspmnp, persons,COMMUNICATIONS,
+     katmc,katusl,katnotes,spmnplan spmnplanKP,spmnplan spmnplanZ,spmnpl,tmpClaim,tmpSpClaim,kated katedmc,kated katedusl
+
+
+where ((
+         _cFormPL == formpl.nrec
+     and _cPlan == mnplan.nrec
+ ));
+
+Create view vErr
+as select tmp_err.*
+from tmp_err;
+
+var   stSpMnPlan   : TSpMnPlan;
+#include DEIfuns.var
+
+Function GetFIOTel:string;
+var cP:comp;
+{
+  Result:='';
+  cP:=coGetTune('USER.PERSON');
+  if getfirst persons where ((cp == persons.nrec)) =tsok then
+  {
+    Result:=Persons.fio;
+   if getfirst COMMUNICATIONS where ((cP == COMMUNICATIONS.person and 2 == COMMUNICATIONS.OBJTYPE))=tsok then Result:=Result+', тел. '+COMMUNICATIONS.ADDR;
+  }
+}
+
+
+Function Check_Repeat(_str:string):boolean;
+{ Result:=true;
+  if vErr.getfirst tmp_err where (( _str == tmp_err.sMessage )) <>tsok
+  { vErr.insert into tmp_err set tmp_err.sMessage:=_str;
+    Result:=False;
+  }
+} //Function Check_Repeat(_str:string):boolean;
+
+
+Function Get_EmailByDescr(_Descr:string):string;
+{ Result:='';
+  var _pUser:comp=0;
+  var _sUser:string='';
+  _Try
+  { SQL select TuneVal.cUser,X$Users.XU$LOGINNAME
+    From TuneDef
+    inner join TuneVal on TuneVal.cTune = TuneDef.Nrec
+             and TuneVal.STRVAL=:(_Descr)
+    inner join X$Users on X$Users.Atl_Nrec =TuneVal.cUser
+    where TuneDef.Code='USER.DESCR'
+    into (_pUser,_sUser);
+  }
+  _Except
+  else
+  {
+  }
+  Result:=EMAIL_GetEmailByUserID(_pUser,_sUser);
+} //Function GetEmailByDescr(_Descr:string):comp;
+
+Function MyGet_User_By_Persons(_pPersons:comp):comp;
+{ Result:=0;
+  var _User:comp=0;
+  _Try
+  { SQL
+    select max(TuneVal.CUSER)
+    from TuneDef
+    inner join TuneVal on TuneVal.cTune = TuneDef.Nrec
+          and TuneVal.COMPVAL = :(_pPersons)
+    where TuneDef.Code='USER.PERSON'
+    into  (_User) ;
+    Result:=_User;
+  }
+  _except
+  else
+  {
+
+  }
+
+} //Function Get_User_By_Persons(_pPersons:comp):comp;
+
+
+
+//===============================================================
+Procedure Write_Mess(w:string);
+{ email_num_row++;
+  EMAIL_Write_Text(email_num_row,w);
+} //Procedure Write_Mess(w:string);
+
+
+//--------------------------------------------
+// отправить документ
+//--------------------------------------------
+Function  EMAIL_DOC(_NameDoc:string;_NameText:string;_Email:string;_TypeMail:word=0):boolean;
+{ Result:=false;
+  if Check_Repeat(_Email+';'+_NameDoc+';'+_NameText) then exit;
+  email_num_row:=0;
+   case _TypeMail of
+    1:
+    { Write_Mess('Вам поступила на согласование');
+      Write_Mess('Заявка № '+MnPlan.Number+' от '+DateToStr(MNPLAN.STATEMDATE,'DD.MM.YYYY'));
+      Write_Mess(MNPLAN.NAME);//<Назначение заявки>
+    }
+    2:
+    { Write_Mess('Заявка № '+MnPlan.Number+' от '+DateToStr(MNPLAN.STATEMDATE,'DD.MM.YYYY')
+       +' переведена в статус "'+KatNotes.Name+'"'
+       );
+      Write_Mess(MNPLAN.NAME);//<Назначение заявки>
+    }
+    3:
+    { Write_Mess('Заявка № '+MnPlan.Number+' от '+DateToStr(MNPLAN.STATEMDATE,'DD.MM.YYYY'));
+      Write_Mess(MNPLAN.NAME);//<Назначение заявки>
+      Write_Mess(_NameText);
+
+    }
+    4:
+    { Write_Mess('<BR>');
+      Write_Mess('по заявке '+tmpClaim.tZ+'   '+GetFIOTel);
+      Write_Mess('аннулировал следующие позиции с комментарием < ' +sCom+' >:');
+      Write_Mess('  ');
+      Write_Mess('<BR>');
+      Write_Mess('<BR>');
+      Write_Mess('<TABLE BORDER="1" WIDTH="100%">');
+      Write_Mess('<TR>');
+
+      Write_Mess('<TD ALIGN="Center" WIDTH="10%">');
+      Write_Mess('<B>');
+      Write_Mess('Номер позиции');
+      Write_Mess('</B>');
+      Write_Mess('</TD>');
+
+      Write_Mess('<TD ALIGN="Center" WIDTH="60%">');
+      Write_Mess('<B>');
+      Write_Mess('Баркод');
+      Write_Mess('</B>');
+      Write_Mess('</TD>');
+
+      Write_Mess('<TD ALIGN="Center" WIDTH="60%">');
+      Write_Mess('<B>');
+      Write_Mess('Наименование');
+      Write_Mess('</B>');
+      Write_Mess('</TD>');
+
+      Write_Mess('<TD ALIGN="Center" WIDTH="30%">');
+      Write_Mess('<B>');
+      Write_Mess('Кол-во');
+      Write_Mess('</B>');
+      Write_Mess('</TD>');
+
+      Write_Mess('<TD ALIGN="Center" WIDTH="30%">');
+      Write_Mess('<B>');
+      Write_Mess('Ед.изм');
+      Write_Mess('</B>');
+      Write_Mess('</TD>');
+
+      Write_Mess('</TR>');
+
+      Write_Mess('<TR>');
+
+      _loop tmpSpClaim where ((tmpClaim.cRec == tmpSpClaim.crec))
+      {
+      Write_Mess('<TR>');
+      Write_Mess('<TD ALIGN="Left">');
+      Write_Mess(tmpSpClaim.s1);
+      Write_Mess('</TD>');
+      Write_Mess('<TD ALIGN="left">');
+      Write_Mess(tmpSpClaim.s2);
+      Write_Mess('</TD>');
+      Write_Mess('<TD ALIGN="Left">');
+      Write_Mess(tmpSpClaim.s3);
+      Write_Mess('</TD>');
+      Write_Mess('<TD ALIGN="right">');
+      Write_Mess(tmpSpClaim.kol);
+      Write_Mess('</TD>');
+      Write_Mess('<TD ALIGN="left">');
+      Write_Mess(tmpSpClaim.s4);
+      Write_Mess('</TD>');
+      Write_Mess('</TR>');
+      }
+
+      Write_Mess('</TABLE>');
+
+
+
+
+
+    }
+    else
+    { Write_Mess('По "'+_NameDoc+'" № '+MnPlan.Number+' от '+DateToStr(MNPLAN.STATEMDATE,'DD.MM.YYYY'));
+      Write_Mess(_NameText);
+    }
+    end;
+  //------------------------
+  var NPOEM_OWN_EMAIL_TYPE:word=wGetTune('NPOEM_OWN.EMAIL_TYPE');//Тип отправки EMAIL
+  var _email_send:string=sGetTune('MCUSL.MC.EMAIL');
+  var _Interface:string='';
+  _Interface:='M_MNPLAN::GP_CLAIMPODR('+string(MnPlan.Nrec,0,0)+')';
+  Result:=EMAIL_Send
+        ( NPOEM_OWN_EMAIL_TYPE// : word ;
+         ,_Email // _email_addr :string ;
+         ,_NameDoc+' № '+MnPlan.Number+' от '+DateToStr(MNPLAN.STATEMDATE,'DD.MM.YYYY')+' '+_NameText// _email_subject :string ;
+         ,'' //_email_text :string ;
+         ,'' //_email_attach1 :string ;
+         ,'' //_email_attach2 :string ;
+         ,'' //_email_attach3 :string ;
+         ,'' //_email_attach4 :string ;
+         ,if(_Interface<>'','"INTERFACE '+_Interface+'"','') //_email_attach5 :string ;
+         ,'' //_email_addr_copy :string='';
+         ,_email_send //_email_addr_from :string=''
+        );
+} //Procedure  EMAIL_DOC(_NameDoc:string;_NameText:string;_Email:string);
+
+
+
+Function GetNum : word;
+{
+ GetNum := 5654;
+}
+
+function GetName : string;
+{
+ GetName := 'Алгоритм "Аннулирование позиций заявок/РП"';
+}
+
+Function GetMemo ( st:oSteckCommonString ) : Boolean;
+{
+  GetMemo := True;
+  st.push(string('Алгоритм "Аннулирование позиций заявок/РП"'));
+}
+
+Function GetNameInter : String;
+{
+  GetNameInter := 'M_MNPLAN::Algoritm_5654' ;
+}
+
+Function GetNameInterPr : String;
+{
+  GetNameInterPr := 'M_MNPLAN::Algoritm_5654_Setup' ;
+}
+
+Function InitInter( Var pt:TRecAcc ) : Boolean;
+{ #__UNUSED__(pt)
+  InitInter := true;
+}
+
+Function DoneInter( Var pt:TRecAcc ) : Boolean;
+{ #__UNUSED__(pt)
+	DoneInter := True;
+}
+
+Window Alg5654_Dialog1 'Алгоритм "Аннулирование позиций заявок/РП"' (,,sci1EnEsc) DoAccept, EscClose, Gray;
+show(5,1,130,10);
+screen scrW1 ('',, sci1EnEsc);
+  fields
+    sCom:noprotect;
+  buttons
+      cmOk, default,, 'Ввод - принять выбор',,sci1Esc;
+      cmCancel,,, 'Отмена',,sci1Esc;
+<<
+
+   Укажите комментарий - причину аннулирования
+   (причина отказа будет направлена автору заявки и сохранится в протоколах расчета)
+
+   Комментарий .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+         <. Продолжить .>    <. Отмена .>
+>>
+end;
+handleEvent
+      cmOk:
+        PutCommand(cmDefault);
+end;
+end;
+
+HandleEvent
+ cmCheckField:
+  {
+   if length(sCom)<=10 then
+    {
+       message('Комментарий должен быть не менее 10 знаков!');
+       abort;
+    }
+  }
+end;
+
+Function IsManyIst:boolean;
+var i:longint;
+{      Result:=false;
+       i:=0;
+      _loop GP_PLANNEDRECEIPTS where ((mnplan.nrec   == GP_PLANNEDRECEIPTS.CWORKPLANDOC
+                                  and  spmnplan.nrec == GP_PLANNEDRECEIPTS.CWORKPLANDOCPOS))
+       {
+          _loop IstPlan  where ((GP_PLANNEDRECEIPTS.cSRCDOC == IstPlan.nrec))
+           {
+                  inc(i);
+                   if i>1 then   {
+                            Result:=true;exit;
+                   }
+            }
+       }
+
+}
+
+function GetIzd(tip:word;cSp:comp):string;
+{
+  Result:='';
+  PushPos(#spmnplan);
+  if getfirst fastfirstrow spmnplan where ((cSp == spmnplan.nrec)) = tsok
+     {
+       if spmnplan.typeizd=toMc then
+        { if getFirst fastfirstrow katmc where (( spmnplan.cizd == katmc.nrec))=tsok then if tip=1 then Result:=katmc.barkod;
+                        else if tip=2 then Result:=katmc.name;
+                        else
+                         {
+                           if getfirst katedmc where ((katmc.ced == katedmc.nrec)) = tsok then Result:=katedmc.abbr;
+                         }
+        }
+       else
+        { if getFirst fastfirstrow katusl where (( spmnplan.cizd == katusl.nrec))=tsok then if tip=1 then Result:=katusl.kod;
+                        else if tip=2 then Result:=katusl.name;
+                        else
+                         {
+                           if getfirst katedusl where ((katusl.ced == katedusl.nrec)) = tsok then Result:=katedusl.abbr;
+                         }
+
+         }
+     }
+  PopPos(#spmnplan);
+}
+Function GetSName(cS:comp):string;
+{
+  Result:='';
+  if Getfirst fastfirstrow katnotes where ((cS==katnotes.nrec))=tsok then Result:=katnotes.name;
+}
+
+
+Function RunInter(wflag:Word; var pt:TRecAcc) : Boolean;
+{ #__UNUSED__(wflag)
+  MakeProt:=false;
+  _cFormPL:=pt.cFormPl;
+  _cPlan:=pt.CmNpLAN;
+   cAttr_Com        := ExtAttr_ID ( coSpMnPlan,  sGetTune('NPOEM_OWN.KPOTR.CP_COM'));
+   If not GetVipRef(iprot, 'iProtPlan_CF')
+  {
+   Message('Системная ошибка !!!'+
+           'Не загружен интерфейс <' + 'iProtPlan_CF' +'>', Error);
+   Result := false;
+   Exit;
+  };
+  if getfirst formpl <> tsok then {exit;}
+
+  if getfirst mnplan <> tsok then {message('Проблема с документом');exit;}
+  if getfirst Pick where ((cPickSpMnPlanInterf == Pick.wList))<> tsok then {message('Необходимо пометить позиции!');exit;}
+
+
+  cRP_OfStatus      :=0;
+  if getfirst katnotes where ((word(1200)== katnotes.viddoc and   (upcase('оформляемый')=upcase(katnotes.name))))=tsok then cRP_OfStatus      :=katnotes.nrec;
+  if cRP_OfStatus=0 then
+   {message('Не найден статус "оформляемый" в РП');exit;}
+  cRP_AnulStatus      :=0;
+  if getfirst katnotes where ((word(1200)== katnotes.viddoc and   (upcase('Аннулирована')=upcase(katnotes.name))))=tsok then cRP_AnulStatus      :=katnotes.nrec;
+  if cRP_AnulStatus=0 then
+   {message('Не найден статус "Аннулирована" в РП');exit;}
+  cKP_AnulStatus      :=0;
+  if getfirst katnotes where ((word(1201)== katnotes.viddoc and   (upcase('Аннулировано')=upcase(katnotes.name))))=tsok then cKP_AnulStatus      :=katnotes.nrec;
+  if cKP_AnulStatus=0 then
+   {message('Не найден статус "Аннулировано" в КП');exit;}
+
+  cZ_AnulStatus:=iState.GetStateByName('Аннулировано',coGetTune ( 'NPOEM_OWN.CLAIMPODR.CSHABLON' ));
+   if cZ_AnulStatus=0 then
+   {message('Не найдено состояние "Аннулировано" в Заявке');exit;}
+
+  RPDoc:=false;
+  if mnplan.cwayaccou = coGetTune ( 'NPOEM_OWN.WORKPLANS.CSHABLON' ) then
+    RPDoc:=true;
+  else
+   if (
+        mnplan.cwayaccou <> coGetTune ( 'NPOEM_OWN.CLAIMPODR.CSHABLON' )
+         and
+        mnplan.cwayaccou <> coGetTune ( 'NPOEM_OWN.CLAIMPODRED.CSHABLON' )
+         and
+        mnplan.cwayaccou <> coGetTune ( 'NPOEM_OWN.CLAIMPODRUSL.CSHABLON' )
+      ) then
+         {
+          message('Шаблон документа не соответствует ни РП, ни Заявкам!');exit;
+         }
+
+
+  sp_kol:=0;
+  _loop Pick where ((cPickSpMnPlanInterf == Pick.wList))
+  {
+    if getfirst fastfirstrow spmnplan where ((pick.crec == spmnplan.nrec)) = tsok
+     {
+       if RPDoc and spmnplan.cstatus = cRP_OfStatus
+        {
+         if IsManyIst then
+           {
+            message('Позиция № '+spmnplan.number+' / '+GetIzd(1,spmnplan.nrec)+' / '+GetIzd(2,spmnplan.nrec)+' - объединена. Сначала разделите позиции на составляющие!');exit;
+           }
+           else inc(sp_kol);
+        }
+        if not RPDoc then inc(sp_kol);
+     }
+  }
+
+  if sp_kol=0 then
+         {
+          message('Нет позиций для аннулирования, проверьте статусы!');exit;
+         }
+
+  sCom:='';
+  if RunWindowModal(Alg5654_Dialog1)<>cmDefault then exit;
+
+  vr_ProtPlan.cFormPl := FormPl.Nrec;
+   if (iProt.ProtPlan_Ins(vr_ProtPlan) <> tsOk)
+    {
+     Message('''Ошибка создания протокола расчета', Error);
+     Result := false;
+     Exit;
+    };
+
+  StartNewVisual(vtRotateVisual, vfTimer,'Обработка позиций...', 0);
+  delete all tmpClaim;
+  delete all tmpSpClaim;
+
+  iProt.ProtPlan_AddStr(vr_ProtPlan.nrec, ' ');
+  iProt.ProtPlan_AddStr(vr_ProtPlan.nrec, 'Причина отказа : '+sCom);
+  iProt.ProtPlan_AddStr(vr_ProtPlan.nrec, ' ');
+
+  _loop Pick where ((cPickSpMnPlanInterf == Pick.wList))
+  {
+    if getfirst fastfirstrow spmnplan where ((pick.crec == spmnplan.nrec)) = tsok
+     {
+       if RPDoc and spmnplan.cstatus <> cRP_OfStatus  then continue;
+       if RPDoc then
+        {
+          cOldS:= spmnplan.cstatus;
+          set spmnplan.cstatus:= cRP_AnulStatus;
+          update current spmnplan;
+          _loop spmnpl where ((spmnplan.nrec == spmnpl.cspmnplan))
+           {
+             set spmnpl.cstatus:= cRP_AnulStatus;
+             update current spmnpl;
+           }
+          iProt.ProtPlan_AddStr(vr_ProtPlan.nrec, 'В РП, позиция № '+spmnplan.number+' / '+GetIzd(1,spmnplan.nrec)+' / '+GetIzd(2,spmnplan.nrec));
+          iProt.ProtPlan_AddStr(vr_ProtPlan.nrec, 'переход из статуса "'+GetSName(cOldS)+'" в статус "'+GetSName(cRP_AnulStatus)+'"');
+
+          _loop GP_PLANNEDRECEIPTS where ((mnplan.nrec   == GP_PLANNEDRECEIPTS.CWORKPLANDOC
+                                      and  spmnplan.nrec == GP_PLANNEDRECEIPTS.CWORKPLANDOCPOS))
+           {
+           if getfirst fastfirstrow spmnplanKP where ((GP_PLANNEDRECEIPTS.CCONSNEEDDOCPOS == spmnplanKP.nrec))=tsok
+              {
+                if spmnplanKP.cstatus<> cKP_AnulStatus then
+                {
+                cOldS:= spmnplanKP.cstatus;
+                set spmnplanKP.cstatus:= cKP_AnulStatus;
+                update current spmnplanKP;
+                _loop spmnpl where ((spmnplanKP.nrec == spmnpl.cspmnplan))
+                 {
+                   set spmnpl.cstatus:= cKP_AnulStatus;
+                   update current spmnpl;
+                 }
+                 iProt.ProtPlan_AddStr(vr_ProtPlan.nrec, '    В КП, позиция № '+spmnplanKP.number+' / '+GetIzd(1,spmnplanKP.nrec)+' / '+GetIzd(2,spmnplanKP.nrec));
+                 iProt.ProtPlan_AddStr(vr_ProtPlan.nrec, '    переход из статуса "'+GetSName(cOldS)+'" в статус "'+GetSName(cKP_AnulStatus)+'"');
+                }
+              }
+           if getfirst fastfirstrow spmnplanZ where ((GP_PLANNEDRECEIPTS.CSRCDOCPOS == spmnplanZ.nrec))=tsok
+              {
+                if spmnplanZ.cval1<> cZ_AnulStatus then
+                {
+                cOldS:= spmnplanZ.cval1;
+                set spmnplanZ.cval1:= cZ_AnulStatus;
+                update current spmnplanZ;
+                _loop spmnpl where ((spmnplanZ.nrec == spmnpl.cspmnplan))
+                 {
+                   set spmnpl.cval1:= cZ_AnulStatus;
+                   update current spmnpl;
+                 }
+                 tZ:='';if getfirst fastfirstrow IstPlan where ((spmnplanZ.cmnplan==IstPlan.nrec))=tsok then {tZ:='№'+IstPlan.number+' от '+DateToStr(IstPlan.statemdate,'DD/MM/YYYY');}
+                 iProt.ProtPlan_AddStr(vr_ProtPlan.nrec, '        В Заявке ' +tZ+', позиция № '+spmnplanZ.number+' / '+GetIzd(1,spmnplanZ.nrec)+' / '+GetIzd(2,spmnplanZ.nrec));
+                 iProt.ProtPlan_AddStr(vr_ProtPlan.nrec, '        переход из состояния "'+iState.GetStateName(cOldS)+'" в состояние "'+iState.GetStateName(cZ_AnulStatus)+'"');
+                 sSetAttrID(coSpMnPlan, SpmnplanZ.nrec, cAttr_Com , 'отказано : '+UserName+', причина : '+sCom);
+                 if getfirst fastfirstrow tmpClaim where ((tZ == tmpClaim.tz))<>tsok then
+                  {
+                    ClearBuffer(#tmpClaim);
+                    set tmpClaim.tZ:=tz;
+                    set tmpClaim.cRec:=IstPlan.nrec;
+                    set tmpClaim.Descr:=IstPlan.Descr;
+                    insert current tmpClaim;
+                  }
+                 ClearBuffer(#tmpSpClaim);
+                 set tmpSpClaim.cRec:= IstPlan.nrec;
+                 set tmpSpClaim.s1  := spmnplanz.number;
+                 set tmpSpClaim.s2  := GetIzd(1,spmnplanZ.nrec);
+                 set tmpSpClaim.s3  := GetIzd(2,spmnplanZ.nrec);
+                 set tmpSpClaim.s4  := GetIzd(3,spmnplanZ.nrec);
+                 _loop spmnpl where ((spmnplanZ.nrec == spmnpl.cspmnplan))
+                  _loop valspmnp where ((spmnpl.nrec == valspmnp.cspmnpl))
+                     set tmpSpClaim.kol  := valspmnp.kol;
+                 insert current tmpSpClaim;
+                }
+              }
+           }
+
+        }
+        else
+        {
+                cOldS:= spmnplan.cval1;
+                set spmnplan.cval1:= cZ_AnulStatus;
+                update current spmnplan;
+                _loop spmnpl where ((spmnplan.nrec == spmnpl.cspmnplan))
+                 {
+                   set spmnpl.cval1:= cZ_AnulStatus;
+                   update current spmnpl;
+                 }
+                 tZ:='';if getfirst fastfirstrow IstPlan where ((spmnplanZ.cmnplan==IstPlan.nrec))=tsok then {tZ:='№'+IstPlan.number+' от '+DateToStr(IstPlan.statemdate,'DD/MM/YYYY');}
+                 iProt.ProtPlan_AddStr(vr_ProtPlan.nrec, 'В Заявке '+tZ+', позиция № '+spmnplan.number+' / '+GetIzd(1,spmnplan.nrec)+' / '+GetIzd(2,spmnplan.nrec));
+                 iProt.ProtPlan_AddStr(vr_ProtPlan.nrec, 'переход из состояния "'+iState.GetStateName(cOldS)+'" в состояние "'+iState.GetStateName(cZ_AnulStatus)+'"');
+                 sSetAttrID(coSpMnPlan, Spmnplan.nrec, cAttr_Com , 'отказано : '+UserName+', причина : '+sCom);
+                 if getfirst fastfirstrow tmpClaim where ((tZ == tmpClaim.tz))<>tsok then
+                  {
+                    ClearBuffer(#tmpClaim);
+                    set tmpClaim.tZ:=tz;
+                    set tmpClaim.cRec:=IstPlan.nrec;
+                    set tmpClaim.Descr:=IstPlan.Descr;
+                    insert current tmpClaim;
+                  }
+                 ClearBuffer(#tmpSpClaim);
+                 set tmpSpClaim.cRec:= IstPlan.nrec;
+                 set tmpSpClaim.s1  := spmnplan.number;
+                 set tmpSpClaim.s2  := GetIzd(1,spmnplan.nrec);
+                 set tmpSpClaim.s3  := GetIzd(2,spmnplan.nrec);
+                 set tmpSpClaim.s4  := GetIzd(3,spmnplan.nrec);
+                 _loop spmnpl where ((spmnplan.nrec == spmnpl.cspmnplan))
+                  _loop valspmnp where ((spmnpl.nrec == valspmnp.cspmnpl))
+                     set tmpSpClaim.kol  := valspmnp.kol;
+                 insert current tmpSpClaim;
+        }
+
+     }
+  }
+  StopVisual('',0);
+
+  var _email:string;
+  _LOOP tmpClaim
+  {
+  _email:=Get_EmailByDescr(tmpClaim.descr);
+  if _email<>''
+             {
+                   EMAIL_DOC('Аннулирование позиций заявки '+tmpClaim.tz,'',_email, 4 );
+             }
+
+  }
+  RunInterface('M_MNPLAN::iProtPlan_RB', vr_ProtPlan.nrec, 0, '', 0, vr_ProtPlan.TypeOwn, vr_ProtPlan.cOwner, vr_ProtPlan.cFormPl);
+
+   if (not NullVipRef(iProt))
+  FreeVipInterface(iProt);
+
+  RunInter:=true;
+}
+End.  // interface
+

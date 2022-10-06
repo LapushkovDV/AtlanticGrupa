@@ -1,0 +1,50 @@
+// Расходные ордера
+object 'L_SKLAD::RASHORD' : InterfaceWindow {
+
+  //Список складских ордеров
+  object PROBRSBORDER : Browser {
+
+      object 'Field: KATMC.BARKOD2' : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        StatusCtx = 0;
+        Title = 'SAP Код';
+        FieldName = 'Field: KATMC.BARKOD2';
+        Index = 4;
+        DefaultWidth = 14;
+        ButtonType = 0;
+      } // 'Field: KATMC.BARKOD2' : Column
+    object 'c_PROBRSBORDER_PLJOBNAME_План_работ' : Column {
+      Hidden = True;
+    } // c_PROBRSBORDER_PLJOBNAME_План_работ : Column
+
+  } // PROBRSBORDER : Browser
+
+//-----------------------------------------------------------------------------
+
+  // Редактирование приходного ордера
+  object 'EDITORDERS' : InterfaceWindow {
+
+    //Список складских ордеров
+    object BRSPORDER : Browser {
+
+        object 'Field: KATMC.BARKOD2#1' : Column {
+          Original = False;
+          Visible = True;
+          Hidden = False;
+          Protect = True;
+          StatusCtx = 0;
+          Title = 'SAP Код';
+          FieldName = 'Field: KATMC.BARKOD2';
+          Index = 4;
+          DefaultWidth = 14;
+          ButtonType = 0;
+        } // 'Field: KATMC.BARKOD2' : Column
+
+    } // BRSPORDER : Browser
+
+  } // EDITORDERS : InterfaceWindow
+
+} // L_SKLAD::RASHORD : InterfaceWindow

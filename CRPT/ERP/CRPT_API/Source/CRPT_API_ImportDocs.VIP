@@ -1,0 +1,529 @@
+#doc
+ Документы импорта ЦРПТ
+#end
+#include marker.vih
+
+
+Interface CRPT_API_ImportDocList  'Документы ЦРПТ'  Gray;
+  Show at (, , 87, 27);
+
+
+
+
+var
+  //_cis: string = '76887639829082323333';
+  xmlDoc, hPartDoc, hDoc : longint;
+  kituForSt: string;
+  _pMarker    : IMarker(marker);
+
+
+Parameters
+ _pMarker
+;
+
+Create view as
+select
+  kituInfo.cis (fieldname = kituCis)
+ ,kituInfo.status (fieldname = kituStatus)
+ ,kituInfo.packType (fieldname = kituPackType)
+from
+   CRPT_Docs    ImpDoc
+ , CRPT_SpDocs  spDoc
+ , CRPT_KituInfo_temp kituInfo
+ , CRPT_InfoList
+ , tBuffer
+ , CRPT_SpDocs  spDocFromBuffer
+
+where ((
+  root == ImpDoc.nrec
+  and ImpDoc.nrec == spDoc.cDoc
+  //and spDoc.kitu == kituInfo.cis (noindex)
+  and kituForSt == kituInfo.cis (noindex)
+));
+
+File gfFile;
+
+#include source\CRPT_API_KituInfoInterface.Vpp
+
+function curdatetimestr: string;
+{
+  result := datetostr(Cur_date,'YYYY-MM-DD') + ' ' + timeToStr(Cur_time,'HH:MM:SS') + ' ';
+}
+Procedure MyLog(_str : string);
+{
+  logstrtofile('_MylogFile.txt',curdatetimestr + _str)
+}  // delete уже есть
+
+Procedure SetDefaultDoc; {
+  clearBuffer(tnImpDoc);
+  set ImpDoc.docType := 0;
+
+}
+Procedure SetDefaultSpDoc; {
+  clearBuffer(tnSpDoc);
+  set SpDoc.cDoc := ImpDoc.nrec;
+
+}
+Procedure SetEditMode(flag: boolean); {
+   flag := flag;
+  /*if (isProtect = (not flag)) and isProtect_Set {
+     SetDocFieldState();
+     exit;
+  }
+  if (boVisibleRun) {
+    LoadProtector;
+    DataProtector.SetProtected(not flag);
+  } else {
+    ProtectRecord(CurTable, not flag);
+  }
+  if (flag) {
+    cfsSetProp(cfsGetCurrentContaimerSelf, fpPalette, wpBlueWindow);
+  } else {
+    cfsSetProp(cfsGetCurrentContaimerSelf, fpPalette, wpCyanWindow);
+  }
+  isProtect := not flag;          l
+  isProtect_Set := true;
+  SetDocFieldsState(); */
+}
+ procedure releaseDump(var tempNode: longInt);
+{
+  XMLDOMNode_release(tempNode);
+  tempNode := 0;
+}
+// создание ячейки данных
+procedure createEcodCell(parent: longInt; nodeId, value: string);
+var node, textNode, nodeCell: longint;
+{
+  node     := XMLDOMDoc_CreateElement(xmlDoc, NodeId);
+  nodeCell := XMLDOMNode_AppendChild(Parent, Node);
+  releaseDump(Node);
+  textNode :=  XMLDOMDoc_CreateTextNode(xmlDoc, Value);
+  XMLDOMNode_AppendChild(NodeCell, TextNode);
+
+  releaseDump(textNode);
+  releaseDump(nodeCell);
+} // Procedure createEcodCell
+
+procedure makeImportDocHeader;
+var node: longint;
+{
+  // корневой элемент
+
+    if ImpDoc.docType = 1
+     {
+      node := XMLDOMDoc_CreateElement(xmlDoc, 'introduce_import') ;
+      hDoc := XMLDOMNode_AppendChild(xmlDoc,Node);
+/*
+/* 20211130 -
+
+Обновились с 4 на 5 версию.
+
+Изменения - поменялась версия документа в шапке и не нужно указывать сертификаты - certificate_type, certificate_number, certificate_date.
+
+*/
+      XMLDOMElement_SetAttribute(Node, 'version', '5') ;
+     }
+    if ImpDoc.docType = 2 // Импорт с ФТС
+     {
+      node := XMLDOMDoc_CreateElement(xmlDoc, 'introduce_import_fts') ;
+      hDoc := XMLDOMNode_AppendChild(xmlDoc,Node);
+      XMLDOMElement_SetAttribute(Node, 'version', '3') ;
+     }
+
+  releaseDump(Node);
+
+  createEcodCell(hDoc, 'trade_participant_inn', 7709191580);
+  createEcodCell(hDoc, 'declaration_number', ImpDoc.declaration_number);
+  createEcodCell(hDoc, 'declaration_date', DateToStr(ImpDoc.declaration_date,'YYYY-MM-DD'));
+   if ImpDoc.docType = 1
+    {
+     createEcodCell(hDoc, 'customs_code', ImpDoc.customs_code );
+     createEcodCell(hDoc, 'decision_code',ImpDoc.decision_code );
+    }
+  //Invoice-Lines
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'products_list');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+  releaseDump(Node);
+}
+function fCheckChar(sChr: string): boolean;
+{
+  fCheckChar := false;
+
+  case UpCase(sChr) of
+
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',  // цифры
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+    'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+    'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',            // английский алфавит
+    'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З',
+    'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р',
+    'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ',
+    'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я',                      // русский алфавит
+    '.', '-', '_', '/','%','&',',','{','}','|','\','<','>','?','",','[',']','№',                                    // разделительные знаки
+    '!','@','#','$','^','*','(',')','+','=' :
+      fCheckChar := true;
+
+  end;
+}
+function FilltBuffer : boolean;
+{
+  var lPos, lSize: longint = 0;
+  var ClipText: longint;
+  var sForParse: string = '';
+  var bStop: boolean = false;
+
+  result := true;
+
+  delete all tBuffer;
+
+  ClipText := ClipboardText_Create;
+  ClipboardText_Paste(ClipText);
+
+  lPos := 1;
+  lSize := ClipboardText_Length(ClipText);
+
+  while ( lPos <= lSize )
+  {
+    bStop := false;
+    sForParse := '';
+
+    while ( not bStop ) and ( lPos <= lSize )
+    {
+      if ( fCheckChar(ClipboardText_SubStr(ClipText, lPos, 1)) )
+        sForParse := sForParse + ClipboardText_SubStr(ClipText, lPos, 1);
+      else
+        bStop := true;
+
+      lPos++;
+    }
+
+    if ( sForParse <> '' )
+    {
+      ClearBuffer(#tBuffer);
+      tBuffer.TextBuffer := sForParse;
+      insert current tBuffer;
+    }
+  }
+
+  ClipboardText_Free(ClipText);
+
+  result := (GetFirst tBuffer = tsOk)
+
+}
+Procedure InsertSpDocs;
+{
+  _loop  tBuffer  {
+    if(getfirst spDocFromBuffer where ((ImpDoc.nrec == spDocFromBuffer.cDoc))
+                                and  spDocFromBuffer.kitu = tBuffer.TextBuffer
+      ) <> tsOK
+       insert spDocFromBuffer set
+         spDocFromBuffer.cDoc := ImpDoc.nrec
+       , spDocFromBuffer.kitu := tBuffer.TextBuffer
+       ;
+/*
+       , spDocFromBuffer.PRODUCTION_DATE := strtodate(extractdelimitedword(tBuffer.TextBuffer+';',2,';'),'YYYY-MM-DD')
+      ;
+    MyLog('tBuffer.TextBuffer = ' + tBuffer.TextBuffer);
+    MyLog('extractdelimitedword(tBuffer.TextBuffer+;,1,;)'+extractdelimitedword(tBuffer.TextBuffer+';',1,';'));
+    MyLog('kitu = ' + tBuffer.TextBuffer)
+    MyLog('extractdelimitedword(tBuffer.TextBuffer+;,2,;)' + extractdelimitedword(tBuffer.TextBuffer+';',2,';'));
+    MyLog('PRODUCTION_DATE = '+SpDocFromBuffer.PRODUCTION_DATE);
+*/
+
+
+   }
+   if getlast spDoc = tsOK {
+     rescanPanel(tnspDoc)
+   }
+}
+
+procedure makeProductLine;
+var
+  node, childOne : longInt;
+{
+  _loop spDoc {
+   // Line  выводим в XML
+    node     := XMLDOMDoc_CreateElement(xmlDoc, 'product');
+    ChildOne := XMLDOMNode_AppendChild(hPartDoc, node);
+    ReleaseDump(node);
+    createEcodCell(ChildOne, 'kitu', SpDoc.kitu);
+    if ImpDoc.docType = 1
+     {
+/* 20211130 -
+
+Обновились с 4 на 5 версию.
+
+Изменения - поменялась версия документа в шапке и не нужно указывать сертификаты - certificate_type, certificate_number, certificate_date.
+
+
+
+      createEcodCell(ChildOne, 'certificate_type', 'CONFORMITY_CERTIFICATE');
+      createEcodCell(ChildOne, 'certificate_number', sgettune('USERTUNE.CRPT_PRJ.CONFORMITY_CERTIFICATE_Number'));//'RU.77.99.32.006.R.000337.02.20');
+      createEcodCell(ChildOne, 'certificate_date', sgettune('USERTUNE.CRPT_PRJ.CONFORMITY_CERTIFICATE_certificate_date'));  //'2020-02-11');
+*/
+      createEcodCell(ChildOne, 'tnved_code', sgettune('USERTUNE.CRPT_PRJ.CONFORMITY_CERTIFICATE_tnved_code')); //'2201101900');
+     }
+/* 20211130 -
+
+Обновились с 4 на 5 версию.
+production_date - убрать
+
+    if ImpDoc.docType = 2 // Импорт с ФТС
+     {
+      createEcodCell(ChildOne, 'production_date', datetostr(spDoc.PRODUCTION_DATE,'YYYY-MM-DD'));
+     }
+*/
+    releaseDump(ChildOne); // _ product
+  }
+} //MakeLine
+
+
+function CreateXMLdocument(cDoc: comp; docType:word): string;
+var
+
+  _fileName, sFileExp,  docTypeName: string;
+{
+  docTypeName := '';
+   case docType of
+      1: {
+        docTypeName := 'ImpDoc';
+      }
+      2: {
+        docTypeName := 'ImpDocFTS';
+      }
+
+   end;
+
+   sFileExp := 'CRPT_API_XML_'+docTypeName+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.xml'; // Задаем путь для сохранения файла
+   _fileName:= GetStringParameter('Files','OutputFilesDirectory',0)+ 'CRPT_API_XML_'+docTypeName+'_'+string(cDoc,0,0)+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.xml';
+   sFileExp := GetStringParameter('Files','OutputFilesDirectory',0) + sFileExp ;
+   xmlDoc := XMLDOMDoc_New;
+
+   case docType of
+      1,2: {
+         makeImportDocHeader;
+         makeProductLine;
+      }
+   end;
+
+   releaseDump(hPartDoc);
+   // сохраняем XML
+   releaseDump(hDoc);
+   if not xmlDOMdoc_save(xmlDoc, sFileExp) {
+      MyLog(' --- ERROR: error file save '''+ _fileName+ '''!');
+      result := 'err';
+   } else {
+      result := sFileExp;
+   }
+   XMLDOMDoc_Done(xmlDoc);
+}
+
+Screen scrCRPT_DocList;
+show at (,,,1);
+  //fields
+
+  buttons
+    cmCreateAndSaveDoc ,,,'Сохранить документ в XML',,;
+    cmSendDoc ,,,'Отправить документ',,;
+    cmGetDocumentStatus ,,,'Получить статус документа',,;
+    cmCheckKituStatus ,,,'Проверить статус КИ/КИТУ',,;
+<<
+   <.Сохранить документ в XML.>   <.Отправить документ.>   <.Получить статус документа.>   <.Проверить статус КИ/КИТУ.>
+>>
+end;
+
+Browse brCRPT_DocList (,,scil478Esc);
+  Show at (,2,,10);
+Table ImpDoc;
+ Fields
+  //ImpDoc.nrec                  'nrec'                      ('',,): [6], Protect;
+  ImpDoc.declaration_date      'Дата ГТД '                    ('',,): [6], noProtect;
+  ImpDoc.declaration_number    'Номер ГТД'                    ('',,): [6], noProtect;
+//  ImpDoc.customs_code          'Номер таможенного органа'     ('',,): [6], noProtect;
+//  ImpDoc.decision_code         'Решение таможни'              ('',,): [6], noProtect;
+  ImpDoc.docType               'Тип документа'                ('',,): [6], noProtect, [list 0 'Не выбран'
+                                                                                          , 1 'Импорт. Производство вне ЕАЭС'
+                                                                                          , 2 'Импорт с ФТС'
+                                                                                      ], {Font ={BackColor = if(ImpDoc.docType = 0, ColorNeed, 0) } };
+  ImpDoc.CRPT_Oid			         'Oid документа в системе ЦРПТ' ('',,): [6], Protect;
+  ImpDoc.docDateTime           'Дата документа в ЦРПТ',       ('',,): [6], Protect;
+  ImpDoc.status                'Статус документа в ЦРПТ',     ('',,): [6], Protect;
+  ImpDoc.statusDescr           'Описание статуса в ЦРПТ',     ('',,): [6], Protect;
+//  ImpDoc.sender                'Отправитель документа в ЦРПТ' ('',,): [6], Protect;
+
+ end;
+
+Browse brCRPT_SpDocList (,,scil478Esc);
+  Show at (,11,,);
+Table spDoc;
+ Fields
+  spDoc.kitu                  'SSCC-код паллеты'        ('',,): [6], noProtect;
+//  spDoc.PRODUCTION_DATE       'Дата производства'            ('Дата производства',,): [6], noProtect;
+//  spDoc.cKatMc                'Ссылка на кат МЦ'        ('',,): [6], noProtect;
+ end;
+
+
+HandleEvent
+  cmCreateAndSaveDoc: {
+    CreateXMLdocument(ImpDoc.nrec, ImpDoc.docType);
+  }
+  cmSendDoc:{
+    var docCreatedPath : string = CreateXMLdocument(ImpDoc.nrec, ImpDoc.docType);
+    if (docCreatedPath != 'err') {
+      RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+      case ImpDoc.docType of
+        1: {
+           RunInterface('ATLANTIC::CRPT_API_PowerShellPost', 'CreateDoc', 'XML',docCreatedPath,'LP_GOODS_IMPORT_XML', string(Spdoc.cDoc));
+        }
+        2: {
+           RunInterface('ATLANTIC::CRPT_API_PowerShellPost', 'CreateDoc', 'XML',docCreatedPath,'LP_FTS_INTRODUCE_XML', string(Spdoc.cDoc));
+        }
+
+      end;
+    }
+    //RereadRecord;
+  }
+  cmGetDocumentStatus:{
+      RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+       case ImpDoc.docType of
+        1: { RunInterface('ATLANTIC::CRPT_API_PowerShellPost','GetDocumentStatus', ImpDoc.CRPT_Oid, string(Spdoc.cDoc), 'LP_GOODS_IMPORT_XML');
+           }
+        2: { RunInterface('ATLANTIC::CRPT_API_PowerShellPost','GetDocumentStatus', ImpDoc.CRPT_Oid, string(Spdoc.cDoc), 'LP_FTS_INTRODUCE_XML');
+           }
+       end;
+  }
+  cmCheckKituStatus:{
+      set kituForSt := spDoc.kitu;
+      //RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+      //RunInterface('ATLANTIC::CRPT_API_PowerShell','GetKituInfo', kituForSt);
+      RunWindowModal(winKituInfo)
+  }
+
+end;
+
+
+TableEvent table ImpDoc;
+  cmSetDefault:{
+    SetDefaultDoc;
+    SetEditMode(true);
+    //insert current ImpDoc;
+    PutCommand(cmEdit);
+  }
+  cmUpdateRecord:{
+    update current ImpDoc;
+  }
+  cmDeleteRecord:{
+    if(message('Удалить документ?', Confirmation + YesNo) = cmYes) {
+      delete spDocFromBuffer where ((ImpDoc.nrec == spDocFromBuffer.cDoc));
+      delete current ImpDoc;
+    }
+  }
+
+  cmPositionChanged: {
+    RedrawPanel(#SpDoc);
+  }
+  cmInsertRecord: {
+    Insert current ImpDoc;
+  }
+
+end;
+TableEvent table spDoc;
+  cmSetDefault:{
+    SetDefaultSpDoc;
+    SetEditMode(true);
+   // insert current SpDoc;
+    PutCommand(cmEdit);
+  }
+  cmUpdateRecord:{
+    update current SpDoc;
+  }
+  cmDeleteRecord:{
+    if(message('Удалить позицию?', Confirmation + YesNo) = cmYes) {
+      delete current SpDoc;
+    }
+  }
+  cmInsertRecord: {
+    insert current SpDoc;
+  }
+
+end;
+
+handleevent
+cminit:{
+    if (_pMarker.Count > 0)
+    {
+      var  tempMarker : longint = InitMarker('', 8, 0, 1) ;
+      var _index : longint;
+      _pMarker.ExportTo(tempMarker);
+
+      var _newNrec : comp = GetNExtNrec(#ImpDoc, 0);
+      ClearBuffer(#ImpDoc);
+
+      set ImpDoc.nrec := _newNrec;
+      set ImpDoc.docType = 1;
+      set ImpDoc.declaration_date := Cur_Date();
+
+      insert current ImpDoc;
+
+
+      for (_index := 0; _index < GetMarkerCount(tempMarker); _index++)
+      {
+          ClearBuffer(#spDoc);
+          set spDoc.cDoc = ImpDoc.nrec;
+
+          var _element : comp;
+          GetMarker(tempMarker, _index, _element);
+
+          if (getfirst CRPT_InfoList where ((_element == CRPT_InfoList.nrec (noindex))) = tsOk )
+          {
+              set spDoc.kitu = CRPT_InfoList.cis;
+              insert current spDoc;
+              //message('insert cis ' + CRPT_InfoList.cis)
+          }
+
+      }
+      DoneMarker(tempMarker, '')
+    }
+}
+/*
+cmEdit: {
+  //RunWindowModal(wnCRPT_DocEdit);
+}
+
+cmHotKeys:{
+}
+CmDefault: {
+  //PutCommand(cmEdit);
+}
+
+cmUpdateRecord:{
+  //updatetable;
+}
+*/
+cmPositionChanged: {
+  RedrawPanel(#ImpDoc);
+  RedrawPanel(#SpDoc);
+}
+
+cmHotKeys :{
+  case curtable of
+     tnspDoc:  PutHotCommand(RunMenu('Atlantic_CRPT_PastespDocFromBuffer_HotKeys'));
+   end;
+  }
+cmValue1: {
+
+   startnewvisual(vtRotateVisual,vftimer+vfbreak+vfconfirm,'Обработка буфера.',0);
+     if FilltBuffer then InsertSpDocs;
+  stopvisual;
+}
+end;
+End. // Interface
+
+#doc
+Добавление подменю в модуле управление сбытом  - счета, ДО на продажу - локальное меню
+#end
+Atlantic_CRPT_PastespDocFromBuffer_HotKeys Menu
+{
+    - 'Вставить список из буфера', cmValue1, 'Вставить данные из буфера', hcNoContext,'',,sci1Esc;
+
+}

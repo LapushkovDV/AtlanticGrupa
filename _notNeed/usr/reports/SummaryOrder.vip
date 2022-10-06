@@ -1,0 +1,355 @@
+#component 'F_XLSRep'
+#include xlReport.Vih   // процедуры работы с отчетами excel
+INTERFACE Droga_SummaryOrder 'Сводный заказ' EscClose;
+SHOW AT (,,44,11);
+Const
+#include DrogaConst.inc
+ DefaultShablonPath = '%StartPath%DrogaResources\XLT\Droga_SummaryOrder.xlt';
+ StatusOnTheWayName = 'Товары в пути';
+ PorridgeGroupKod   = '410101'; //Код группы "Каши Bebi"
+ PorridgeKAUKodGroup      = 10010; //Код пользовательской аналитики "Наличие молока в составе"
+ PorridgeMilkSPKAUCode    = '001'; //Код значения аналитики "Молочная"
+ PorridgeNONMilkSPKAUCode = '002'; //Код значения аналитики "Безмолочная"
+end;
+// Временная таблица в памяти. В нее копируются нужные значения,
+// потом она сортируется и выгружается в Excel
+TABLE STRUCT tSumOrder
+(
+ Nrec      : comp,
+ IsMilk    : word,
+ SAPCode   : string,
+ Name      : string,
+ Minimum   : longint,
+ ToOrder   : longint,
+ OstSlov   : longint,
+ OstMoscow : longint,
+ OnTheWay  : longint
+)
+WITH INDEX
+(
+ tSumOrder01 = Nrec,
+ tSumOrder02 = IsMilk + Name
+);
+
+CREATE VIEW
+VAR sXLTFileName, sXLSFileName :string; //Пути на шаблон и на результирующий файл
+    KorobKoef, PalletKoef, CarKoef : integer;
+AS SELECT *
+FROM tSumOrder,
+     katmc, kaureff, spkau, katotped, attrnam, attrval,
+	  basedoc, stepdoc, spstep, katnotes,
+	  sklost, sklost SlovOst, katpodr, katpodr SlovPodr
+WHERE
+((
+               PorridgeGroupKod  <<= katmc.barkod
+and NextNumStr(PorridgeGroupKod) >>= katmc.barkod
+
+and word(1411)    == attrnam.wtable
+and AttrMCSAPCode == attrnam.name
+and word(1411)    == attrval.wtable
+and katmc.nrec    == attrval.crec
+and attrnam.nrec  == attrval.cattrnam
+
+and word(1411)   == kaureff.cotable
+and katmc.nrec   == kaureff.crec
+and PorridgeKAUKodGroup == kaureff.wkau
+and kaureff.ckau == spkau.nrec and ((spkau.code=PorridgeMilkSPKAUCode) or (spkau.code = PorridgeNONMilkSPKAUCode))
+
+and word(1)           == spstep.prmc
+and katmc.nrec        == spstep.cmcusl
+and spstep.cstepdoc  /== stepdoc.nrec
+and stepdoc.cbasedoc /== basedoc.nrec
+and basedoc.cnote    /== katnotes.nrec and (katnotes.name = StatusOnTheWayName)
+
+and spstep.cotped == katotped.nrec
+
+and SkladSloveniaKod == SlovPodr.kod
+and katmc.nrec       == SlovOst.cmc
+and SlovPodr.nrec    == SlovOst.cpodr
+
+and SkladMoscowKod == katpodr.kod
+and katmc.nrec     == sklost.cmc
+and katpodr.nrec   == sklost.cpodr
+));
+
+FILE MyFile; //Используется здесь для проверки наличия файла шаблона
+
+VAR
+ OneRec     : record as table tSumOrder;
+ TotalPlaces, CarsNumber :longint;
+ pXL : XLSRepBuilder;  // объект формирования excel отчетов
+
+Screen scr1;
+ NoTableNavigation
+ fields
+  KorobKoef    : NoProtect;
+  PalletKoef   : NoProtect;
+  CarKoef      : NoProtect;
+  sXLTFileName : NoProtect, PickButton;
+
+   Buttons
+   cmOK, Default, ,,;
+   cmCancel,,,,;
+<< 'Параметры отчета'
+
+  Коэффициенты пересчета:
+  1 короб  = .@@@@@@@@@@ штук
+  1 паллет = .@@@@@@@@@@ коробов
+  1 машина = .@@@@@@@@@@ коробов
+  -----------------------------------------------------------------------
+  Путь к шаблону отчета
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+     <.  Ok   .>               <.Cancel.>
+
+>>
+End;
+
+//Проверка наличия файла по полному пути
+FUNCTION CheckFileExistence(sFileName:string):boolean;
+{
+ CheckFileExistence:=TRUE
+ _TRY MyFile.OpenFile (sFileName,stOpen)
+ _EXCEPT
+	  ON ExFileNotFound:
+	  {
+	   CheckFileEXISTENCE := FALSE;
+	   _SkipFinally;
+	  }
+ _FINALLY MyFile.Close;
+}//checkfileexistence
+
+//Функция округления до целого в большую сторону
+FUNCTION RoundUP (x:double) :longint;
+var y:longint;
+{
+ y := Trunc(x);
+ IF y <> x THEN y := y + 1;
+ RoundUp := y;
+}//roundup
+
+//Проверка корректного заполнения всех параметров отчета
+FUNCTION AllParametersOK :boolean;
+{
+ AllParametersOK := FALSE;
+ IF KorobKoef*PalletKoef*Carkoef = 0 THEN {Message('Коэффициент не должен иметь нулевое значение!'); Exit;}
+ IF CarKoef <= PalletKoef THEN {Message('Коэффициент машины не может быть меньше коэффициента паллета!'); Exit;}
+ IF RoundUP(CarKoef/PalletKoef)<>CarKoef/PalletKoef THEN {Message('Коэффициент машины должен быть кратен коэффициенту паллета!'); Exit;}
+ IF sXLTFileName='' THEN {Message('Не указан путь к шаблону отчета!'); Exit;}
+ IF NOT CheckFileExistence(sXLTFileName) THEN {Message('Не найден шаблон отчета по указанному пути:'+chr(13)+sXLTFileName);Exit;}
+ AllParametersOK := TRUE;
+}//AllParametersOK
+
+//Функция выгрузки данных в Excel
+Function RunRep : boolean;
+{
+  RunRep := False;
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  // CONNECT EXCEL
+  //
+  // создаем отчет на основании существующего шаблона
+  Set sXLSFileName := pXL.CreateReport(sXLTFileName, True);
+  //////////////////////////////////////////////////////////////////////////////
+  // выгрузка таблицы отчета
+  //
+  pXL.CreateTbls(sXLSFileName);
+  pXL.CreateTbl('SummaryOrderTable');
+  pXL.CreateTblFld('IsMilk'   );
+  pXL.CreateTblFld('SAPCode'  );
+  pXL.CreateTblFld('Name'     );
+  pXL.CreateTblFld('Minimum'  );
+  pXL.CreateTblFld('ToOrder'  );
+  pXL.CreateTblFld('OstSlov'  );
+  pXL.CreateTblFld('OstMoscow');
+  pXL.CreateTblFld('OnTheWay' );
+  // выгрузка полей таблицы
+  _Loop tSumOrder ORDERED BY INDEX tSumOrder02
+  {
+   IF not NextVisual THEN
+	{
+	 pXL.DisconnectExcel;
+	 DELETE ALL tSumOrder;
+	 Exit;
+   }//Если прервали
+   // очистить буфер записи таблицы
+   pXL.ClearTblBuffer;
+   // заполнение значений полей текущей записи таблицы
+   pXL.SetTblNumberFldValue('IsMilk'   , tSumOrder.IsMilk   );
+   pXL.SetTblStringFldValue('SAPCode'  , tSumOrder.SAPCode  );
+   pXL.SetTblStringFldValue('Name'     , tSumOrder.Name     );
+   pXL.SetTblNumberFldValue('Minimum'  , tSumOrder.Minimum  );
+   pXL.SetTblNumberFldValue('ToOrder'  , tSumOrder.ToOrder  );
+   pXL.SetTblNumberFldValue('OstSlov'  , tSumOrder.OstSlov  );
+   pXL.SetTblNumberFldValue('OstMoscow', tSumOrder.OstMoscow);
+   pXL.SetTblNumberFldValue('OnTheWay' , tSumOrder.OnTheWay );
+   // вставка записи в таблицу
+   pXL.InsTblRow;
+  }//Loop
+  DELETE ALL tSumOrder;
+  // все необходимые пост-действия по "публикации" таблицы (DBTbl Destructor)
+  pXL.PublishTbl('SummaryOrderTable');
+  //
+  // выгрузка таблицы отчета
+  //////////////////////////////////////////////////////////////////////////////
+  // выгрузка переменных отчета
+  //
+  // инициализация переменных Excel-БД (DBVar Constructor)
+  pXL.CreateVar(sXLSFileName);
+  // выгрузка значений переменных
+  CarsNumber := RoundUP(TotalPlaces/CarKoef);
+  pXL.SetDateVar  ('DateRep'    , Cur_Date   );
+  pXL.SetNumberVar('KorobKoef'  , KorobKoef  );
+  pXL.SetNumberVar('PalletKoef' , PalletKoef );
+  pXL.SetNumberVar('CarKoef'    , CarKoef    );
+  pXL.SetNumberVar('CarsNumber' , CarsNumber );
+  pXL.SetNumberVar('TotalPlaces', TotalPlaces);
+  // все необходимые пост-действия по "публикации" переменных (DBVar Destructor)
+  pXL.PublishVar;
+  //
+  // выгрузка переменных отчета
+  //////////////////////////////////////////////////////////////////////////////
+
+  // формирование отчета по заданнному шаблону
+  StartNewVisual(vtRotateVisual, vfTimer, 'Шаг 3 из 3: Обработка данных в Excel', 0);
+  pXL.LoadReport(sXLSFileName);
+  StopVisual('',0);
+  pXL.DisconnectExcel;
+  //
+  // DISCONNECT EXCEL
+  //////////////////////////////////////////////////////////////////////////////
+  RunRep := True;
+}//runrep
+
+//Функция чтения БД и сохранения данных во временную таблицу в памяти
+FUNCTION InitTableSummaryOrder : boolean;
+{
+ InitTableSummaryOrder := False;
+ TotalPlaces:=0;
+ _LOOP katmc
+ {
+  IF NOT NextVisual THEN Exit;
+  OneRec.Nrec      := katmc.nrec;
+  OneRec.IsMilk    := 1;
+  OneRec.SAPCode   := '- Не задан -';
+  OneRec.Name      := katmc.name;
+  OneRec.Minimum   := katmc.zapasmin;
+  OneRec.ToOrder   := 0;  OneRec.OstSlov   := 0;
+  OneRec.OstMoscow := 0;  OneRec.OnTheWay  := 0;
+  IF GetFirst fastfirstrow attrnam = tsOK THEN IF GetFirst fastfirstrow attrval = tsOK THEN OneRec.SAPCode := attrval.vstring;
+  IF GetFirst fastfirstrow kaureff = tsOK THEN IF GetFirst fastfirstrow spkau   = tsOK THEN OneRec.IsMilk  := if(spkau.code=PorridgeMilkSPKAUCode, 1, 2);
+  _LOOP spstep
+  {
+   IF GetFirst fastfirstrow katotped = tsOK
+	THEN OneRec.OnTheWay := OneRec.OnTheWay + spstep.kol*katotped.koef;
+  }//loop spstep
+  IF GetFirst fastfirstrow SlovPodr = tsOK
+  THEN IF GetFirst fastfirstrow SlovOst  = tsOK
+       THEN OneRec.OstSlov := SlovOst.kol;
+  IF GetFirst fastfirstrow katpodr = tsOK
+  THEN IF GetFirst fastfirstrow sklost = tsOK
+       THEN OneRec.OstMoscow := sklost.kol - sklost.res;
+  OneRec.ToOrder := OneRec.Minimum - OneRec.OstMoscow - OneRec.OnTheWay;
+  IF OneRec.ToOrder < 0 THEN OneRec.ToOrder := 0;
+  OneRec.ToOrder   := RoundUP(OneRec.ToOrder/KorobKoef);
+  OneRec.ToOrder   := PalletKoef*RoundUP(OneRec.ToOrder/PalletKoef);
+  OneRec.Minimum   := Trunc(OneRec.Minimum  /KorobKoef);
+  OneRec.OstSlov   := Trunc(OneRec.OstSlov  /KorobKoef);
+  OneRec.OstMoscow := Trunc(OneRec.OstMoscow/KorobKoef);
+  OneRec.OnTheWay  := Trunc(OneRec.OnTheWay /KorobKoef);
+  INSERT tSumOrder
+     SET tSumOrder.Nrec      := OneRec.Nrec     ,
+         tSumOrder.IsMilk    := OneRec.IsMilk   ,
+         tSumOrder.SAPCode   := OneRec.SAPCode  ,
+         tSumOrder.Name      := OneRec.Name     ,
+         tSumOrder.Minimum   := OneRec.Minimum  ,
+         tSumOrder.ToOrder   := OneRec.ToOrder  ,
+         tSumOrder.OstSlov   := OneRec.OstSlov  ,
+         tSumOrder.OstMoscow := OneRec.OstMoscow,
+         tSumOrder.OnTheWay  := OneRec.OnTheWay
+  ;//insert tsumorder
+  IF RowCount > 0 THEN TotalPlaces := TotalPlaces + OneRec.ToOrder;
+ }//loop katmc
+ InitTableSummaryOrder := True;
+}//InitTableSummaryOrder
+
+HANDLEEVENT
+cmInit:
+{
+ SET KorobKoef  := DefKorobKoef ;
+ SET PalletKoef := DefPalletKoef;
+ SET CarKoef    := DefCarKoef   ;
+ SET sXLTFileName := TranslatePath(DefaultShablonPath);
+ SET sXlSFileName := '';
+}//cmInit
+
+cmPick:
+{
+ CASE CurField OF
+ #sXLTFileName:
+ {
+  SET sXLTFileName := GetFileName('*.xlt', 'Выберите шаблон отчета');
+  IF sXLTFileName = '' THEN SET sXLTFileName := TranslatePath(DefaultShablonPath);
+ }//sxltfilename
+ END;//case
+}//cmPick
+
+cmOK:
+{
+ IF AllParametersOK THEN
+ {
+  StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Шаг 1 из 3: Чтение данных из БД', 0);
+  IF NOT InitTableSummaryOrder
+  THEN Message('Операция прервана пользователем!');
+  ELSE
+  {
+   RestartVisual('Шаг 2 из 3: Выгрузка в шаблон Excel', 0);
+   IF NOT RunRep THEN Message('Выгрузка данных в шаблон Excel прервана пользователем!');
+  }//Если нормально проинициализировалась временная таблица
+  DELETE ALL tSumOrder;
+  StopVisual('',0);
+  //CloseInterface(cmDefault);
+ }//Если параметры нормально заданы
+}//cmOK
+
+cmCancel:
+{
+ CloseInterface(cmCancel);
+}//cmCancel
+end;//HandleEvent
+end.//interface
+
+//////////////////////////////////////////////
+//  пункт меню в отчетах пользовател
+//
+#component 'F_UserReport'
+#include UserReport.vih
+VipInterface UserReport_DrogaSummaryOrder Implements IUserReport;
+Interface UserReport_DrogaSummaryOrder;
+create view;
+procedure Run;
+begin
+  RunInterface('F_XLSRep::Droga_SummaryOrder')
+end;
+function GetReportName: String;
+begin
+  GetReportName := 'Формировать сводный заказ в Словению';
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+end;
+function GetPriority : integer;
+begin
+  GetPriority := 0;
+end;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'SKLAD';
+    2 : VisibleInModule := 'BUY';
+  end;
+end;
+!-------------------------------------------------------------------------------
+end.

@@ -1,0 +1,13 @@
+////////////// подменяем обработчик событий 
+#component "L_REPOPER"
+alter interface DolgOpl;
+overload
+ Function isDolg(cc:comp): boolean;
+end;
+Function isDolg(cc:comp): boolean;
+ {
+  Result := Inherited::isDolg(cc);
+//  result := true;
+//  Result := ( Abs(RubDolg) >= 0.01 );
+ }
+end. // interface

@@ -1,0 +1,19 @@
+/*
+                       (c) 1994,2004 корпорация ГАЛАКТИКА
+  Проект        : ГАЛАКТИКА
+  Система       : Заработная плата
+  Назначение    : vip-интерфейс "Список контекстов"
+  Ответственный : Корзюк Виталий Францевич
+*/
+
+#ifndef _CONTEXTS_VIH_INCLUDED_
+#define _CONTEXTS_VIH_INCLUDED_
+
+#include D:\Compile\8.1\Inc\Contexts.obj
+
+#ifdef ComponentVersion
+#component "z_zar"
+#end
+
+vipinterface ContextList implements IContextList;
+#end

@@ -1,0 +1,104 @@
+// Галактика 8.00 2004г.
+// Описание экспортируемых интерфейсов компонента M_TPP
+
+#ifdef ComponentVersion
+#component "M_TPP"
+#end
+
+//******************************************************************************
+// меню
+//******************************************************************************
+// документы
+VipInterface iTPPDocs    Licensed(Free) Parameters(wGObjType: word; wGDocType: word);
+//VipInterface iMnSp; // реализация объекта. подключается в TPP.mnu
+//VipInterface iTPM;  // реализация объекта. подключается в TPP.mnu
+VipInterface MnfOper     Licensed(Free) Parameters(wGMode: word; RecNum: comp; MarkName: string);
+VipInterface irNVariant  Licensed(Free) Parameters(cGCode: comp; wGMode: word);
+VipInterface IzvMain     Licensed(Free) Parameters(SGMode: word; NBRec: comp; TypeD: word; wGState: word);
+//******************************************************************************
+// операции
+VipInterface iNmTbSt     Licensed(Free) Parameters(wGMode: integer; cGCode: comp);
+VipInterface iParSet     Licensed(Free) Parameters(wGMode: integer; cGCode: comp; sGName: string);
+VipInterface iRunPlanLev Licensed(Free);
+VipInterface irOperPr    Licensed(Free);
+VipInterface irOperDp    Licensed(Free);
+VipInterface irPSPosDp   Licensed(Free);
+VipInterface irDocMnf    Licensed(Free);
+#ifndef GAL8_1
+VipInterface ConvTpp     Licensed(Free) Parameters(wMsgOut: word);
+#endif
+VipInterface SetupPar    Licensed(Free) Parameters(wGMode: word; sGCfgName: string; wGRslt: word; cGParHead: comp);
+VipInterface BOMCheck    Licensed(Free) Parameters(wMsgOut: word);
+VipInterface irAnCheck   Licensed(Free) Parameters(wGMode, wGDocCheck, wGFldCheck: word; cGDocNastr: comp);
+
+VipInterface ListTmpPotr Licensed(Free) Parameters(parTitle : string; parDate_LoadData : date; parTypeDoc_Src : word; parcDoc_Src : comp;
+                                                   parFlag_RazUzl : word; parSwitch_TypeRes, parSwitch_KategoryRes, parSwitch_HaractRes, parSwitch_NV, parSwitch_ED : word;
+                                                   parFlagVid, parFlagSort : word; parKolZnak_Kol : word; parwList_G_TmpGrN : word; parwList_S_TmpGrN : word; parFlagZagyzDann : boolean);
+//******************************************************************************
+// отчеты
+VipInterface iRepBOMSet  Licensed(Free) Parameters(cGUDRep: comp; bGNew: boolean; cGRights: comp);
+VipInterface iRepBOMRun  Licensed(TPP, ManufPlan, Manufacture, coPlan)
+                                        Parameters(cGUDRep: comp; wGMode: word; wGDoc: word; cGDoc: comp);
+VipInterface iRep1005    Licensed(TPP, ManufPlan, Manufacture, coPlan)
+                                        Parameters(cGUDRep: comp; wGMode: word; wGDoc: word; cGDoc: comp);
+VipInterface iRep1005_2  Licensed(TPP)  Parameters(cGUDRep: comp; wGMode: word; wGDoc: word; cGDoc: comp);
+VipInterface iRep1005_3  Licensed(TPP)  Parameters(cGUDRep: comp; wGMode: word; wGDoc: word; cGDoc: comp);
+VipInterface iRep1006    Licensed(TPP, ManufPlan, Manufacture, coPlan)
+                                        Parameters(cGUDRep: comp; wGMode: word; wGDoc: word; cGDoc: comp);
+VipInterface iRep1008    Licensed(TPP)  Parameters(cGUDRep: comp; wGMode: word);
+VipInterface iMarsh_Map  Licensed(TPP);
+VipInterface iJobNorm    Licensed(TPP);
+VipInterface iTechMarsh  Licensed(TPP);
+VipInterface iFioDate    Licensed(TPP)  Parameters(wFlag: word);
+VipInterface iVedUseRes  Licensed(TPP);
+VipInterface iTechSost   Licensed(TPP);
+VipInterface iFuncNorm   Licensed(TPP);
+VipInterface iTreeDSE    Licensed(TPP);
+VipInterface iUseDSE     Licensed(TPP);
+VipInterface iUseDSEU    Licensed(TPP);
+VipInterface iVedUse     Licensed(TPP);
+VipInterface iVedUseU    Licensed(TPP);
+VipInterface iBuyDSE     Licensed(TPP);
+VipInterface iSpecVed    Licensed(TPP);
+VipInterface irRepGroup  Licensed(TPP, ManufPlan, Manufacture, coPlan)
+                                        Parameters(cDocs: comp);
+VipInterface iIzvList    Licensed(TPP)  Parameters(wLFlag: word);
+VipInterface iIzvDate    Licensed(TPP);
+
+VipInterface iChoosePos
+  Licensed(TPP, ManufPlan, Manufacture)
+  Parameters(cGDoc: comp; lMrkr : longint);
+
+//******************************************************************************
+// настройки
+VipInterface irDocNastr  Licensed(Free) Parameters(cGCode: comp; wGMode, wGType: word);
+VipInterface iSpPart     Licensed(Free) Parameters(SGMode: word; CurRec: comp);
+VipInterface iWorkSel    Licensed(Free) Parameters(RecNum: comp; CalMode: word);
+VipInterface iWorkEd     Licensed(Free) Parameters(CalMode : word; RecNum : comp);
+VipInterface iTPPRegDoc  Licensed(Free) Parameters(wGMode: word; cGCode: comp; sGMark: string);
+VipInterface irKaReason  Licensed(Free) Parameters(SGMode: word; CurRec: comp);
+
+//******************************************************************************
+// public interface
+//******************************************************************************
+VipInterface irGrSDoc            Licensed(Free) Parameters(wGMode: word; cGCode: comp; MarkName: string);
+VipInterface irSDoc              Licensed(Free) Parameters(wGMode: word; cGGrp: comp; cGCode: comp; MarkName: string);
+//VipInterface iTPMSp;   // реализация объекта. подключать должны сами (#include oiDocSp.vih)
+//VipInterface inPrSEd;  // реализация объекта. подключать должны сами (#include oiDocSp.vih)
+VipInterface Selector            Licensed(Free) Parameters(wGRslt, wGRole, wGFlag : word; cGRole : comp; wGCode : word; cGCode : comp);
+VipInterface iSpIzd              Licensed(Free) Parameters(wGMode : word; cCompl, cSpSet : comp);
+VipInterface irGetAbbr           Licensed(Free) Parameters(pWorkMode: word; pWorkGr: word; pWorkCode: word);
+VipInterface iPriceCheck         Licensed(Free) Parameters(wDontRun: word);
+VipInterface iPotrBr             Licensed(Free);
+VipInterface iPotrBrA            Licensed(Free);
+VipInterface iPotrBrM            Licensed(Free);
+VipInterface iPotrBrU            Licensed(Free) Parameters(wGLink: word; cGLink: comp);
+VipInterface IOtReestrListDopZam Licensed(Free);
+VipInterface iCorrectTODate      Licensed(Free);
+VipInterface IOtAktZamM          Licensed(Free) Parameters(cNoteBen: comp);
+VipInterface IOtAktZamS          Licensed(Free) Parameters(cNoteBen: comp);
+VipInterface iTPMSpView          Licensed(Free) Parameters(cGDoc: comp; cGPos: comp; wGMode: word; wGFltr: word; wGType: word; cGType: comp);
+Vipinterface qcDistDoc           Licensed(Free) Parameters(cGResult: comp; wFilterOn: word; wGDocType: word; wGObjType: word; cGObject: comp);
+Vipinterface qcKPS               Licensed(Free) Parameters(cGResult: comp; wFilterOn: word; wGDocType: word; wGObjType: word; cGObject: comp; wGDepType: word; cGDept: comp);
+Vipinterface qcMK                Licensed(Free) Parameters(cGResult: comp; wFilterOn: word; wGDocType: word; wGObjType: word; cGObject: comp; wGDepType: word; cGDept: comp);
+VipInterface iSynhrTONames       Licensed(Free) Parameters(wDontRun: word);

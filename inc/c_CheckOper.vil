@@ -1,0 +1,22 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента C_CheckOper
+
+#ifdef ComponentVersion
+#component "C_CHECKOPER"
+#end
+
+VipInterface ChkOper licensed (FREE);
+VipInterface ChkOperKat licensed (FREE) Parameters(pCM:word; pIT:word);
+VipInterface ClearKatMc licensed (FREE);
+VipInterface ClearKatUsl licensed (FREE);
+VipInterface ClearKatOrg licensed (FREE);
+VipInterface DKontraS licensed (FREE);
+VipInterface GetSomeKontrSaldo licensed (FREE);
+VipInterface Tunes licensed (FREE) Parameters(cTuneRec:comp;TuneID:longint);
+VipInterface DelTbls licensed (FREE);
+VipInterface ChkDogNal licensed (FREE);
+VipInterface ChkAktRNal licensed (FREE);
+VipInterface Konvert licensed (FREE);
+VipInterface CHECK510NOTES licensed (FREE);
+VipInterface CHECK520NOTES licensed (FREE);
+VipInterface CheckKatNotesRef licensed (FREE);

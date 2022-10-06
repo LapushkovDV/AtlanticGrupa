@@ -1,0 +1,7 @@
+////////////// подменяем обработчик событий 
+#component ""
+interface EmtyFace;
+create view;
+handleevent
+end;
+end. // interface

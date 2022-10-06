@@ -1,0 +1,132 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента
+
+#ifdef ComponentVersion
+#component "F_OS"
+#end
+//------------------------------------------------------------------------------
+VipInterface Katoss
+Licensed
+(
+#include Katoss.lih
+)
+Parameters ( wTip : word;
+             pNrecKatos : comp;
+             GrupVbr : word;
+             NrecPodr, NrecVid, NrecMol, oldNRecKatos : comp );
+
+//------------------------------------------------------------------------------
+VipInterface GetArc
+Licensed
+(
+#include GetArc.lih
+)
+Parameters (TipDock : word; cParNrec : comp);
+
+//------------------------------------------------------------------------------
+VipInterface GetSposobAmort
+Licensed
+(
+#include GetSposobAmort.lih
+)
+Parameters (c1 : comp; c2 : word);
+
+//------------------------------------------------------------------------------
+VipInterface NalGrBal
+Licensed (B_Act,B_Osn)
+Parameters (pTiDk : word);
+
+//------------------------------------------------------------------------------
+VipInterface OSverka
+Licensed (B_Act,B_Osn)
+Parameters (parTiDk : word);
+
+//------------------------------------------------------------------------------
+VipInterface CheckIK        Licensed (Free) Parameters (pTiDk : word);
+//------------------------------------------------------------------------------
+VipInterface ChkVidNorma    Licensed (Free) Parameters (TipDk : word);
+//------------------------------------------------------------------------------
+VipInterface OtchPerOsRun   Licensed (Free) Parameters (wMode : word);
+//------------------------------------------------------------------------------
+VipInterface CheckSpecObor  Licensed (Free);
+//------------------------------------------------------------------------------
+VipInterface ChkIer         Licensed (Free);
+//------------------------------------------------------------------------------
+VipInterface KatKofAI       Licensed (Free);
+//------------------------------------------------------------------------------
+VipInterface GrOs           Licensed (Free) Parameters (c1 : comp; c2 : word; oldp : comp);
+//------------------------------------------------------------------------------
+VipInterface SetTuneDisplayPatternVisionOS Licensed (Free);
+//------------------------------------------------------------------------------
+VipInterface IsPos          Licensed (Free) Parameters (TipDk : word; c1 : comp; c2 : word; oldp : comp);
+//------------------------------------------------------------------------------
+VipInterface KatAmGr        Licensed (Free) Parameters (c1 : comp; c2 : word);
+//------------------------------------------------------------------------------
+VipInterface KatVidNorma    Licensed (Free) Parameters (TipDk : word; c1 : comp; c2 : word; c3 : boolean; c4 : word);
+//------------------------------------------------------------------------------
+VipInterface GetVidNorma    Licensed (Free) Parameters (TipDk : word; c1,oldp : comp; sort : word);
+//------------------------------------------------------------------------------
+VipInterface KodOkof        Licensed (Free) Parameters (c1 : comp; c2 : word);
+//------------------------------------------------------------------------------
+VipInterface GetOkof        Licensed (Free) Parameters (c1,oldp : comp; sort : word);
+//------------------------------------------------------------------------------
+VipInterface NalGr          Licensed (Free) Parameters (TipDk : word; cNrecKatN : comp);
+//------------------------------------------------------------------------------
+VipInterface KatPrSb        Licensed (Free) Parameters (TipDk : word; c1 : comp; c2 : word; oldp : comp);
+//------------------------------------------------------------------------------
+VipInterface NastrOs        Licensed (Free) Parameters (TipDock : word; mySysNum : word; c1 : comp; c2 : word);
+
+//------------------------------------------------------------------------------
+VipInterface OSFromMBP
+Licensed (mbp)
+Parameters (OperDate : date; cMoveOsRes : comp; sMoveOsNoDoc : string);
+
+//------------------------------------------------------------------------------
+VipInterface NewReleaseOsAlg Licensed (Free);
+//------------------------------------------------------------------------------
+VipInterface InsPbu18Os     Licensed (Free);
+//------------------------------------------------------------------------------
+VipInterface iChangHist     Licensed (Free) Parameters (pKatOS,pNastrOS:tnRec;pDateFrom,pDateTo:date;pTableID:word);
+//------------------------------------------------------------------------------
+VipInterface myColOs        Licensed (Free) Parameters (red,wColPanel,tipDock:word;cKatOsHigherOs:comp);
+//------------------------------------------------------------------------------
+VipInterface myColOsDel     Licensed (Free) Parameters (red,wColPanel,TipDock:word);
+//------------------------------------------------------------------------------
+VipInterface GetKatosMc     Licensed (Free) Parameters (wTip:word;cKatos_Znach,cOsMc_Znach:comp);
+//------------------------------------------------------------------------------
+VipInterface ChooseKatKl    Licensed (Free) Parameters (TipDk,OpMask:word;c1:comp;c2:word);
+//------------------------------------------------------------------------------
+VipInterface GetKlass       Licensed (Free) Parameters (TipDk:word;c1,oldp:comp;sort:word);
+//------------------------------------------------------------------------------
+
+VipInterface OsverSt
+Licensed (B_Act,B_Osn)
+Parameters (parDesgr:tDesgr;parDescr:tDescr;parPlanSch:comp;parSchet:tSchet3;parDate:date;parTiDk:word;parMetod:comp;parWhat:word;parPrecision:double);
+
+//------------------------------------------------------------------------------
+VipInterface ProbTr
+Licensed (menuavt)
+Parameters (cNrecOb,cpNrecKat:comp);
+
+//------------------------------------------------------------------------------
+VipInterface GetKatNalGr    Licensed (Free) Parameters (TipDk:word;cGroup,OldNode:comp);
+//------------------------------------------------------------------------------
+VipInterface ExtendedArcIznos Licensed (Free) Parameters (bSrokInKatOsOnly:boolean;dArc:date);
+//------------------------------------------------------------------------------
+VipInterface NormZatr       Licensed (Free) Parameters (TipDk: word);
+//------------------------------------------------------------------------------
+VipInterface FillAmortSt Licensed (Free);
+//------------------------------------------------------------------------------
+VipInterface SelectOSOnMC
+Licensed (B_Act,B_Osn)
+Parameters (wTip : word);
+//------------------------------------------------------------------------------
+VipInterface ConvTuneNalUch_OSNMA Licensed (Free);
+//------------------------------------------------------------------------------
+VipInterface ChkTuneValue_NalMetUcht Licensed (Free);
+//------------------------------------------------------------------------------
+VipInterface OsChgParH Licensed (Free) Parameters (pVidop, wTip : word; NrecKlassOs : comp);
+//------------------------------------------------------------------------------
+VipInterface TuneAlgOsRazn Licensed (Free) Parameters (wTiDk : word);
+//------------------------------------------------------------------------------
+VipInterface ConvertValueInOsMcUslSpSopr Licensed (Free);

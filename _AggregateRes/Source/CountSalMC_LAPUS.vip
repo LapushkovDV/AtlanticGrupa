@@ -1,0 +1,91 @@
+#Component "ATLANTIC"
+const
+ MonthRecalc = 2;
+end;
+Interface CountSalMC_LAPUS;
+Create view
+from KatMC
+, SpOrder
+,Pick
+where ((0 == KatMC.ISARCH
+      ))
+;
+function isMoveMcfromDate(_cMc: comp; _Sp : word; _dOrd : date) : boolean;
+{
+var _result : boolean;
+_result := false;
+ if(Getfirst fastfirstrow SpOrder Where (( _Sp == SpOrder.SP
+                                      and _cMc == SpOrder.cMc
+                                    and _dOrd <<= SpOrder.dOrd // смотрим движение с даты
+                                        ))
+   ) = tsOK then _result := true;
+  result := _result;
+}
+Handleevent
+cmInit:
+{
+ StartNewVisual( vtRotateVisual, vfTimer, 'Подготовка к пересчету', 1);
+ var _LogFile : string;
+ var _date : date;
+ _date := date(01,01,2012);
+ _date := Sub_Months(Cur_date,MonthRecalc);
+_LogFile := GetStringParameter('Files','OutputFilesDirectory',0) + 'CountSaldoLapusEdition_' + datetostr(cur_date,'YYYYMMDD')+'.Log';
+ Deletefile(_LogFile);
+ LogStrToFile(_LogFile,'Пересчет остатков LapusEdition с даты ' + _date);
+ LogStrToFile(_LogFile,'начало пересчета: ' + Cur_date  +  '  ' + Timetostr(Cur_Time ,'HH:MM:SS'));
+ LogStrToFile(_LogFile,'***');
+ LogStrToFile(_LogFile,'Подсчет количества МЦ с движением после' + _date + ': ' + Cur_date  +  '  ' + Timetostr(Cur_Time ,'HH:MM:SS'));
+ var _ICauntSal : CountSal;
+ var _kolMC : longint;
+ _kolMC := 0;
+  _loop KatMc
+  if isMoveMcfromDate(KatMc.nrec, 0 , _date)
+ {
+ _kolMC++;
+ }
+ LogStrToFile(_LogFile,'Подсчет количества МЦ закончен: ' + _kolMC+ ' штук. ' + Cur_date  +  '  ' + Timetostr(Cur_Time ,'HH:MM:SS'));
+ LogStrToFile(_LogFile,'***');
+ LogStrToFile(_LogFile,'Начало пересчета остатков: ' + Cur_date  +  '  ' + Timetostr(Cur_Time ,'HH:MM:SS'));
+   StartNewVisual(vtIndicatorVisual, vfTimer, 'Пересчет остатков МЦ', _kolMC);
+ _kolMC :=0;
+ _loop KatMc
+ {
+  if isMoveMcfromDate(KatMc.nrec, 0 , _date)
+   then
+    {
+     _kolMC++;
+     nextvisual;
+     SetVisualHeader('Пересчет остатков по: ' + KatMc.Barkod+
+     ''#13''+'МЦ пересчитано: ' +_kolMC);
+     if not _ICauntSal.CountMC(KatMc.nrec,0,1,_date)
+      then LogStrToFile(_LogFile,KatMc.Barkod + ' ошибка пересчета' )
+       else LogStrToFile(_LogFile,KatMc.Barkod + ' --!OK!-- ' )
+    } // then if isMoveMcfromDate(KatMc.nrec, 0 , _date)
+    else
+     {
+     var _empty : boolean = false; //чтобы компилятор ничего не говорил
+      // LogStrToFile(_LogFile,KatMc.Barkod + ' --пропущена' )
+     } // else if isMoveMcfromDate(KatMc.nrec, 0 , _date)
+ } //  _loop KatMc
+  StopVisual('', 0);
+ StopVisual('', 0);
+ LogStrToFile(_LogFile,'окончание пересчета: ' + Cur_date  +  '  ' + Timetostr(Cur_Time ,'HH:MM:SS'));
+  LogStrToFile(_LogFile,'МЦ пересчитано: ' +_kolMC);
+
+// ProcessText(_LogFile,vfEscable or vfNewTitle or vfMacroSize,'Протокол пересчета')
+ LogStrToFile(_LogFile,'*****') ;
+var _dateSaldoCur : date  ;
+ _dateSaldoCur := Add_Months(cur_date,1);
+ LogStrToFile(_LogFile,'Пересчет текущих остатков на ' +_dateSaldoCur+ ' (с использованием L_OSTATKI::TekSRas - параметр = "2") начало: ' + Cur_date  +  '  ' + Timetostr(Cur_Time ,'HH:MM:SS'));
+
+ delete Pick where ((word( 7) == Pick.wList));
+    RunInterface(L_OSTATKI::TekSRas,
+                    cur_date
+                    , word(1)
+                    , word(0));
+
+ LogStrToFile(_LogFile,'Пересчет текущих остатков окончание: ' + Cur_date  +  '  ' + Timetostr(Cur_Time ,'HH:MM:SS'));
+ closeinterface(-1)
+}
+end;
+end.

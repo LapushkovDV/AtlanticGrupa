@@ -1,0 +1,355 @@
+/*************************************************************************************************\
+* Наименование:  для отправки письма отложенными средствами                                      *
+* Примечание:                                                                                     *
+*                                                                                                 *
+* Вид работы  |Номер         |Дата    |Исполнитель              |Проект                           *
+* ----------------------------------------------------------------------------------------------- *
+\*************************************************************************************************/
+
+#doc
+
+для отправки письма отложенными средствами
+#end
+#define ATL_EMAIL_FONT_SIZE 4
+/* Еще пример
+    SetEMail(vtmp_rep_ops.tmp_shap.name1)
+    if EMail <> ''
+    {
+      if not SetCurMailEncodingTable(AMAIL_1251)
+        Message('Ошибка установки таблицы кодировки;'+GetMailErrorString)
+      else
+        if not CreateMail(EMail, '', 'Шаблон по переводам '+DateToStr(MaxRepDate, 'Month/YYYY')+' ('+PeriodName+')')
+          Message('Ошибка создания почтового сообщения:'+GetMailErrorString)
+        else
+          if not AddAttachFrom(FullFileNameOPS)
+            Message('Ошибка вложения файлов:'+GetMailErrorString)
+          else
+            if not SendMail
+              Message('Ошибка отправки почтового сообщения:'+GetMailErrorString)
+    }
+
+*/
+
+#include ATL_EmailRun.Vih
+//------------------------------------------
+#component "ATLANTIC"
+
+Interface ATL_EmailRun 'Проверка отправки почты',EscClose ;
+var 
+  email_addr :string ;
+  email_addr_temp :string ;
+  email_subject :string ;
+  email_attach1 : string ;
+  email_attach2 : string ;
+  email_attach3 : string ;
+  email_attach4 : string ;
+  email_attach5 : string ;
+  email_addr_copy :string ;
+  email_body     :string ;
+  email_body_Win :string ;
+  email_addr_from:string;
+  //--------------------
+  EMAIL_FONT_SIZE:longint;
+  //-------------------
+  MAPIMessage:longint ;
+  sLastError:string;
+create view vEmailRun
+var
+   pATL_EMAIL:comp;
+   pEMAIL_signscope:comp;
+as select
+   ATL_EMAIL.nrec
+from
+   ATL_EMAIL
+where ((
+      userId == x$users.atl_nrec
+  and pATL_EMAIL == ATL_EMAIL.Nrec
+)) ;
+
+//----------------------
+
+parameters
+   email_addr
+  ,email_subject 
+  ,email_attach1
+  ,email_attach2 
+  ,email_attach3 
+  ,email_attach4
+  ,email_attach5
+  ,email_addr_copy
+  ,email_addr_from
+ ;  
+file EmailMemo;        // Файл для копирования мемо-поля контакта в EMail-письмо
+File WinBody;
+File RDPBody;
+var DM_email_text :array[1..1] of string;
+
+//-------------------------------------------
+Function MyOem2Ansi(w:string) :string ;
+{ MyOem2Ansi:=w ;
+} 
+
+//-------------------------------------------
+Function MyOem2Ansi2(w:string) :string ;
+{ MyOem2Ansi2:=Oem2Ansi(w) ;
+}
+
+function PosR(_substr: string; _s: string): byte;
+var ww_str:string;
+    ii :word;
+    len_sub:word;
+{ ww_str:='';
+  Result:=0;
+  len_sub:=length(_substr);
+  for(ii:=length(_s);ii>0;ii--)
+  { ww_str:=substr(_s,ii,1)+ww_str;
+    if substr(ww_str,1,len_sub)=_substr
+    { Result:=ii;
+      break
+    }
+  }
+} //function PosR(substr: string; s: string): byte;
+
+
+//-------------------------------
+// Скопировать файл в папку на сервере
+//-------------------------------
+Function GetFileNameToSend(_sFile:string):string;
+var _path:string;
+    _sfileTo:string;
+    _ext:string;
+{ Result:='';
+  if not FileExist(_sFile) Exit;
+  _path:=TranslatePath(sGetTune('NPOEM_OWN.EMAIL_F_Path'));
+  if SubStr(_path,Length(_path),1)<>'\'
+     _path:=_path+'\';
+  _Ext:=substr(_sfile,PosR('.',_sFile),100);
+  _sfileTo:=_path+DateToStr(Cur_Date,'YYYY_MM_DD_')
+       +TimeToStr(Cur_Time,'HH_MM_SS_SSS_')+OleGenerateGUID+_Ext;
+  CopyMoveFile(_sfile,_sfileTo,false ,ecmfServerFrom+ecmfClientTo);
+  Result:=_sfileTo;
+} //Function GetFileNameToSend(_sFile:string):string;
+
+//------------------------------------
+// Получить имя базы
+//------------------------------------
+Function GetDBName:string;
+{ Result:=UpCase(GetStringParameter('DataBase','DataBaseName',0));
+} //Function GetDBName;
+
+//-----------------------------------
+
+
+Function ReplTxt2Html(const s:string):string;
+{ Result:=Replace(s,'"','&quot');
+  Result:=Replace(s,'>','&gt');
+  Result:=Replace(s,'<','&lt');
+  Result:=Replace(s,'&','&amp');
+}
+Function ReplHtml2Txt(const s:string):string;
+{ Result:=Replace(s,'&quot','"');
+  Result:=Replace(s,'&gt'  ,'>');
+  Result:=Replace(s,'&lt'  ,'<');
+  Result:=Replace(s,'&amp' ,'&');
+}
+
+//-------------------------------------------
+Function MySendMail :boolean ;
+var ii:longint;
+   _chet:longint;
+{ Result:=True ;
+  email_addr:=trim(email_addr);
+  email_addr_copy:=trim(email_addr_copy);
+  //var email_addr_from:string;
+  StartNewVisual(vtIndicatorVisual, vfTimer,'Отправка письма...', 20);
+  _chet:=0;
+  EMAIL_FONT_SIZE:=4;
+
+
+pATL_EMAIL:=GetNextNrec(#ATL_EMAIL,0);
+        ClearBuffer(#ATL_EMAIL);
+        ATL_EMAIL.cUser      :=UserID();// "ссылка на пользователя"
+        //---------------------
+        ATL_EMAIL.PrepareDate    :=Cur_Date;// date "Дата подготовки для отправки"
+        ATL_EMAIL.PrepareTime    :=Cur_Time;// time "Время подготовки для отправки"
+        ATL_EMAIL.SendDate       :=ZeroDate;// date "Дата подготовки для отправки"
+        ATL_EMAIL.SendTime       :=ZeroTime;// time "Время подготовки для отправки"
+        //---------------------
+        ATL_EMAIL.Email          :=email_addr;// string  "Email 1"
+        ATL_EMAIL.Email_Copy     :=email_addr_Copy;// string  "Email копия"
+        ATL_EMAIL.Email_CC       :='';// string  "Email скрытая копия"
+        //---------------------
+        ATL_EMAIL.subject        :=email_subject;// string "Тема"
+        ATL_EMAIL.attach1        :='';// string "Путь на файл 1"
+        ATL_EMAIL.attach2        :='';// string "Путь на файл 2"
+        ATL_EMAIL.attach3        :='';// string "Путь на файл 3"
+        ATL_EMAIL.attach4        :='';// string "Путь на файл 4"
+        ATL_EMAIL.attach5        :='';// string "Путь на файл 5"
+        //---------------------
+
+
+        ATL_EMAIL.Fio            :=sGetTune('USER.FIO');// string[50]  "Фио отправителя"
+        //---------------------
+        ATL_EMAIL.DESCR          :=sGetTune('USER.DESCR');// tDescr     "Дескриптор пользователя"
+        ATL_EMAIL.DesGr          :=sGetTune('USER.DESGR');// tDesGr     "Группа Дескрипторов пользователя"
+        ATL_EMAIL.Status         :=0;// "0-prepare,1-to send,2-ok,3-err"
+        //ATL_EMAIL.LBody          : LVar "Текст письма"
+        //-----------------------
+        Insert current ATL_EMAIL;
+        //-----------------------
+        //  message('NEW MAIL')
+        email_body:=GetStringParameter('Files','OutputFilesDirectory',0)+
+        '\!email'+username+'.txt';
+        if fileexist(email_body) deletefile(email_body);
+        logstrtofile(email_body,email_addr+'/'+email_addr_from);
+        logstrtofile(email_body,Oem2Ansi('Здравствуйте!'));
+
+         For(ii:=1;ii<=GetLimit(DM_email_text);ii++)
+          { logstrtofile(email_body,Oem2Ansi(DM_email_text[ii]));
+          }
+        if email_attach1<>''
+          logstrtofile(email_body,Oem2Ansi(email_attach1));
+        if email_attach2<>''
+          logstrtofile(email_body,Oem2Ansi(email_attach2));
+        if email_attach3<>''
+          logstrtofile(email_body,Oem2Ansi(email_attach3));
+        email_body_Win:=GetStringParameter('Files','OutputFilesDirectory',0)+
+             '\!emailbody'+datetostr(cur_date,'YYYY.MM.DD_') + Timetostr(cur_time,'HH.MM.SS.SSS') +'_'+USERNAME+'.txt';
+
+        WinBody.openfile(email_body_Win,stCreate);
+        WinBody.WriteLn('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">');
+        WinBody.WriteLn('<HTML>');
+        WinBody.WriteLn('<HEAD>');
+        WinBody.WriteLn('<TITLE>e-mail</TITLE>');
+        WinBody.WriteLn('<META charset="windows-1251">');
+        WinBody.WriteLn('</HEAD>');
+        WinBody.WriteLn('<BODY BGCOLOR="#EEEFE0"><FONT SIZE="-1">');
+        WinBody.WriteLn(' ');
+        //WinBody.WriteLn(MyOem2Ansi2(' этот файл HTML - в WIN-кодировке</Font><br>'));
+        WinBody.WriteLn(' <FONT SIZE="-1" >');//COLOR="#0000FF"
+        WinBody.WriteLn(' </FONT>');
+        if EMAIL_FONT_SIZE<>0
+          WinBody.WriteLn(' <FONT SIZE="'+String(EMAIL_FONT_SIZE)+'" >');//COLOR="#0000FF"
+        //WinBody.WriteLn(MyOem2Ansi2('Здравствуйте!<br>'));
+         For(ii:=1;ii<=GetLimit(DM_email_text);ii++)
+          { WinBody.WriteLn(MyOem2Ansi2(DM_email_text[ii])
+                   +if(pos('<',DM_email_text[ii])>0,'','<br>'));
+            if (ii mod 100)=0
+            { if not nextvisual
+              { sLastError:=' Прервано формирование текста сообщения ';
+                Result:=false;
+                break;
+              }
+            }
+          }
+
+
+        ATL_EMAIL.attach1:=GetFileNameToSend(email_attach1);
+
+        ATL_EMAIL.attach2:=GetFileNameToSend(email_attach2);
+
+        ATL_EMAIL.attach3:=GetFileNameToSend(email_attach3);
+
+        ATL_EMAIL.attach4:=GetFileNameToSend(email_attach4);
+
+        ATL_EMAIL.attach5:=GetFileNameToSend(email_attach5);
+
+
+        if  email_attach1<>'' or email_attach2<>''
+        or  email_attach3<>'' or email_attach4<>''
+        or  email_attach5<>''
+        { WinBody.WriteLn(MyOem2Ansi2('<br><p><b>Есть вложения </b>')+'<br>');
+          if ATL_EMAIL.attach1<>''
+            WinBody.WriteLn(MyOem2Ansi2(substr(ATL_EMAIL.attach1,PosR('\',ATL_EMAIL.attach1)+1,200))+' <br>');
+          if email_attach2<>''
+            WinBody.WriteLn(MyOem2Ansi2(substr(ATL_EMAIL.attach2,PosR('\',ATL_EMAIL.attach2)+1,200))+' <br>');
+          if email_attach3<>''
+            WinBody.WriteLn(MyOem2Ansi2(substr(ATL_EMAIL.attach3,PosR('\',ATL_EMAIL.attach3)+1,200))+' <br>');
+          if email_attach4<>''
+            WinBody.WriteLn(MyOem2Ansi2(substr(ATL_EMAIL.attach4,PosR('\',ATL_EMAIL.attach4)+1,200))+' <br>');
+          if email_attach5<>''
+            WinBody.WriteLn(MyOem2Ansi2('<b>Для просмотра информации в системе'
+                  +' запустите вложение '+substr(ATL_EMAIL.attach5,PosR('\',ATL_EMAIL.attach5)+1,200))+' </b><br>');
+        }
+        if EMAIL_FONT_SIZE<>0
+          WinBody.WriteLn('</Font>');
+        WinBody.WriteLn(' </BODY>');
+        WinBody.WriteLn(' </HTML>');
+        WinBody.close;
+
+        SetMemoPrefix(#ATL_EMAIL,'XML');
+        ImportFileToMemo(ATL_EMAIL.LBody,email_body_Win,false);
+        //--
+
+        //-----------------------
+        update current ATL_EMAIL
+        //-----------------------
+        //если все хорошо проставим статус, что мы готовы
+        //разнесено, чтобы уменьшить вероятность ошибки при записи мемо поля в xx$memo
+        set ATL_EMAIL.Status:=1;
+        //-----------------------
+        update current ATL_EMAIL;
+        //-----------------------
+        deletefile(email_body_Win);
+  StopVisual('',0);
+} //Function MySendMail :boolean ;
+
+//------------------------------------------------------------
+
+ //-- вызов с 1
+ Function Write_Text(num_row:word;_email_text:string):boolean;
+ { if Num_row=1
+   { SetLimit(DM_email_text,0);
+   }
+   DM_email_text[num_row]:=_email_text;
+   Result:=true;
+ } // Function Write_Text(num_row:word;_email_text:string):boolean;
+
+ Function EmailSend
+ (
+   _email_addr :string ;
+   _email_subject :string ;
+   _email_attach1 :string ;
+   _email_attach2 :string ;
+   _email_attach3 :string ;
+   _email_attach4 :string ;
+   _email_attach5 :string ;
+   _email_addr_copy :string='';
+   _email_addr_from :string=''
+ ) :boolean;
+ {
+   email_addr     :=_email_addr     ;
+   email_subject  :=_email_subject  ;
+
+   email_attach1  :=_email_attach1  ;
+   email_attach2  :=_email_attach2  ;
+   email_attach3  :=_email_attach3  ;
+   email_attach4  :=_email_attach4  ;
+   email_attach5  :=_email_attach5  ;
+   email_addr_copy:=_email_addr_copy;
+   email_addr_from:=_email_addr_from;
+
+
+   Result:=MySendMail;
+ }
+
+
+ //---------------------------
+ Function GetLastError :string;
+ { Result:=sLastError;
+ }
+
+
+//------------------------------------
+HandleEvent
+cmInit :
+{ SetLimit(DM_email_text,0);
+  if email_addr<>''
+  { MySendMail ;
+    closeinterface(cmDone) ;
+    abort ;
+  }
+}
+
+end;
+end.

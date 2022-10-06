@@ -1,0 +1,284 @@
+#component "ATLANTIC"
+#doc
+CRPT_API используя POWERSHELL
+#end
+Interface CRPT_API_PowerShell 'CRPT_API POWERSHELL' doaccept, Gray;
+
+Table Struct tCRPT_InfoList (
+  cis				           : string
+ ,cparent			         : string
+ ,emissionDate		     : datetime
+ ,producedDate		     : datetime
+ ,lastDocType          : string
+ ,emissionType         : string
+ ,status               : string
+ ,packType             : string
+ ,uit				           : string
+ ,lastStatusChangeDate : string
+ ,productGroup   	     : string
+) with index (
+ ind0 = cis
+);
+Table Struct tCRPT_KituInfo (
+  cis				           : string
+ ,cparent			         : string
+ ,emissionDate		     : datetime
+ ,producedDate		     : datetime
+ ,lastDocType          : string
+ ,emissionType         : string
+ ,status               : string
+ ,packType             : string
+ ,lastStatusChangeDate : string
+ ,productGroup   	     : string
+) with index (
+ ind0 = cis
+);
+
+table struct tServerBase
+(
+  ServerName : string
+ ,DBName     : string
+)
+with index
+(
+ ind0 = ServerName
+)
+;
+
+table struct tCurRQSTAPI
+(
+ nrow : longint
+)
+with index
+ (
+  ind0 = nrow
+ )
+;
+
+Create view
+ var _Parameter : string;
+     _Cis : string;
+     _ListName : string = '';
+     _MylogFile : string;
+     _rqstError : string;
+select
+  CRPT_INFOLIST.cis
+from
+  CRPT_INFOLIST
+ ,tCRPT_INFOLIST
+ ,CRPT_KituInfo_temp
+ ,tCrpt_KituInfo
+ ,tServerBase
+ ,tCurRQSTAPI
+ ,ATL_RQSTAPIVALUES
+;
+Parameters
+ _Parameter,
+ _Cis
+ ;
+File PS1Body;
+
+Procedure FillInsertTables; forward;
+Procedure fillrecArrayByTypeTable; forward;
+procedure fillrecArray_GetInformation; forward;
+
+function curdatetimestr: string;
+{
+  result := datetostr(Cur_date,'YYYY-MM-DD') + ' ' + timeToStr(Cur_time,'HH:MM:SS') + ' ';
+}
+
+Procedure MyLog(_str : string);
+{
+  logstrtofile('_MylogFile.txt',curdatetimestr + _str)
+}
+
+#include source\VetisAPI_PowerShell_OpenFileExcelSearchCells.vpp
+
+Function MysqlAddStr(var query_handle: longInt; add_query_str: string): longInt;
+{
+   Result:=sqlAddStr(query_handle, add_query_str);
+//уберем, т.к. подтормажтивает при частых выборках   MyLog(add_query_str);
+} //Function MysqlAddStr(var query_handle: longInt; add_query_str: string): longInt;
+
+Function GetCredentials: string;
+{
+  //Унести все в настройки модуля по обмену
+var _SQLUserName : string ='Dmitry.lapushkov';
+var _SQLPassword : string ='Zraeqw123';
+var _trustedConn : boolean = false;
+
+ if _trustedConn
+  then result := 'Trusted_Connection=True'
+  else result := /*'persist security info=True; Integrated Security=SSPI;'*/'User Id='+_SQLUserName+';Password='+_SQLPassword;
+}
+Function GetTokenPath: string;
+{
+   result := replace(sGetTune('USERTUNE.CRPT_PRJ.tokenPath')+'\','\\','\') + 'token.txt'
+}
+
+Function GetConnString: string; // MSSQL ТОлько для него пока, на оракле нет у меня никого
+{
+ result := '';
+   var hstr : longint = 0;
+    delete all tServerBase;
+
+    MysqlAddStr(hstr, 'select ATL_GET_SERVERNAME() as ServerName, ATL_GET_DB_NAME() as DBName');
+
+
+    var objQuery: iQuery;
+      objQuery := queryManager.createQuery(hstr);
+    if objQuery.execute.errorCode != tsOk
+     then {
+           MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+           exit;
+          }
+        else
+        {sqlCopyInto(objQuery, tntServerBase, true);
+        }
+
+ if getfirst tServerBase = tsOK
+  {
+    Result := 'Server='+tServerBase.ServerNAme+';Database='+tServerBase.DBName+';'+GetCredentials+';'
+ }
+}
+
+Function CheckValuesFromAPI(_OleGenerateGUID: string): boolean;
+{
+
+ result := true;
+   var hstr : longint = 0;
+    delete all tServerBase;
+  StartNewVisual(vtRotateVisual, vfTimer, 'Подсчет количества полученных строк', 1);
+    MysqlAddStr(hstr, 'select distinct    ');
+    MysqlAddStr(hstr, 'nrow               ');
+    MysqlAddStr(hstr, 'from ATL_RQSTAPIVALUES ');
+    MysqlAddStr(hstr, 'where rqst_guid = '''+_OleGenerateGUID+''' ');
+
+    delete all tCurRQSTAPI;
+    var objQuery: iQuery;
+      objQuery := queryManager.createQuery(hstr);
+    if objQuery.execute.errorCode != tsOk
+     then {
+           MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+           exit;
+          }
+        else
+        {sqlCopyInto(objQuery, tntCurRQSTAPI, true);
+        }
+  stopvisual;
+  StartNewVisual(vtIndicatorVisual, vfTimer, 'Разбор полученных данных', recordsintable(tntCurRQSTAPI));
+  _loop tCurRQSTAPI
+   {
+     nextvisual;
+     _loop ATL_RQSTAPIVALUES where ((_OleGenerateGUID == ATL_RQSTAPIVALUES.rqst_guid and tCurRQSTAPI.nrow == ATL_RQSTAPIVALUES.nrow))
+      {
+       mylog('  _loop ATL_RQSTAPIVALUES  Trim(ATL_RQSTAPIVALUES.COLUMNNAME) ='+ATL_RQSTAPIVALUES.COLUMNNAME);
+       mylog('  _loop ATL_RQSTAPIVALUES  Trim(ATL_RQSTAPIVALUES.VALUE)      ='+ATL_RQSTAPIVALUES.VALUE);
+
+       var _i: byte;
+       for(_i := 1; _I <= getLimit(_recArray); _i++) {
+            if _recArray[_i].def = Trim(ATL_RQSTAPIVALUES.COLUMNNAME) {
+              _recArray[_i].value := Trim(ATL_RQSTAPIVALUES.VALUE);
+
+               mylog('  _loop ATL_RQSTAPIVALUES  set _recArray['+_i+'].def = ' + _recArray[_i].def) ;
+               mylog('  _loop ATL_RQSTAPIVALUES  set _recArray['+_i+'].value = ' + Trim(_recArray[_i].value) );
+              break;
+            }
+       }
+      }
+
+    FillInsertTables;
+   }
+   delete  ATL_RQSTAPIVALUES where ((_OleGenerateGUID == ATL_RQSTAPIVALUES.rqst_guid));
+  stopvisual;
+}
+
+procedure MyWriteLN(_s: string);
+{
+  PS1Body.writeLN(Oem2Ansi(rtrim(_s)));
+}
+#declare BodyProcedureGetRqst(parameter,par1)
+  result := false;
+  set _Parameter := '#parameter';
+  _ListName := _Parameter;
+  var aDosCode, aErrorCode: integer;
+  var _psFile  : string = GetStringParameter('Files','OutputFilesDirectory',0)+ '\CRPT_API_'+_Parameter+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.ps1' ;
+ // var _psFile  : string = 'genScript.ps1' ;
+  _psFile := replace(_psFile,'\\','\');
+  _MylogFile := GetStringParameter('Files','OutputFilesDirectory',0)+ '\CRPT_API_'+_Parameter+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.log' ;
+  _MylogFile := replace(_MylogFile,'\\','\');
+  deletefile(_MylogFile);
+  PS1Body.openfile(_psFile,stCreate);
+  var _OleGenerateGUID : string = OleGenerateGUID;
+  MyLog('Заполняем файл POWERSHELL');
+  var _emptyValue : string;
+  _emptyValue := '';
+
+  FillPS1_CrptAPI_#parameter(_OleGenerateGUID,#par1);
+  PS1Body.Close;
+  MyLog('Запускаем POWERSHELL');
+
+  aDosCode:= ExecProgram('powershell.exe','-executionpolicy RemoteSigned -file "'+_psFile+'"', 'CRPT API. Запрос ' + _Parameter, pfKeepWindow, aErrorCode);
+  MyLog('Закрыли POWERSHELL');
+  if aDosCode <> 0 then {
+     //Message('Программа не запустилась !', mfError);
+     MyLog('Программа не запустилась !');
+     exit;
+  } else   {
+    if aErrorCode <> 0 then
+     {
+     //Message('Ошибка выполнения !', mfError);
+     MyLog('Ошибка выполнения !');
+     exit;
+     }
+   }
+   // Для отладки можно не удалать, но в проакшне надо - там пароль
+//   DeleteFile(_psFile);
+    MyLog('Данные получены. Начинаем их обработку');
+    fillrecArrayByTypeTable;
+
+   result := CheckValuesFromAPI(_OleGenerateGUID);
+
+    MyLog('Обработка закончена. Завершаем работу');
+
+#end
+
+#include CRPT_API_PowerShell_IdentifyToolsInfo.Vpp
+#include CRPT_API_PowerShell_GetToken.Vpp
+#include CRPT_API_PowerShell_GetKituStatus.Vpp
+#include CRPT_API_PowerShell_KituInfo.Vpp
+#include CRPT_API_PowerShell_isExistCis.Vpp
+
+Procedure fillrecArrayByTypeTable;
+{
+  case _Parameter of
+    'GetInformation'  : fillrecArray_GetInformation
+    'GetKituInfo'     : fillrecArray_GetKituInfo
+    'isExistCis'      : fillrecArray_isExistCis
+  end;
+}
+
+Procedure FillInsertTables;
+{
+  case _Parameter of
+    'GetInformation'  :  InsertInfoList  ;
+    'GetKituInfo'     :  InsertKituInfo  ;
+  end;
+} // PROCEdURE FillInsertTableeNaklSFO(_log: string);
+
+HandleEvent
+cmInit:
+{
+ _ListName := _Parameter;
+ case _Parameter of
+    'GetInformation': GetRequestToAPIInfoList(_Cis)
+    'GetToken'      : GetRequestToAPIGetToken
+    'GetKituStatus' : GetRequestToAPIGetKituStatus(_Cis)
+    'GetKituInfo'   : GetRequestToAPIGetKituInfo(_Cis)
+ else {
+    mylog('Значения параметра "' + _Parameter+'" нет у данного интерфейса')
+ }
+ end;
+}
+end;
+End. // Interface

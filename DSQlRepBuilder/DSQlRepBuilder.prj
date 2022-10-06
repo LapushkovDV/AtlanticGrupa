@@ -1,0 +1,56 @@
+//param /Macro.IncludeEatLine=1
+#param /linc:""
+
+#statusline "statgal"
+
+#include galnet.inc end;
+#include glovars.inc
+
+
+//#include galaktika.vil
+
+#include PreDefs.inc
+//#include GloDefs.inc
+//#include dictypes.def
+//#include GloTypes.inc
+//#include Iz_const.vpp
+
+#define Vers -
+
+const
+   cgReport_30000 = 30000;
+end;
+
+// 03/04/2013
+// По просьбе трудящихся, которым не хватает фильтров из Аналитик
+// заводим свои константы для новых фильтров
+const
+   cgiDescr = 100000;
+end;
+
+const
+  cgiPickNotKAU = 100000;
+end;
+
+#include ofprecs.vpp
+
+#define ComponentVersion
+#component "ATLANTIC_Common"
+
+//-- Отчеты на DSQL
+#make "Vip\ViewResult.VIP"
+#make "Vip\SQLViewReport.VIP"
+#make "Vip\SQLSetFilts.VIP"
+#make "Vip\SQLRunReport.VIP"
+#make "Vip\SQLPrintToXLT.VIP"
+#make "Vip\SQLFilts.VIP"
+#make "VIP\GP_CreateTune_SQlRep.vip"
+#make "Vip\SQLBuildReport.VIP"
+#make "Vip\UserReport_SQLViewReport.vip"
+#make "Vip\vipQueryLog.vip"
+#make "Vip\PickUserNames.VIP"
+#make "Vip\PickUserGroups.VIP"
+#make "Vip\PickModulNames.VIP"
+#make "Vip\PickTblFld.vip"
+#make "Vip\GetNotKauFiltr.VIP"
+//-- Отчеты на DSQL

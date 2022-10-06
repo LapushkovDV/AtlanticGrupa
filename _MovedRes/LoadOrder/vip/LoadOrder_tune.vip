@@ -1,0 +1,121 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - настройки
+// Создание/модификация настроек в компонентах
+//********************************************************************************
+
+#include CreateTune.vih
+
+//------------------------------------------------------------------------------
+Handler with replace Gal_DateModifyTune on ExtensionPoint
+  epDateModifyTune (TS : ObjStartCreateTune)
+Action
+{
+  TS.SetLastDateModTune(01,07,2018);
+  Result := true;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+Handler with replace Gal_CreateTuneComponent on extensionPoint
+  epCreateTuneComponent (TR: ObjCreateTuneEx)
+  // Внимание, приоритеты вызова обработчиков см. в CreateTune.vih
+Action
+{
+  Result := true;
+  //----------------------------------------------------------------------------
+  // Обязательно установить  имя компонента
+  TR.SetComponent('ATLANTIC');
+  //----------------------------------------------------------------------------
+
+  TR.AddPart(   ttSysUserTune
+             , 'USERTUNE'
+             , 'Tune'
+             , 'Настройки пользовательских доработок'
+             , 0);
+
+     TR.AddPart (ttSysUserTune,'USERTUNE.impzakaz','USERTUNE','Загрузка заказов',0);
+        TR.AddTune (ttSysTune,'USERTUNE.impzakaz.OrgAttrCode','USERTUNE.impzakaz','Вн. атрибут организации для идентификации при загрузке из файлов',ftComp,'0','',0);
+           TR.AddIntrTune ('USERTUNE.impzakaz.OrgAttrCode','impzakaz_attrkatorg');
+        TR.AddTune (ttSysTune,'USERTUNE.impzakaz.pathfrom','USERTUNE.impzakaz','Директория с файлами для загрузки',ftString,'','',0);
+           TR.AddIntrTune ('USERTUNE.impzakaz.pathfrom','impzakaz_getdir');
+        TR.AddTune (ttSysTune,'USERTUNE.impzakaz.pathto','USERTUNE.impzakaz','Директория для обработанных файлов',ftString,'','',0);
+           TR.AddIntrTune ('USERTUNE.impzakaz.pathto','impzakaz_getdir');
+        TR.AddTune (ttSysTune,'USERTUNE.impzakaz.defstatus','USERTUNE.impzakaz','Статус ДО для загружаемых заказов',ftComp,'0','',0);
+           TR.AddIntrTune ('USERTUNE.impzakaz.defstatus','impzakaz_getstatus');
+        TR.AddTune (ttSysTune,'USERTUNE.impzakaz.defpricelist','USERTUNE.impzakaz','Дефолтный прайс-лист для заказов',ftComp,'0','',0);
+           TR.AddIntrTune ('USERTUNE.impzakaz.defpricelist','IMPZAKAZ_GETPRICELIST');
+
+
+
+}
+//------------------------------------------------------------------------------
+
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - настрокйи
+// Обработка настроек с вызовом интерфейсов в компонентах
+//********************************************************************************
+
+
+#include  TuneSpec.vih
+
+#component ""
+VipInterface impzakaz_IntrTune implements ObjIntrTuneComponent licensed (FREE);
+
+// Обработчик точки расширения epIntrTuneComponent
+// Должен вернуть FALSE если обработка проводилась. TRUE - если не проводилась.
+handler with replace Gal_IntrTune on extensionPoint epIntrTuneComponent (TR: objTuneIntr; TVal: TTuneVal; Inter: string)
+action
+{
+   var ifc : impzakaz_IntrTune;
+   result := not ifc.TuneIntrComponent (TR, TVal, Inter);
+}
+
+Interface impzakaz_IntrTune;
+
+Create view vmain as select katnotes.nrec from katnotes, attrnam,KlPrice;
+
+// Обязательно должна вернуть False если обработка не производилась, иначе true
+Public Function TuneIntrComponent (TR: objTuneIntr; TVal: TTuneVal; Inter: string) : boolean;
+{
+  Var PrOk : boolean;     PrOk := False;
+  var TuneCode : string;  TuneCode := TR.GetTuneCode(TVal.cTune);  // код текущей настройки, если нужен
+
+  TuneIntrComponent := true; // Чтобы в каждом case не писать это
+
+  case UpCase(Inter) of
+  'IMPZAKAZ_ATTRKATORG': {
+                        if RunInterface('cfgselattrname',word(cokatorg),TVal.CompVal) <> cmCancel
+                           if GetFirst attrnam where ((TVal.CompVal == attrnam.nRec)) = tsOk
+                              {TVal.strVal := attrnam.Name;
+                               PrOk := true;}
+                       }
+  'IMPZAKAZ_GETDIR':   {var s:string  ;
+                        s:=getdirname('Выбор директории');
+                        if length(s)>0 and TVal.strVal<>s
+                          {TVal.strVal:=s;
+                           PrOk := true;}
+                       }
+  'IMPZAKAZ_GETSTATUS':{
+                        if (RunInterface('L_DOGOVOR::GetSomKatNotes',word(40),word(0),word(0),Boolean(false),TVal.CompVal) <> cmCancel)
+                           if GetFirst katnotes where ((TVal.CompVal == katnotes.nRec)) = tsOk
+                             {TVal.strVal := katnotes.Name;
+                              PrOk := true;}
+                       }
+  'IMPZAKAZ_GETPRICELIST':{
+                           if (RunInterface('L_PRICES::GETKLPR',TVal.CompVal,1,1,0) <> cmCancel)
+                           if GetFirst KlPrice where ((TVal.CompVal == KlPrice.nRec)) = tsOk
+                             {TVal.strVal := KlPrice.Name;
+                              PrOk := true;}
+                       }
+
+   else
+     TuneIntrComponent := false;  // Если не зашли в обработку, то обязательно установим в false
+   end;  // case
+
+   if (PrOk)
+      TR.UpdateTuneVal(TVal);
+}     // TuneIntrComponent
+
+end. // интерфейс

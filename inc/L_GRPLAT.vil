@@ -1,0 +1,9 @@
+#ifdef ComponentVersion
+#component "L_GRPLAT"
+#end
+
+vipinterface GetGrPl licensed (FREE) Parameters (v: word; c: comp; TD: word);
+vipinterface GetPlat licensed (FREE) Parameters (P : comp; PlatFor: comp);
+vipinterface GroupPlat licensed (FREE) Parameters (v: word; c: comp);
+!#include LinkGrPl.vih
+

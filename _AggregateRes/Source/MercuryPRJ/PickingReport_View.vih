@@ -1,0 +1,11 @@
+#ifndef _included_PickingReport_View_
+#define _included_PickingReport_View_
+#component "ATLANTIC"
+objInterface ObjPickingReport_View;
+ Procedure ShowPickingReportData(_cSopr, _cBaseDoc : comp) ;
+end;
+
+vipInterface PickingReport_View implements ObjPickingReport_View licensed(free);
+
+var _PickingReport_View : PickingReport_View;
+#endif

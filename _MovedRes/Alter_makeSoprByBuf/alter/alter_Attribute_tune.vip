@@ -1,0 +1,40 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - настройки
+// Создание/модификация настроек в компонентах
+//********************************************************************************
+
+#include CreateTune.vih
+
+//------------------------------------------------------------------------------
+Handler with replace GalAttr_DateModifyTune on ExtensionPoint
+  epDateModifyTune (TS : ObjStartCreateTune)
+Action
+{
+  TS.SetLastDateModTune(01,10,2018);
+  Result := true;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+Handler with replace GalAttr_CreateTuneComponent on extensionPoint
+  epCreateTuneComponent (TR: ObjCreateTuneEx)
+  // Внимание, приоритеты вызова обработчиков см. в CreateTune.vih
+Action
+{
+
+  //----------------------------------------------------------------------------
+  // Обязательно установить  имя компонента
+  TR.SetComponent('ATLANTIC');
+  //----------------------------------------------------------------------------
+
+  TR.AddPart(   ttSysUserTune
+             , 'USERTUNE'
+             , 'Tune'
+             , 'Настройки пользовательских доработок'
+             , 0);
+
+   TR.AddPart (ttSysUserTune,'USERTUNE.ACCESSDATA','USERTUNE','Права доступа',0);
+        TR.AddTune (ttUSERTUNE,'USERTUNE.ACCESSDATA.CantEditAllAttr','USERTUNE.ACCESSDATA','Запрет редактирования всех внешних атрибутов',FtBoolean,'1','',0);
+  Result := true;
+}

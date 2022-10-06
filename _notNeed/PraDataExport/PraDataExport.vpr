@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>PraDataExport</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="\\10.2.1.151\Galaktika\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.33.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					\\10.2.1.151\Galaktika\res\src\inc\*
+					..\..\..\FRM\*
+					..\Viper 5.5\bin\5.5.31.0\Source\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_BaseDoc.res
+					$[GalExe]\L_Common.res
+				</ResourceList>
+				<OutputResource>..\..\PraDataExport_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:RUMOW-VMGAL01.atlantic.grupa[1997]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>172.16.21.225:55555</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="PraDataExport.prj" PosX="33" PosY="39" OpenEditor="True"/>
+			<File Name="vip\PraDataExport_tune.vip" PosX="67" PosY="46" OpenEditor="True"/>
+			<File Name="vip\PraDataExport.vip" PosX="40" PosY="226" OpenEditor="True" Active="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="PraDataExport.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\PraDataExport\PraDataExport.prj" DateTimeStart="43558,3474989699" DateTimeCompile="3,575230948627E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\PraDataExport\VIP\PraDataExport.vip" SourceLine="12" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\PraDataExport\VIP\PraDataExport.vip" SourceLine="121" SourceColumn="17"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\PraDataExport\VIP\PraDataExport.vip" SourceLine="122" SourceColumn="41"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\PraDataExport\VIP\PraDataExport.vip" SourceLine="277" SourceColumn="17"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\PraDataExport\VIP\PraDataExport_tune.vip" SourceLine="83" SourceColumn="1"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="03.04.2019 8:20:27"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<BreakPointList>
+			<BreakPoint FileName="vip\LoadOrder.vip" Line="1"/>
+		</BreakPointList>
+		<MarkerList>
+			<Marker FileName="vip\OpenFileExcelSearchCells.vip" Caption="Нумерованная закладка 1" Line="167" NumIndex="1" MarkerType="mtNumBookmark" Comment="_recArray[_i].column := SearchCellsByName(_recArray[_i].def, _log, nrow);"/>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\ModPric2.vpp" Caption="Нумерованная закладка 1" Line="70" NumIndex="1" MarkerType="mtNumBookmark" Comment="if ( GetFirst Prices where (( lMPP.Prices.nRec == Prices.nRec )) = tsOk ) {}"/>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\BaseStep\inc\GETTOT.VPP" Caption="Нумерованная закладка 1" Line="463" NumIndex="1" MarkerType="mtNumBookmark" Comment=", tipDo + 1000"/>
+			<Marker FileName="vip\LoadOrder.vip" Caption="Нумерованная закладка 2" Line="404" NumIndex="2" MarkerType="mtNumBookmark" Comment="sql"/>
+			<Marker FileName="vip\LoadOrder.vip" Caption="Нумерованная закладка 1" Line="697" NumIndex="1" MarkerType="mtNumBookmark" Comment="_curs := getcursOnDate(_date: date; _cVal : comp): double"/>
+			<Marker FileName="vip\PraDataExport.vip" Caption="Нумерованная закладка 1" Line="375" NumIndex="1" MarkerType="mtNumBookmark" Comment="if _cDistributor &lt;&gt;  tNaklExport"/>
+		</MarkerList>
+	</ProjectManager>
+</Viper>

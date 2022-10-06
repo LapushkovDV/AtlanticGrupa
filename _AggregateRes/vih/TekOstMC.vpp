@@ -1,0 +1,18 @@
+#ifndef _TekOstMC_
+#define _TekOstMC_
+
+Create view CVTO
+From
+  SaldoMC;
+
+Function TekOstMC(cMC_: comp): double; // текущий остаток в оперконтуре
+{
+  TekOstMC := 0;
+
+  if CVTO.GetLast FastFirstRow SaldoMC where ((0 == SaldoMC.SP    AND cMC_ == SaldoMC.cMC  AND
+                                               0 == SaldoMC.cPodr AND   0  == SaldoMC.cMOL AND 0 == SaldoMC.cParty AND
+                                     date(0,0,0) << SaldoMC.dSaldo)) =tsOk
+    TekOstMC := CVTO.SaldoMC.kol;
+}
+
+#end

@@ -1,0 +1,164 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 8.1 - Логистика
+// Формирование складского ордера
+//******************************************************************************
+
+#define __MAKE_ORDER__
+
+#include KatSopr.Vih
+#include BoxFuncsfunctions.vih
+#include SetSmeta.vih
+#include MkParty.vih
+#include RasxPrix.vih
+#include GetMol.vih
+#include AktRecFun.vih // Сервисные функции накладных на возврат по рекламации
+
+Interface MakeOrder_Release;
+
+#include SopConst.inc
+#include KatSopr.var
+#include MkParty.var
+#include RasxPrix.var
+
+Var
+  KatSoprNRec    : comp; // ссылка на накладную
+  SkPr           : word; // склад/производство
+  dPrice         : date; // дата курса валюты
+  wMode          : word; // 1,2 - пакетный режим
+  wSP            : word;
+  wasAsk_tuneSP  : boolean;
+  TypeSopr       : word;
+  wuMTRErr       : word;
+  wasZeroKol     : boolean;
+  d_GetPresision_forKol: double;
+  sumOrd_        : double;
+  vSumOrd_       : double;
+  IsRecModif     : boolean; // была модифицирована запись из внешнего интерфейса
+  iSHoz          : SHmanager; // интерфейс для работы с SoprHoz
+  pSetSmeta      : iSetSmeta;
+
+  sumOrd
+, vSumOrd
+                 : double;
+  oAktRecFun     : iAktRecFun; // Сервисные функции накладных на возврат по рекламации
+
+Create View
+As Select
+  *
+From
+  KatSopr
+, SpSopr
+, SpDocNal
+, SklOrder
+, SpOrder
+, SoprOrdB (SoprOrdB05)
+, SpSopr toSKL_SpSopr
+, toRozn
+, KatPodr KatPodrF
+, KatParty KatPartyF
+, KatMC KatMCF
+, AttrNam
+, AttrVal
+, KatDopEd
+, SpDopEd
+, TekMc
+, SklOst
+, TekSaldo
+, SaldoMc
+, SoprHoz
+, Filial
+, InvTab
+, KatPodr
+, SpecMTR
+, StepDoc
+, BaseDoc
+, SpStep
+, KatOtpEd
+, KatMol
+, KatMC
+, KatParty
+, GroupMC
+, SpOrder SpOrderRecl
+, SklOrder SklOrderRecl
+, SklOrder SklOrder2
+, SpOrder SpOrderSrc
+, SpOrder SpOrderSpis
+, SpOrder SpOrderWasSpis
+, DoRes
+, Kontras
+, KatEd
+, KatUsl
+, NoNalMC
+, SpStepRem
+, SpDocSmeta
+, Oborot
+Where
+((
+       KatSoprNRec             ==  KatSopr.NRec
+  And  KatSopr.VidSopr         ==  SoprHoz.TipDoc
+  And  KatSopr.NRec            ==  SoprHoz.cSoprDoc
+  And  KatSopr.cStepDoc        ==  StepDoc.NRec
+  And  StepDoc.cBaseDoc        ==  BaseDoc.NRec
+  And  KatSopr.nRec            ==  SklOrder.cSopr
+  AND  KatSopr.cOrg            ==  Filial.cOrg
+
+  And  KatSoprNRec             ==  SpSopr.cSopr
+  And  coSpSopr                ==  SpecMTR.coTable
+  And  SpSopr.nRec             ==  SpecMTR.cSpec
+  And  SpSopr.cOtpEd           ==  KatOtpEd.NRec
+  And  SpSopr.cSpStep          ==  SpStep.NRec
+  And  SpSopr.cMCUSL           ==  KatMC.NRec
+  And  SpSopr.cMCUsl           ==  KatUsl.NRec
+  And  SpSopr.cParty           ==  KatParty.NRec
+
+  And  if(SpSopr.PrMc = 1,
+       KatMc.cEd, KatUsl.cEd)  ==  KatEd.NRec
+
+  And  SpSopr.NRec             ==  SpDocNal.cSpDoc
+  And  KatSopr.VidSopr         ==  SpDocNal.TipDoc
+
+  And  SpSopr.cSpOrder         ==  SpOrderRecl.NRec
+  And  SpOrderRecl.cSklOrder   ==  SklOrderRecl.NRec
+
+  And  word(831)               ==  Pick.wList
+  And  KatSoprNRec             ==  SoprOrdB.cSoprDoc
+
+  And  SpSopr.cSpOrder         ==  SpOrderSpis.NRec
+  And  SpSopr.NRec             ==  SpOrderWasSpis.cSpSopr
+
+  And  coSpSopr                ==  SpDocSmeta.coTable
+  And  SpSopr.NRec             ==  SpDocSmeta.cSpec
+
+  And  SpSopr.NRec             ==  SpStepRem.cSpStep
+  And  word(1)                 ==  SpStepRem.TipDoc
+))
+;
+
+Form errrash ('RashOrd.OUT', 'errr') with novisual;
+Form frm1wed('err2wed.OUT' , 'errr') with novisual;
+
+//******************************************************************************
+#include SaldoMcS.vpp
+#include MyFindPodr.vpp
+#include NNewOrd.vpp
+#include cons.vpp
+#include SoprAll.vpp
+#include MkOrd.vpp
+#include g_l_pr.vpp
+#include ord_lifo.vpp
+#include MSFunc.vpp
+#include LF_dooc.vpp
+#include CheckTXO.vpp
+#include OtpEdMetiz.vpp
+#include TekOstMC.vpp
+#include uksspis.vpp
+#include mkrfun3.vpp
+#include LF_Base.vpp
+#include fsround.vpp
+#include makeorder_prih.vpp
+#include makeorder_del.vpp
+#include makeorder_rash.vpp
+#include OrdVidUch.vpp
+
+End.

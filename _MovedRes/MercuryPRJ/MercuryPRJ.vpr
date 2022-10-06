@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>MercuryPRJ</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="c:\Galaktika_stend\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.33.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					\\10.2.1.151\Galaktika\res\src\inc\*
+					..\..\..\FRM\*
+					..\Viper 5.5\bin\5.5.31.0\Source\*
+					..\xml\vih\
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_BaseDoc.res
+					$[GalExe]\L_Common.res
+				</ResourceList>
+				<OutputResource>..\..\MercuryPRJ_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm_stend</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:RUMOW-VMGAL02.atlantic.grupa[1998]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>172.16.21.225:55555</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="MercuryPRJ.prj" PosX="17" PosY="43" OpenEditor="True"/>
+			<File Name="vip\MercuryPRJ_tune.vip" PosX="67" PosY="47" OpenEditor="True"/>
+			<File Name="vip\MercuryPRJ_Import.vip" PosX="63" PosY="243" OpenEditor="True" Active="True"/>
+			<File Name="vip\MercuryPRJ_View.vip" PosX="27" PosY="188" OpenEditor="True"/>
+			<File Name="vip\VarsTypes.vip" PosX="1" PosY="1" OpenEditor="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="MercuryPRJ.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\MercuryPRJ\MercuryPRJ.prj" DateTimeStart="43652,5970049653" DateTimeCompile="4,364583583083E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\GALAKTIKA\RES\SRC\MERCURYPRJ\VIP\VarsTypes.vip" SourceLine="1" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\MercuryPRJ\VIP\MercuryPRJ_Import.vip" Line="25" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\MercuryPRJ\VIP\MercuryPRJ_Import.vip" SourceLine="75" SourceColumn="18"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\MercuryPRJ\VIP\MercuryPRJ_Import.vip" SourceLine="94" SourceColumn="18"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\MercuryPRJ\VIP\MercuryPRJ_tune.vip" SourceLine="82" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\MercuryPRJ\VIP\MercuryPRJ_View.vip" SourceLine="43" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\MercuryPRJ\VIP\MercuryPRJ_View.vip" SourceLine="189" SourceColumn="2"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="06.07.2019 14:19:45"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<BreakPointList>
+			<BreakPoint FileName="vip\LoadOrder.vip" Line="1"/>
+		</BreakPointList>
+		<MarkerList>
+			<Marker FileName="vip\OpenFileExcelSearchCells.vip" Caption="Нумерованная закладка 1" Line="167" NumIndex="1" MarkerType="mtNumBookmark" Comment="_recArray[_i].column := SearchCellsByName(_recArray[_i].def, _log, nrow);"/>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\ModPric2.vpp" Caption="Нумерованная закладка 1" Line="70" NumIndex="1" MarkerType="mtNumBookmark" Comment="if ( GetFirst Prices where (( lMPP.Prices.nRec == Prices.nRec )) = tsOk ) {}"/>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\BaseStep\inc\GETTOT.VPP" Caption="Нумерованная закладка 1" Line="463" NumIndex="1" MarkerType="mtNumBookmark" Comment=", tipDo + 1000"/>
+			<Marker FileName="vip\LoadOrder.vip" Caption="Нумерованная закладка 2" Line="327" NumIndex="2" MarkerType="mtNumBookmark" Comment="{"/>
+			<Marker FileName="vip\LoadOrder.vip" Caption="Нумерованная закладка 1" Line="848" NumIndex="1" MarkerType="mtNumBookmark" Comment="backcolor = if(tInsertBaseDocSp_br.FlagErr = 2 ,getColor(tInsertBaseDocSP_BR.FlagErr), if(AppDogovor_brSP.nrec &lt;&gt; AppDogovor_br.nrec,colorNeed,0));"/>
+			<Marker FileName="vip\MercuryPRJ_View.vip" Caption="Нумерованная закладка 1" Line="119" NumIndex="1" MarkerType="mtNumBookmark" Comment="rescanPanel(tn)"/>
+			<Marker FileName="vip\MercuryPRJ_Import.vip" Caption="Нумерованная закладка 1" Line="341" NumIndex="1" MarkerType="mtNumBookmark" Comment="InsertMercuryLog;"/>
+		</MarkerList>
+	</ProjectManager>
+</Viper>

@@ -1,0 +1,74 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 8.10 - Спецодежда
+// Функции для пересчета норм работника
+//------------------------------------------------------------------------------
+
+#ifndef __PERSNRCT_VIH__
+#define __PERSNRCT_VIH__
+
+#ifdef ComponentVersion
+ #Component "F_SFO"
+#end
+
+#doc
+Функции для работы с нормами работника.
+#end
+ObjInterface ObjPersNorm;
+
+  #doc
+  Проверить, есть ли выдачи по норме работника.
+  #end
+  function WasSFOGiven(cPersNrm : comp) : boolean;
+
+  #doc
+  Удалить норму работника.
+  #end
+  function DelPersNorm(cPersNrm : comp; chkGiven : boolean) : boolean;
+
+end;
+
+#doc
+Функции для пересчета норм работника.
+#end
+ObjInterface ObjPrsNrmCnt;
+
+  #doc
+  Пересчет одной нормы работника.
+  #end
+  procedure CountPersNorm(cPersNrm : comp; Recursively : boolean);
+
+  #doc
+  Пересчет всех норм работника.
+  #end
+  procedure ReCalcPersNorms(cPersCrd : comp; showMess : boolean);
+
+end;
+
+#doc
+Функции для смены норм работника.
+#end
+ObjInterface ObjPrsNrmChg;
+
+  #doc
+  Сменить спецификацию нормы работника.
+  #end
+  procedure LinkPersSpec(cPersSpc, cPersSpcTo : comp);
+
+  #doc
+  Сменить норму работника.
+  #end
+  procedure LinkPersNorm(cPersNrm, cPersNrmTo : comp);
+
+  #doc
+  Снять норму с работника.
+  #end
+  procedure SetNormToDate(cPersNrm : comp; newDate : date);
+
+end;
+
+VipInterface PrsNrmCnt
+  implements ObjPersNorm, ObjPrsNrmCnt, ObjPrsNrmChg
+  licensed (FREE);
+
+#end // __PERSNRCT_VIH__

@@ -1,0 +1,70 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компоненты
+
+#ifdef ComponentVersion
+#component "L_PlanPR"
+#end
+
+VipInterface GetKatPlan   licensed (FREE) Parameters (pKatPlan : comp; pRez : word);
+VipInterface KprPlan      licensed (FREE) Parameters (p1 : string);
+VipInterface MatPlan      licensed (FREE) Parameters (p1 : comp; xDirect : word);
+VipInterface prCalc1      licensed (FREE) Parameters (p1 : comp; p2 : date; p3 : word; p4 : word);
+
+DIALOG PrAutoPer
+(
+  w1 : word
+);
+
+DIALOG PrCalcPeriod
+(
+  d1        : date;
+  d2        : date;
+  d4        : date;
+  CommState : word;
+  SpRas     : word;
+  d3        : date
+);
+
+DIALOG PrPerState
+(
+  w1 : word;
+  w2 : word;
+  w3 : word;
+  w4 : word
+);
+
+DIALOG PrPlAlg07
+(
+  Post  : word;
+  GrDog : word;
+  Vozvr : word
+#ifdef __Classific_Plan_Realiz_Balans__
+ ;Zamen : word
+#end
+);
+
+DIALOG PrPlAlg07Z
+(
+  GrDog : word;
+  Vozvr : word
+#ifdef __Classific_Plan_Realiz_Balans__
+ ;Zamen : word
+#end
+);
+
+DIALOG PrPrint
+(
+  w1 : word;
+  w2 : word;
+  w3 : word;
+  w4 : word
+);
+
+DIALOG PrSearch
+(
+  s0 : String[4];
+  s1 : String[20]
+);
+
+Menu PrPerAlg;
+Menu PrPlAlg;

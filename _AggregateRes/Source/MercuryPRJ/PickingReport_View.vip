@@ -1,0 +1,461 @@
+#include PickingReport_View.vih
+
+Interface PickingReport_View 'Просмотр загруженных данных PickingReport по накладной';
+  show at (,, 91, 23);
+table struct tmpPkRSp2 // = ATL_PickingRep_Spec;
+(
+   GTIN    : string
+ , SSCCManuf : string
+)
+with index
+(
+ index0 = GTIN
+)
+;
+
+create view
+var  _cSoprMain
+   , _cBasedocMain : comp;
+as select
+  KatSopr.nrec
+, if(PkRLog.State = 0, 'Черновик'
+     ,If(PkRLog.State = 1,'Готово к отправке на E-MAIL'
+        ,if(PkRLog.State = 2,'Отправлено на E-MAIL'
+            ,if(PkRLog.State = 3,'Отправка на не требуется'
+             ,'!!!!ОШИБОЧНОЕ СОСТОЯНИЕ!!! обратитесь к разработчику!!!'
+               )
+           )
+        )
+    ) (FieldName = StateLog)
+from
+   KatSopr
+ , BaseDoc
+ , STepDoc
+ , ATL_PickingRep_HEAD
+ , ATL_PickingRep_HEAD PkRH
+ , ATL_PickingRep_LOG PkRLog
+ , SpSopr SpSopr1
+ , KatMc KatMC1
+
+ , ATL_PickingRep_Spec PkRSp2
+ , tmpPkRSp2
+
+ , KatMc KatMc2
+ , KatMc KatMc3
+
+ , tBuffer
+ where ((
+          _cSoprMain == KatSopr.Nrec
+  and  _cBasedocMain == BaseDoc.nrec
+  and PkRH.cPickingRepLog == PkRLog.nrec
+
+  and   KatSopr.Nrec == SpSopr1.cSopr
+  and SpSopr1.cMcUsl == KatMc1.Nrec
+
+  and      PkRH.nrec == PkRSp2.cHead
+  and     PkRSp2.cMc == KatMc2.Nrec
+
+  and tmpPkRSp2.GTIN == KatOtpEd.BKOD
+   and (tmpPkRSp2.GTIN <> '' and KatOtpEd.PrMc = 1)
+   and KatOtpEd.cMcUsl == KatMc3.Nrec
+ ))
+bounds byKatSopr KatSopr.Nrec == PkRH.cSopr
+
+bounds byBaseDoc BaseDoc.Nrec == PkRH.cBaseDoc
+             and BaseDoc.Nrec == STepDoc.cBasedoc
+             and StepDoc.Nrec == KatSopr.cStepDoc
+
+
+;
+
+function fCheckChar(sChr: string): boolean;
+{
+  fCheckChar := false;
+
+  case UpCase(sChr) of
+
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',  // цифры
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+    'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+    'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',            // английский алфавит
+    'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З',
+    'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р',
+    'С', 'Т', 'У', 'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ',
+    'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я',                      // русский алфавит
+    '.', '-', '_', '/','%','&',',','{','}','|','\','<','>','?','",','[',']','№',                                    // разделительные знаки
+    '!','@','#','$','^','*','(',')','+','=' :
+      fCheckChar := true;
+
+  end;
+}
+function FilltBuffer : boolean;
+{
+  var lPos, lSize: longint = 0;
+  var ClipText: longint;
+  var sForParse: string = '';
+  var bStop: boolean = false;
+
+  result := true;
+
+  delete all tBuffer;
+
+  ClipText := ClipboardText_Create;
+  ClipboardText_Paste(ClipText);
+
+  lPos := 1;
+  lSize := ClipboardText_Length(ClipText);
+
+  while ( lPos <= lSize )
+  {
+    bStop := false;
+    sForParse := '';
+
+    while ( not bStop ) and ( lPos <= lSize )
+    {
+      if ( fCheckChar(ClipboardText_SubStr(ClipText, lPos, 1)) )
+        sForParse := sForParse + ClipboardText_SubStr(ClipText, lPos, 1);
+      else
+        bStop := true;
+
+      lPos++;
+    }
+
+    if ( sForParse <> '' )
+    {
+      ClearBuffer(#tBuffer);
+      tBuffer.TextBuffer := sForParse;
+      insert current tBuffer;
+    }
+  }
+
+  ClipboardText_Free(ClipText);
+
+  result := (GetFirst tBuffer = tsOk)
+
+}
+procedure InserttmpPkRSp2;
+{
+  if not isValidAll(tntmpPkRSp2) then exit;
+  var _GTIN : string = tmpPkRSp2.GTIN;
+
+  var _isFirst : boolean = true;
+  _loop tBuffer
+   {
+     if _isFirst then
+      {
+        _isFirst := false;
+        update current tmpPkRSp2 set tmpPkRSp2.SSCCManuf := tBuffer.TextBuffer;
+      }
+      else
+       {
+         insert tmpPkRSp2 set
+            tmpPkRSp2.GTIN    := _GTIN
+          , tmpPkRSp2.SSCCManuf := tBuffer.TextBuffer
+         ;
+       }
+   }
+   rereadrecord(tntmpPkRSp2);
+}
+
+Window InsertManualRows  (,,sci1Esc);
+Screen scrtmpPkRSp2 (,,sci1Esc);
+show at (,,,2);
+buttons
+  cmValue4,default,,' Перенести данные в основной интерфейс',,;
+<<
+   <.Сохранить/закончить обработку.>
+>>
+end;
+Browse brtmpPkRSp2 (,,sci178Esc);
+show at (,3,,);
+ table tmpPkRSp2;
+   fields
+ {Font = {
+          backcolor = if(not isValidAll(tnKatMc3), colorerror,0);
+         }
+ };
+
+    tmpPkRSp2.GTIN     'GTIN упаковки' ('GTIN упаковки'): [5],Noprotect;
+    tmpPkRSp2.SSCCManuf  'SSCCManuf'       ('SSCCManuf'): [10],Noprotect;
+    KatMc3.BarKod2     'МЦ SAPCODE. по GTIN'       ('SAPCODE МЦ найденный по коду GTIN'): [7],protect;
+    KatMc3.Name        'МЦ наимен. по GTIN'       ('Наименование МЦ найденное по коду GTIN'): [15],protect;
+end;
+ tableevent table tmpPkRSp2 ;
+  cmInsertRecord: insert current tmpPkRSp2;
+  cmUpdaterecord: update current tmpPkRSp2;
+  cmDeleterecord: delete current tmpPkRSp2;
+ end;
+handleevent
+cmHotKeys:{
+  case curtable of
+   #tmpPkRSp2: PutHotCommand(RunMenu('mnu_PickingReport_ViewAddSSCCManufFromBuffer'));
+   end;
+}
+cmValue4: {
+ _loop tmpPkRSp2
+  if getfirst KatMc3 <> tsOK
+  {
+    message('Проверьте все GTIN',error);
+   stop; abort; exit;
+  }
+
+ _loop tmpPkRSp2
+  if getfirst KatMc3 = tsOK
+  {
+    insert PkRSp2 set
+       PkRSp2.cHead    := PkRH.nrec
+     , PkRSp2.cMc      := KatMc3.Nrec
+     , PkRSp2.ISMANUAL := true
+     , PkRSp2.SAPCODE  := KatMc3.BarKod2
+     , PkRSp2.SSCCManuf  := tmpPkRSp2.SSCCManuf
+    ;
+  }
+  rereadrecord(tnPkRSp2);
+ closewindow(InsertManualRows);
+}
+cmValue5: {
+  if not isvalidall(tntmpPkRSp2) then {
+     message('Сначала добавьте запись c заполненным GTIN',error);
+    stop; abort; exit;
+  }
+  if not isvalidall(tnKatMc3) then {
+     message('Некорректный GTIN',error);
+    stop; abort; exit;
+  }
+
+  startnewvisual(vtRotateVisual,vftimer+vfbreak+vfconfirm,'Обработка буфера.',0);
+     if FilltBuffer then InserttmpPkRSp2;
+  stopvisual;
+
+}
+end;
+end;
+
+Window winShowLogImport;
+Screen scrShowLogImport (,,sci1Esc);
+show at (,,,3);
+table PkRLog  ;
+fields
+ PkRLog.LogDate   : protect;
+ PkRLog.timeSend  : protect;
+ StateLog : protect;
+ PkRLog.Email     :protect;
+ PkRLog.cEmail    : protect;
+<<
+ Дата-время запуска задания .@@@@@@@@@@@@@@@  Дата-время посылки на почту .@@@@@@@@@@@@@@@
+ Статус лога .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ E_mails .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ copy E-MAILS .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+>>
+end;
+Panel pnShowLogImport ;
+show at (,4,,);
+  Table PkRLog;
+ Text
+   MemoID = mlog PkRLog.Log 'Лог импорта файла PickingReport'  :Protect ;
+end; // Panel
+end;
+Window winShowPickingRepData 'Просмотр загруженных данных PickingReport по накладной', cyan;
+Screen scrShowPickingRepDataKatSopr  (,,sci1Esc);
+show at (,,,4);
+Fields
+ if (isValidAll(tnKatSopr),KatSopr.NSopr + ' от ' + DateToStr(KatSopr.dSopr, 'DD/MM/YYYY')+ if (IsValidAll(tnBaseDoc),' / ',''),'') +
+ if (IsValidAll(tnBaseDoc), 'ДО '+Basedoc.NoDoc + ' от ' + DateToStr(BAseDoc.dDoc, 'DD/MM/YYYY'),''): protect;
+ DateToStr(PkRH.Atl_lastDate, 'DD/MM/YYYY')  + ' ' + timeToStr(PkRH.Atl_lastTime,'HH:MM:SS'): Protect;
+ PkRH.Nakl_Num     : Protect;
+ PkRH.filename   : Protect;
+ PkRH.ErrDescr   : Protect;
+buttons
+  cmValue2,default,,'Посмотреть лог импорта',,;
+  cmValue3,,,'Добавить ручные данные',,;
+  cmValue7,,,'Загрузить из другого документа',,;
+  cmValue6,,,'Проверить коды в CRPT',,;
+  cmValue1,,,'Удалить загруженные данные',,;
+<<
+       Накладная .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Дата, время загрузки данных PickingReport .@@@@@@@@@@@@@@@@@@@@   <.    LOG импорта       .>
+  Данные из файла PickingReport
+ Номер накладной .@@@@@@@@@@@@@                                                                                             <.Добавить ручные данные.> <.Загрузить из другого документа.>
+            Файл .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                                                           <.Проверить коды в CRPT .>
+
+ Описание ошибки .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                         <.Удалить данные PickingReport.>
+>>
+end;
+Handleevent
+cmValue3: {
+  delete all tmpPkRSp2;
+  runwindowModal(InsertManualRows)
+}
+
+cmInit :
+{
+
+/* if BoGetTune('USERTUNE.MercuryPRJ.CantDeleteWMSDATA')
+  then disablecommand(cmValue1)
+  else EnableCommand(cmValue1);
+  var isProtectUUID : boolean;
+  if BoGetTune('USERTUNE.MercuryPRJ.CantUpdateUUID')
+  then isProtectUUID := true
+  else isProtectUUID := false;
+   cfsSetProp('c_BRSHOWMERCURYDATAMERCSP2_MERCSP2.UUID_UUID','PROTECT',isProtectUUID);
+*/
+}
+cmValue1:
+ {
+   if BoGetTune('USERTUNE.MercuryPRJ.CantDeleteWMSDATA')
+    {
+      Message('Вам запрещено удалять загруженные данные ',error);
+      stop; abort; exit;
+    }
+   if message('Будьте внимательны!!!'+
+      +''#13''+'Вы уверены, что хотите удалить загруженные данные?', warning+ Confirmation + YesNo) = cmYes
+    {
+      var _cHeadMerc : comp = PkRH.nrec;
+      Delete PkRSp2 where ((_cHeadMerc == PkRSp2.cHead));
+      Delete PkRH where ((_cHeadMerc == PkRH.nrec));
+      Message('Данные удалены') ;
+
+      rescanPanel(tnKatSopr);
+      rescanPanel(tnPkRH);
+      rescanPanel(tnSpSopr1);
+      rescanPanel(tnPkRSp2);
+    }
+ }
+cmValue2:
+ {
+   runwindowModal(winShowLogImport);
+ }
+ cmValue6:
+ {
+  iPickingReport_Import.CheckCisInCRPTbyATL_PickingRep_HEAD(PkRH.nrec);
+ }
+ cmValue7:
+ {
+   _iPickingReport_CopyBetweenDocs.copyTo(PkRH.cBaseDoc, if(PkRH.cBaseDoc <> 0h, 0h,PkRH.cSopr));
+
+   rescanPanel(tnPkRSp2);
+   if getfirst PkRSp2 = tsok {};
+ }
+end;
+
+Screen scrShowPickingRepDataSpSopr1 (,,sci1Esc);
+show at (,5,57,5);
+<<
+   Позиции накладной
+>>
+end;
+
+  Browse brShowPickingRepDataSpSopr1 (,,sci1Esc);
+   Show at (,6,57,);
+   table SpSopr1;
+   fields
+    SpSopr1.npp    '№ пп'('Номер по порядку в накладной'):[2],protect;
+    KatMC1.Name    'Наименование МЦ'('Наименование МЦ'):[20], protect;
+    KatMc1.Barkod2 'SAP CODE'('SAP CODE'):[6], protect;
+    SpSopr1.KolFact 'кол-во'('количество по позиции накладной'): [5,'\2p[|-]3666`666`666`666`666.88'], Protect;
+    SpSopr1.KolFact * SpSopr1.price + if(KatSopr.VhodNal <> 1, SpSopr1.SumNDS,0) 'Стоимость позиции'('Стоимость позиции накладной'):[7,'\2p[|-]3666`666`666`666`666.88'], Protect;
+  end;  // Browse brShowPickingRepData1SpSopr
+
+Screen scrShowPickingRepDataSpSopr2(,,sci1Esc);
+show at (59,5,,5);
+<<
+   Данные загруженного файла
+>>
+end;
+
+   Browse brShowPickingRepDataPkRSp2(,,sci18Esc);
+   Show at (59,6,,);
+   table PkRSp2;
+   fields
+    if(PkRSp2.IsManual,'+','')   'ручн.'    ('добавлено вручную'): [1],protect;
+    PkRSp2.SapCode    'SAP Code'    ('SAP Code'): [5],protect;
+    PkRSp2.DateSborka 'Дата сборки' ('Дата сборки'): [5],protect;
+    PkRSp2.Nsopr      'Nsopr'       ('Nsopr'): [5],protect;
+    PkRSp2.SSCCWMS    'SSCCWMS'     ('SSCCWMS'): [10],protect;
+    PkRSp2.DataMatrix 'DataMatrix'  ('DataMatrix'): [10],protect;
+    PkRSp2.SSCCManuf  'SSCCManuf'   ('SSCCManuf'): [10],protect;
+    PkRSp2.ErrDescr   'ErrDescr  ОпиErrDescr описание ошибки'('Описание ошибки, если пусто, значит все ОК'): [20],protect;
+  end;  // Browse brShowPickingRepData1SpSopr
+tableevent table PkRSp2 ;
+ cmUpdateRecord:
+  {
+    update current PkRSp2;
+  }
+  cmDeleteRecord:
+  {
+   if PkRSp2.IsManual then
+    {
+     if message('Удалить запись?', warning  + YesNo) = cmYes then  Delete current PkRSp2;
+    }
+  }
+end;
+end;
+
+
+Procedure ShowPickingReportData(_cSopr, _cBaseDoc : comp) ;
+{
+  popBounds(tbByBaseDoc);
+  popBounds(tbByKatSopr);
+
+  Set    _cSoprMain := _cSopr;
+  set _cBaseDocMain := _cBaseDoc;
+
+  if _cBaseDoc = 0h
+   {
+      If getfirst KatSopr <> tsOK    // если запустили из списка накладных напрмер НВП)
+      {
+        message('Не найдена накладная ' + string(_cSoprMain,0,0),error);
+        exit;
+      }
+
+      if KatSopr.vidsopr = 201  //  запускаем из накладных на отпуск - перейдем принудительно на ДО
+      if getfirst Stepdoc where ((KatSopr.cStepDoc == STepDoc.nrec)) = tsOK {
+         set _cBaseDocMain := Stepdoc.cBaseDoc
+      }
+   }
+   else
+    {
+        If getfirst BaseDoc <> tsOK  // если запустили из списка ДО на продажу
+        {
+          message('Не найден ДО ' + string(_cBaseDocMain,0,0),error);
+          exit;
+        }
+    }
+
+
+  if _cBaseDocMain <> 0h {
+     pushBounds(tbByBaseDoc);
+   }
+   else {
+     pushBounds(tbbyKatSopr);
+   }
+
+  If Getfirst PkRH <> tsOK
+   {
+    if _cBaseDocMain = 0h
+     {
+      message('У данной накладной '+KatSopr.nSopr +' от '+ DateToStr(KatSopr.dSopr,'DD/MM/YYYY')+' нет загруженных данных PickingReport ', warning);
+      exit;
+     }
+     else {
+      if  message('У счета '+basedoc.NoDoc +' от '+ DateToStr(basedoc.ddoc,'DD/MM/YYYY')+' нет загруженных данных PickingReport '
+       + ''#13''+ 'Создать записи вручную?', warning  + YesNo) <> cmYes
+        {
+         exit;
+        }
+          ATL_PickingRep_HEAD.cSopr    := _cSoprMain;
+          ATL_PickingRep_HEAD.filename := 'ВРУЧНУЮ';
+          ATL_PickingRep_HEAD.Nakl_Num := '';
+          ATL_PickingRep_HEAD.isOK     := true;
+          ATL_PickingRep_HEAD.cBaseDoc := _cBaseDocMain;
+         insert current ATL_PickingRep_HEAD;
+     }
+   }
+  runWindowModal(winShowPickingRepData);
+}
+
+
+End.//Interface
+
+
+mnu_PickingReport_ViewAddSSCCManufFromBuffer Menu {
+    - 'Добавить данные SSCCManuf из буфера по текущему GTIN', cmValue5, '', hcNoContext, '',, sci1Esc;
+}

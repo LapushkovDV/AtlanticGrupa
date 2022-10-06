@@ -1,0 +1,44 @@
+AtlanticSellOperVetisAPI Menu
+{
+ -------;
+ - 'Просмотр запросов стоков', cmRunInterface('Atlantic::VetisAPIViewer'), 'Просмотр запросов стоков VetisAPIProduct',,,, scMenuCtx,,,;
+ - 'Просмотр каталога', cmRunInterface('Atlantic::VetisAPIProduct'), 'Просмотр каталога VetisAPIProduct',,,, scMenuCtx,,,;
+
+ -------;
+}
+
+AtlanticSellReport Menu
+{
+ -------;
+ - 'Отчеты на DSQL запросах' , cmRunInterface('ATLANTIC_COMMON::SQLVIEWREPORT'), 'Отчеты на DSQL запросах',,,, scMenuCtx,,,;
+ -------;
+}
+
+
+#doc
+Добавление подменю в модуле управление сбытом  - счета, ДО на продажу - локальное меню
+#end
+Atlantic_SBIT_DO_HotKeys Menu
+{
+    - 'Пакетное изменение статусов', cmValue60, 'Пакетное изменение статусов', hcNoContext,'',,sci1Esc;
+    - 'SL. Обнуление позиций с причиной "недопоставки"', cmValue67, 'SL. Обнуление позиций с причиной "недопоставки"', hcNoContext,'',,sci1Esc;
+ -------;
+    - 'Справка об объеме и массе выбранных ДО', cmValue68, 'Справка об объеме и массе выбранных ДО', hcNoContext,'',,sci1Esc;
+ -------;
+    - 'Просмотр загруженных данных WMS', cmValue66, 'Просмотр загруженных данных WMS', hcNoContext,'',,sci1Esc;
+
+}
+
+#doc
+Добавление подменю в модуле управление сбытом  - счета, ДО на продажу - локальное меню
+#end
+Atlantic_SBIT_Nakl_HotKeys Menu
+{
+    - 'Справка об объеме и массе выбранных накладных', cmValue61, 'Справка об объеме и массе выбранных накладных', hcNoContext,'',,sci1Esc;
+    - 'Сборочный лист для СКИФ-КАРГО', cmValue63, 'Сборочный лист для СКИФ-КАРГО', hcNoContext,'',,sci1Esc;
+ -------;
+    - 'Экспорт накладных PDF/XML', cmValue62, 'Экспорт накладных PDF/XML', hcNoContext,'',,sci1Esc;
+ -------;
+    - 'Просмотр загруженных данных WMS', cmValue64, 'Просмотр загруженных данных WMS', hcNoContext,'',,sci1Esc;
+
+}

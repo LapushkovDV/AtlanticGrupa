@@ -1,0 +1,44 @@
+      (scHelpLinks..scHelpLinks)
+      {
+        '~F1~ Справка',     cmHelp,             kbF1;
+        '~F2~ Сохранить',   cmUpdateHelpLinks,  kbF2;
+        '',                 cmPick,             kbF3;
+        '~F7~ Добавить',    cmInsert,           kbF7;
+        '~F8~ Удалить',     cmDelete,           kbF8;
+        '~Ctrl+F8~ Пусто',  cmSetHelpLinkBlank, kbCtrlF8;
+        '~Esc~ Закрыть',    cmClose,            kbAltF3;
+
+        '',                 cmTreeOpenNode,     kbCtrlEnter;
+        '',                 cmTreeCloseNode,    kbCtrlBack;
+        '',                 cmHotKeys,          kbAltF10;
+        '',                 cmCalculator,       kbShiftF2;
+        '',                 cmCalendar,         kbAltF4;
+        '',                 cmResize,           kbCtrlF5;
+        '',                 cmZoom,             kbF5;
+        '',                 cmNext,             kbF6;
+        '',                 cmLastHelp,         kbAltF1;
+        '',                 cmEvaluateAndModify,kbCtrlF4;
+//        '',                 cmCallIndex,        kbShiftF1;
+        '',                 cmFindTopic,        kbCtrlF1;
+      }
+
+      (scHelpLinkCatch..scHelpLinkCatch)
+      {
+        '~F1~ Справка',       cmHelp,             kbF1;
+        '~F7~ Добавить файл', cmInsert,           kbF7;
+        '~F8~ Удалить файл',  cmDelete,           kbF8;
+        '~Esc~ Закрыть',      cmClose,            kbAltF3;
+
+        '',                 cmTreeOpenNode,     kbCtrlEnter;
+        '',                 cmTreeCloseNode,    kbCtrlBack;
+        '',                 cmHotKeys,          kbAltF10;
+        '',                 cmCalculator,       kbShiftF2;
+        '',                 cmCalendar,         kbAltF4;
+        '',                 cmResize,           kbCtrlF5;
+        '',                 cmZoom,             kbF5;
+        '',                 cmNext,             kbF6;
+        '',                 cmLastHelp,         kbAltF1;
+        '',                 cmEvaluateAndModify,kbCtrlF4;
+//        '',                 cmCallIndex,        kbShiftF1;
+        '',                 cmFindTopic,        kbCtrlF1;
+      }

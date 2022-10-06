@@ -1,0 +1,6 @@
+// Галактика 8.1   2004г.
+// Описание экспортируемых интерфейсов компонента
+
+#ifdef ComponentVersion
+#component "F_OSInvCard"
+#end

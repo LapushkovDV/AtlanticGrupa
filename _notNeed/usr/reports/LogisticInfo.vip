@@ -1,0 +1,281 @@
+#component 'F_XLSRep'
+#include xlReport.Vih   // процедуры работы с отчетами excel
+INTERFACE Droga_LogisticInfo 'Отчет "Логистическая информация"' EscClose;
+SHOW AT (,,44,9);
+Const
+#include DrogaConst.inc
+ DefaultShablonPath = '%StartPath%DrogaResources\XLT\Droga_LogisticInfo.xlt';
+end;
+
+CREATE VIEW
+VAR sXLTFileName, sXLSFileName :string; //Пути на шаблон и на результирующий файл
+    sGroupFilter:string;
+AS SELECT *
+FROM katmc, katmc packmc, katotped, katotped pack, spgrnal, grnal, pick, groupmc,
+     katorg, katbank
+WHERE
+((
+    1 == katotped.prmc and katmc.nrec == katotped.cmcusl and katmc.ced == katotped.ckated
+and 1 == pack.prmc     and katmc.nrec == pack.cmcusl     and 1 == pack.akt
+and pack.nrec == spotped.cotped and spotped.cmctara == packmc.nrec
+and katmc.cgrnal  == grnal.nrec and grnal.nrec == spgrnal.cgrnal
+and sGetTune('NALOG.CNALOGNDS') == katnalog.name and katnalog.nrec == spgrnal.cnalog
+and word(2) == pick.wlist
+and pick.crec == groupmc.nrec
+and sGetTune('MYORG') == katorg.name
+and katorg.nrec == katbank.corg and 1==katbank.aktiv and 0==katbank.status and sGetTune('MYBANK') == katbank.name
+))
+ORDER BY katmc.name;
+
+FILE MyFile; //Используется здесь для проверки наличия файла шаблона
+
+VAR
+ pXL : XLSRepBuilder;  // объект формирования excel отчетов
+
+Screen scr1;
+ NoTableNavigation
+ fields
+  sGroupFilter : Protect  , PickButton;
+  sXLTFileName : NoProtect, PickButton;
+
+   Buttons
+   cmOK, Default, ,,;
+   cmCancel,,,,;
+<< 'Параметры отчета'
+
+  Фильтр по группе:
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  -----------------------------------------------------------------------
+  Путь к шаблону отчета
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+     <.  Ok   .>               <.Cancel.>
+
+>>
+End;
+
+//Проверка наличия файла по полному пути
+FUNCTION CheckFileExistence(sFileName:string):boolean;
+{
+ CheckFileExistence:=TRUE
+ _TRY MyFile.OpenFile (sFileName,stOpen)
+ _EXCEPT
+	  ON ExFileNotFound:
+	  {
+	   CheckFileEXISTENCE := FALSE;
+	   _SkipFinally;
+	  }
+ _FINALLY MyFile.Close;
+}//checkfileexistence
+
+//Проверка корректного заполнения всех параметров отчета
+FUNCTION AllParametersOK :boolean;
+{
+ AllParametersOK := FALSE;
+ IF sXLTFileName='' THEN {Message('Не указан путь к шаблону отчета!'); Exit;}
+ IF NOT CheckFileExistence(sXLTFileName) THEN {Message('Не найден шаблон отчета по указанному пути:'+chr(13)+sXLTFileName);Exit;}
+ AllParametersOK := TRUE;
+}//AllParametersOK
+
+FUNCTION FilterOK (groupnrec:comp):boolean;
+{
+ FilterOK := FALSE;
+ IF sGroupFilter = '' THEN FilterOK := TRUE
+ ELSE
+ {
+  IF GetFirst fastfirstrow pick where ((word(2)==pick.wlist and groupnrec==pick.crec))=tsOK
+  THEN FilterOK := TRUE;
+ }
+}//FilterOK
+
+//Функция выгрузки данных в Excel
+Function RunRep : boolean;
+{
+  RunRep := False;
+  //////////////////////////////////////////////////////////////////////////////
+  // CONNECT EXCEL
+  //
+  // создаем отчет на основании существующего шаблона
+  Set sXLSFileName := pXL.CreateReport(sXLTFileName, True);
+  //////////////////////////////////////////////////////////////////////////////
+  // выгрузка таблицы отчета
+  //
+  pXL.CreateTbls(sXLSFileName);
+  pXL.CreateTbl('LogisticInfoTable');
+  pXL.CreateTblFld('UnitKod'  );
+  pXL.CreateTblFld('PackKod'  );
+  pXL.CreateTblFld('MCName'   );
+  pXL.CreateTblFld('PackKoef' );
+  pXL.CreateTblFld('MCNetto'  );
+  pXL.CreateTblFld('MCX'      );
+  pXL.CreateTblFld('MCY'      );
+  pXL.CreateTblFld('MCZ'      );
+  pXL.CreateTblFld('NDS'      );
+  pXL.CreateTblFld('PackNetto');
+  pXL.CreateTblFld('PackX'    );
+  pXL.CreateTblFld('PackY'    );
+  pXL.CreateTblFld('PackZ'    );
+  pXL.CreateTblFld('MCGodnost');
+  // выгрузка полей таблицы
+  _Loop katmc
+  {
+   IF not NextVisual THEN
+	{
+	 pXL.DisconnectExcel;
+	 Exit;
+   }//Если прервали
+IF FilterOK(katmc.cgroupmc) THEN
+{
+   // очистить буфер записи таблицы
+   pXL.ClearTblBuffer;
+   // заполнение значений полей текущей записи таблицы
+   pXL.SetTblStringFldValue('MCName'   , katmc.name      );
+   pXL.SetTblNumberFldValue('MCNetto'  , katmc.massa*1000);
+   pXL.SetTblNumberFldValue('MCX'      , katmc.sizex*1000);
+   pXL.SetTblNumberFldValue('MCY'      , katmc.sizey*1000);
+   pXL.SetTblNumberFldValue('MCZ'      , katmc.sizez*1000);
+   pXL.SetTblNumberFldValue('MCGodnost', katmc.defgodndays);
+ IF GetFirst fastfirstrow katotped = tsOK
+   pXL.SetTblStringFldValue('UnitKod'  , katotped.bkod);
+ IF GetFirst fastfirstrow pack = tsOK
+ {
+   pXL.SetTblStringFldValue('PackKod'  , pack.bkod    );
+   pXL.SetTblNumberFldValue('PackKoef' , pack.koef    );
+  IF GetFirst fastfirstrow packmc = tsOK
+  {
+   pXL.SetTblNumberFldValue('PackNetto', packmc.massa*1000);
+   pXL.SetTblNumberFldValue('PackX'    , packmc.sizex*1000);
+   pXL.SetTblNumberFldValue('PackY'    , packmc.sizey*1000);
+   pXL.SetTblNumberFldValue('PackZ'    , packmc.sizez*1000);
+  }
+ }
+ IF GetFirst fastfirstrow grnal = tsOK
+ IF GetFirst fastfirstrow katnalog = tsOK
+  IF GetFirst fastfirstrow spgrnal = tsOK
+   pXL.SetTblStringFldValue('NDS'      , spgrnal.nalog);
+   // вставка записи в таблицу
+   pXL.InsTblRow;
+}//Если МЦ удовлетворяет фильтру
+  }//Loop
+  // все необходимые пост-действия по "публикации" таблицы (DBTbl Destructor)
+  pXL.PublishTbl('LogisticInfoTable');
+  //
+  // выгрузка таблицы отчета
+  //////////////////////////////////////////////////////////////////////////////
+  // выгрузка переменных отчета
+  //
+  // инициализация переменных Excel-БД (DBVar Constructor)
+  pXL.CreateVar(sXLSFileName);
+  // выгрузка значений переменных
+  IF GetFirst fastfirstrow katorg = tsOK THEN IF GetFirst fastfirstrow katbank = tsOK {}
+  pXL.SetDateVar  ('DateRep' , Cur_Date          );
+  pXL.SetStringVar('MyOrg'   , katorg.name);
+  pXL.SetStringVar('MyAddr'  , katorg.indexk + ', ' + katorg.addr);
+  pXL.SetStringVar('MyPhone' , katorg.tel );
+  pXL.SetStringVar('MyINNKPP', katorg.UNN + ' / ' + katorg.kodplatnds);
+  pXL.SetStringVar('MyBank'  , katbank.name);
+  pXL.SetStringVar('MyRS'    , katbank.schet1);
+  pXL.SetStringVar('MyBIK'   , katbank.mfo1);
+  pXL.SetStringVar('MyKS'    , katbank.schet2);
+  // все необходимые пост-действия по "публикации" переменных (DBVar Destructor)
+  pXL.PublishVar;
+  //
+  // выгрузка переменных отчета
+  //////////////////////////////////////////////////////////////////////////////
+
+  // формирование отчета по заданнному шаблону
+  StartNewVisual(vtRotateVisual, vfTimer, 'Шаг 2 из 2: Обработка данных в Excel', 0);
+  pXL.LoadReport(sXLSFileName);
+  StopVisual('',0);
+  pXL.DisconnectExcel;
+  //
+  // DISCONNECT EXCEL
+  //////////////////////////////////////////////////////////////////////////////
+  RunRep := True;
+}//runrep
+
+HANDLEEVENT
+cmInit:
+{
+ SET sGroupFilter := '';
+ SET sXLTFileName := TranslatePath(DefaultShablonPath);
+ SET sXlSFileName := '';
+}//cmInit
+
+cmPick:
+{
+ CASE CurField OF
+ #sGroupFilter:
+ {
+  var PickedKol : integer;
+  PickedKol:=0;
+  RunInterface('L_MCU::GETSOMGM');
+  IF GetFirst fastfirstrow pick = tsOK THEN
+  {
+   _Loop pick
+   {    PickedKol := PickedKol +1;   }//loop pick
+   IF Pickedkol>1 THEN SET sGroupFilter := 'Множественный выбор ('+pickedkol+')';
+   IF PickedKol=1 THEN IF GetFirst fastfirstrow groupmc = tsOK THEN SET sGroupFilter := groupmc.name;
+  }
+ }
+ #sXLTFileName:
+ {
+  SET sXLTFileName := GetFileName('*.xlt', 'Выберите шаблон отчета');
+  IF sXLTFileName = '' THEN SET sXLTFileName := TranslatePath(DefaultShablonPath);
+ }//sxltfilename
+ END;//case
+}//cmPick
+
+cmOK:
+{
+ IF AllParametersOK THEN
+ {
+  StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Шаг 1 из 2: Выгрузка в шаблон Excel', 0);
+  IF NOT RunRep THEN Message('Выгрузка данных в шаблон Excel прервана пользователем!');
+  StopVisual('',0);
+  //CloseInterface(cmDefault);
+ }//Если параметры нормально заданы
+}//cmOK
+
+cmCancel:
+{
+ CloseInterface(cmCancel);
+}//cmCancel
+end;//HandleEvent
+end.//interface
+
+//////////////////////////////////////////////
+//  пункт меню в отчетах пользовател
+//
+#component 'F_UserReport'
+#include UserReport.vih
+VipInterface UserReport_DrogaLogisticInfo Implements IUserReport;
+Interface UserReport_DrogaLogisticInfo;
+create view;
+procedure Run;
+begin
+  RunInterface('F_XLSRep::Droga_LogisticInfo')
+end;
+function GetReportName: String;
+begin
+  GetReportName := 'Отчет "Логистическая информация"';
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+end;
+function GetPriority : integer;
+begin
+  GetPriority := 0;
+end;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'SKLAD';
+    2 : VisibleInModule := 'SELL';
+    3 : VisibleInModule := 'DOGOVOR';
+  end;
+end;
+!-------------------------------------------------------------------------------
+end.

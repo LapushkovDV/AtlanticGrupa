@@ -1,0 +1,290 @@
+// Галактика 8.10
+// Описание интерфейсов компонента M_Control
+
+#component "M_Control"
+
+// меню Документы
+VipInterface iCalcPrice         licensed (Controlling) Parameters(Mode: word; cpVarPrice: comp);
+VipInterface iKatPrice          licensed (
+                                #include iKatPrice.lih
+                                         ) Parameters(Mode: word; cResPrice: comp; cpTypPrice: comp; PickList: word);
+VipInterface iPricesFromCont    licensed (Controlling);
+VipInterface iProizvBl          licensed (Controlling) Parameters(cRecPeriod: comp; cRecBalansM: comp; wCurVar: word; wMode: word);
+VipInterface iRaspredZatrSt     licensed (Controlling);
+VipInterface iRealBudjet        licensed (Controlling,ufz) Parameters(ModeContFz: word);
+VipInterface iPO_Edit           licensed (Controlling,manufacture) Parameters(w_wPrSvod: word; c_cRecBalansM: comp);
+VipInterface iUstPrice          licensed (Controlling);
+
+// меню Операции
+VipInterface iCalcBudget        licensed (Controlling);
+//------------------------------------------------------------------------------
+VipInterface iCalcParm          licensed (Controlling);
+
+//------------------------------------------------------------------------------
+VipInterface iCostAnalyse       licensed (Controlling) Parameters(cAlgNastr: comp; c1006: comp; w_tpPlan: word; cCodObj: comp; cVarPrice: comp; cKlPriceMC: comp;
+                                                      cKlPriceUsl: comp; cPFVarPrice : comp; cPFKLPriceMc : comp; cPFKlPriceUsl : comp;
+                                                      cNaborSK: comp; wVisProt : word;  wVidRep: word; wPrevSet: word; cPeriod: comp);
+VipInterface iCostAnRep         licensed (Controlling) Parameters(pType: word; pNoMenu: word; pPeriod: comp; pTypeObj : word; pObj : comp;
+                                                      pVarPrice: comp; pNaborSt: comp; pIstPrice: word; pKlPriceUsl: comp;
+                                                      pMnAnal : comp; pcCalcObj_Nrec : comp
+                                                      );
+VipInterface iCost_Clear        licensed (Controlling);
+
+VipInterface DoocPord           licensed (Controlling);
+VipInterface iFormBalans        licensed (Controlling);
+VipInterface iFormirOborot      licensed (Controlling);
+VipInterface iProtCalc          licensed (
+                                #include iProtCalc.lih
+                                         ) Parameters(wPrizn: word; cnRec_Period: comp; wPlanFact: word;
+                                                      ccVarCalc: comp; ccIzgPost: comp; wwIzgPost: word; ccBudjPost: comp;
+                                                      ccIzgPri: comp; wwIzgPri: word; ccBudjPri: comp);
+VipInterface iRasCalc           licensed (Controlling) Parameters(wPrzRun: word; cRecSpB: comp);
+VipInterface iRaspZtr           licensed (Controlling);
+VipInterface iSvodCalc          licensed (Controlling);
+
+// меню Отчеты
+VipInterface iRSvodSt           licensed (Controlling) Parameters(w_wRep: word; c_cRecPeriod: comp; c_cSpBalans: comp);
+VipInterface iRSvodEl           licensed (Controlling) Parameters(w_wRep: word; c_cRecPeriod: comp; c_cSpBalans: comp);
+VipInterface iRSvodAll          licensed (Controlling) Parameters(w_wRep: word; c_cRecPeriod: comp; c_cSpBalans: comp);
+VipInterface iZatrSmets         licensed (Controlling,ufz) Parameters(Mode: word; cPeriodP: comp; cBudjetP: comp);
+VipInterface iSpisSmets         licensed (Controlling);
+VipInterface iReportCalcObj     licensed (Controlling);
+VipInterface iReportSVedCalc    licensed (Controlling);
+VipInterface iAnalyseOtkl       licensed (Controlling);
+VipInterface iAnalyseDiffReport licensed (Controlling);
+VipInterface iEconomPokaz       licensed (Controlling);
+VipInterface iRepMoveResurs     licensed (Controlling);
+VipInterface iRepMoveAndSale    licensed (Controlling);
+VipInterface iContrCalc         licensed (Controlling);
+VipInterface iControlBuhProv    licensed (Controlling) Parameters(wOpen_Mode: word; cnRec_UserDeskRep: comp);
+VipInterface iRepVKComp         licensed (
+                                #include iRepVKComp.lih
+                                         ) Parameters(wOpen_Mode: word; cnRec_UserDeskRep: comp);
+VipInterface iRepRaspZtr        licensed (
+                                #include iRepRaspZtr.lih
+                                         ) Parameters(wMode: word; wLoad_Param: word; cnRec_UserDeskRep: comp);
+VipInterface iRepSvodTune       licensed (Controlling);
+
+VipInterface GetStatZatr        licensed (FREE) Parameters(mynRec: comp; wEdit: word);
+VipInterface iNaborSK           licensed (FREE) Parameters(mode:word; p1:comp; p2:comp; modFZ:word);
+VipInterface iGetPriceType      licensed (FREE) Parameters(Mode:word; cPriceType: comp);
+VipInterface iObjType           licensed (FREE) Parameters(ParType: comp);
+VipInterface iTuneBudget        licensed (FREE);
+VipInterface iRaspredBase       licensed (FREE) Parameters(mode:word; nRecBR:comp; nRecBD:comp; wFZ: word);
+VipInterface iCtavkiNach        licensed (FREE) Parameters(wMode: word; ccRateList: comp; ccRateAdd: comp);
+VipInterface iSchemeRaspred     licensed (FREE) Parameters(Mode: word; ccVarCalc: comp; ccSchemeRs: comp);
+VipInterface iNastAnalProd      licensed (FREE) Parameters(mode: word; p1: comp);
+VipInterface iFormsTune         licensed (FREE) Parameters(Mode:word; cCurrent_nabor:comp; cSelForm: comp);
+VipInterface iTuneBillObor      licensed (FREE) Parameters(wwPrzBill: word; wMode: word);
+VipInterface iNastrFP           licensed (FREE) Parameters(pcBillObor:comp; pcPlansSch:comp);
+VipInterface iPFcompon          licensed (FREE);
+VipInterface iKatProiz          licensed (FREE) Parameters(pcKatProiz:comp; pwFlRun: word);
+VipInterface iVidMove           licensed (FREE) Parameters(mode:word; wParamKodVM: word);
+VipInterface iKoefChanged       licensed (FREE);
+
+VipInterface iNastrCloseProizv  licensed (ufz);
+VipInterface iCalcSmeta         licensed (ufz);
+VipInterface iCalcSvod          licensed (ufz);
+VipInterface iCalcObject        licensed (ufz);
+VipInterface iFzSvodSt          licensed (ufz) Parameters(wMode: word; wMonth: word; wYear: word);
+VipInterface iFzSvodEl          licensed (ufz) Parameters(wMode: word; wMonth: word; wYear: word);
+VipInterface iFzSvodAll         licensed (ufz) Parameters(wMode: word; wMonth: word; wYear: word);
+VipInterface RepZatr            licensed (ufz);
+VipInterface SwVedFZ            licensed (ufz);
+
+VipInterface RsZt_rep           licensed (ufz);
+VipInterface Ved_fact           licensed (ufz);
+VipInterface iTuneElem          licensed (FREE);
+VipInterface iSmetShet          licensed (FREE);
+VipInterface iTuneFactVip       licensed (FREE);
+VipInterface iNastrFZ_Contr     licensed (ufz);
+
+VipInterface GetPrStage         Licensed (FREE) Parameters(wMode : word; cRecStage : comp);
+
+#include GoNewPer.vih
+
+// вызов из других компонент
+VipInterface GetTypMC           Licensed (Free) Parameters(c1: comp; pwFlRun: word);
+VipInterface iCloseSchProiz     Licensed (Free) Parameters(iGoNewPer : ObjGoNewPer; myGetRec : comp);
+VipInterface GetElem            licensed (Free) Parameters(c1, oldp : comp);
+VipInterface iRuleSortForBudjet licensed (Free) Parameters(TuneCode: string; TuneObj: word; TuneUser: comp);
+
+VipInterface iSmetPodr          licensed (FREE) Parameters(Mode: word; cSmet, cSmetPodr: comp; vVidSmet : word; cPeriod: comp; wwPodr: word; ccPodr: comp; wPrzPodr: word);
+VipInterface SelDepFn           Licensed (Free) Parameters(mycFunc: longInt; wEdit: word);
+
+VipInterface iImportOtch_UKOS   licensed (FREE);
+VipInterface iTuneImp_UKOS      licensed (FREE) Parameters(Mode: word; cPodrImp: comp);
+
+VipInterface iREP_HEAD          licensed (coPlan) Parameters(pWorkMode: word; p_cRoleRights: comp);
+VipInterface iIMPOTCHPR         licensed (coPlan);
+VipInterface iREPP_OST          licensed (coPlan) Parameters(nRecRH: comp);
+VipInterface iREPP_DVS          licensed (coPlan) Parameters(nRecRH: comp);
+VipInterface iREPP_NZP          licensed (coPlan) Parameters(nRecRH: comp);
+VipInterface iREPP_DV           licensed (coPlan) Parameters(nRecRH: comp);
+VipInterface iCOMPAREPO_DS      licensed (coPlan);
+VipInterface iPURSHACEMATERIAL  licensed (coPlan) Parameters(pType: word);
+VipInterface iMOVEWHAREHOUSE    licensed (coPlan) Parameters(pType: word);
+VipInterface iSALEPROD          licensed (coPlan);
+VipInterface iNASIMPOTCH        licensed (FREE) Parameters(Mode: word; cOrgImp: comp);
+
+VipInterface iViewDocCalc       licensed (FREE) Parameters(nRec_NaklRasx, nRec_Migrate, nRec_SpBalans: comp);
+
+VipInterface IRULECategResurs   licensed (FREE) Parameters (TuneCode : string; TuneObj : LongInt; TuneUser : comp);
+
+VipInterface iFormBudj          licensed (FREE) Parameters (nRec_SpBalansM   : comp; nRec_Period      : comp;
+                                                            wCur_Seb         : word; wPar_wPodr       : word;
+                                                            nRec_cPodr       : comp; nRec_cSmet       : comp;
+                                                            w_Parametr       : word; w_ParamStatus    : word;
+                                                            d_ParamBegOborot : date; d_ParamEndOborot : date;
+                                                            w_ParamSaldo     : word; w_Tune_Saldo     : word;
+                                                         cPar_SpBalans_Saldo : comp; bNext_Tune       : boolean;
+                                                            wFormir_Protocol : word; wModifStruct     : word;
+                                                            wFormirValut     : word; wConvertNiokr    : word    );
+
+VipInterface iFormBal_FromOborot licensed (FREE) Parameters(nRec_BalansM   : comp; nRec_Period  : comp;
+                                                            w_Parametr     : word; d_Start      : date;
+                                                            d_End          : date; d_Saldo      : date          );
+
+
+VipInterface iInitControlling   licensed (FREE);
+VipInterface iInit_KaElem       licensed (FREE);
+VipInterface iVerifySet         licensed (FREE);
+VipInterface iGetAnVal          licensed (FREE) Parameters(cGetSloj : comp; cRecMnAnal : comp; wPrSpBill : word );
+VipInterface GetTruePodr        licensed (FREE) Parameters(cPodr : comp );
+VipInterface TepSelGroup3       licensed (FREE) Parameters(GNREC : comp );
+
+VipInterface iCostRasp          licensed (FREE);
+VipInterface GetSomeTypeMC      licensed (FREE);
+VipInterface iImportPrice       licensed (FREE) Parameters(ccKatPrice : comp );
+VipInterface iPriceSet          licensed (FREE) Parameters(cRecHead_ : comp; IsRunWinP : boolean );
+
+VipInterface iFormPlanBal       licensed (FREE) Parameters(cAlgNastr    : comp; cfpPer     : comp;
+                                                           wVisProtocol : word; cBalansM   : comp;
+                                                           wCreateOU    : word; wSend_Cebe : word   );
+VipInterface iImportRasxPO      licensed (FREE);
+VipInterface RFZ_CloseMnf       licensed (FREE) Parameters(iGoNewPer    : ObjGoNewPer;
+                                                           cRecGoNewPer : comp; nRecPrd : comp;
+                                                           StepPrd      : word                      );
+VipInterface RFZ_CloseUsl       licensed (FREE) Parameters(wNumGr : word );
+
+VipInterface iOtRaspWs          licensed (FREE) Parameters(wMode : word; nMonth : byte;
+                                                           nYear : word                  );
+VipInterface iFzTuneSv          licensed (FREE) Parameters(wNumRep : word; pNrec : comp  );
+VipInterface iFzZatrSmets       licensed (FREE) Parameters(Mode    : word; cPeriodP : comp; cBudjetP : comp   );
+
+VipInterface iMove_DS           licensed (FREE);
+VipInterface iRepPTune          licensed (FREE) Parameters(wNumRep : word; pNrec : comp; nRecRH : comp );
+
+VipInterface GetSK                   licensed (FREE) Parameters(c1 : comp; Oldp : comp; cRecNabor : comp; wMode : word );
+VipInterface iGetSZ                  licensed (FREE) Parameters(cNotVizibleSZ : comp; cReturnValue : comp; wPriznIn_Exp : word );
+VipInterface iTuneStructCalc         licensed (FREE) Parameters(cSelTune : comp );
+VipInterface iTuneStructFactor       licensed (FREE) Parameters(cSelTune : comp );
+VipInterface iTuneStructSmeta        licensed (FREE) Parameters(cSelTune : comp );
+VipInterface iClcPriceNastr          licensed (FREE) Parameters(ccResPrice : comp; ccTypPrice : comp );
+VipInterface iCostSharing            licensed (FREE);
+VipInterface iFormDocfromProtCalc    licensed (FREE);
+VipInterface iFormPOFromTP           licensed (FREE) Parameters(ccRecHead : comp; wMode : word );
+VipInterface iRequestNaZatr          licensed (FREE);
+VipInterface iResourceAllocation     licensed (FREE) Parameters(c_cRecRepHead : comp );
+VipInterface iTuneFormTXO            licensed (FREE) Parameters(wMode : word; cnRecTune : comp; cnRecVC : comp );
+VipInterface iTuneRRN                licensed (FREE);
+VipInterface iReportDecodeCalcObj    licensed (FREE);
+VipInterface iPriceOutpk             licensed (FREE);
+VipInterface iRepPokazProd           licensed (FREE);
+VipInterface iRashStZatr             licensed (FREE);
+VipInterface iTuneRepContr           licensed (FREE);
+VipInterface iRepWaitFact            licensed (FREE);
+VipInterface Rep_CostShar            licensed (FREE);
+VipInterface Rep_ReqZatr             licensed (FREE);
+VipInterface iRPotrResource          licensed (FREE);
+VipInterface RRN_Report              licensed (FREE) Parameters(ccRepHead : comp );
+VipInterface iTuneCalc               licensed (FREE) Parameters(wNumRep : word; pNrec : comp );
+VipInterface iTuneCalcSFZ            licensed (FREE);
+VipInterface iTuneCol_Zatr           licensed (FREE) Parameters(mycBillObor : comp );
+VipInterface iTuneFactorSFZ          licensed (FREE);
+VipInterface iTuneSchem              licensed (FREE) Parameters(cVarCalcP : comp );
+VipInterface iTuneSmetaSFZ           licensed (FREE);
+VipInterface iTuneSvod               licensed (FREE) Parameters(wNumRep : word; pNrec : comp );
+VipInterface iExlusivePodr_Control   licensed (FREE);
+VipInterface iGroupMVZ_Control       licensed (FREE) Parameters(wMode : word; cCurentGroup : comp; cCurentPodr : comp );
+VipInterface iIncludeNewMVZ          licensed (FREE);
+VipInterface iNewPodr                licensed (FREE);
+VipInterface OborotNMCont            licensed (FREE) Parameters(Mode : word );
+VipInterface iCheckFullnesUnloadS_PB licensed (FREE) Parameters(cPsmet : comp );
+VipInterface iAnPokaz            licensed (FREE) Parameters(cRecAnPokaz : comp; cRecVarCalc_User : comp; wMode : word );
+VipInterface iBrformSpec         licensed (FREE) Parameters(NReport : word; cRecBazDist : comp; pNrec : comp );
+VipInterface iCalcBR             licensed (FREE) Parameters(cRecBazDist : comp );
+VipInterface iFormProportion     licensed (FREE) Parameters(ccBazDist : comp );
+VipInterface iRepHSel            licensed (FREE) Parameters(cRecHead : comp; cRecMove : comp );
+VipInterface iSetSummaOperate    licensed (FREE) Parameters(cRecRepHead : comp );
+VipInterface iSvodPO             licensed (FREE);
+VipInterface TipaZaglushkaOTK    licensed (FREE);
+VipInterface iGetUpVarC          licensed (FREE) Parameters(cUserDeskR : comp; ccSpBalans : comp; ccSpBalans_C : comp; wOriginal : word; wVariant : word );
+VipInterface MnfRep              licensed (FREE) Parameters(pNrec : comp );
+VipInterface iOElemZatr          licensed (FREE) Parameters(cUserDeskRep : comp );
+VipInterface iRAnZatr            licensed (FREE) Parameters(pNrec : comp );
+VipInterface iRaspAlloc_Tune     licensed (FREE);
+VipInterface iRep_RasprZtr       licensed (FREE) Parameters(nRecRZ : comp; mode : word; nMark : string );
+VipInterface iRCalcBalans        licensed (FREE);
+VipInterface iRCalcSmeta         licensed (FREE);
+VipInterface iRCalcTune1         licensed (FREE);
+VipInterface iRepCompareAnalyze  licensed (FREE);
+VipInterface iRepClaimOper       licensed (FREE) Parameters(ccUserDeskRep : comp );
+VipInterface iRepClaimSt         licensed (FREE) Parameters(ccUserDeskRep : comp );
+VipInterface iRepFactor          licensed (FREE) Parameters(pNrec : comp );
+VipInterface iRMakeTovarnProd    licensed (FREE);
+VipInterface iRSebOtpusk         licensed (FREE);
+VipInterface iRSebProdaj         licensed (FREE);
+VipInterface iRSentResource      licensed (FREE) Parameters(Mode : word );
+VipInterface iRSentResource_Clon licensed (FREE);
+VipInterface iRSvodProiz         licensed (FREE);
+VipInterface iRVedTuneZatr       licensed (FREE);
+VipInterface iTuneRent           licensed (FREE) Parameters(pNrec : comp );
+VipInterface iFormSpecStavN      licensed (FREE) Parameters(cRecRateAdd : comp );
+VipInterface iOtOborotCont       licensed (FREE);
+VipInterface iPokazBR            licensed (FREE) Parameters(cRecBazDist : comp );
+VipInterface iRepHead_Excel      licensed (FREE) Parameters(pNrec : comp;  wPrzRep : word;  boFiltrRes : boolean );
+VipInterface iReportProtSmet     licensed (FREE) Parameters(nRec_Period : comp; d_ParamBegOborot : date; d_ParamEndOborot : date );
+VipInterface iTunePokazBR        licensed (FREE) Parameters(NReport : word; pNrec : comp );
+
+VipInterface iConnectMC             licensed (FREE) Parameters(Mode: word; cNastr_nRec: comp);
+VipInterface GetStGroup             licensed (FREE) Parameters(Mode: word; bUzelMode: boolean; ccShabSmet, ccStShab, ccStShabNo: comp);
+VipInterface iGetOperShem           licensed (FREE) Parameters(cVarCalc, cSxemaRas: comp; wLoad_Mode: word);
+VipInterface iGetShabS              licensed (FREE) Parameters(wwPodr: word; cKatPodr, wcSmet, wcShabSmet: comp; PrzPodr: word; ccPeriod: comp);
+VipInterface iTuneAppendParam       licensed (FREE) Parameters(param_VidNastr, param_MultiRegim: word; param_nRec_Period: comp; param_wPrzVidZatr, param_wMC_Usl: word);
+VipInterface iTuneAppendParamFactor licensed (FREE) Parameters(param_VidNastr, param_MultiRegim: word; param_nRec_Period: comp; param_wMC_Usl: word);
+VipInterface iTuneAppendParamSmet   licensed (FREE) Parameters(param_VidNastr, param_MultiRegim: word; param_nRec_Period: comp; param_wPrzVidZatr: word);
+VipInterface iFormAktPO             licensed (FREE) Parameters(Mode: word; p_RepHead: comp);
+VipInterface iBudjProhl             licensed (FREE) Parameters(ccBudjet: comp);
+VipInterface iBudjProshlSum         licensed (FREE) Parameters(ccBudjSum: comp);
+VipInterface iEditSoursePriceR      licensed (FREE) Parameters(wPrzPrice: word; cnRecResPrice: comp);
+VipInterface iDopZBudjet            licensed (FREE) Parameters(ccBudjet, ccfpPeriod: comp);
+VipInterface iGetAttr               licensed (FREE) Parameters(mrkTabs: LongInt; wAttrType: word);
+VipInterface iGetObjCalc            licensed (FREE) Parameters(ccPeriod: comp; wParam_TblObj: word; ccCalcObj: comp; wMode: word);
+VipInterface iInsProizvDoc          licensed (FREE) Parameters(PrzSv: word; cParam_BalansM: comp);
+VipInterface iPakFormPO             licensed (FREE) Parameters(Vid: word; cPeriod: comp; IsFormBal: boolean; cRepHead_Param: comp; wSaldo_Tune: word; cNastrForm: comp; wNormExpend_Param: word; dData_BegPerv, dData_EndPerv: date);
+VipInterface iSelPodrBudget         licensed (FREE) Parameters(wwPodr: word; cPodr, cPeriod: comp; wVidSmet: word;  cSmet: comp; ddBeg, ddEnd: date; PrzPodr: word);
+VipInterface iTuneFormIzg           licensed (FREE) Parameters(wIsBal_PO: word);
+VipInterface iTuneProizvRep         licensed (FREE) Parameters(ccRepHead: comp);
+VipInterface iFormBal               licensed (FREE) Parameters(wPrzSvod: word; cRecBalansM: comp; w_Podr: word; cRecPodr, cRecPeriod: comp; bDate, eDate: date);
+VipInterface iFormBudj_OB           licensed (FREE) Parameters(cPar_SpBalans: comp; wDiapSpis: word; cPar_Izg: comp; wPar_Izgot, wPar_wPodr: word; cPar_Smet: comp; wClear, wCheck2: word; cPar_SpBalansSource: comp; wPar_VidBudj: word; cPar_IzgSource: comp; wPar_IzgotSource, wPar_wPodrSource, wVkIskl: word; dKoef: double; cPar_SpBalans_Saldo: comp);
+VipInterface iFormBudj_PD           licensed (FREE) Parameters(cPar_SpBalans, cPar_Podr: comp; wPar_Podr, wPar_OrgPodr: word; cPar_Smet: comp; wPar_Reorganization, wPar_Clear_Delete, wPar_VidSmet: word; cPar_BalansM, cPar_SpBalans_Saldo: comp; param_Date_PerBeg, param_Date_PerEnd: date);
+VipInterface iContrZatrSmets        licensed (FREE);
+VipInterface iDiagnoz_Excel         licensed (FREE) Parameters(cPar_SpBalans: comp; wPar_Podr: word; cPar_Podr: comp; wEdit: word);
+VipInterface iOtAbBudj              licensed (FREE) Parameters(cAbBudj: comp);
+VipInterface iOtBudjSh              licensed (FREE) Parameters(Mode: word; cBudjSh: comp);
+VipInterface iRCalcTune_Append      licensed (FREE);
+VipInterface iRCompareBudjet        licensed (FREE);
+VipInterface iRepFasovka            licensed (FREE);
+VipInterface iRepPererab            licensed (FREE) Parameters(wMode: word; cCurrent_UserDeskRep: comp);
+VipInterface iRepSmet               licensed (FREE) Parameters(mode: word; cnRec_Budj: comp);
+VipInterface iRepSumBudj            licensed (FREE) Parameters(ccBudjet: comp; isVisualRasp: boolean);
+VipInterface iRepSvodProtocol       licensed (FREE) Parameters(wOpen_Mode: word; cnRec_SpBalans: comp);
+VipInterface iSvod_Va_Tune          licensed (FREE);
+VipInterface iConnectFactoryFilial  licensed (FREE);
+VipInterface iDetectNewMHT          licensed (FREE);
+VipInterface GetPriorOper           licensed (FREE) Parameters(wPrVarCalc: word; ccRecTbl: comp; wBrowse_Param: word);
+VipInterface iRazvProtCalc          licensed (FREE) Parameters(cSpB: comp; pwFlRun: word);
+VipInterface iRepDvProd             licensed (FREE) Parameters(pNrec: comp);
+VipInterface iRepMoveSaleEx         licensed (FREE) Parameters(pNrec: comp);
+VipInterface iRepSvodDv             licensed (FREE) Parameters(pNrec: comp);

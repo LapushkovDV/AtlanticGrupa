@@ -1,0 +1,22 @@
+
+#ifdef ComponentVersion
+#component "L_MAKENAKL"
+#end
+
+VipInterface EdFormSoprParams licensed (FREE)      Parameters (TovParam : word;
+                                                               NaklDate, AktDate, FinDate, FinDateOb : date;
+                                                               FinParam, FinParamOb, TpNumAlgo : word;
+                                                               StNumNakl, StNumAkt, StNumFin : string;
+                                                               wFromDO, TypeSopr, wOnGroup, PlPor_ValDO : word);
+VipInterface FormSoprDocBatch
+Licensed (sell,buy)
+Parameters (TypeSopr : word);
+
+VipInterface GetNalF_Release  licensed (FREE)      Parameters (KodTov : comp;
+                                                               RKol   : double;
+                                                               dForm  : date;
+                                                               SpNrec : comp;
+                                                               NeOtg  : double;
+                                                               wParam : word);
+
+VipInterface GetNalF (GetNalF_Release);

@@ -1,0 +1,153 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонентой F_MBP
+
+#ifdef ComponentVersion
+#component "F_MBP"
+#end
+
+#include reptypes.vpp
+
+// --- Имеются vih-файлы для интерфейсов
+
+// VipInterface iMBP_Doc           licensed (FREE);
+// VipInterface IznosMBP           licensed (FREE);
+// VipInterface MBP_Base           licensed (FREE);
+// VipInterface MBP_Tune           licensed (FREE);
+// VipInterface MBP2SFO            licensed (FREE);
+
+
+// --- Локальные интерфейсы
+
+VipInterface atr2drag              licensed (FREE) ;
+
+VipInterface KatWrMbp              licensed (FREE) Parameters (p1 : Comp);
+VipInterface Line_MBP              licensed (FREE) Parameters (pPodr : comp; pMol : comp; pNotEdRazr : boolean; DateMove : date; fixedKol : word);
+VipInterface MBP2MCBatch           licensed (FREE) Parameters (opDate : Date; pPodT : Comp; pMolT : Comp; SoprKol : Longint);
+VipInterface MBP2OScheck           licensed (FREE) ;
+VipInterface MBPDups               licensed (FREE) ;
+VipInterface MBPInFrom             licensed (FREE) ;
+VipInterface MBPReglIznGetParams   licensed (FREE) Parameters (onDate : Date; wParam : Word; Filtr : Word; fltPod : Comp; fltMol : Comp; fltParty : Comp;incZero : Word; Kateg : Word);
+VipInterface MBPReglSpisGetParams  licensed (FREE) Parameters (onDate : Date; wParam1 : Word; wParam2 : Word; wParam3 : Word; fltPod : Comp; fltMol : Comp; fltPar : Comp; pCommand : Word);
+VipInterface MBP_Form_M17          licensed (FREE) Parameters (pMode : Word; pNRec : Comp);
+VipInterface MBP_Info              licensed (FREE) Parameters (pMBP, pPodr, pMol : comp);
+VipInterface MBP_ShowObor          licensed (FREE) Parameters (_TiDk : Word; _NRec : Comp);
+VipInterface rReeDocMBPPar         licensed (FREE) Parameters (dType : Word; frDate : Date; toDate : Date; wFDocs : Word; wParam : Word; fltPodF : Comp; fltMolF : Comp; fltPodT: Comp; fltMolT: Comp; fltNom : Comp; cPrSpis : Comp);
+VipInterface GrGiveSFO             licensed (FREE) Parameters (pNRec : Comp);
+VipInterface SrIspRep              licensed (FREE) Parameters (pCommand : Word);
+VipInterface MBP_Sums              licensed (FREE) Parameters (pDoc : comp);
+
+// --- Экспортируемые интерфейсы
+
+VipInterface Cart_MBP              licensed (
+                                              #include Cart_MBP.lih
+                                            ) Parameters (TypePanel : Word; NRecPanel : comp; pCommand : Word);
+VipInterface Check_MBPSoprHoz      licensed (FREE) ;  // Контроль соответствия операций МБП и Хозопераций, вызывается из меню
+VipInterface GetL_MBP              licensed (FREE)    Parameters (pCommand : Word); // Текущее наличие. СФО, Транспорт.
+VipInterface GetMBPSpisReason      licensed (FREE)    Parameters (c1 : comp);       // Меню, СФО.
+VipInterface getSFOCard            licensed (FREE)    Parameters (pCommand : Word; p1 : Comp); // СФО.
+VipInterface GetWrMbp              licensed (FREE)    Parameters (p1 : comp);       // Меню.
+VipInterface Inv_MBP               licensed (mbp,sfo,custom) Parameters (pCommand : Word; pNRec : Comp); // Меню
+VipInterface MakeMBPParams         licensed (FREE)    Parameters (wToAll : Word; cMetod : Comp; cForMC : Comp); // Склад
+VipInterface MakeMBPSrok           licensed (FREE)    Parameters (cMBP : Comp; Srok : Word; cPerson : Comp; tAll : Word);       // Склад
+VipInterface MBP2OS                licensed (mbp) Parameters (pCommand : Word);  // Меню
+VipInterface MBPInvParam           licensed ( // Меню
+                                              mbp,sfo,custom
+                                            ) Parameters (w1 : Word);
+
+// В Автотранспорте реализован полный аналог этого интерфейса
+VipInterface Pres_MBP              licensed (mbp) Parameters (ExternalUse : boolean; ecPodr : comp; ecMol : comp); // Меню.
+VipInterface ReglIzn_MBP           licensed ( // Меню
+                                              mbp,sfo,custom
+                                            ) Parameters (Kateg : Word);
+VipInterface ReglSpis_MBP          licensed ( // Меню
+                                              mbp,sfo,custom
+                                            ) Parameters (pCommand : Word);
+// Вызывается в СФО
+VipInterface RepParams             licensed (FREE) Parameters (pCommand : Word; // Используется
+                                                                   dFor : Date; // Больше не используются
+                                                                  dFrom : Date;
+                                                                    dTo : Date;
+                                                                 curGrp : Comp;
+                                                                  fltNom : Comp;
+                                                                  fltPod : Comp;
+                                                                  fltMol : Comp;
+                                                                  fltOrg : Comp;
+                                                                  fltGrp : Comp;
+                                                                  fltCrd : Comp;
+                                                                  NomFltStr : String[80];
+                                                                  PodFltStr : String[80];
+                                                                  MolFltStr : String[80];
+                                                                  OrgFltStr : String[80];
+                                                                  GrpFltStr : String[80];
+                                                                  CrdFltStr : String[80];
+                                                                  short     : Word;
+                                                                  expVal    : Word;
+                                                                  sortVal   : Word;
+                                                                  Flags     : Word;
+                                                                  dFlags    : Word;
+                                                                  fltInRep  : Word;
+                                                                  RepExcel  : Word;
+                                                                  SrokFlt   : word;
+                                                                  Srav      : word;
+                                                                  fltVid    : word;
+                                                                  VidFltStr : String;
+                                                                  fltDrag   : Comp;
+                                                                  DragFltStr: String[80];
+                                                                  fltSpis   : word;
+                                                                  fltNrm    : Comp;
+                                                                  NrmFltStr : String[80];
+                                                                  RoundRule : word;
+                                                                  RoundPrecition : double;
+                                                                  fltMet    : Comp;
+                                                                  MetFltStr : String[80];
+                                                                  fltPrSp    : Comp;
+                                                                  PrSpFltStr : String[80]);
+VipInterface RetMBPInMC            licensed ( // Меню
+                                              #include RetMBPInMC.lih
+                                            ) Parameters (TypeSopr : Word; pNRec : Comp);
+VipInterface RIzn_MBP              licensed ( // Меню
+                                              mbp,sfo,custom
+                                            ) Parameters (pCommand : word; vRepTunes : TRepParamsRec);
+VipInterface RMOVD_MBP             licensed (mbp)
+                                              Parameters (vRepTunes : TRepParamsRec);
+VipInterface RMOV_MBP              licensed ( // -//-
+                                              mbp,sfo,custom
+                                            ) Parameters (pCommand : word; vRepTunes : TRepParamsRec);
+VipInterface RNalByOld_MBP         licensed (mbp)
+                                              Parameters (vRepTunes : TRepParamsRec);
+VipInterface RNalD_MBP             licensed (mbp)
+                                              Parameters (vRepTunes : TRepParamsRec);
+VipInterface RNal_MBP              licensed ( // -//-
+                                              mbp,sfo,custom
+                                            ) Parameters (pCommand : word; vRepTunes : TRepParamsRec);
+VipInterface rReeDocMBP            licensed ( // Меню.
+                                              mbp,sfo,custom
+                                            ) Parameters (vRepTunes : TReeDocMBPRec);
+VipInterface uniteMBPCards         licensed (FREE); // Меню.
+VipInterface UniteMBPOpers         licensed (mbp);  // Меню.
+// Утилиты
+VipInterface CopyUserDescr         licensed (FREE);
+VipInterface RepMBPNewPrice        licensed (FREE);
+VipInterface MBPNewPrice           licensed (FREE);
+VipInterface MBPCntDocs            licensed (FREE);
+VipInterface MBPProvDocs           licensed (FREE);
+VipInterface CorrectMBPTo81        licensed (FREE);
+VipInterface VvodEx_Reestr         licensed (FREE);
+VipInterface MBPSpSort             licensed (FREE);
+VipInterface GetMetod              licensed (FREE) Parameters (cMBP, cMetod : comp; wToAll : word);
+VipInterface Make_Inv              licensed (FREE) Parameters (pCommand : Word; pKatSopr, pNRec : Comp);
+
+VipInterface GetAnyWrMet           licensed (FREE);
+VipInterface GetWriteMet           licensed (FREE) Parameters (p1 : Comp);
+
+VipInterface GetAnyPrSpis          licensed (FREE);
+VipInterface GetSpisReason         licensed (FREE) Parameters (p1 : Comp);
+
+// --- Экспортируемые диалоги
+
+DIALOG GETTYPEOPEREXPLMBPOUT  (Tip : Word);
+DIALOG GETTYPEOPERSTOCKMBPOUT (Tip : Word);
+
+// --- Экспортируемые меню
+
+Menu MBP;

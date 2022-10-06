@@ -1,0 +1,97 @@
+// Галактика 8.00   2006г.
+// Описание экспортируемых интерфейсов компонента L_NalNakl
+
+#ifdef ComponentVersion
+#component "L_NalNakl"
+#end
+
+
+VipInterface CreateNalNakl_Paket
+  Licensed (SELL, BUY, POSTPOL, B_FINANS)
+  Parameters(pDirect: word);
+
+VipInterface GetNalNakl
+  Licensed (FREE)
+  Parameters (p1: comp;
+              pDirect, pBounds: word;
+              pKatOrg, pBasedoc, pStepdoc: comp;
+              pStatus, pTipNum: word
+             );
+
+VipInterface GetNalNTipDoc
+  Licensed (FREE)
+  Parameters (p1, pTipGal, pBounds: word);
+
+VipInterface iParamPaketNN
+  Licensed (FREE)
+  Parameters (cTuneRec: comp; TuneID, pDirect: word);
+
+VipInterface NalNakl
+  Licensed
+  (
+  #include NALNAKL.lih
+  )
+  Parameters (p1: comp; pDirect, pBounds: word;
+              pKatOrg, pBaseDoc, pStepDoc: comp;
+              pStatus, pTipNum, pAction: word);
+
+VipInterface NalnNakl
+  Licensed (FREE)
+  Parameters (GloSchFact :comp; GloDirect :word;
+              GloKatOrg, GloBaseDoc, GloStepDoc :comp);
+
+VipInterface NalNakl_View
+  Licensed (FREE)
+  Parameters (_wTable, _wTiDkGal: word; _cRecDoc: comp; _dDate: date);
+
+VipInterface NalNNNP
+  Licensed (FREE)
+  Parameters (pDirect, wPrintParam :word);
+
+VipInterface NalnPlat
+  Licensed (FREE)
+  Parameters (GloSchFact :comp; GloDirect :word;
+              GloKatOrg, GloBaseDoc, GloStepDoc :comp);
+
+VipInterface NalnReep
+  Licensed (FREE)
+  Parameters (pDirect, pSwitcher, pSchFactTipNum, pByNumEnable :word;
+              pNum1, pNum2 :string;
+              pYear :word;
+              pd1, pd2 :date;
+              pFilterParam :word;
+              pBou, pDoc :longint;
+              pSchfKatOrg, pSchfStepDoc :comp;
+              pGroup, pSort, pPrintParam:word
+             );
+
+VipInterface NalNRees
+  Licensed (FREE)
+  Parameters (pDirect :word;
+              pNrec   :comp;
+              pSwitcher2, pFiltDate :word;
+              pSortFact :boolean;
+              pd12, pd22:date;
+              pFiltNum, pSchFactTipNum2 :word;
+              pNum12, pNum22 :string;
+              pYear2 :word;
+              pFiltOrg :word; pSchfKatOrg2 :comp;
+              pFiltDO  :word; pSchfStepDoc2:comp;
+              pFiltState, pSchfSta2 :word
+             );
+
+VipInterface NnBookPZ
+  Licensed
+  (
+  #include NNBOOKPZ.lih
+  )
+  Parameters (p1: comp; pDirect, pBounds: word;
+              pKatOrg, pBaseDoc, pStepDoc: comp;
+              pRegDoc: word; pAction: word);
+
+VipInterface RRDclNDS
+  Licensed (FREE);
+
+VipInterface SvNalNakl
+  Licensed (SELL, POSTPOL)
+  Parameters (GloDirect : Word);

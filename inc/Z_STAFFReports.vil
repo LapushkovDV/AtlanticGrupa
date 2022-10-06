@@ -1,0 +1,200 @@
+#ifdef ComponentVersion
+#component "Z_STAFFReports"
+#end
+
+vipinterface Form6T licensed(free);
+vipinterface Jubiliar licensed(free) parameters (VedRazrez : word);
+vipinterface Jubiliar1 licensed(free) parameters (VedRazrez: word; MarkKat: longint; DeptMarker: longint);
+vipinterface StaffMovement licensed(free);
+vipinterface ReportGAZ_30
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface GrRepAppoint licensed(free);
+vipinterface AttJorn
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface AttJornI licensed(free) parameters (VInter: CommonFiltrDept; JobMarker: longInt);
+vipinterface AttSprav licensed(free);
+vipinterface BolnControl
+  licensed (staffmainmenu,staffmainmenu2)  parameters (numReport: integer);
+vipinterface ChangeTarif licensed (free);
+vipinterface EductReports
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface F6ReservReport
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface FirmReports licensed(free) parameters (numReport: integer);
+vipinterface IFJournal
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface ReportFORM_25
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface Form6TN
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface Form9
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface Form9a
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface Gazprom_27God licensed (free);
+vipinterface Gen_Post_FRep licensed(free);
+vipinterface GrafikOtpusk licensed(free) parameters (Filtr: boolean);
+vipinterface Set_Contract licensed(free) parameters (PersNRec: comp; ContDocNRec: comp; AppNrec : comp);
+vipinterface RunUsersRep_Jubiliar licensed(staffmainmenu, staffmainmenu2);
+vipinterface RunUsersRep_Pensioner licensed(staffmainmenu, staffmainmenu2);
+vipinterface JubiliarI2 licensed(free) parameters (VInter: CommonFiltr; BeginDate: date; EndDate: date; BeginAge: word; EndAge: word; multiplicity: integer; incl: word);
+vipinterface JubiliarI licensed(free) parameters (VInter: CommonFiltr; VedYear: integer);
+vipinterface Kpi_PossibleFields  licensed(staffmainmenu, staffmainmenu2) parameters (par_out_NRec : word; FieldMarker : longint; DoubleField : boolean; _Field_Code : word);
+vipinterface NewFund licensed(free);
+vipinterface pEducJorn
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface pEducJornI licensed(free) parameters (VInter: CommonFiltrDept; JobMarker: longInt);
+vipinterface ChangPersons licensed(free) parameters (Report : byte);
+vipinterface ChangPersons2 licensed(free) parameters (VInter: CommonFiltrDept; JobMarker: longInt);
+vipinterface DisPersons2 licensed(free) parameters (VInter: CommonFiltrDept; JobMarker: longInt);
+vipinterface DisPersons licensed(free) parameters (Report: byte);
+vipinterface StaffPersReports licensed(free) parameters (cPersonPar : comp);
+vipinterface StaffPersRepAdjust licensed(free);
+vipinterface persSpec licensed(free);
+vipinterface RepVacation licensed(free) parameters (Report: byte);
+vipinterface RepVacation2 licensed(free);
+vipinterface ZamPersons2 licensed(free);
+vipinterface ZamPersons licensed (free);
+vipinterface IPFMEMBER licensed(free);
+vipinterface IProfVred licensed(free);
+vipinterface AwardPersons2 licensed(free) parameters (VInter: CommonFiltrDept; JobMarker: longInt);
+vipinterface AwardPersons licensed(free);
+vipinterface PunishPersons licensed(free);
+vipinterface PunishPersons2 licensed(free) parameters (VInter: CommonFiltrDept; JobMarker: longInt);
+vipinterface PersonsReports licensed(free) parameters (PersNrec: comp; AppNRec: comp; numReport: integer);
+vipinterface PersonsReports_2004
+  licensed
+  (
+    #include PersonsReports_2004.lih
+  ) parameters (PersNrec: comp; AppNRec: comp; numReport: integer);
+vipinterface RepFOT licensed(free);
+vipinterface RepAppoint2 licensed(free) parameters (VInter: CommonFiltrDept; JobMarker: longInt; wStatusApp: word);
+vipinterface RepAppoint licensed(free) parameters (Report: byte);
+vipinterface Select6TForm licensed (free);
+
+vipinterface StrBelTel licensed(staffmainmenu, staffmainmenu2);
+vipinterface StrBelTel_2 licensed(staffmainmenu, staffmainmenu2);
+vipinterface SredneSpisChisl licensed(free);
+vipinterface SsBlokShema licensed(staffmainmenu, staffmainmenu2);
+vipinterface SsReports licensed(free);
+vipinterface ST_ENERGO licensed (free);
+vipinterface ST_FREE licensed (free);
+vipinterface StaffStdReports licensed(free);
+vipinterface GrRepSumPers licensed(free);
+vipinterface Report_SZV_K licensed (free) parameters(TypeDoc: word);
+vipinterface StaffStructReports licensed(free) parameters (numReport: integer);
+vipinterface T3_2004
+  licensed (staffmainmenu,staffmainmenu2) parameters (numReport: integer);
+vipinterface StaffUnloadPsn1 licensed(free) parameters (RepParent: comp);
+vipinterface StaffUnloadPsn2 licensed(free) parameters (RepParent: comp);
+vipinterface StaffUnloadSS3 licensed(free) parameters (RepParent: comp);
+vipinterface StaffUnloadGrp4 licensed(free) parameters (RepParent: comp);
+vipinterface StaffUnload5 licensed(free) parameters (RepParent: comp);
+vipinterface IUVFORM licensed(free);
+vipinterface IVJournal licensed(free);
+vipinterface IYoungExpert licensed(free);
+vipinterface IYExpMove licensed(free);
+vipinterface PrikazTarif licensed(free) parameters (TitleDocNrec: comp; ContDocNrec: comp);
+vipinterface VacationGraf licensed(free);
+vipinterface MOVEYOUNGPERSONS licensed(free);
+vipinterface NonWPens licensed(free);
+vipinterface KpiSetups licensed(free) parameters (CurRepCode: word);
+vipinterface NFormT1_Prolong licensed(free) parameters (TitleDocNrec: comp; ContDocNrec: comp);
+vipinterface NFormT1_Prolong_2004 licensed(free) parameters (TitleDocNrec: comp; ContDocNrec: comp);
+vipinterface FormT1 licensed(free) parameters (PersNrec: comp; AppNrec: comp);
+vipinterface FormT5 licensed(free) parameters (PersNrec: comp; NewAppNrec: comp; cTitleDoc: comp; OldAppNrec: comp);
+vipinterface FormT6 licensed(free) parameters (DocNrec: comp; sFIO: string[100]);
+vipinterface FormT8 licensed(free) parameters (PersNrec: comp; DocNmb: string[20]; DocDate: date);
+vipinterface NFormT1 licensed(free) parameters (PersNrec: comp; AppNrec : comp);
+vipinterface Contract_FR licensed(free) parameters (PersNrec: comp; AppNrec : comp; ContDocNRec : comp);
+vipinterface NFormT1_2004 licensed(free) parameters (PersNrec: comp; AppNrec : comp);
+vipinterface NFormT11 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFormT11_2004 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+//vipinterface NFormT5 licensed(free);
+vipinterface NFormT6 licensed(free) parameters (DocNrec: comp);
+vipinterface NFormT6_2004 licensed(free) parameters (DocNrec: comp);
+vipinterface NFormT8 licensed(free) parameters (PersNrec: comp; AppNRec: comp; ContDocNRec: comp; DocNmb: string[20]; DocDate: date);
+vipinterface NFormT8_2004 licensed(free) parameters (PersNrec: comp; AppNRec: comp; ContDocNRec: comp; DocNmb: string[20]; DocDate: date);
+vipinterface NFrmT11A licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT11A_2004 licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT1A licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT1A_2004 licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT5A licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT5A_2004 licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT6A licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT6A_2004 licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT8A licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT8A_2004 licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface Form_04_T6 licensed(free) parameters (DocNrec: comp);
+vipinterface NFrmT1A_Prolong licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT1A_Prolong_2004 licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT5A_S licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT5A_S_2004 licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT5A_Z licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmT5A_Z_2004 licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface Frm_04_T6A licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFrmPunis_2004 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFRMPunis_A_2004 licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface Form6T_2004 licensed (free);
+vipinterface NFrmPunis licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFRMPunis_A licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFormRD02 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NformRD02a licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFormRD09 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFormRD20 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFormRD35 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFormRD36 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFormRD37 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFormRD43 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NformRD40a licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFormRD50 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFormRD50a licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFormRD60 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFormRD60a licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFormRD62 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFormRD62a licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface NFormRD72 licensed(free) parameters (ContDocNRec: comp);
+vipinterface NFormRD72a licensed(free) parameters (PartDocNRec: comp);
+vipinterface NFormRD90 licensed(free) parameters (cDoc: comp; PersNrec: comp; ContDocNRec: comp; iOper: integer);
+vipinterface NFormRD90a licensed(free) parameters (cDoc: comp; iOper: integer);
+vipinterface GosStat licensed(free) parameters (RDateS: date; RDateE: date);
+vipinterface GosStatStart licensed(free);
+vipinterface Users_Rep_List
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface Run_Users_Rep_List
+  licensed
+  (
+    #include Run_Users_Rep_List.lih
+  ) parameters (NrecPersons : comp);
+vipinterface SHPZonSHR licensed(free);
+vipinterface BeforeReport licensed(free) parameters (PersnRec: comp);
+vipinterface NBBForMyatlikov licensed(free);
+vipinterface NBB_SHR licensed(free);
+vipinterface NBB_Vacancy licensed(free);
+vipinterface KeraminForMyatlikov licensed(free) parameters (StrTitleNrec: comp; dateStsPersnRec: date);
+vipinterface Keramin_SHR licensed(free) parameters (Title: word; StrTitleNrec: comp; VidOtch: word; dateSts: date);
+vipinterface Keramin_Vacancy licensed(free) parameters (Title: word; StrTitleNrec: comp);
+vipinterface StaffWorkingBalance licensed(free);
+vipinterface RunUsersRep_StaffWorkingBalance licensed(staffmainmenu, staffmainmenu2);
+vipinterface FavourProf licensed(free);
+vipinterface BelKommunMashForMyatlikov licensed(free) parameters (StrTitleNrec: comp; dateStsPersnRec: date);
+vipinterface BelKommunMash_SHR licensed(free) parameters (Title: word; StrTitleNrec: comp; VidOtch: word; dateSts: date);
+vipinterface BelKommunMash_Vacancy licensed(free) parameters (Title: word; StrTitleNrec: comp; VidOtch: word; dateSts: date);
+vipinterface ListPersonsNotInOtpusk licensed (free);
+vipinterface ListPersonsNotInOtpuskFinal licensed (free);
+vipinterface PZSTK licensed(free);
+vipinterface NastrNorthRaises licensed(free);
+vipinterface NorthRaisesReport licensed(free) parameters (DataBeg: date; MarkerPodr: longint; SortBy: word; Level: word);
+vipinterface VIDNejDay licensed(free);
+vipinterface VSTO_chisl licensed(free);
+vipinterface VSTO_Region licensed(free);
+vipinterface StaffReportRB licensed(free);
+vipinterface StaffReportRB_2009 licensed(free);
+vipinterface TestStsReport licensed(free);
+vipinterface OrderStaffListT licensed(free) parameters (StrTitleNrec: comp; dateSts: date);
+vipinterface OrderStaffList licensed(free) parameters (StrTitleNrec: comp; dateSts: date);
+vipinterface SMNP_OrderStaffListT licensed(free) parameters (StrTitleNrec: comp; dateSts: date);
+vipinterface SMNP_OrderStaffList licensed(free) parameters (StrTitleNrec: comp; dateSts: date);
+vipinterface OrderStaff licensed(free) parameters (StrTitleNrec: comp; dateSts: date);
+vipinterface OrderTransneft licensed(free) parameters (StrTitleNrec: comp; dateSts: date);
+vipinterface OrderTransneft2 licensed(free) parameters (dateSts: date);

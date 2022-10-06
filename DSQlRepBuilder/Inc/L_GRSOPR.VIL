@@ -1,0 +1,8 @@
+
+#ifdef ComponentVersion
+#component "L_GRSOPR"
+#end
+
+VipInterface GetNaklFromTTI licensed (FREE) Parameters (pKnDriver: comp; pTransp : comp; pBegDate : date; pEndDate: date; pVal: comp);
+VipInterface GrSopr         licensed (FREE) Parameters (TypeSopr : word);
+VipInterface GetGrSopr      licensed (FREE) Parameters (wGrSopr: word; pNRec: comp);

@@ -1,0 +1,27 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - складской учет - инвентаризация
+// Нумерация позиций спецификации инвентаризации в соответствии с указанным порядком
+//********************************************************************************
+
+#ifndef _ReorderSpInv_vih_
+#define _ReorderSpInv_vih_
+
+#ifdef ComponentVersion
+#component "L_Sklad"
+#end
+
+objinterface IReorderSpInv;
+  #doc
+  Заново пронумеровать все позиции спецификации
+  #end
+  Function Reorder(
+    _cInvTab: comp; //#docl InvTab.NRec
+    _vidDoc: word;  //#docl InvTab.TipDoc
+    _sortMc: word   //#docl порядок сортировки
+  ): word;          //#docl возвращает количество позиций спецификации
+end;
+
+vipinterface ReorderSpInv implements IReorderSpInv licensed(free);
+
+#endif // _ReorderSpInv_vih_

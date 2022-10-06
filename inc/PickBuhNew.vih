@@ -1,0 +1,172 @@
+//------------------------------------------------------------------------------
+//                                                      (c) Корпорация ГАЛАКТИКА
+//------------------------------------------------------------------------------
+// Галактика 7.12 - Бухгалтерский контур
+// Обьектный интерфес работы с таблицей PickBuhNew
+//------------------------------------------------------------------------------
+
+#ifndef _PickBuhNew_vih_Included
+#define _PickBuhNew_vih_Included
+
+#ifdef ComponentVersion
+#Component "F_BuhRep"
+#end
+
+!-------------------------------------------------------------------------------
+Table struct PickBuhNew
+(
+   lEntity  : longint   "насятройка, хранящая данные"
+  ,KodTable : word      "таблица"
+  ,PickRec  : tNRec     "номер элемента в списке"
+  ,PickKod  : tSchet3   "код или NRec элемента"
+  ,Schet    : tSchet3   "бухг.счет"
+  ,SubKau   : tSchet3   "субсчет/КАУ"
+  ,Name     : tName     "имя фильтра"
+  ,Pick     : integer   "порядок выбора"
+  ,PickKol  : double    "количество"
+)
+with index
+(
+   PickBuhNewRec = lEntity + KodTable + PickRec
+  ,PickBuhNewKod = lEntity + KodTable + PickKod
+  ,PickBuhNewSch = lEntity + KodTable + Schet + PickKod
+  ,PickBuhNewPck = lEntity + KodTable + Pick
+);
+!-------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+#doc
+Обьектный интерфес работы с таблицей PickBuhNew. Аналог PickBuh,
+но для работы с несколькими экземплярами одновременно.
+#end
+ObjInterface ObjPickBuhNew;
+//------------------------------------------------------------------------------
+#doc
+Подсчет количесва записей по коду таблицы
+#end
+function GetCountItem         (lEntity: longint; wTab: word):                         word;
+//------------------------------------------------------------------------------
+#doc
+Существуют ли записи по коду таблицы
+#end
+function FoundInPick          (lEntity: longint; wTab: word):                         boolean;
+//------------------------------------------------------------------------------
+#doc
+Вернуть PickRec первой найденной по коду таблицы записи
+#end
+function FoundInPick_GetRec   (lEntity: longint; wTab: word):                         comp;
+//------------------------------------------------------------------------------
+#doc
+Вернуть PickKod первой найденной по коду таблицы записи
+#end
+function FoundInPick_GetKod   (lEntity: longint; wTab: word):                         tSchet3;
+//------------------------------------------------------------------------------
+#doc
+Вернуть Schet первой найденной по коду таблицы записи
+#end
+function FoundInPick_GetSchet (lEntity: longint; wTab: word):                         tSchet3;
+//------------------------------------------------------------------------------
+#doc
+Существуют ли запись по коду таблицы и PickKod
+#end
+function FoundInPickByKod     (lEntity: longint; wTab: word; sKod: tSchet3):          boolean;
+//------------------------------------------------------------------------------
+#doc
+Существуют ли запись по коду таблицы и PickRec
+#end
+function FoundInPickByRec     (lEntity: longint; wTab: word; cRec: comp):             boolean;
+//------------------------------------------------------------------------------
+#doc
+Есть ли субсчет
+#end
+function FoundSubSch          (lEntity: longint; Sch: tSchet3; Sub: tSubSch):         boolean;
+//------------------------------------------------------------------------------
+#doc
+Найти первый попавшийся субсчет и вернуть его и его счет
+#end
+function FoundFirstSub        (lEntity: longint; var Sch: tSchet3; var Sub: tSubSch): boolean;
+//------------------------------------------------------------------------------
+#doc
+Есть ли в PickBuh субсчета указанного счета
+#end
+function FoundSubForSchet     (lEntity: longint; Sch: tSchet3):                       boolean;
+//------------------------------------------------------------------------------
+#doc
+Очистка таблицы
+#end
+function DeletePickBuh        (lEntity: longint):                                     boolean;
+//------------------------------------------------------------------------------
+#doc
+Удаление по коду таблицы
+#end
+function DeleteItem           (lEntity: longint; wTbl: word):                         boolean;
+//------------------------------------------------------------------------------
+#doc
+Удаление по коду таблицы и PickRec
+#end
+function DeleteItemByRec      (lEntity: longint; wTab: word; cRec: comp):             boolean;
+//------------------------------------------------------------------------------
+#doc
+Удаление по коду таблицы и Счету
+#end
+function DeleteItemBySchet    (lEntity: longint; wTab: word; Sch: tSchet3):           boolean;
+//------------------------------------------------------------------------------
+#doc
+Скопировать записи и вернуть количество
+#end
+function CopyItem             (lEntity: longint; wOld, wNew: word):                   word;
+//------------------------------------------------------------------------------
+#doc
+Перенести записи на новый код таблицы и вернуть количество
+#end
+function MoveItem             (lEntity: longint; wOld, wNew: word):                   word;
+//------------------------------------------------------------------------------
+#doc
+Вставить запись (все поля)
+#end
+function InsertFullRecord  (lEntity: longint;
+                            wTbl:    word;
+                            cRec:    comp;
+                            sKod,
+                            sSch,
+                            sSub,
+                            sName:   string;
+                            iPick:   integer;
+                            dPick:   double):                                         boolean;
+//------------------------------------------------------------------------------
+#doc
+Вставить запись (все поля для аналитики)
+#end
+function InsertAnRecord    (lEntity: longint;
+                            wTbl:    word;
+                            cRec:    comp;
+                            sKod,
+                            sName:   string;
+                            iPick:   integer):                                        boolean;
+//------------------------------------------------------------------------------
+#doc
+Создать старый PickBuh из нового PickBuhNew
+#end
+procedure MakePickBuh         (lEntity: longint);
+//------------------------------------------------------------------------------
+#doc
+Создать старый PickBuh из нового PickBuhNew, но только для wTab
+#end
+procedure MakePickBuhItem     (lEntity: longint; wTab: word);
+//------------------------------------------------------------------------------
+#doc
+Создать PickBuhNew из старого PickBuh
+#end
+procedure GetPickBuh          (lEntity: longint);
+//------------------------------------------------------------------------------
+#doc
+Создать PickBuhNew из старого PickBuh, но только для wTab
+#end
+procedure GetPickBuhItem      (lEntity: longint; wTab: word);
+//------------------------------------------------------------------------------
+end;
+//------------------------------------------------------------------------------
+VipInterface PickBuhNew implements ObjPickBuhNew #Licensed_Free;
+//------------------------------------------------------------------------------
+
+#end // _PickBuhNew_vih_Included

@@ -1,0 +1,79 @@
+/*
+drop table ATL_MERCURY_LOG;
+drop table ATL_MERCURY_HEAD;
+drop table ATL_MERCURY_SPEC;
+*/
+
+Create table  ATL_MERCURY_LOG "Лог запуска заданий импорта WMS"
+With table_Code = 31599
+With replace
+with tableoptions Branched
+(
+    NRec      : comp "Номер записи"
+  , LogDate   : DateTime "Дата-время запуска задания"
+  , State     : word "0draft,1readyToSend,2send,3NotNeedToSen"
+  , timeSend  : DateTime "Дата-время посылки на почту"
+  , Email     : String "E-Mails"
+  , cEmail    : String "Copy Emails"
+  , Log       : LVAR  "Сам лог импорта"
+)
+With index
+(
+  i_nrec  = NRec(Unique, Surrogate, Journal),
+  i_LogDate = LogDate
+)
+;
+
+Create table  ATL_MERCURY_HEAD "Шапка из файла меркурия"
+With table_Code = 31600
+With replace
+with tableoptions Branched
+(
+    NRec      : comp "Номер записи"
+  , cSopr     : ref(katsopr) "Ссылка на накладную"
+  , filename  : string "название файла"
+  , DO_Num    : string "Номер ДО из файла"
+  , Relevant  : string "1-есть товары с ЭВСД"
+  , PalletCnt : string "количество паллет"
+  , isOK      : boolean "Корректный документ"
+  , ErrDescr  : String "Описание ошибок"
+  , cMercuryLog : ref(ATL_MERCURY_LOG) "Ссылка на операцию импорта"
+  , ExportedDesadv : boolean "был сформирован Desadv"
+  , ExportedDESMER : boolean "был сформирован DESMER"
+  , ExportedDESSCC : boolean "Был сформирован DESSCC"
+  , ExportedInvoic : boolean "Был сформирован Invoice"
+)
+With index
+(
+  i_nrec  = NRec(Unique, Surrogate, Journal)
+  ,i_cSopr = cSopr
+  ,i_cLog = cMercuryLog
+)
+;
+
+Create table  ATL_MERCURY_SPEC "Спецификация из файла меркурия"
+With table_Code = 31601
+With replace
+with tableoptions Branched
+(
+    NRec       : comp   "Номер записи"
+  , cHead      : ref(ATL_MERCURY_HEAD)   "ссылка на шапку документа"
+  , SAP_CODE   : string "SAP Код МЦ из файла"
+  , CNT        : double "количество"
+  , ED         : string "обозначение единицы измерения"
+  , DateExpire : string "Дата окон. ср.годн. отгр. товаров"
+  , DateCreate : string "Дата произв. отгр. товаров"
+  , UUID       : string "Уникальный номер ЭВСД"
+  , PalletSSCC : string "SSCC-код паллеты, где расположен товар"
+  , cSpSopr    : ref(spSopr)   "ссылка на позицию накладной"
+  , cMc        : ref(katmc)   "ссылка на МЦ"
+  , ErrDescr  : String "Описание ошибок"
+)
+With index
+(
+  i_nrec  = NRec(Unique, Surrogate, Journal),
+  i_cSopr = cSpSopr,
+  i_cHead = cHead
+)
+;
+

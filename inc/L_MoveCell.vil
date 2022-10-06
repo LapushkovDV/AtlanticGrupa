@@ -1,0 +1,10 @@
+#ifdef ComponentVersion
+#component "L_MOVECELL"
+#end
+
+vipinterface GetCellVal    licensed (FREE) Parameters (pMC, c1 : comp; pPrMC, pRezim : word);
+vipinterface GetGrMoveCell licensed (FREE) Parameters (c1 : comp);
+vipinterface GetMoveCellMC licensed (FREE) Parameters (c1 : comp);
+vipinterface GetMoveCell   licensed (FREE) Parameters (prmMoveCell : comp);
+vipinterface GetShipment   licensed (FREE) Parameters (prmShipment : comp);
+vipinterface GetWayMove    licensed (FREE) Parameters (c1 : comp);

@@ -1,0 +1,89 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 8.1 - Логистика
+// Формирование складского ордера
+//******************************************************************************
+
+#define __MAKE_ORDER__
+
+#include MakeOrder.vih
+
+//******************************************************************************
+Interface MakeOrder;
+
+
+//******************************************************************************
+// пользовательская функция выполняется перед удалением ордера False - прервать удаление
+Function OnBeforeDeleteOrder: boolean;
+{
+  OnBeforeDeleteOrder := inherited::OnBeforeDeleteOrder;
+}
+
+
+//******************************************************************************
+// пользовательская процедура выполняется после удаления ордера
+Procedure OnAfterDeleteOrder;
+{
+  inherited::OnAfterDeleteOrder;
+}
+
+
+//******************************************************************************
+// пользовательская функция выполняется перед формированием приходного ордера False - прервать формирование
+Function OnBeforeMakePrihOrder: boolean;
+{
+  OnBeforeMakePrihOrder := inherited::OnBeforeMakePrihOrder;
+}
+
+
+//******************************************************************************
+// пользовательская процедура выполняется после формирование приходного ордера
+Procedure OnAfterMakePrihOrder;
+{
+  inherited::OnAfterMakePrihOrder;
+}
+
+//******************************************************************************
+// пользовательская функция выполняется перед формированием расходного ордера False - прервать формирование
+Function OnBeforeMakeRashOrder: boolean;
+{
+  OnBeforeMakeRashOrder := inherited::OnBeforeMakeRashOrder;
+}
+
+
+//******************************************************************************
+// пользовательская процедура выполняется после формирование расходного ордера
+Procedure OnAfterMakeRashOrder;
+{
+  inherited::OnAfterMakeRashOrder;
+}
+
+//******************************************************************************
+HandleEvent
+
+cmInit:
+{
+  if (inherited :: HandleEvent(cmInit) = heAbort)
+  {
+    Abort; Exit
+  }
+}
+
+cmOnVipLoad:
+{
+  if (inherited :: HandleEvent(cmOnVipLoad) = heAbort)
+  {
+    Abort; Exit
+  }
+}
+
+cmOnVipUnload:
+{
+  if (inherited :: HandleEvent(cmOnVipLoad) = heAbort)
+  {
+    Abort; Exit
+  }
+}
+
+end;
+End.

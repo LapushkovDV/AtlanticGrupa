@@ -1,0 +1,29 @@
+#ifndef __AVTO_TYPES_VPP__
+#define __AVTO_TYPES_VPP__
+
+Type
+  tAvtoOperFilter = record
+  //***************
+    JournalPos
+      : comp;
+  //***************
+    wMode
+      : word;
+  //***************
+    BegDate
+  , EndDate
+      : date;
+  //***************
+  end;
+
+  tAvtoZarFilter = record
+  //***************
+    YearBeg
+  , MonthBeg
+  , YearEnd
+  , MonthEnd
+      : word;
+  //***************
+  end;
+
+#end // __AVTO_TYPES_VPP__

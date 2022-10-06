@@ -1,0 +1,36 @@
+#ifdef ComponentVersion
+#component "L_Box"
+#end
+
+VipInterface act_quick licensed (FREE) parameters (_cPodrFrom, _cBox, _cMC, _cRec :comp);
+VipInterface BoxAdd licensed (FREE) Parameters (_cSpSopr, _cPodr, _cMC, _cParty :comp; _wType :word);
+VipInterface BoxBirka licensed (FREE) parameters (_cRec :comp; _Mode :word);
+VipInterface BoxesHistory licensed (FREE) Parameters (p1 :comp);
+VipInterface CleanSpBox licensed (FREE);
+VipInterface EditHRepBoxTunes licensed (FREE) Parameters (CurCode :word; pnRec :comp);
+VipInterface EditHRepSpOrdTunes licensed (FREE) Parameters (CurCode :word; pnRec :comp);
+VipInterface EditSpOrderInBox licensed (FREE) Parameters (pNRecSpOrder :comp);
+VipInterface FillKoefs licensed (FREE) parameters (_cMC :comp; _cEd :comp);
+VipInterface GetBox licensed (FREE) Parameters (p1, p2 :comp);
+VipInterface GetBox1 licensed (FREE) Parameters (p1 :comp);
+VipInterface GetBox2 licensed (FREE) Parameters (p1, p2 :comp; mode :word);
+VipInterface GetInfoMCinBox licensed (FREE) Parameters (cMC_ :comp);
+VipInterface GetMC4Moving licensed (FREE) Parameters (pcSelKatSopr, pcBoxTo :comp; pcFromF3 :word);
+VipInterface GetResHr licensed (FREE) Parameters (c1 :comp);
+VipInterface HRepSaldoBox licensed (FREE);
+VipInterface HRepSklOrd licensed (FREE);
+VipInterface InBoxPlan licensed (FREE) Parameters (pNRecSpSopr :comp);
+VipInterface InBoxPlan02 licensed (FREE) Parameters (pNRecSpSopr :comp);
+VipInterface InternalMovingAct licensed (FREE);
+VipInterface intfAddCellsToPl licensed (FREE) Parameters (_cSpSopr, _cPodr, _cMC, _cParty :comp);
+VipInterface KatBoxesEdit licensed (FREE) Parameters (cBox, cPodrrec :comp);
+VipInterface KlResHr licensed (FREE) Parameters (c1 :comp);
+VipInterface MovBoxPlan licensed (FREE) Parameters (_cSpSopr :comp);
+VipInterface NastrKorrectBox licensed (FREE);
+VipInterface KorrectBox licensed (FREE) Parameters (needResHr, needVisual, needReport, needEdit, needCancelEdit, needCorrectSaldoBySpBox, needBoxParams :boolean);
+VipInterface SpOrderInBox licensed (FREE) Parameters (pNRecSpOrder :comp);
+VipInterface SpOrderOutBox licensed (FREE) Parameters (pNRecSpOrder :comp);
+VipInterface TekMCInBox licensed (FREE);
+VipInterface GetBoxIer licensed (FREE) Parameters (pcSkl:comp; pwIer: word; pbMulti, pbCanSelLevel: boolean; pcBox: comp);
+VipInterface MCInBoxIer licensed (FREE) Parameters (cpBox: comp; wpIer: word);
+VipInterface FreeBoxRep licensed (FREE);

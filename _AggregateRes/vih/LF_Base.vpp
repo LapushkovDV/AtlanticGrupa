@@ -1,0 +1,375 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Логистика
+// функции для ФИФО по складам
+//******************************************************************************
+#include MSview.var
+
+//******************************************************************************
+
+#include saldomcs.vpp
+
+//******************************************************************************
+
+Create view LF_Prih
+From
+  SpOrder
+, SpOrder SpDooc
+;
+
+//******************************************************************************
+
+Create view LF_Sort
+var
+//------------------------------------------------------------------------------
+  dDate_
+                : Date;
+//------------------------------------------------------------------------------
+  cMC_
+, ccPodr_
+                : comp;
+//------------------------------------------------------------------------------
+As select
+  SpOrder.*
+, KatParty.*
+, SklOrder.*
+//------------------------------------------------------------------------------
+from
+  SpOrder(readOnly)
+, KatParty(readOnly)
+, SklOrder
+//------------------------------------------------------------------------------
+where
+((
+        0                    == SpOrder.SP
+  AND   0                    == SpOrder.vidOrder
+  AND   cMC_                 == SpOrder.cMC
+  AND   1                    == SpOrder.empty
+  AND   dDate_               == SpOrder.dOrd
+  AND  (
+        ccPodr_             = SpOrder.ccPodr
+    AND SpOrder.kol        >= GetPresision_forKol
+    AND SpOrder.ostatok    >= GetPresision_forKol
+       )
+
+  AND   SpOrder.cParty       == KatParty.NRec
+  AND   SpOrder.cSklOrder    == SklOrder.NRec
+
+))
+Order ord1 external by
+   KatParty.kod, SpOrder.cParty, SklOrder.nOrder, SpOrder.NRec;
+
+//******************************************************************************
+
+Function GetPrih( cMC_     : comp;
+                  cPodr_   : comp;
+                  cParty_  : comp;
+                  dDate_   : Date
+                ): comp;
+var aKit, aKitPrih : comp;
+{
+  GetPrih  := 0;
+  aKit     := oMTRFun.GetKitKau(coSpSopr, SpSopr.nRec);
+
+  if cParty_ <> 0
+  {
+    if LF_Prih.GetFirst SpOrder where (( 0        == SpOrder.SP       AND
+                                         0        == SpOrder.vidOrder AND
+                                         cMC_     == SpOrder.cMC      AND
+                                         1        == SpOrder.empty    AND
+                                         dDate_  >>= SpOrder.dOrd     AND
+
+                                        (cPodr_    = SpOrder.ccPodr  AND
+                                         cParty_   = SpOrder.cParty  AND
+                             SpOrder.kol     >= GetPresision_forKol  AND
+                             SpOrder.ostatok >= GetPresision_forKol)  )) <> tsOk
+      Exit;
+
+    GetPrih := LF_Prih.SpOrder.NRec;
+    if (aKit = oMTRFun.GetKitKau(coSpOrder, LF_Prih.SpOrder.NRec))
+      Exit;
+
+    while TRUE Do
+    {
+      if LF_Prih.GetNext SpOrder where (( 0        == SpOrder.SP       AND
+                                          0        == SpOrder.vidOrder AND
+                                          cMC_     == SpOrder.cMC      AND
+                                          1        == SpOrder.empty    AND
+                                          dDate_  >>= SpOrder.dOrd     AND
+
+                                         (cPodr_    = SpOrder.ccPodr  AND
+                                          cParty_   = SpOrder.cParty  AND
+                              SpOrder.kol     >= GetPresision_forKol  AND
+                              SpOrder.ostatok >= GetPresision_forKol)  )) = tsOk
+      {
+        if (aKit = oMTRFun.GetKitKau(coSpOrder, LF_Prih.SpOrder.NRec))
+        {
+          GetPrih := LF_Prih.SpOrder.NRec;
+          Break;
+        }
+      }
+      else
+      {
+        GetPrih := comp(0);
+        Break;
+      }
+    }
+
+    Exit;
+  }
+  else
+  {
+  //поиск даты свободных приходов
+    if LF_Prih.GetFirst SpOrder where (( 0        == SpOrder.SP       AND
+                                         0        == SpOrder.vidOrder AND
+                                         cMC_     == SpOrder.cMC      AND
+                                         1        == SpOrder.empty    AND
+                                         dDate_  >>= SpOrder.dOrd     AND
+                                         (cPodr_   = SpOrder.ccPodr   AND
+                              SpOrder.kol     >= GetPresision_forKol AND
+                              SpOrder.ostatok >= GetPresision_forKol)  )) <> tsOk
+      Exit;
+
+      if (aKit <> oMTRFun.GetKitKau(coSpOrder, LF_Prih.SpOrder.NRec))
+      {
+        while TRUE Do
+        {
+          if LF_Prih.GetNext SpOrder where (( 0        == SpOrder.SP       AND
+                                              0        == SpOrder.vidOrder AND
+                                              cMC_     == SpOrder.cMC      AND
+                                              1        == SpOrder.empty    AND
+                                              dDate_  >>= SpOrder.dOrd     AND
+                                              (cPodr_   = SpOrder.ccPodr   AND
+                                    SpOrder.kol     >= GetPresision_forKol AND
+                                    SpOrder.ostatok >= GetPresision_forKol)  )) = tsOk
+          {
+            if (aKit = oMTRFun.GetKitKau(coSpOrder, LF_Prih.SpOrder.NRec))
+              Break;
+          }
+          else
+            Break;
+        }
+      }
+  }
+
+  LF_Sort.cMC_   := cMC_;
+  LF_Sort.ccPodr_ := cPodr_;
+  LF_Sort.dDate_ := LF_Prih.SpOrder.dOrd;
+  LF_Sort.SetOrder(LF_Sort.tiOrd1);
+
+  if LF_Sort.GetFirst viewTable <> tsOk //сортировка приходов за одну дату по номеру партии
+    Exit;
+
+  GetPrih := LF_Sort.SpOrder.NRec;
+  if (aKit = oMTRFun.GetKitKau(coSpOrder, LF_Sort.SpOrder.NRec))
+    Exit;
+
+  while true Do
+  {
+    if LF_Sort.GetNext viewTable = tsOk //сортировка приходов за одну дату по номеру партии
+    {
+      if (aKit = oMTRFun.GetKitKau(coSpOrder, LF_Sort.SpOrder.NRec))
+      {
+        GetPrih := LF_Sort.SpOrder.NRec;
+        Break;
+      }
+    }
+    else
+    {
+      GetPrih := comp(0);
+      Break;
+    }
+  }
+}
+
+//******************************************************************************
+//добавляем  дооценки  к цене прихода
+Procedure AddDooc( cRec_   : comp;
+                   dOrd_   : Date;
+                var pr_    : double;
+                var vPr_   : double;
+                var cVal_  : comp
+                 );
+{
+  LF_Prih._LOOP SpDooc where ((cRec_  == SpDooc.cSpOrder AND
+                                  0 == SpDooc.vidOrder AND
+                             dOrd_ >>= SpDooc.dOrd))
+    {
+      if (LF_Prih.SpDooc.tipOrd < 4) OR (LF_Prih.SpDooc.tipOrd > 7)
+        Continue;
+
+      pr_  := pr_  + LF_Prih.SpDooc.srPrice/LF_Prih.SpDooc.kolDop;
+      vPr_ := vPr_ + LF_Prih.SpDooc.VPrice/LF_Prih.SpDooc.kolDop;
+      cVal_ := cVal_;
+    }
+}
+
+//******************************************************************************
+
+Function SpisMCinSpOrder: double;
+{
+  SpisMCinSpOrder := 0;
+
+  //свободный приход
+  var cRec_: comp;  cRec_ := GetPrih(SpOrder.cMC, SpOrder.ccPodr, SpOrder.cParty, SpOrder.dOrd);
+  if cRec_ = 0
+    {
+      SpOrder.cSpOrder := 0;
+      Exit;
+    }
+
+  if LF_Prih.GetFirst SpOrder where ((cRec_ == SpOrder.NRec))<>tsOk
+    {
+      SpOrder.cSpOrder := 0;
+      Exit;
+    }
+
+  var rSrPrice_: double;  rSrPrice_ := LF_Prih.SpOrder.rSrPrice;
+  var rVPrice_ : double;  rVPrice_  := LF_Prih.SpOrder.rVPrice;
+  var cVal_: comp;        cVal_     := LF_Prih.SpOrder.cVal;
+
+  //добавляем дооценки к цене
+  AddDooc(cRec_, SpOrder.dOrd, rSrPrice_, rVPrice_, cVal_);
+
+  SpOrder.cSpOrder := LF_Prih.SpOrder.NRec;
+  if SpOrder.cParty <> 0
+    SpOrder.method := 10//! ручное - был выбор партии или переформирование ордеров
+
+  SpOrder.cParty  := LF_Prih.SpOrder.cParty;
+
+  SpOrder.rSrPrice := rSrPrice_;
+  SpOrder.rVPrice := rVPrice_;
+  SpOrder.srPrice := SpOrder.rSrPrice;   SpOrder.vPrice := SpOrder.rVPrice;
+  SpOrder.cVal    := cVal_;
+
+  //Цены и количество
+  if (SpOrder.kol - LF_Prih.SpOrder.ostatok) > -GetPresision_forKol   //остатка мало
+    {
+      SpisMCinSpOrder := SpOrder.kol - LF_Prih.SpOrder.ostatok;
+      SpOrder.kol := LF_Prih.SpOrder.ostatok;  //списываем весь остаток прихода
+      LF_Prih.SpOrder.ostatok := 0;  LF_Prih.SpOrder.empty := 0; //пуст
+    }
+  else //остатка достаточно
+    {
+      SpisMCinSpOrder := 0;
+      LF_Prih.SpOrder.ostatok := LF_Prih.SpOrder.ostatok -SpOrder.kol;
+      LF_Prih.SpOrder.empty := 1; //в приходе еще осталось
+    }
+
+  LF_Prih.update current SpOrder;
+}
+
+//******************************************************************************
+
+Form frmLF('frmLF.OUT', 'ERRR') with novisual;
+
+var wasErr_LF: boolean;
+
+//******************************************************************************
+
+Function SetLF_Prices(mess_: boolean): boolean;
+{
+  if (SpOrder.SP <> 0) OR (oMSview.GetMethodSpisPodr(SpOrder.ccPodr) <> 3)
+    {
+      SetLF_Prices := TRUE;
+      Exit;
+    }
+
+  SetLF_Prices := FALSE;
+
+  var cParty_: comp;  cParty_ := SpOrder.cParty;
+
+  While TRUE Do
+    {
+      var spisKol: double;  spisKol := SpisMCinSpOrder;
+      if spisKol = 0 //или списали все, или не нашли свободный приход
+        Break;
+
+      OneSpOrder_update;
+
+      SpOrder.kol  := spisKol;  /*!*/
+      if cParty_ = 0            //партия не была задана
+        SpOrder.cParty := 0;    /*!*/
+
+      SpOrder.cSpOrder  := 0;
+      SpOrder.srPrice   := 0;
+      SpOrder.vPrice    := 0;
+      SpOrder.cVal      := 0;
+      SpOrder.rSrPrice  := 0;
+      SpOrder.rVPrice   := 0;
+      SpOrder.NRec      := 0;
+
+      OneSpOrder_insert;
+      oMTRFun.CopySpecMTR(coSpSopr, SpSopr.nRec, coSpOrder, SpOrder.nRec);
+      RunInterface('VipMtrCount', coSpOrder, SpOrder.nRec, SpOrder.VidOrder, false);
+    }
+
+  if SpOrder.cSpOrder<>0
+    OneSpOrder_update;
+  else
+    {
+      var noKol_: double;  noKol_ := SpOrder.kol;
+      OneSpOrder_delete;
+
+      if mess_
+        Message('Отсутствует свободный остаток МЦ "'+KatMC.Name+'"');
+      else
+        {
+          frmLF.write('Не произведено списание МЦ "'+KatMC.Name+'"');
+          frmLF.write('  - отсутствует свободный остаток, не хватает '+string(noKol_)+' '+KatEd.abbr);
+          frmLF.write('');
+          wasErr_LF := TRUE;
+        }
+
+      SetLF_Prices := FALSE;
+    }
+
+  SetLF_Prices := TRUE;
+}
+
+
+#ifdef _ZPRIHORD_VIP_
+
+Procedure UpdateDeltaSoprHozs(
+                              deltR_: double;
+                              deltV_: double;
+                              cVal_ : comp
+                             );
+var tip_: word;
+{
+  if abs(deltR_) < 0.00001 AND abs(deltV_) < 0.00001
+    Exit;
+
+  tip_ := GetSoprHozTipDoc(SpOrder2.SP, SpOrder2.vidOrder);
+
+  if GetFirst SoprHoz where (( tip_              == SoprHoz.tipDoc AND
+                              SpOrder2.cSklOrder == SoprHoz.cSoprDoc )) = tsOk
+    {
+      SoprHoz.summaSp  := SoprHoz.summaSp  + deltR_;
+      if boGetTune('Oper.MultiCurrReg') //в валюту SoprHoz:
+        SoprHoz.sumValSp := SoprHoz.sumValSp + oValFunc.GetAnyCurrency(cVal_, deltV_, SpOrder2.dOrd, SoprHoz.KodValSp)
+      else
+        {
+          SoprHoz.SumValSp := 0; //так в ордерах
+          SoprHoz.kodValSp := 0;
+        }
+
+      update current SoprHoz;
+    }
+
+  if GetFirst SpSopr where (( SpOrder2.cSpSopr == SpSopr.NRec )) = tsOk
+    if GetFirst SoprHoz where (( SpSopr.vidSopr == SoprHoz.tipDoc AND
+                                 SpSopr.cSopr   == SoprHoz.cSoprDoc )) = tsOk
+      {
+        SoprHoz.SummaSp  := SoprHoz.SummaSp  + deltR_;
+        SoprHoz.SumValSp := SoprHoz.SumValSp + oValFunc.GetAnyCurrency( cVal_
+                                                                      , deltV_
+                                                                      , KatSopr.dSopr
+                                                                      , SoprHoz.KodValSp); //в валюту SoprHoz:
+        update current SoprHoz;
+      }
+}
+
+#end
+
+//******************************************************************************

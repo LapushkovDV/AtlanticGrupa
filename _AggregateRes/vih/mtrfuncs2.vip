@@ -1,0 +1,720 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 8.1
+// Функции для целевого учета
+//******************************************************************************
+
+#include MTRFuncs2.vih
+
+#doc
+Реализация методов для целевого учета в позициях спецификации документов.
+#end
+Interface MTRFuncs2 '' (, , );
+  Show at (, , , );
+
+Create view MTR
+
+Var
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+
+As select
+//------------------------------------------------------------------------------
+*
+
+From
+
+  SpecMTR
+, KitKAU
+, SpecMTR DstSpecMTR
+, SpecMTR SpecMTRForKit
+, SaldTune
+, MTRAct
+, MTRAct MTRActSrc
+, MTRAct MTRActDst
+, KatStroy
+, AddSumTune
+, AddSumTune SubAddSumTune
+
+Where
+((
+      KitKau.cSaldTune  == SpecMTRForKit.cSaldTune
+  and KitKau.cObj       == SpecMTRForKit.cObj
+  and KitKau.cKau[1]    == SpecMTRForKit.cKau[1]
+  and KitKau.cKau[2]    == SpecMTRForKit.cKau[2]
+  and KitKau.cKau[3]    == SpecMTRForKit.cKau[3]
+  and KitKau.cKau[4]    == SpecMTRForKit.cKau[4]
+  and KitKau.cKau[5]    == SpecMTRForKit.cKau[5]
+  and KitKau.cKau[6]    == SpecMTRForKit.cKau[6]
+  and KitKau.cKau[7]    == SpecMTRForKit.cKau[7]
+  and KitKau.cKau[8]    == SpecMTRForKit.cKau[8]
+  and KitKau.cKau[9]    == SpecMTRForKit.cKau[9]
+
+  and word(613)         == MTRActSrc.VidSopr
+  and KitKau.cSaldTune  == MTRActSrc.cSaldSrc
+  and KitKau.cObj       == MTRActSrc.cObjSrc
+  and KitKau.cKau[1]    == MTRActSrc.cKauSrc[1]
+  and KitKau.cKau[2]    == MTRActSrc.cKauSrc[2]
+  and KitKau.cKau[3]    == MTRActSrc.cKauSrc[3]
+  and KitKau.cKau[4]    == MTRActSrc.cKauSrc[4]
+  and KitKau.cKau[5]    == MTRActSrc.cKauSrc[5]
+  and KitKau.cKau[6]    == MTRActSrc.cKauSrc[6]
+  and KitKau.cKau[7]    == MTRActSrc.cKauSrc[7]
+  and KitKau.cKau[8]    == MTRActSrc.cKauSrc[8]
+  and KitKau.cKau[9]    == MTRActSrc.cKauSrc[9]
+
+  and word(613)         == MTRActDst.VidSopr
+  and KitKau.cSaldTune  == MTRActDst.cSaldDst
+  and KitKau.cObj       == MTRActDst.cObjDst
+  and KitKau.cKau[1]    == MTRActDst.cKauDst[1]
+  and KitKau.cKau[2]    == MTRActDst.cKauDst[2]
+  and KitKau.cKau[3]    == MTRActDst.cKauDst[3]
+  and KitKau.cKau[4]    == MTRActDst.cKauDst[4]
+  and KitKau.cKau[5]    == MTRActDst.cKauDst[5]
+  and KitKau.cKau[6]    == MTRActDst.cKauDst[6]
+  and KitKau.cKau[7]    == MTRActDst.cKauDst[7]
+  and KitKau.cKau[8]    == MTRActDst.cKauDst[8]
+  and KitKau.cKau[9]    == MTRActDst.cKauDst[9]
+
+  and AddSumTune.nRec   == SubAddSumTune.cNode
+))
+;
+
+//******************************************************************************
+
+//------------------------------------------------------------------------------
+// Определить место аналитики
+//------------------------------------------------------------------------------
+Function GetPlaceKau(awTip, awKau : word) : word;
+{
+  var i : word;
+
+  GetPlaceKau := 0;
+  if (GetFirst SaldTune where ((awTip == SaldTune.wType)) = tsOk)
+  {
+    if (SaldTune.wObj = awKau)
+      GetPlaceKau := 1
+    else
+      for(i := 1; i <= 9; inc(i))
+        if (SaldTune.wKau[i] = awKau)
+        {
+          GetPlaceKau := i + 1;
+          Break;
+        }
+  }
+}
+
+//******************************************************************************
+
+Function GetPlaceKauRole(pwKau: word; pcRole: comp): word;
+{
+  var i : word;
+
+  GetPlaceKauRole := 0;
+
+  if ( (SaldTune.wObj = pwKau) and ((SaldTune.cRoleObj = pcRole) or (pcRole = 0)) )
+     GetPlaceKauRole := 1;
+  else
+    for( i := 1; i <= 9; i := i + 1 )
+      if ( (SaldTune.wKau[i] = pwKau) and ((SaldTune.cRole[i] = pcRole) or (pcRole = 0)) )
+        {
+          GetPlaceKauRole := i + 1;
+          break;
+        }
+}
+
+//******************************************************************************
+
+//------------------------------------------------------------------------------
+// Определить место статьи затрат в строительстве в списке аналитик
+//------------------------------------------------------------------------------
+Function GetPlaceZatr : word;
+{
+  GetPlaceZatr := GetPlaceKau(1, cgKau_StZatr) - 1;
+}
+
+//******************************************************************************
+
+Procedure _DelSpecMTR(SrcTab : word; SrcSpec : comp);
+{
+  if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) <> tsOk)
+    Exit;
+
+  if (GetFirst KitKau where ((SpecMTR.cSaldTune == KitKau.cSaldTune and
+                              SpecMTR.cObj      == KitKau.cObj      and
+                              SpecMTR.cKau[1]   == KitKau.cKau[1]   and
+                              SpecMTR.cKau[2]   == KitKau.cKau[2]   and
+                              SpecMTR.cKau[3]   == KitKau.cKau[3]   and
+                              SpecMTR.cKau[4]   == KitKau.cKau[4]   and
+                              SpecMTR.cKau[5]   == KitKau.cKau[5]   and
+                              SpecMTR.cKau[6]   == KitKau.cKau[6]   and
+                              SpecMTR.cKau[7]   == KitKau.cKau[7]   and
+                              SpecMTR.cKau[8]   == KitKau.cKau[8]   and
+                              SpecMTR.cKau[9]   == KitKau.cKau[9])) = tsOk) // позиционируемся на KitKau
+  {
+  }
+
+  if (delete current SpecMTR = tsOk)
+  {
+    ReReadRecord(#SpecMTRForKit);
+    if ((not IsValid(#SpecMTRForKit)) and (not IsValid(#MTRActSrc)) and (not IsValid(#MTRActDst))) // удаленная запись была последняя, имеющая такой набор аналитик !
+      if (delete current KitKau = tsOk)
+      {
+      }
+  }
+
+  SaveMyDsk(comp(0), 'KitKau.cSaldTune');
+}
+
+Procedure DelSpecMTR(SrcTab : word; SrcSpec : comp);
+{
+  _DelSpecMTR(SrcTab, SrcSpec);
+}
+
+//******************************************************************************
+
+Procedure CopySpecMTR(SrcTab : word; SrcSpec : comp; DstTab : word; DstSpec : comp);
+{
+  if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) <> tsOk)
+  {
+    if (GetFirst DstSpecMTR where ((DstTab == DstSpecMTR.coTable and DstSpec == DstSpecMTR.cSpec)) = tsOk)
+      _DelSpecMTR(DstTab, DstSpec);
+
+    Exit;
+  }
+
+  if (GetFirst DstSpecMTR where ((DstTab == DstSpecMTR.coTable and DstSpec == DstSpecMTR.cSpec)) <> tsOk)
+  {
+    SpecMTR.nRec    := 0;
+    SpecMTR.coTable := DstTab;
+    SpecMTR.cSpec   := DstSpec;
+    if (insert current SpecMTR = tsOk)
+    {
+    }
+  }
+  else
+  {
+    DstSpecMTR.cSaldTune := SpecMTR.cSaldTune;
+    DstSpecMTR.cObj      := SpecMTR.cObj;
+    DstSpecMTR.cKau[1]   := SpecMTR.cKau[1];
+    DstSpecMTR.cKau[2]   := SpecMTR.cKau[2];
+    DstSpecMTR.cKau[3]   := SpecMTR.cKau[3];
+    DstSpecMTR.cKau[4]   := SpecMTR.cKau[4];
+    DstSpecMTR.cKau[5]   := SpecMTR.cKau[5];
+    DstSpecMTR.cKau[6]   := SpecMTR.cKau[6];
+    DstSpecMTR.cKau[7]   := SpecMTR.cKau[7];
+    DstSpecMTR.cKau[8]   := SpecMTR.cKau[8];
+    DstSpecMTR.cKau[9]   := SpecMTR.cKau[9];
+    if (update current DstSpecMTR = tsOk)
+    {
+    }
+  }
+}
+
+//******************************************************************************
+
+Function _MTRIsUKS(SrcTab : word; SrcSpec : comp) : boolean;
+{
+  result := false;
+  if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) <> tsOk)
+    Exit;
+
+  if (GetFirst SaldTune where ((SpecMTR.cSaldTune == SaldTune.nRec)) = tsOk)
+    if (SaldTune.wType = 1)       // Строительство
+      result := true;
+}
+
+Function MTRIsUKS(SrcTab : word; SrcSpec : comp) : boolean;
+{
+  result := _MTRIsUKS(SrcTab, SrcSpec);
+}
+
+//******************************************************************************
+
+Function _GetObjUKS(SrcTab : word; SrcSpec : comp) : comp;
+{
+  result := 0;
+  if (_MTRIsUKS(SrcTab, SrcSpec))
+    if (GetFirst KatStroy where ((SpecMTR.cObj == KatStroy.nRec)) = tsOk)
+      if (KatStroy.LevelObj = 1)
+        result := SpecMTR.cObj;
+}
+
+Function GetObjUKS(SrcTab : word; SrcSpec : comp) : comp;
+{
+  result := _GetObjUKS(SrcTab, SrcSpec);
+}
+
+//******************************************************************************
+
+Function _GetZatrUKS(SrcTab : word; SrcSpec : comp) : comp;
+{
+  var vwZ : word;
+
+  result := 0;
+  vwZ := GetPlaceZatr;
+
+  if (_MTRIsUKS(SrcTab, SrcSpec))
+    if (GetFirst AddSumTune where ((SpecMTR.cKau[vwZ] == AddSumTune.nRec)) = tsOk)
+      result := SpecMTR.cKau[vwZ];
+}
+
+Function GetZatrUKS(SrcTab : word; SrcSpec : comp) : comp;
+{
+  result := _GetZatrUKS(SrcTab, SrcSpec);
+}
+
+//******************************************************************************
+
+Function GetKau(SrcTab : word; SrcSpec : comp; acKau : word) : comp;
+{
+  var vwPl, vwTip : word;
+
+  GetKau := 0;
+  if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) <> tsOk)
+    Exit;
+
+  if (GetFirst SaldTune where ((SpecMTR.cSaldTune == SaldTune.nRec)) = tsOk)
+  {
+    vwTip := SaldTune.wType;
+    vwPl := GetPlaceKau(vwTip, acKau);
+    if ( vwPl > 0 )
+      GetKau := if(vwPl = 1, SpecMTR.cObj, SpecMTR.cKau[vwPl - 1]);
+  }
+}
+
+//******************************************************************************
+
+Function _GetKitKau(SrcTab : word; SrcSpec : comp) : comp;
+{
+  var i : word;
+
+  result := 0;
+
+  case SrcTab of
+    coMtrAct :
+    {
+      if (GetFirst MTRAct where ((SrcSpec == MTRAct.nRec)) <> tsOk)
+        Exit;
+
+      if (GetFirst KitKau where ((MTRAct.cSaldSrc     == KitKau.cSaldTune and
+                                  MTRAct.cObjSrc      == KitKau.cObj      and
+                                  MTRAct.cKauSrc[1]   == KitKau.cKau[1]   and
+                                  MTRAct.cKauSrc[2]   == KitKau.cKau[2]   and
+                                  MTRAct.cKauSrc[3]   == KitKau.cKau[3]   and
+                                  MTRAct.cKauSrc[4]   == KitKau.cKau[4]   and
+                                  MTRAct.cKauSrc[5]   == KitKau.cKau[5]   and
+                                  MTRAct.cKauSrc[6]   == KitKau.cKau[6]   and
+                                  MTRAct.cKauSrc[7]   == KitKau.cKau[7]   and
+                                  MTRAct.cKauSrc[8]   == KitKau.cKau[8]   and
+                                  MTRAct.cKauSrc[9]   == KitKau.cKau[9])) <> tsOk) // позиционируемся на KitKau
+      {
+        ClearBuffer(#KitKau);
+        KitKau.cSaldTune := MTRAct.cSaldSrc;
+        KitKau.cObj := MTRAct.cObjSrc;
+        for(i := 1; i <= 9; inc(i))
+          KitKau.cKau[i] := MTRAct.cKauSrc[i];
+
+        if (insert current KitKau = tsOk)
+        {
+        }
+      }
+
+      result := KitKau.nRec;
+    }
+    coSpMtrAct :
+    {
+      if (GetFirst MTRAct where ((SrcSpec == MTRAct.nRec)) <> tsOk)
+        Exit;
+
+      if (GetFirst KitKau where ((MTRAct.cSaldDst     == KitKau.cSaldTune and
+                                  MTRAct.cObjDst      == KitKau.cObj      and
+                                  MTRAct.cKauDst[1]   == KitKau.cKau[1]   and
+                                  MTRAct.cKauDst[2]   == KitKau.cKau[2]   and
+                                  MTRAct.cKauDst[3]   == KitKau.cKau[3]   and
+                                  MTRAct.cKauDst[4]   == KitKau.cKau[4]   and
+                                  MTRAct.cKauDst[5]   == KitKau.cKau[5]   and
+                                  MTRAct.cKauDst[6]   == KitKau.cKau[6]   and
+                                  MTRAct.cKauDst[7]   == KitKau.cKau[7]   and
+                                  MTRAct.cKauDst[8]   == KitKau.cKau[8]   and
+                                  MTRAct.cKauDst[9]   == KitKau.cKau[9])) <> tsOk) // позиционируемся на KitKau
+      {
+        ClearBuffer(#KitKau);
+        KitKau.cSaldTune := MTRAct.cSaldDst;
+        KitKau.cObj := MTRAct.cObjDst;
+        for(i := 1; i <= 9; inc(i))
+          KitKau.cKau[i] := MTRAct.cKauDst[i];
+
+        if (insert current KitKau = tsOk)
+        {
+        }
+      }
+
+      result := KitKau.nRec;
+    }
+  else
+  {
+    if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) <> tsOk)
+      Exit;
+
+    if (GetFirst KitKau where ((SpecMTR.cSaldTune == KitKau.cSaldTune and
+                                SpecMTR.cObj      == KitKau.cObj      and
+                                SpecMTR.cKau[1]   == KitKau.cKau[1]   and
+                                SpecMTR.cKau[2]   == KitKau.cKau[2]   and
+                                SpecMTR.cKau[3]   == KitKau.cKau[3]   and
+                                SpecMTR.cKau[4]   == KitKau.cKau[4]   and
+                                SpecMTR.cKau[5]   == KitKau.cKau[5]   and
+                                SpecMTR.cKau[6]   == KitKau.cKau[6]   and
+                                SpecMTR.cKau[7]   == KitKau.cKau[7]   and
+                                SpecMTR.cKau[8]   == KitKau.cKau[8]   and
+                                SpecMTR.cKau[9]   == KitKau.cKau[9])) <> tsOk) // позиционируемся на KitKau
+      {
+        ClearBuffer(#KitKau);
+        KitKau.cSaldTune := SpecMTR.cSaldTune;
+        KitKau.cObj := SpecMTR.cObj;
+        for(i := 1; i <= 9; inc(i))
+          KitKau.cKau[i] := SpecMTR.cKau[i];
+
+        if (insert current KitKau = tsOk)
+        {
+        }
+      }
+
+    result := KitKau.nRec;
+  }
+  end;
+}
+
+Function GetKitKau(SrcTab : word; SrcSpec : comp) : comp;
+{
+  result := _GetKitKau(SrcTab, SrcSpec);
+}
+
+//******************************************************************************
+
+Procedure GenSpecMTRForUKS(SrcTab : word; SrcSpec : comp; acObj : comp; acZatr : comp);
+{
+  var i, vwZ : word;
+  var vbDateChg, vbIs : boolean;
+
+  if (GetFirst SaldTune where ((word(1) == SaldTune.wType)) <> tsOk)
+    Exit;
+
+  if (GetFirst KatStroy where ((acObj == KatStroy.nRec)) <> tsOk)
+    Exit;
+
+  if (KatStroy.LevelObj <> 1)
+    Exit;
+
+  if (acZatr = 0)
+  {
+    if (GetFirst AddSumTune where ((word(3) == AddSumTune.Tip)) = tsOk)
+      acZatr := AddSumTune.nRec;
+  }
+  else
+  {
+    if (GetFirst AddSumTune where ((acZatr == AddSumTune.nRec)) <> tsOk)
+      Exit;
+
+    if (IsValid(#SubAddSumTune))
+      Exit;
+  }
+
+  if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) = tsOk)
+    if (SpecMTR.cSaldTune <> SaldTune.nRec)
+    {
+      _DelSpecMTR(SrcTab, SrcSpec);
+      vbIs := false;
+    }
+    else
+      vbIs := true
+  else
+    vbIs := false;
+
+  vwZ := GetPlaceZatr;
+
+  if (not vbIs)
+    ClearBuffer(#SpecMTR);
+
+  SpecMTR.coTable   := SrcTab;
+  SpecMTR.cSpec     := SrcSpec;
+  SpecMTR.cSaldTune := SaldTune.nRec;
+  SpecMTR.cObj      := acObj;
+  for (i := 1; i <= 9; inc(i))
+    if (i = vwZ)
+      SpecMTR.cKau[i] := if(vbIs, SpecMTR.cKau[i], acZatr);
+
+  if (not vbIs)
+    vbDateChg := (insert current SpecMTR = tsOk)
+  else
+    vbDateChg := (update current SpecMTR = tsOk);
+
+  if (vbDateChg)
+  {
+    if (GetFirst KitKau where ((SpecMTR.cSaldTune == KitKau.cSaldTune and
+                                SpecMTR.cObj      == KitKau.cObj      and
+                                SpecMTR.cKau[1]   == KitKau.cKau[1]   and
+                                SpecMTR.cKau[2]   == KitKau.cKau[2]   and
+                                SpecMTR.cKau[3]   == KitKau.cKau[3]   and
+                                SpecMTR.cKau[4]   == KitKau.cKau[4]   and
+                                SpecMTR.cKau[5]   == KitKau.cKau[5]   and
+                                SpecMTR.cKau[6]   == KitKau.cKau[6]   and
+                                SpecMTR.cKau[7]   == KitKau.cKau[7]   and
+                                SpecMTR.cKau[8]   == KitKau.cKau[8]   and
+                                SpecMTR.cKau[9]   == KitKau.cKau[9])) <> tsOk) // позиционируемся на KitKau
+    {
+      ClearBuffer(#KitKau);
+      KitKau.cSaldTune := SpecMTR.cSaldTune;
+      KitKau.cObj := SpecMTR.cObj;
+      for(i := 1; i <= 9; inc(i))
+        KitKau.cKau[i] := SpecMTR.cKau[i];
+
+      if (insert current KitKau = tsOk)
+      {
+      }
+    }
+  }
+}
+
+//******************************************************************************
+
+Procedure GenAnySpecMTR(KauData: TMTRKauArray);
+Var
+  bIs
+, bChange
+          : boolean;
+
+  i
+, wPlace
+          : word;
+{
+  if ( KauData.cSaldTune = 0 )
+    {
+      if ( GetFirst SpecMTR where ((  KauData.wTable   == SpecMTR.coTable
+                                  and KauData.cSpecRec == SpecMTR.cSpec
+                                  )) = tsOk )
+        _DelSpecMTR(KauData.wTable, KauData.cSpecRec);
+
+      exit;
+    }
+
+  if ( GetFirst SaldTune where (( KauData.cSaldTune == SaldTune.nRec )) <> tsOk )
+    exit;
+
+  bIs := (GetFirst SpecMTR where ((  KauData.wTable   == SpecMTR.coTable
+                                 and KauData.cSpecRec == SpecMTR.cSpec
+                                 )) = tsOk);
+
+  if ( not bIs )
+    ClearBuffer(#SpecMTR);
+
+  SpecMTR.coTable   := KauData.wTable;
+  SpecMTR.cSpec     := KauData.cSpecRec;
+  SpecMTR.cSaldTune := KauData.cSaldTune;
+
+//------------------------------------------------------------------------------
+
+  for ( i := 1; i <= 10; i := i + 1 )
+    {
+      wPlace := GetPlaceKauRole(KauData.wKau[i], KauData.cRole[i]);
+
+      if ( wPlace = 0 )
+        continue;
+
+      if ( wPlace = 1 )
+        SpecMTR.cObj := KauData.cKau[i];
+      else
+        SpecMTR.cKau[wPlace - 1] := KauData.cKau[i];
+    }
+
+  if ( not bIs )
+    bChange := (insert current SpecMTR = tsOk)
+  else
+    bChange := (update current SpecMTR = tsOk);
+
+//------------------------------------------------------------------------------
+
+  if ( bChange )
+    {
+      if ( GetFirst KitKau where ((  SpecMTR.cSaldTune == KitKau.cSaldTune
+                                 and SpecMTR.cObj      == KitKau.cObj
+                                 and SpecMTR.cKau[1]   == KitKau.cKau[1]
+                                 and SpecMTR.cKau[2]   == KitKau.cKau[2]
+                                 and SpecMTR.cKau[3]   == KitKau.cKau[3]
+                                 and SpecMTR.cKau[4]   == KitKau.cKau[4]
+                                 and SpecMTR.cKau[5]   == KitKau.cKau[5]
+                                 and SpecMTR.cKau[6]   == KitKau.cKau[6]
+                                 and SpecMTR.cKau[7]   == KitKau.cKau[7]
+                                 and SpecMTR.cKau[8]   == KitKau.cKau[8]
+                                 and SpecMTR.cKau[9]   == KitKau.cKau[9]
+                                 )) <> tsOk )
+        {
+          ClearBuffer(#KitKau);
+
+          KitKau.cSaldTune := SpecMTR.cSaldTune;
+          KitKau.cObj      := SpecMTR.cObj;
+
+          for( i := 1; i <= 9; i := i + 1 )
+            KitKau.cKau[i] := SpecMTR.cKau[i];
+
+          if ( insert current KitKau = tsOk )
+            {}
+        }
+    }
+}
+
+//******************************************************************************
+
+Procedure InsSpecMTR(SrcTab : word; SrcSpec : comp);
+{
+  var vcSaldTune, vcObj : comp;
+  var vaKitKau : array [1..9] of comp;
+  var vbDateChg, vbIs : boolean;
+  var i : word;
+
+  if (not ReadMyDsk(vcSaldTune, 'KitKau.cSaldTune', vbDateChg))
+    vcSaldTune := 0;
+
+  if (vcSaldTune <> 0)
+  {
+    if (not ReadMyDsk(vcObj, 'KitKau.cObj', vbDateChg))
+      vcObj := 0;
+
+    if (vcObj = 0)
+      Exit;
+
+    for (i := 1; i <= 9; inc(i))
+    {
+      vaKitKau[i] := 0;
+      if (not ReadMyDsk(vaKitKau[i], 'KitKau.cKau[' + string(i) + ']', vbDateChg))
+        vaKitKau[i] := 0;
+    }
+
+    vbIs := false;
+    if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) = tsOk)
+      vbIs := true;
+
+    if (not vbIs)
+      ClearBuffer(#SpecMTR);
+
+    SpecMTR.coTable   := SrcTab;
+    SpecMTR.cSpec     := SrcSpec;
+    SpecMTR.cSaldTune := vcSaldTune;
+    SpecMTR.cObj      := vcObj;
+    for (i := 1; i <= 9; inc(i))
+      SpecMTR.cKau[i] := vaKitKau[i];
+
+    if (not vbIs)
+      vbDateChg := (insert current SpecMTR = tsOk)
+    else
+      vbDateChg := (update current SpecMTR = tsOk);
+
+    if (vbDateChg)
+    {
+      if (GetFirst KitKau where ((SpecMTR.cSaldTune == KitKau.cSaldTune and
+                                  SpecMTR.cObj      == KitKau.cObj      and
+                                  SpecMTR.cKau[1]   == KitKau.cKau[1]   and
+                                  SpecMTR.cKau[2]   == KitKau.cKau[2]   and
+                                  SpecMTR.cKau[3]   == KitKau.cKau[3]   and
+                                  SpecMTR.cKau[4]   == KitKau.cKau[4]   and
+                                  SpecMTR.cKau[5]   == KitKau.cKau[5]   and
+                                  SpecMTR.cKau[6]   == KitKau.cKau[6]   and
+                                  SpecMTR.cKau[7]   == KitKau.cKau[7]   and
+                                  SpecMTR.cKau[8]   == KitKau.cKau[8]   and
+                                  SpecMTR.cKau[9]   == KitKau.cKau[9])) <> tsOk) // позиционируемся на KitKau
+      {
+        ClearBuffer(#KitKau);
+        KitKau.cSaldTune := SpecMTR.cSaldTune;
+        KitKau.cObj := SpecMTR.cObj;
+        for(i := 1; i <= 9; inc(i))
+          KitKau.cKau[i] := SpecMTR.cKau[i];
+
+        if (insert current KitKau = tsOk)
+        {
+        }
+      }
+    }
+  }
+  else
+    if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) = tsOk)
+      _DelSpecMTR(SrcTab, SrcSpec);
+}
+
+//******************************************************************************
+
+Procedure SaveKitKau(SrcTab : word; SrcSpec : comp);
+{
+  var i : word;
+
+  if (_GetKitKau(SrcTab, SrcSpec) <> 0)
+  {
+    SaveMyDsk(KitKau.cSaldTune, 'KitKau.cSaldTune');
+    SaveMyDsk(KitKau.cObj, 'KitKau.cObj');
+    for (i := 1; i <= 9; inc(i))
+      SaveMyDsk(KitKau.cKau[i], 'KitKau.cKau[' + string(i) + ']');
+  }
+  else
+  {
+    SaveMyDsk(comp(0), 'KitKau.cSaldTune');
+    SaveMyDsk(comp(0), 'KitKau.cObj');
+    for (i := 1; i <= 9; inc(i))
+      SaveMyDsk(comp(0), 'KitKau.cKau[' + string(i) + ']');
+  }
+}
+
+//******************************************************************************
+
+Procedure SaveKitKauForKit(acKit: comp);
+{
+  var i : word;
+
+  if (GetFirst KitKau where ((acKit == KitKau.nRec)) = tsOk)
+  {
+    SaveMyDsk(KitKau.cSaldTune, 'KitKau.cSaldTune');
+    SaveMyDsk(KitKau.cObj, 'KitKau.cObj');
+    for (i := 1; i <= 9; inc(i))
+      SaveMyDsk(KitKau.cKau[i], 'KitKau.cKau[' + string(i) + ']');
+  }
+  else
+  {
+    SaveMyDsk(comp(0), 'KitKau.cSaldTune');
+    SaveMyDsk(comp(0), 'KitKau.cObj');
+    for (i := 1; i <= 9; inc(i))
+      SaveMyDsk(comp(0), 'KitKau.cKau[' + string(i) + ']');
+  }
+}
+
+//******************************************************************************
+
+Function GetObjUKSName(SrcTab : word; SrcSpec : comp) : string;
+{
+  var vcObj : comp;
+
+  GetObjUKSName := '';
+  vcObj := _GetObjUKS(SrcTab, SrcSpec);
+  if (GetFirst KatStroy where ((vcObj == KatStroy.nRec)) = tsOk)
+    GetObjUKSName := KatStroy.Name;
+}
+
+//******************************************************************************
+
+Function GetZatrUKSName(SrcTab : word; SrcSpec : comp) : string;
+{
+  var vcZatr : comp;
+
+  GetZatrUKSName := '';
+  vcZatr := _GetZatrUKS(SrcTab, SrcSpec);
+  if (GetFirst AddSumTune where ((vcZatr == AddSumTune.nRec)) = tsOk)
+    GetZatrUKSName := AddSumTune.Name;
+}
+
+//******************************************************************************
+
+HandleEvent
+
+cmInit :
+  Abort;
+
+end;
+end.

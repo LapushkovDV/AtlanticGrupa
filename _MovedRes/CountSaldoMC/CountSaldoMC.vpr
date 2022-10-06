@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>CountSaldoMC</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="\\10.2.1.151\Galaktika\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.29.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\Viper 5.5\bin\5.5.30.0\Source\*
+					\\10.2.1.151\Galaktika\res\src\inc\*
+					\\10.2.1.151\Galaktika\res\SourceGal\*
+					..\..\..\FRM\AllGal.FrmSrc\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_BaseDoc.res
+					$[GalExe]\L_Common.res
+				</ResourceList>
+				<OutputResource>..\..\CountSaldoMC_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:RUMOW-VMGAL01.atlantic.grupa[1997]</SqlServerParameters>
+					<HwKeyDirectory>\\srv-dc2\HWKey</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="CountSaldoMC.prj" PosX="25" PosY="28" OpenEditor="True"/>
+			<File Name="..\..\SourceGal\L\L_Ostatki\Vip\RasTek0.vip" PosX="43" PosY="19" OpenEditor="True"/>
+			<File Name="..\..\SourceGal\L\L_Ostatki\Vip\RasTek1.vip" PosX="18" PosY="10" OpenEditor="True"/>
+			<File Name="..\..\SourceGal\L\L_Ostatki\Vip\TekSRas.vip" PosX="16" PosY="83" OpenEditor="True" Active="True"/>
+			<File Name="Source\CountSalMC_LAPUS.vip" PosX="29" PosY="81" OpenEditor="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="CountSaldoMC.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\CountSaldoMC\CountSaldoMC.prj" DateTimeStart="43305,9345957755" DateTimeCompile="0,000288483795884531" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\CountSaldoMC\SOURCE\CountSalMC_LAPUS.vip" SourceLine="12" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\CountSaldoMC\SOURCE\CountSalMC_LAPUS.vip" SourceLine="66" SourceColumn="6"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект IVIPIFCIFC L_OSTATKI::TEKSRAS, описывающий интерфейс вызова. Параметры вызова для L_OSTATKI::TEKSRAS не проверены." SourceFileName="C:\GALAKTIKA\RES\SRC\COUNTSALDOMC\SOURCE\CountSalMC_LAPUS.vip" SourceLine="83" SourceColumn="31"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="24.07.2018 22:26:14"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<BreakPointList>
+			<BreakPoint FileName="vip\OpenFileExcelSearchCells.vip" Line="180"/>
+			<BreakPoint FileName="vip\LoadOrder.vip" Line="699"/>
+			<BreakPoint FileName="vip\LoadOrder.vip" Line="1"/>
+		</BreakPointList>
+		<MarkerList>
+			<Marker FileName="vip\OpenFileExcelSearchCells.vip" Caption="Нумерованная закладка 1" Line="167" NumIndex="1" MarkerType="mtNumBookmark" Comment="_recArray[_i].column := SearchCellsByName(_recArray[_i].def, _log, nrow);"/>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\ModPric2.vpp" Caption="Нумерованная закладка 1" Line="70" NumIndex="1" MarkerType="mtNumBookmark" Comment="if ( GetFirst Prices where (( lMPP.Prices.nRec == Prices.nRec )) = tsOk ) {}"/>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\BaseStep\inc\GETTOT.VPP" Caption="Нумерованная закладка 1" Line="463" NumIndex="1" MarkerType="mtNumBookmark" Comment=", tipDo + 1000"/>
+			<Marker FileName="vip\LoadOrder.vip" Caption="Нумерованная закладка 2" Line="408" NumIndex="2" MarkerType="mtNumBookmark" Comment="if"/>
+			<Marker FileName="vip\LoadOrder.vip" Caption="Нумерованная закладка 1" Line="854" NumIndex="1" MarkerType="mtNumBookmark" Comment="rereadrecord()"/>
+		</MarkerList>
+	</ProjectManager>
+</Viper>

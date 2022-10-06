@@ -1,0 +1,34 @@
+#ifndef _KBU_VPP_Included
+#define _KBU_VPP_Included
+
+type
+  IsrBuhFilter = record
+    cPlansSch : comp;       // План счетов
+    BegDate   : date;
+    EndDate   : date;
+    wMode     : word;       // режим выгрузки: инкрементный/за период
+    wMode2    : word;       // режим выгрузки связанных КАУ: обороты/сальдо
+    KauLevel  : word;       // кол-во уровней КАУ для выгрузки
+    Balans    : word;       // тип счетов: балансовые/забалансовые/все
+    JournOborotPos : comp;  // сохраненная позиция журнала для инкрементной выгрузки
+    JournKauPos    : comp;
+  end;
+
+const
+  tskOborot = 1;            // Константы задач, префикс "tsk" обязателен.
+  tskSaldo  = 2;
+  tskPlan   = 3;
+  tskKAU    = 4;
+  tskValuta = 5;
+  tskKatKau = 6;
+
+  TskName1 = 'Выгрузка проводок';
+  TskName2 = 'Выгрузка сальдо';
+  TskName3 = 'Выгрузка структуры плана счетов';
+  TskName4 = 'Выгрузка кодов аналитического учета';
+  TskName5 = 'Выгрузка каталога валют';
+  TskName6 = 'Выгрузка каталога аналитик';
+
+end;
+
+#end  // _KBU_VPP_Included

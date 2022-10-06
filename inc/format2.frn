@@ -1,0 +1,88 @@
+.var
+Kol_Pr    : string;
+Cena_Pr   : string;
+Cena_PrR  : string;
+Cena_PrV  : string;
+Massa_Pr  : string;
+nn,ii     : word;
+wKol_Pr   : word;
+wCena_Pr  : word;
+wCena_PrR : word;
+wCena_PrV : word;
+wMassa_Pr : word;
+.endvar
+!-- возвращает кол-во знаков после запятой
+.function getKolZnak(RRub:double):word;
+var lRub:word;
+begin
+  lRub := if (RRub>=1,word(0),word(-lg(RRub)));
+  getKolZnak := lRub;
+end.
+.procedure SetRoundFormat;
+var
+  wforSopr_Price,
+  wforSopr_VPrice : word;
+begin
+  wForSopr_Price  := 2;
+  wForSopr_VPrice := 2;
+
+ #ifdef GAL5_80
+  if wGetTune('Round.Buy') <> 0
+   {
+    wForSopr_Price  := getKolZnak(doGetTune('Round.BuyDORub'));
+    wForSopr_VPrice := getKolZnak(doGetTune('Round.BuyDOVal'));
+   }
+ #else
+  wForSopr_Price  := GetPrecisionGroup('brForSopr_Price');
+  wForSopr_VPrice := GetPrecisionGroup('brForSopr_vPrice');
+
+  //временно (не удалять без совета со мной Maks)
+  if wForSopr_Price = 0
+   wForSopr_Price := 2;
+  if wForSopr_vPrice = 0
+   wForSopr_vPrice := 2;
+ #end
+
+  SetPrecisionGroup('brForSopr_Vprice' , wForSopr_VPrice );
+  SetPrecisionGroup('brForSopr_price'  , wForSopr_Price  );
+  SetPrecisionGroup('brForSopr_RVprice', wForSopr_Price  );
+end.
+.begin
+ // число знаков после запятой для количества
+ #ifdef GAL5_80
+  if wGetTune('Round.KolSign') > 0
+   nn := wGetTune('Round.KolSign')
+ #else
+  nn := GetDlinaDrob_ForKol;
+  if nn > 0
+   { }
+ #end //GAL5_80
+  else
+   nn := 3;
+  Kol_Pr  := '\' + String(nn) + 'p[|-]3666`666`666`666';
+  wKol_Pr := nn;
+  for (ii:=1; ii<=nn; ii:=ii+1)
+   Kol_Pr := Kol_Pr + if (ii = 1, '.8', '8');
+
+  Massa_Pr := '\3p[|-]3666`666`666`666.888';
+  
+  SetRoundFormat;  
+
+  nn := GetPrecisionGroup('brForSopr_RVPrice');
+  Cena_Pr  := '\' + String(nn) + 'p[|-]3666`666`666`666';
+  wCena_Pr := nn;
+  for (ii:=1; ii<=nn; ii:=ii+1)
+   Cena_Pr := Cena_Pr + if (ii = 1, '.8', '8');
+
+  nn := GetPrecisionGroup('brForSopr_Price');
+  Cena_PrR := '\' + String(nn) + 'p[|-]3666`666`666`666';
+  wCena_PrR := nn;
+  for (ii:=1; ii<=nn; ii:=ii+1)
+    Cena_PrR := Cena_PrR + if (ii = 1, '.8', '8');
+
+  nn := GetPrecisionGroup('brForSopr_VPrice');
+  Cena_PrV := '\' + String(nn) + 'p[|-]3666`666`666`666';
+  wCena_PrV := nn;
+  for (ii:=1; ii<=nn; ii:=ii+1)
+   Cena_PrV := Cena_PrV + if (ii = 1, '.8', '8');
+end.

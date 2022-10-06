@@ -1,0 +1,21 @@
+#ifdef ComponentVersion
+#component "C_TreeTune"
+#end
+
+VipInterface AdvTune1        licensed (FREE);
+VipInterface AdvTune2        licensed (FREE);
+VipInterface AdvTune3        licensed (FREE);
+VipInterface AdvTune4        licensed (FREE);
+VipInterface AdvTune5        licensed (FREE);
+VipInterface AdvTuneBuh      licensed (FREE);
+VipInterface GetRepGruppa    licensed (FREE) Parameters (pCode : word; pNRec : comp; AdvTune : string);
+VipInterface GetRepGruppa2   licensed (FREE) Parameters (pCode : word; pNRec : comp; AdvTune : string; wMCUsl : word);
+VipInterface GetRepGruppaEx  licensed (FREE) Parameters (pCode : word; pNRec : comp; AdvTune : string);
+VipInterface GetRepSort      licensed (FREE) Parameters (pCode, pCode2 : word; pNRec : comp);
+VipInterface GetUserDeskRep  licensed (FREE) Parameters (wSelMode : word; cSelRec : comp);
+VipInterface PumpRepKatalogs licensed (FREE) Parameters (pCode : word);
+VipInterface RepGroup        licensed (FREE) Parameters (pNRecIn : comp; pCode : word; pNRecOut : comp);
+VipInterface RepGrSrt        licensed (FREE) Parameters (pNRecIn, pNRecOut : comp);
+VipInterface RepLoSrt        licensed (FREE) Parameters (pNRecIn : comp; pCode, pCode2 : word; pNRecOut : comp);
+VipInterface RGroupEditor    licensed (FREE) Parameters (wRepCode, wMaxLevels : word; sAdvTune : string; pNRec : comp);
+VipInterface RGroupEditorOper licensed (FREE) Parameters (wRepCode, wMaxLevels : word; sAdvTune : string; pNRec : comp);

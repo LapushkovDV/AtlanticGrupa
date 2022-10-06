@@ -1,0 +1,65 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_APlan
+
+#ifdef ComponentVersion
+#component "F_APlan"
+#end
+
+VipInterface APAccess           Licensed (AFPlan,APlan);
+VipInterface APFin              Licensed (AFPlan);
+VipInterface APFin1             Licensed (AFPlan)       Parameters (CurAplan, CurPeriod : Comp);
+VipInterface APFin2             Licensed (AFPlan);
+VipInterface APlanF             Licensed (AFPlan);
+VipInterface CalcAPFin          Licensed (AFPlan);
+VipInterface FcCurren           Licensed (AFPlan);
+VipInterface FPlan              Licensed (AFPlan);
+VipInterface FPlanExe           Licensed (AFPlan);
+VipInterface FPlanFrm           Licensed (AFPlan);
+VipInterface GetAPlan           Licensed (AFPlan,APlan) Parameters (NRecAplan : comp);
+VipInterface GetAPlan1          Licensed (AFPlan,APlan) Parameters (TopPrgCode1 : string; cNrec : comp);
+VipInterface GetAPlanUser       Licensed (AFPlan)       Parameters (NRec, OwnNrec : comp);
+VipInterface GetDepart          Licensed (AFPlan,APlan) Parameters (Nrec : comp);
+VipInterface GetExecutor        Licensed (AFPlan,APlan) Parameters (ChNrec : comp);
+VipInterface GetFormFPlan       Licensed (AFPlan)       Parameters (cNrec : comp);
+VipInterface GetFPlan           Licensed (AFPlan)       Parameters (cNrec : comp);
+VipInterface GetKlVal           Licensed (AFPlan)       Parameters (nrec : comp);
+VipInterface GetPeriodName      Licensed (AFPlan)       Parameters (Nrec : comp);
+VipInterface GetRes             Licensed (AFPlan,APlan) Parameters (Nrec1 : comp);
+VipInterface GetSchemFp         Licensed (AFPlan)       Parameters (Nrec : comp);
+VipInterface GetSubAPlan        Licensed (AFPlan)       Parameters (Nrec : comp);
+VipInterface GetUnitExecIndex   Licensed (AFPlan,APlan) Parameters (NRec : comp);
+VipInterface GetUnitRes         Licensed (AFPlan,APlan) Parameters (NRec : comp);
+VipInterface InputUnitExecIndex Licensed (AFPlan,APlan);
+VipInterface InputUnitRes       Licensed (AFPlan,APlan);
+VipInterface PeriodNa           Licensed (AFPlan);
+VipInterface R_APFin            Licensed (AFPlan);
+VipInterface R_APFinR           Licensed (AFPlan);
+VipInterface R_DepFin           Licensed (AFPlan);
+VipInterface R_DepFinR          Licensed (AFPlan);
+VipInterface R_FPlan            Licensed (AFPlan);
+VipInterface R_FPlanR           Licensed (AFPlan);
+VipInterface R_FPlanS           Licensed (AFPlan);
+VipInterface Respond            Licensed (AFPlan,APlan);
+VipInterface Resourse           Licensed (AFPlan,APlan);
+VipInterface SubAPlan           Licensed (AFPlan);
+VipInterface SubPlans           Licensed (AFPlan,APlan);
+VipInterface Split              Licensed (AFPlan);
+VipInterface SplitAp            Licensed (AFPlan)       Parameters (CurDocum, CurSpFp : comp; NameOfPeriod : string[40]; SummaR, SummaV : double; Currency : comp);
+VipInterface SplitDep           Licensed (AFPlan)       Parameters (CurDocum, CurSpFp, CurAplan : comp; SummaR, SummaV : double; Currency : comp);
+VipInterface SplitFin           Licensed (AFPlan)       Parameters (CurDocum, CurPeriod : comp; NameOfPeriod : string[40]; SysCurrency : comp);
+VipInterface TopAPlan           Licensed (AFPlan,APlan) Parameters (Do_It : boolean; CurAPlan : comp);
+VipInterface TopFPlan           Licensed (AFPlan)       Parameters (Do_It : boolean);
+
+VipInterface Action             Licensed (APlan);
+VipInterface APlan              Licensed (APlan);
+VipInterface APlanExe           Licensed (APlan);
+VipInterface GetBaseDocKip      Licensed (APlan)        Parameters (NRec : comp);
+VipInterface GetPeriodAP        Licensed (APlan)        Parameters (Nrec : comp);
+VipInterface PeriodAP           Licensed (APlan);
+VipInterface R_APlan            Licensed (APlan);
+VipInterface R_Ganta            Licensed (APlan);
+VipInterface R_Ganta1           Licensed (APlan);
+VipInterface R_APLanR           Licensed (APlan);
+VipInterface R_Action           Licensed (APlan);
+VipInterface R_Resourse         Licensed (APlan);
+

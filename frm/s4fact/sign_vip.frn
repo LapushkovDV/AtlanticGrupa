@@ -1,0 +1,63 @@
+pop.curCode := '001';
+ if (pop.getfirst spKAU=tSOk) 
+   osn:=pop.spkau.name; 
+ pop.curCode := '01';
+ if (pop.getfirst spKAU=tSOk) {
+   Podp_dol_01:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_01:=pop.spkau1.name;
+ }
+ pop.curCode := '02';
+ if (pop.getfirst spKAU=tSOk) {
+   Podp_dol_02:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_02:=pop.spkau1.name;
+ }
+ pop.curCode := '03';
+ if (pop.getfirst spKAU=tSOk) {
+   Podp_dol_03:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_03:=pop.spkau1.name;
+ }
+ pop.curCode := '04';
+ if (pop.getfirst spKAU=tSOk) {
+   Podp_dol_04:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_04:=pop.spkau1.name;
+ }
+ pop.curCode := '05';
+ if (pop.getfirst spKAU=tSOk) {
+   Podp_dol_05:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_05:=pop.spkau1.name;
+ }
+ pop.curCode := '06';
+ if (pop.getfirst spKAU=tSOk) {
+   Podp_dol_06:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_06:=pop.spkau1.name;
+ }
+ pop.curCode := '07';
+ if (pop.getfirst spKAU=tSOk) {
+   Podp_dol_07:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_07:=pop.spkau1.name;
+ } 
+ pop.curCode := '08';
+ if (pop.getfirst spKAU=tSOk) {
+   Podp_dol_08:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_08:=pop.spkau1.name;
+ }
+ pop.curCode := '09';
+ if (pop.getfirst SpKAU=tSOk) {
+   Podp_dol_09:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_09:=pop.spkau1.name;
+ }
+ pop.curCode := '10';
+ if (pop.getfirst SpKAU=tSOk) {
+   Podp_dol_10:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_10:=pop.spkau1.name;
+ }
+ pop.curCode := '11';
+ if (pop.getfirst SpKAU=tSOk) {
+   Podp_dol_11:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_11:=pop.spkau1.name;
+ }
+ pop.curCode := '12';
+ if (pop.getfirst spKAU=tSOk) {
+   podp_dol_12:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tSOk) if (pop.getfirst SpKAU1=tSOk) Podp_fio_12:=pop.spkau1.name;
+ }

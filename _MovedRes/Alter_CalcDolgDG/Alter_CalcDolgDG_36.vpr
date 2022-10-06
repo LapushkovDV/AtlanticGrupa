@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>Alter_CalcDolgDG</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika_stend\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.36.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\inc\*
+					..\..\SourceGal\*
+					..\..\..\..\Galaktika_stend\FRM\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_SoprBase.res
+					$[GalExe]\L_DOGOVOR.res
+					$[GalExe]\C_EXTCLASS.res
+				</ResourceList>
+				<OutputResource>..\..\Alter_CalcDolgDG_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm_STEND</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="Alter_CalcDolgDG.prj" PosX="30" PosY="28" OpenEditor="True"/>
+			<File Name="alter\Alter_CalcDolgDG.vip" PosX="19" PosY="423" OpenEditor="True" Active="True"/>
+			<File Name="alter\Alter_CalcDolgDG_tune.vip" PosX="1" PosY="42" OpenEditor="True"/>
+			<File Name="..\..\SourceGal\5.5.31\L\L_Dogovor\vip\Dolg_DG\Dolg_DG.vip" PosX="46" PosY="22" OpenEditor="True"/>
+			<File Name="..\..\SourceGal\5.5.31\L\L_KatOrg\vip\CheckKon.vpp" PosX="33" PosY="169" OpenEditor="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="Alter_CalcDolgDG.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\Alter_CalcDolgDG\Alter_CalcDolgDG.prj" DateTimeStart="43863,3477598495" DateTimeCompile="0,00059663194406312" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\Alter_CalcDolgDG\ALTER\Alter_CalcDolgDG.vip" SourceLine="185" SourceColumn="9"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\Alter_CalcDolgDG\ALTER\Alter_CalcDolgDG.vip" SourceLine="208" SourceColumn="9"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\Alter_CalcDolgDG\ALTER\Alter_CalcDolgDG.vip" SourceLine="260" SourceColumn="9"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\Alter_CalcDolgDG\ALTER\Alter_CalcDolgDG.vip" SourceLine="301" SourceColumn="17"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="02.02.2020 8:21:38"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<MarkerList>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
+			<Marker FileName="alter\Alter_CalcDolgDG.vip" Caption="Нумерованная закладка 2" Line="235" NumIndex="2" MarkerType="mtNumBookmark" Comment="and PlP_Sopr.TiDkGal in (10,21,22)"/>
+			<Marker FileName="alter\Alter_CalcDolgDG.vip" Caption="Нумерованная закладка 1" Line="277" NumIndex="1" MarkerType="mtNumBookmark" Comment="_SkipOrg"/>
+		</MarkerList>
+		<Watches>
+			<Watch Expression="totalNDE"/>
+		</Watches>
+	</ProjectManager>
+</Viper>

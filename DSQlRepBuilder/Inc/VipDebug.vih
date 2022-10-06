@@ -1,0 +1,158 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 5.8 - Общая функциональность
+// Запись отладочной/профилировочной информации в файл
+//------------------------------------------------------------------------------
+
+#define _VIP_DEBUG
+#define INCL_GETERR
+
+#ifdef ComponentVersion
+#component "F_Common"
+#end
+
+#doc
+#Doc_Internal
+Содержит методы для работы с отладкой - запись отладочных сообщений в файл.
+#end
+ObjInterface OVipDebug;
+
+  #doc
+  #Doc_Internal
+  Создать log-файл.
+  #end
+  Function  logCreate(name : string) : integer;
+
+  #doc
+  #Doc_Internal
+  Записать в лог информацию о входе в функцию func
+  #end
+  Procedure logPush(func, param : string);
+
+  #doc
+  #Doc_Internal
+  Записать в лог информацию о выходе из функции
+  #end
+  Procedure logPop;
+
+  #doc
+  #Doc_Internal
+  Записать в лог строку mess
+  #end
+  Function  logWrite(mess : string) : integer;
+
+  #doc
+  #Doc_Internal
+  Записать в лог атрибуты маркера
+  #end
+  Function  logTraceMarker(markName : string; markId : longInt) : integer;
+
+  #doc
+  #Doc_Internal
+  Показать лог-файл
+  #end
+  Function  logShow : integer;
+
+  #doc
+  #Doc_Internal
+  Краткая форма для процедуры logPush
+  #end
+  Procedure u(func : string);
+
+  #doc
+  #Doc_Internal
+  Краткая форма для процедуры logPop
+  #end
+  Procedure o;
+
+  #doc
+  #Doc_Internal
+  Краткая форма для функции logWrite
+  #end
+  Function  w(mess : string) : integer;
+
+  #doc
+  #Doc_Internal
+  Записать в лог строку mess и число af
+  #end
+  Function  wf(mess : string; af : double) : integer;
+
+  #doc
+  #Doc_Internal
+  Записать в лог строк as1, as2 и чисел af1, af2
+  #end
+  Function  w2f(as1 : string; af1 : double; as2 : string; af2 : double) : integer;
+
+  #doc
+  #Doc_Internal
+  Записать в лог информацию о выходе из функции и дополнительно - строку mess
+  #end
+  Procedure r(mess : string);
+
+  #doc
+  #Doc_Internal
+  Записать в лог информацию о выходе из функции и дополнительно - число acRes типа comp
+  #end
+  Procedure rc(acRes : comp);
+
+  #doc
+  #Doc_Internal
+  Записать в лог информацию о выходе из функции и дополнительно - число awRes типа word
+  #end
+  Procedure rw(awRes : word);
+
+  #doc
+  #Doc_Internal
+  Записать в лог информацию о выходе из функции и дополнительно - число aiRes типа integer
+  #end
+  Procedure ri(aiRes : integer);
+
+  #doc
+  #Doc_Internal
+  Записать в лог информацию о выходе из функции и дополнительно - значение abRes типа boolean
+  #end
+  Procedure rb(abRes : boolean);
+
+  #doc
+  #Doc_Internal
+  Записать в лог информацию о выходе из функции и дополнительно - число afRes типа double
+  #end
+  Procedure rf(afRes : double);
+
+  #doc
+  #Doc_Internal
+  Записать в лог информацию о выходе из функции и дополнительно - число alRes типа longint
+  #end
+  Procedure rl(alRes : longint);
+
+  #doc
+  #Doc_Internal
+  Начать профилировку
+  #end
+  Procedure ProfileStart(abShowCalls: boolean);
+
+  #doc
+  #Doc_Internal
+  Закончить профилировку
+  #end
+  Procedure ProfileStop;
+
+  #doc
+  #Doc_Internal
+  Начало работы функции (c профилировкой)
+  #end
+  Procedure pu(func, param : string);
+
+  #doc
+  #Doc_Internal
+  Окончание работы функции (c профилировкой)
+  #end
+  Procedure po;
+
+End;
+
+VipInterface IVipDebug implements OVipDebug
+#ifdef ATL51
+licensed(FREE)
+#end
+;

@@ -1,0 +1,84 @@
+function getMercuryField: string;
+{
+  Result := 'Не собран';
+
+  if (isValidAll(tnATL_MERCURY_HEAD))
+  {
+   if (ATL_MERCURY_HEAD.ISOK)
+    {
+      Case ATL_MERCURY_HEAD.wStatus of
+       0 : Result := 'Собран'
+       1 : Result := 'Отгружен'
+      end;
+    }
+    else
+     {
+      Result := 'Есть ошибки';
+     }
+  }
+  else
+   {
+      if (isValidAll(tnATL_PickingRep_HEAD))
+       if (ATL_PickingRep_HEAD.ISOK)
+        {
+          Case ATL_PickingRep_HEAD.wStatus of
+              0   // 'ЧЗ проверка не выполнялась'
+            , 1 : //'ЧЗ проверен'
+               Result := 'Собран'
+          end;
+        }
+   }
+}
+function getMercuryFieldColor: word;
+{
+Result := 0;
+  if (isValidAll(tnATL_MERCURY_HEAD))
+   if (ATL_MERCURY_HEAD.ISOK)
+    {
+      Case ATL_MERCURY_HEAD.wStatus of
+       0 : Result := 3 //'Собран'
+       1 : Result := 7 //'Отгружен'
+      end;
+    }
+    else
+     {
+      Result := 0;
+     }
+}
+
+
+function getPickingReportField: string;
+{
+  Result := 'Не собран';
+
+  if (isValidAll(tnATL_PickingRep_HEAD))
+   if (ATL_PickingRep_HEAD.ISOK)
+    {
+      Case ATL_PickingRep_HEAD.wStatus of
+       0 : Result := 'ЧЗ проверка не выполнялась'
+       1 : Result := 'ЧЗ проверен'
+       2 : Result := 'ЧЗ ошибка'
+      end;
+    }
+    else
+     {
+      Result := 'Есть ошибки';
+     }
+}
+function getPickingReportFieldColor: word;
+{
+Result := 0;
+  if (isValidAll(tnATL_PickingRep_HEAD))
+   if (ATL_PickingRep_HEAD.ISOK)
+    {
+      Case ATL_PickingRep_HEAD.wStatus of
+       0 : Result := 0 //'ЧЗ проверен'
+       1 : Result := 7 //'ЧЗ проверен'
+       2 : Result := 10 //'ЧЗ ошибка'
+      end;
+    }
+    else
+     {
+      Result := 0;
+     }
+}

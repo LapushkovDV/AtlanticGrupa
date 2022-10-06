@@ -1,0 +1,49 @@
+#ifdef ComponentVersion
+#component "Z_PayRep"
+#end
+
+vipinterface viewrees    licensed(free);
+vipinterface RPechVip    licensed(free) parameters(prMNRec: comp; PrVip: word);
+vipinterface ReesRB      licensed(free) parameters(prMNRec: comp; PrVip: word);
+vipinterface ReesZar     licensed(free) parameters(prMNRec: comp; PrVip: word);
+vipinterface ruderpar    licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface reemoney    licensed(free);
+vipinterface reeOZ       licensed(free);
+vipinterface BlankPer    licensed(free);
+vipinterface ReesPost    licensed(free);
+vipinterface RVidUd      licensed(free);
+vipinterface UderRoll    licensed(free) parameters(wVidud: word);
+vipinterface DebtorsList licensed(free) parameters(PrUder, OrderBy: word);
+vipinterface TablRees    licensed(free) parameters(TM: word);
+vipinterface SocPech     licensed(free) parameters(_nrec: comp);
+vipinterface SocRoll     licensed(free) parameters(ReesNum: string[20]);
+vipinterface ReesAvan    licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface ReesChil    licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface ReesChon    licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface ReesMate    licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface ReesBoln    licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface reesotpu    licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface reesvipl    licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]; PRChoice, ZA: word);
+vipinterface FPayRoll    licensed(free) parameters(SbBanNrec: comp; FinalPath: string);
+
+vipinterface tablved     licensed(free) parameters(TM: word);
+vipinterface YesNoPay    licensed(free);
+vipinterface zarplved
+  licensed  (menuzarp,menuzarp2) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface avanved     licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface matved      licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface childved    licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface choneved    licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface prvidved    licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]; PRChoice, ZA: word);
+vipinterface otpved      licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface alimved     licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface BolnVed     licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]);
+vipinterface PlVedMp     licensed(free) parameters(PereForm: boolean; PNoDoc: string[20]; ZA: word);
+vipinterface PechPlVn    licensed(free) parameters(prMNRec: comp; PrVip: word);
+
+vipinterface prmonth     licensed(free) parameters(LS_NREC: comp; p2: double);
+vipinterface formorda    licensed(free);
+vipinterface formordz    licensed(free);
+vipinterface ordved      licensed(free) parameters(TM: word);
+vipinterface FRFormatterOfReestrProvider licensed(free) parameters(sbbanNRec: tNrec);
+vipinterface DbfReestrSberbankRussiaProvider licensed(free) parameters(sbbanNRec: tNrec);

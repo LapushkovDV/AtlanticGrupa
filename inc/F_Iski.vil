@@ -1,0 +1,32 @@
+
+#ifdef ComponentVersion
+#component "F_Iski"
+#end
+
+// --- Имеются vih-файлы для интерфейсов
+
+// VipInterface IIsksFun    licensed (DOGOVOR);
+// VipInterface IIsksOpl    licensed (DOGOVOR);
+
+// --- Экспортируемые интерфейсы
+
+vipinterface Iski
+             licensed
+             (
+             #include ISKI.lih
+             )
+             Parameters (myTiDkGal : Word; NRecIsk: Comp); // Меню и др.
+
+vipinterface IRestDolg
+             licensed (dogovor); // Меню
+
+vipinterface Isp_Iski
+             licensed (dogovor); // Меню #ifdef __ORENBURG_2__
+
+vipinterface SvIskPrn       licensed (FREE); // Меню, вызов взаимоисключающий с Isp_Iski
+
+// --- Локальные интерфейсы
+
+vipinterface GetMCUslforIsk licensed (FREE) Parameters (pIsk : Comp);
+vipinterface IskiRaschMode  licensed (FREE) Parameters (_Isk : Comp);
+vipinterface IskiShtraf     licensed (FREE) Parameters (_Isk : Comp);

@@ -1,0 +1,111 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - настройки
+// Создание/модификация настроек в компонентах
+//********************************************************************************
+
+#include CreateTune.vih
+
+//------------------------------------------------------------------------------
+Handler with replace GalPraData_DateModifyTune on ExtensionPoint
+  epDateModifyTune (TS : ObjStartCreateTune)
+Action
+{
+  TS.SetLastDateModTune(24,03,2019);
+  Result := true;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+Handler with replace GalPraData_CreateTuneComponent on extensionPoint
+  epCreateTuneComponent (TR: ObjCreateTuneEx)
+  // Внимание, приоритеты вызова обработчиков см. в CreateTune.vih
+Action
+{
+  Result := true;
+  //----------------------------------------------------------------------------
+  // Обязательно установить  имя компонента
+  TR.SetComponent('ATLANTIC');
+  //----------------------------------------------------------------------------
+
+  TR.AddPart(   ttSysUserTune
+             , 'USERTUNE'
+             , 'Tune'
+             , 'Настройки пользовательских доработок'
+             , 0);
+
+     TR.AddPart (ttSysUserTune,'USERTUNE.PraDataExport','USERTUNE','PraData',0);
+        TR.AddTune (ttSysTune,'USERTUNE.PraDataExport.OrgAttrCodeIsOk','USERTUNE.PraDataExport','Вн. атрибут организации определяющий работу с PraData',ftComp,'0','',0);
+           TR.AddIntrTune ('USERTUNE.PraDataExport.OrgAttrCodeIsOk','PraDataExport_attrkatorg');
+        TR.AddTune (ttSysTune,'USERTUNE.PraDataExport.OrgAttrCodeID','USERTUNE.PraDataExport','Вн. атрибут организации "ID PraData"',ftComp,'0','',0);
+           TR.AddIntrTune ('USERTUNE.PraDataExport.OrgAttrCodeID','PraDataExport_attrkatorg');
+        TR.AddTune (ttSysTune,'USERTUNE.PraDataExport.OrgAttrCodeTypeDistr','USERTUNE.PraDataExport','Вн. атрибут организации "тип дистрибьютора PraData"',ftComp,'0','',0);
+           TR.AddIntrTune ('USERTUNE.PraDataExport.OrgAttrCodeTypeDistr','PraDataExport_attrkatorg');
+        TR.AddTune (ttSysTune,'USERTUNE.PraDataExport.pathto','USERTUNE.PraDataExport','Директория для выгружаемых файлов в автоматическом режиме',ftString,'','',0);
+           TR.AddIntrTune ('USERTUNE.PraDataExport.pathto','PraDataExport_getdir');
+        TR.AddTune (ttSysTune,'USERTUNE.PraDataExport.pathtoManual','USERTUNE.PraDataExport','Директория для выгружаемых файлов в ручном режиме',ftString,'','',0);
+           TR.AddIntrTune ('USERTUNE.PraDataExport.pathto','PraDataExport_getdir');
+
+        TR.AddTune (ttSysTune,'USERTUNE.PraDataExport.DayCount','USERTUNE.PraDataExport','Количество дней для просмотра накладных',ftWord,'46','',0);
+        TR.AddTune (ttSysTune,'USERTUNE.PraDataExport.DateFormat','USERTUNE.PraDataExport','Формат даты для выгрузки',ftString,'YYYY-MM-DD','',0);
+
+
+
+}
+//------------------------------------------------------------------------------
+
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - настрокйи
+// Обработка настроек с вызовом интерфейсов в компонентах
+//********************************************************************************
+
+
+#include  TuneSpec.vih
+
+#component ""
+VipInterface PraDataExport_IntrTune implements ObjIntrTuneComponent licensed (FREE);
+
+// Обработчик точки расширения epIntrTuneComponent
+// Должен вернуть FALSE если обработка проводилась. TRUE - если не проводилась.
+handler with replace GalPraData_IntrTune on extensionPoint epIntrTuneComponent (TR: objTuneIntr; TVal: TTuneVal; Inter: string)
+action
+{
+   var ifc : PraDataExport_IntrTune;
+   result := not ifc.TuneIntrComponent (TR, TVal, Inter);
+}
+
+Interface PraDataExport_IntrTune;
+
+Create view vmain as select Attrnam.nrec from attrnam;
+
+// Обязательно должна вернуть False если обработка не производилась, иначе true
+Public Function TuneIntrComponent (TR: objTuneIntr; TVal: TTuneVal; Inter: string) : boolean;
+{
+  Var PrOk : boolean;     PrOk := False;
+  var TuneCode : string;  TuneCode := TR.GetTuneCode(TVal.cTune);  // код текущей настройки, если нужен
+
+  TuneIntrComponent := true; // Чтобы в каждом case не писать это
+
+  case UpCase(Inter) of
+  'PRADATAEXPORT_ATTRKATORG': {
+                        if RunInterface('cfgselattrname',word(cokatorg),TVal.CompVal) <> cmCancel
+                           if GetFirst attrnam where ((TVal.CompVal == attrnam.nRec)) = tsOk
+                              {TVal.strVal := attrnam.Name;
+                               PrOk := true;}
+                       }
+  'PRADATAEXPORT_GETDIR':   {var s:string  ;
+                        s:=getdirname('Выбор директории');
+                        if length(s)>0 and TVal.strVal<>s
+                          {TVal.strVal:=s;
+                           PrOk := true;}
+                       }
+   else
+     TuneIntrComponent := false;  // Если не зашли в обработку, то обязательно установим в false
+   end;  // case
+
+   if (PrOk)
+      TR.UpdateTuneVal(TVal);
+}     // TuneIntrComponent
+
+end. // интерфейс

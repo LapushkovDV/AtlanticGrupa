@@ -1,0 +1,138 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента C_EXPIMP
+
+#ifdef ComponentVersion
+#component "C_EXPIMP"
+#end
+
+// АСР
+VipInterface Txo_AsrAttribute licensed (exp_imp);
+VipInterface iFitTbl          licensed (exp_imp) Parameters(bFromMenu : boolean; cRec : comp);
+VipInterface iSettingsAsr     licensed (exp_imp);
+
+//#include AsrObjInt.vih
+
+// КАТАЛОГИ
+VipInterface ExportFields     licensed (exp_imp) Parameters(ParHead : comp; ParNast : comp);
+VipInterface ExImFilterKontr  licensed (exp_imp) Parameters(ParNast : comp; ParCommand : word; ParFromVip : word);
+VipInterface ExImFilterKSotr  licensed (exp_imp) Parameters(ParNast : comp; ParCommand : word; ParFromVip : word);
+VipInterface ExImFilterMBP    licensed (exp_imp) Parameters(ParNast : comp; ParCommand : word; ParFromVip : word);
+VipInterface ExImFilterMC     licensed (exp_imp) Parameters(ParNast : comp; ParCommand : word; ParFromVip : word);
+VipInterface ExImFilterNMA    licensed (exp_imp) Parameters(ParNast : comp; ParCommand : word; ParFromVip : word);
+VipInterface ExImFilterOS     licensed (exp_imp) Parameters(ParNast : comp; ParCommand : word; ParFromVip : word);
+VipInterface EXIMFILTERSHR    licensed (exp_imp) Parameters(ParNast : comp; ParCommand : word; ParFromVip : word);
+VipInterface ExImFilterMaskMC licensed (exp_imp) Parameters(ParNast : comp; ParCommand : word; ParFromVip : word);
+VipInterface EditNastrExIm    licensed (exp_imp) Parameters(ParNastr : comp);
+VipInterface NastrExIm        licensed (exp_imp) Parameters(ParExIm : word; ParKat : word; ParFromVip : word);
+VipInterface GetDBFField      licensed (exp_imp) Parameters(DBFName : string[80]; VarDBFName : string[40]);
+Vipinterface GetGalField      licensed (exp_imp) Parameters(TblCode : word; VarFieldName : string[40]; VarFieldRemark : string[80]; VarFieldType : word);
+Vipinterface GetNastrOS       licensed (exp_imp) Parameters(ParExIm : word; ParDocType : integer; VarNastr : comp);
+Vipinterface ImportFields     licensed (exp_imp) Parameters(ParHead : comp; ParNast : comp);
+Vipinterface Jour             licensed (exp_imp) Parameters(Par1 : comp; Par2 : word);
+Vipinterface JOURKSOTR        licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface JOURSHR          licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface JourKont         licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface JourMaskMC       licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface JourMBP          licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface JourMC           licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface JourNMA          licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface JourOS           licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface OtkKontr         licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface OTKKSOTR         licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface OTKSHR           licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface OtkMaskMC        licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface OtkMBP           licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface OtkMC            licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface OtkNMA           licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface OtkOS            licensed (exp_imp) Parameters(Par1 : comp);
+Vipinterface TableChanges     licensed (exp_imp) Parameters(VarFld : comp);
+Vipinterface EXIMFILTERSFO    licensed (FREE)    Parameters(ParNast: comp; ParCommand: word; ParFromVip: word);
+Vipinterface JOURNORM         licensed (FREE)    Parameters(Par1: comp);
+Vipinterface OTKNORM          licensed (FREE)    Parameters(Par1: comp);
+
+
+
+
+// ОПЕРАЦИИ
+Vipinterface ieExecute        licensed (custbank, exp_imp) Parameters(bImpExp : byte; wTipDoc : word;  wSubTipDoc : word);
+Vipinterface ieSettingsFields licensed (custbank, exp_imp) Parameters(sFieldName : string; sFieldValue : string; wDocType : word; bFieldType : byte; bExpImp : byte; bWithPick : boolean; priznak : word);
+Vipinterface ieLog            licensed (custbank, exp_imp) Parameters(cIEHead : comp; cIELog : comp);
+Vipinterface ieLogOne         licensed (custbank, exp_imp) Parameters(cDocument : comp; wDocType : word);
+Vipinterface ieSettings       licensed (custbank, exp_imp) Parameters(bExpImp : byte;  wSelectedDocType : word; wSelectedSubType : word; bFromDocInterface : boolean);
+Vipinterface ieChooseSymbol   licensed (custbank, exp_imp) Parameters(CharDelim : string[2]; nResSymb : byte);
+Vipinterface ieXMLStruct      licensed (custbank, exp_imp) Parameters(cHeader : comp);
+VipInterface ieAttributesList licensed (custbank, exp_imp) Parameters(cHead : comp; cParent : comp; sResult : string; nRecRes : comp);
+Vipinterface IEFORMULA         licensed (FREE)    Parameters(lastform: string; nResform: string);
+
+// экспорт
+Vipinterface ieExecDO         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecDP         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecIT         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecKO         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecKS         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecLZ         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecMC         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecNMA        licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecOB         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecOS         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecPA         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecPD         licensed (custbank, exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecPL         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecPutLst     licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecPV         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecSF         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface IEEXECRP         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecSK         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecVD         licensed (custbank, exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecVG         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecVP         licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecDogovor    licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecCalPlan    licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface ieExecDiary      licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface IEEXECSKLORD     licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface IEEXECARCOS      licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface IEEXECKATUSL     licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+Vipinterface IEEXECDOCREQ     licensed (exp_imp) Parameters(cIEHead : comp; wForWhat : word);
+
+// импорт
+Vipinterface ieTempDO         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempDP         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempIT         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempKO         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempKS         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempLZ         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempMC         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempNMA        licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempOB         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempOS         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempPA         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempPD         licensed (custbank, exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempPL         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempPutLst     licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempPV         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface IETEMPRP         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempSF         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempSK         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempVD         licensed (custbank, exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempVG         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempVP         licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempDogovor    licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempCalPlan    licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface ieTempDiary      licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface IETEMPARCOS      licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface IETEMPSKL        licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface IETEMPUSL        licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+Vipinterface IETEMPDOCREQ     licensed (exp_imp) Parameters(cIELog : comp; cIEHead : comp);
+
+
+// XML
+Vipinterface iIENastr         licensed (exp_imp) Parameters(bExpImp : byte; wDocType : word; wDocSubType : word);
+//#include IJournal.vih
+
+//#include ICoreBaseDoc.vih
+//#include ICoreKatSopr.vih
+//#include IDocExpImp.vih
+//#include IDocStruct.vih
+//#include IJobStruct.vih
+//#include IKatalogSearcher.vih
+//#include IObjectContainer.vih

@@ -1,0 +1,40 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - настройки
+// Создание/модификация настроек в компонентах
+//********************************************************************************
+
+#include CreateTune.vih
+
+//------------------------------------------------------------------------------
+Handler with replace ATLANTIC_DIADOCExportDoc on ExtensionPoint
+  epDateModifyTune (TS : ObjStartCreateTune)
+Action
+{
+  TS.SetLastDateModTune(01,10,2018);
+  Result := true;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+Handler with replace ATLANTIC_DIADOCExportDoc on extensionPoint
+  epCreateTuneComponent (TR: ObjCreateTuneEx)
+  // Внимание, приоритеты вызова обработчиков см. в CreateTune.vih
+Action
+{
+
+  //----------------------------------------------------------------------------
+  // Обязательно установить  имя компонента
+  TR.SetComponent('ATLANTIC');
+  //----------------------------------------------------------------------------
+
+  TR.AddPart(   ttSysUserTune
+             , 'USERTUNE'
+             , 'Tune'
+             , 'Настройки пользовательских доработок'
+             , 0);
+
+   TR.AddPart (ttSysUserTune,'USERTUNE.DIADOC','USERTUNE','DIADOC',0);
+        TR.AddTune (ttUSERTUNE,'USERTUNE.DIADOC.USEATLANTICTABLE','USERTUNE.DIADOC','DIADOC. Использовать таблицы ATLANTIC для кодов КИТУ/КИГУ   ',FtBoolean,'0','',0);
+  Result := true;
+}

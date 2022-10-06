@@ -1,0 +1,7 @@
+#ifdef ComponentVersion
+#component "L_SPEXCH"
+#end
+
+vipinterface AdvSpecClipboard     licensed (FREE) Parameters (cDocTo : comp; TiDkTo, iVid : word);
+vipinterface GetMC_From_Clipboard licensed (FREE) Parameters (iTable, iVid : word);
+vipinterface SpecClipboard        licensed (FREE) Parameters (iTable, iVid : word);

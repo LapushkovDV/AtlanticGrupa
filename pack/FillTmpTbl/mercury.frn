@@ -1,0 +1,2 @@
+recOrg.KatOrg_CONTAKT := drogaFunc.getMercuryCode(recNakl.KatSoprNRec);
+if (recOrg.KatOrg_CONTAKT = '') recOrg.KatOrg_CONTAKT := 'Отсутствует';

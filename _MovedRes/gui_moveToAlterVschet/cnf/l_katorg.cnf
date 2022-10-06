@@ -1,0 +1,11 @@
+object 'L_KATORG::KATORG' : InterfaceWindow {
+  object WKATORG : InterfaceWindow {
+    Centered = True;
+    object ADDITIONALINFOSCREEN : Screen {
+      object 'i_ADDITIONALINFOSCREEN_KATORGIMP.MAXDOLGRUB' : PanelInputLine {
+        PassiveFormat = '\2p[|-]3666`666`666`666`666';
+      } // i_ADDITIONALINFOSCREEN_KATORGIMP.MAXDOLGRUB : PanelInputLine
+    } // ADDITIONALINFOSCREEN : Screen
+  } // WKATORG : InterfaceWindow
+} // L_KATORG::KATORG : InterfaceWindow
+//-----------------------------------------------------------------------------

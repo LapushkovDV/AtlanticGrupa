@@ -1,0 +1,30 @@
+// Галактика 8.10   2006г.
+// Описание экспортируемых интерфейсов компоненты
+
+#ifdef ComponentVersion
+#component "L_SerialN"
+#end
+
+VipInterface SerialCard          licensed (FREE);
+
+VipInterface SetSoprSerialList   licensed (FREE) Parameters ( cSpSoprRec  : comp;
+                                                              bbCreate    : boolean;
+                                                              bReserved1  : boolean;
+                                                              lNumSel     : longint
+                                                            );
+
+VipInterface SetOrderSerialList  licensed (FREE) Parameters ( cSpOrderRec : comp;
+                                                              bbCreate    : boolean;
+                                                              bReserved1  : boolean;
+                                                              lNumSel     : longint
+                                                            );
+
+VipInterface SetReservedSerial   licensed (FREE) Parameters ( cSpRec   : comp;
+                                                              wSpVid   : word;
+                                                              bCreate  : boolean;
+                                                              lNumSel  : longint;
+                                                              cCurPodr : comp;
+                                                              cCurMol  : comp
+                                                            );
+
+VipInterface SNSkladRazr         licensed (FREE) Parameters ( wSklPr : word );

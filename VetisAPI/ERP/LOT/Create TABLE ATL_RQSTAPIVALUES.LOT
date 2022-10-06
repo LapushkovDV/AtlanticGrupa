@@ -1,0 +1,16 @@
+Create table ATL_RQSTAPIVALUES "Результаты от внешних API"
+with table_Code = 31623
+with replace
+(
+    RQST_GUID     : string[36] "GUID запроса"
+  , RSQT_PROVIDER : string     "Сервис откуда запрос"
+  , NROW          : longint    "Номер строки в результе"
+  , COLUMNNAME    : string     "Название колонки в результате"
+  , VALUE         : string     "Значение"
+)
+with index
+(
+   i_GUID     = RQST_GUID
+ , i_GUIDNrow = RQST_GUID + Nrow
+)
+;

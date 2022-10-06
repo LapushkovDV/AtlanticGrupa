@@ -1,0 +1,281 @@
+#Component "ATLANTIC"
+interface Marshruts 'Список маршрутов контрагентов как грузополучателей', EscClose;
+create view
+ var
+  _org  : String;
+  _cOrg : comp;
+  MarkerOrg : longint;
+ from
+   MarAvt
+  ,MarRel
+  ,MarPunkt
+  ,KatState
+  ,KatCity
+  ,KatOrg
+
+;
+//------------------------------------------------------------------------------
+// Инициализация главного окна
+//------------------------------------------------------------------------------
+Screen scParam 'Список маршрутов контрагентов как грузополучателей';
+  Fields
+  _Org  : Protect, PickButton;
+  Buttons
+   cmOk,,,;
+   cmCancel,,,'Отмена';
+<<'Список маршрутов контрагентов как грузополучателей'
+
+  Контрагент .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    <.Сформировать.>       <.  Отмена  .>
+>>
+End;
+
+
+Handleevent
+cmInit:
+{
+  _cOrg := 0h;
+  _org := 'ВЫБЕРИТЕ ОРГАНИЗАЦИЮ';
+  MarkerOrg   := InitMarker('KatOrg'     , 8, 100, 10, false);
+}
+cmPick:
+ {
+ /*
+  RunInterface(L_KATORG::GETKATOR
+               ,_cOrg         // код организации
+               , 0  // код верхнего уровня (пока невозвращаемый из-за ошибки тлантиса)
+               , False     // true - позволяет выбрать группу, а не только контрагента
+               , 0           // код группы
+               , 0
+              );          // код банка
+  _org := if(getFirst KatOrg Where ((_cOrg == KatOrg.nrec)) = tsOK, KatOrg.name, _org)
+  */
+  DoneMarker(MarkerOrg  ,'KatOrg');
+  RunInterface(L_KATORG::GetSomeKontrPrim, false );// true - не очищать маркер выбора от предыдущего запуска
+//  MarkerOrg   := InitMarker('KatOrg'     , 8, 100, 10, false);
+  MarkerOrg   := InitMarker('KatOrg'     , 8, 100, 10, false);
+  _org := 'Выбрано: ' + getmarkercount(MarkerOrg);
+ }
+cmOK:
+{
+  if getmarkercount(MarkerOrg) = 0
+   {
+    Message('Выберите хотя бы одну организацию ', error);
+    stop; abort; exit;
+   }
+var KolVoStrok, nrow : longInt;
+ KolVoStrok := 0;
+ StartNewVisual( vtRotateVisual, vfTimer, 'Предпросмотр', 1);
+var iMarker : longInt;
+ iMarker := 0;
+  do
+  {
+   if GetMarker(MarkerOrg,iMarker,_cOrg)
+    iMarker++;
+    KolVoStrok++;
+   _loop MarAvt Where ((     1 == MarAvt.TIPMAR
+                    and _cOrg == MarAvt.corg
+                     ))
+     _loop MarRel Where ((MarAvt.nrec == MarRel.cMarAvt))
+     and marrel.WAYTIME <> -1
+      if(Getfirst fastFirstrow MarPunkt where ((MarRel.cMarPunkt == MarPunkt.nrec))
+                              and MARPUNKT.NAME <> 'ООО "Атлантик Брендс"'
+                              //and MARPUNKT.NAME <> 'АО "Атлантик Группа"'
+        ) = tsOK
+
+      {KolVoStrok++ }
+  } While iMarker<GetMarkerCount(MarkerOrg)
+
+  if KolVoStrok = 0
+   {
+    StopVisual('', 0);
+    Message('У выбранных организаций нет маршрутов ', error);
+    stop; abort; exit;
+   }
+  KolVoStrok := KolVoStrok + getmarkercount(MarkerOrg) * 5;
+  SetViSualHeader( 'Инициализация EXCEL');
+  var ExcelResult : boolean;
+   ExcelResult := True;
+  var sfile : string;
+   sfile:=GetStringParameter('Files','OutputFilesDirectory',0) + 'MarPunkt_'+USERNAME+'.xls';
+   deleteFile(sfile);
+   ExcelResult := xlCreateExcel(sfile, True);
+   ExcelResult := xlIsExcelValid;
+   if not ExcelResult then
+    {
+     StopVisual('The End',vfTimer);
+     Message('Ошибка инициализации Excel');
+     exit
+    }
+    xlAddSheet;
+   var ListName : string ;
+    ListName:='MarPunkt_' + USERNAME;
+    xlSetSheetName(1, ListName);
+    xlSetActiveSheetByName( ListName);
+    XlCreateMatrix(KolVoStrok+5,15);
+  nrow:= 1;
+ iMarker := 0  ;
+          XlStWriteToMatrix(Nrow, 1,'KatOrg Nrec');
+          XlSetColumnWidth(20,1,1,1,1) ;
+          XlStWriteToMatrix(Nrow, 2,'MARAVT Nrec') ;
+          XlSetColumnWidth(20,1,2,1,2)  ;
+          XlStWriteToMatrix(Nrow, 3,'Получатель') ;
+          XlSetColumnWidth(64,1,3,1,3) ;
+          XlStWriteToMatrix(Nrow, 4,'Koд маршрута');
+          XlSetColumnWidth(32,1,4,1,4) ;
+          XlStWriteToMatrix(Nrow, 5,'Наименование') ;
+          XlSetColumnWidth(64,1,5,1,5)  ;
+          XlStWriteToMatrix(Nrow, 6,'Общее расст.') ;
+          XlSetColumnWidth(16,1,6,1,6) ;
+          XlStWriteToMatrix(Nrow, 7,'Страна') ;
+          XlSetColumnWidth(16,1,7,1,7) ;
+          XlStWriteToMatrix(Nrow, 8,'Город');
+          XlSetColumnWidth(32,1,8,1,8) ;
+          XlStWriteToMatrix(Nrow, 9,'Адрес (конечный)') ;
+          XlSetColumnWidth(128,1,9,1,9)  ;
+          XlStWriteToMatrix(Nrow, 10,'Адрес (промежуточный)') ;
+          XlSetColumnWidth(128,1,10,1,10) ;
+          XlStWriteToMatrix(Nrow, 11,'Region')  ;
+          XlSetColumnWidth(16,1,11,1,11);
+          XlStWriteToMatrix(Nrow, 12,'Код точки');
+          XlSetColumnWidth(16,1,12,1,12)  ;
+          XlStWriteToMatrix(Nrow, 13,'КПП') ;
+          XlSetColumnWidth(16,1,13,1,13);
+          xlSetFontstyle(1,nrow,1,nrow,13) ;
+
+  do
+  {
+      if GetMarker(MarkerOrg,iMarker,_cOrg)
+       iMarker++;
+      if getfirst fastfirstrow katorg where ((_cOrg == katorg.nrec)) <> TSOK {continue}
+      SetVisualHeader('Печать отчета '+
+      ''#13''+ Katorg.name)  ;
+
+
+    if getfirst fastFirstrow MarAvt Where (( 1 == MarAvt.TIPMAR and _cOrg == MarAvt.corg )) <> tsOK
+    then
+    {
+      nrow++ ;
+      XlStWriteToMatrix(Nrow,3,Katorg.name );
+      XlStWriteToMatrix(Nrow, 4,'НЕТ МАРШРУТОВ');
+//      xlMergeCells(nrow,1,nrow,9)
+      xlSetFontSize(11,nrow,1,nrow,13);
+      xlSetFontstyle(1,nrow,1,nrow,13);
+//        nrow++
+    }
+    else
+    {
+/*
+      XlStWriteToMatrix(Nrow, 1,'Маршрут движения по получателю: ' + Katorg.name)
+      xlMergeCells(nrow,1,nrow,9)
+      xlSetFontSize(15,nrow,1,nrow,9)
+      xlSetFontstyle(1,nrow,1,nrow,9)
+        nrow++
+*/
+           SetVisualHeader('Печать отчета '+
+           ''#13''+ Katorg.name) ;
+
+         _loop MarAvt Where ((     1 == MarAvt.TIPMAR
+                           and _cOrg == MarAvt.corg
+                            ))
+            _loop MarRel Where ((MarAvt.nrec == MarRel.cMarAvt))
+                and marrel.WAYTIME <> -1
+
+            if(Getfirst fastFirstrow MarPunkt where ((MarRel.cMarPunkt == MarPunkt.nrec))
+                              and MARPUNKT.NAME <> 'ООО "Атлантик Брендс"'
+                              //and MARPUNKT.NAME <> 'АО "Атлантик Группа"'
+              ) = tsOK
+
+          {
+          var _state, _City: string ;
+          _state := _City := '';
+            if Getfirst fastFirstrow KatState where ((MarAvt.cState == KatState.nrec)) = tsOK
+              _state := KATSTATE.NAME ;
+            if Getfirst fastFirstrow KatCity where ((maravt.cCity == KatCity.nrec)) = tsOK
+              _City  := KATCITY.NAME ;
+            nrow++ ;
+            XlStWriteToMatrix(Nrow,1, chr(39)+string(KatOrg.nrec));
+            XlStWriteToMatrix(Nrow,2, chr(39)+string(MARAVT.nrec))  ;
+            XlStWriteToMatrix(Nrow,3, Katorg.name)    ;
+            XlStWriteToMatrix(Nrow,4, MARAVT.KODMARCH ) ;
+            XlStWriteToMatrix(Nrow,5, MARAVT.NMARAVT  ) ;
+            XlStWriteToMatrix(Nrow,6, MARAVT.DISTANTION )  ;
+            XlStWriteToMatrix(Nrow,7, _state ) ;
+            XlStWriteToMatrix(Nrow,8, _City ) ;
+            XlStWriteToMatrix(Nrow,9, MarAvt.npADDR );
+            XlStWriteToMatrix(Nrow,10, MarPunkt.npADDR );
+            XlStWriteToMatrix(Nrow,11, oExtClass.GetSegName(86,MARAVT.nrec) ); // region
+            XlStWriteToMatrix(Nrow,12, chr(39)+oExtClass.GetSegName(161, MARPUNKT.nrec)); // код точки
+            XlStWriteToMatrix(Nrow,13, chr(39)+marrel.nomlich); // КПП
+          } // _loop MarAvt Where ((     1 == MarAvt.TIPMAR
+//         nrow++
+   }
+//         nrow++
+ } While iMarker<GetMarkerCount(MarkerOrg);
+  xlwraptext(1,1,nrow,13)  ;
+  xlFrameCells(63, 2, 1, 1, 1, 1, nrow,13);
+  xlWritematrixToExcel(1,1);
+ xlKillexcel;
+ StopVisual('', 0);
+
+}
+end;
+end.
+//------------------------------------------------------------------------------
+// Отчеты пользователя
+//------------------------------------------------------------------------------
+
+#Component "F_UserReport"
+
+ObjInterface IUserReport;
+  // Запуск отчета на вvполнение при выборе его из списка отчетов
+  procedure Run;
+  // Наименование отчета в списке
+  function GetReportName : String;
+  // Наименования групп, в которvе входит отчет
+  // +Группа n+1 делается подчиненной группе n
+  function GetGroupName (Level : Word) : String;
+  // Приоритет отчета - сортировка внутри группv вvполняется сначала
+  // по приоритету, а затем по наименовани_
+  function GetPriority : Integer;
+  // ModuleID модулей, в которvх будет виден отчет
+  // '*' - отчет будет виден в любом модуле
+  function VisibleInModule (Ind : Byte) : String;
+end;
+
+VipInterface UserReport_Marshruts Implements IUserReport;
+
+Interface UserReport_Marshruts
+
+create view;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'SELL';
+  end;
+end;
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+  case Level of
+    1 : GetGroupName := '';
+  end;
+end;
+
+function GetReportName: String;
+begin
+  GetReportName := 'Список маршрутов контрагентов как грузополучателей'
+end;
+!-------------------------------------------------------------------------------
+procedure Run;
+begin
+  runinterface(ATLANTIC::Marshruts);
+end;
+!-------------------------------------------------------------------------------
+end.

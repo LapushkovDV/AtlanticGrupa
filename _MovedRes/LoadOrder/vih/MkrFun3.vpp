@@ -1,0 +1,331 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Логистика - склад
+// Процедуры для формирования расходных складских ордеров
+//******************************************************************************
+
+#ifNdef _mkrfun3_
+#define _mkrfun3_
+
+//******************************************************************************
+Function ShowNalMKRMsg(ResTov: word): boolean;
+var
+  McTov: boolean;
+  sMCLess, sMCLessObj, sMCLessObj1, sVOstLess, sOstLesObj, sAbortRash, sWarnRash, sNoObj : string;
+  wSpisanie, wSpisObj: word;
+{
+  sMCLess    := 'Матценностей недостаточно в требуемом разрезе.';
+  sMCLessObj := 'Матценностей недостаточно в требуемом разрезе целевого назначения.';
+  sMCLessObj1 := 'Матценностей недостаточно в свободном остатке (не закрепленных за объектами ЦУ).';
+  sVOstLess  := 'Недостаточно свободного текущего остатка матценностей.';
+  sOstLesObj := 'Недостаточно свободного текущего остатка матценностей с учетом'#13 +
+                'наличия на разрезах целевого назначения.';
+  sNoObj     := 'Запрещено списание без указания объекта целевого назначения';
+  sAbortRash := 'Вам запрещено отпускать МЦ в таких случаях.';
+  sWarnRash  := 'Прекратить отпуск матценностей?';
+  wSpisanie  := wGetTune('McUsl.Spisanie');
+  wSpisObj   := wGetTune('UKS.Spisanie');
+
+  if ((ResTov AND 32) <> 0)
+    {
+      message(sNoObj);
+      ShowNalMKRMsg:= false;
+      Exit;
+    }
+
+  McTov := FALSE;
+  if ((ResTov AND 1) <> 0) AND (wSpisanie <> 1)
+   // запрещать без наличия
+    Message(sMCLess + ''#13#13 + sAbortRash, Warning);
+  else
+    if ((ResTov AND 2) <> 0) AND (wSpisanie = 2)
+     // запрещать без текущего остатка (только если запрещено и без наличия)
+      Message(sVOstLess + ''#13#13 + sAbortRash, Warning);
+    else
+      if ((ResTov AND 8) <> 0) AND (wSpisObj = 1)
+       // запрещать без наличия по объекту
+        Message(sMCLessObj + ''#13#13 + sAbortRash, Warning);
+      else
+        if ((ResTov AND 16) <> 0) AND (wSpisObj = 1)
+        // запрещать без свободного текущего остатка
+          Message(sOstLesObj + ''#13#13 + sAbortRash, Warning);
+       else
+          if ((ResTov AND 64) <> 0) AND (wSpisObj = 1)
+          // запрещать без наличия по объекту без указания объекта ЦУ
+            Message(sMCLessObj1 + ''#13#13 + sAbortRash, Warning);
+          else
+         {
+           McTov := TRUE;
+
+           if ((ResTov AND 1) <> 0)             // разрешать без наличия
+             McTov := Message(sMCLess + ''#13#13 + sWarnRash, YesNo) <> cmYes;
+
+           if McTov AND ((ResTov AND 2) <> 0)   // разрешать без текущего остатка
+             McTov := Message(sVOstLess + ''#13#13 + sWarnRash, YesNo) <> cmYes;
+
+           if McTov AND ((ResTov AND 8) <> 0)   // разрешать без наличия по объекту
+             McTov := Message(sMCLessObj + ''#13#13 + sWarnRash, YesNo) <> cmYes;
+
+           if McTov AND ((ResTov AND 16) <> 0)  // разрешать без свободного текущего остатка
+             McTov := Message(sOstLesObj + ''#13#13 + sWarnRash, YesNo) <> cmYes;
+         }
+
+  ShowNalMKRMsg := McTov;
+} // Function ShowNalMKRMsg(ResTov: word): boolean;
+
+
+
+//******************************************************************************
+//исп-ся в позиционирование на DoRes и SpStep в CheckSpPosKol и в AfterInsert
+Function GetReserv(aPodr, aMol: comp): double; //возвращает в учетных единицах
+var
+  tKol: double;
+  isDoRes: boolean;
+{
+  GetReserv := 0;
+
+  if GetFirst SpStep where (( SpSopr.cSpStep == SpStep.NRec )) <> tsOk
+    Exit;
+
+  if (SpStep.Reserv = 0)
+    Exit;
+
+  isDoRes := False;
+  tKol    := 0;
+
+  case wGetTune('Reserv.PrSchSklad') of
+    0, 1: {
+      _LOOP SpStep where (( SpSopr.cSpStep == SpStep.NRec ))
+        if (GetFirst FastFirstRow DORes where (( SpStep.NRec  ==  DORes.cSpStep AND
+                                                 aPodr        ==  DORes.cPodr )) = tsOk)
+        {
+          tKol    := tKol + DORes.Kol * GetKoefOtpEdT(SpStep.NRec, SpStep.cOtpEd, coSpStep);
+          isDoRes := True;
+        }
+        else //если был изменен в накладной разрез:
+          if GetFirst FastFirstRow DORes where (( SpStep.NRec == DORes.cSpStep )) = tsOk
+          {
+            tKol    := tKol + DORes.Kol * GetKoefOtpEdT(SpStep.NRec, SpStep.cOtpEd, coSpStep);
+            isDoRes := True;
+          }
+    }
+
+    2: {
+      _LOOP SpStep where (( SpSopr.cSpStep == SpStep.NRec ))
+        if (GetFirst FastFirstRow DORes where (( SpStep.NRec   ==  DORes.cSpStep AND
+                                                 aPodr         ==  DORes.cPodr   AND
+                                                 aMOL          ==  DORes.cMOL    AND
+                                                 SpSopr.cParty ==  DORes.cParty )) = tsOk)
+        {
+          tKol    := tKol + DORes.Kol * GetKoefOtpEdT(SpStep.NRec, SpStep.cOtpEd, coSpStep);
+          isDoRes := True;
+        }
+        else //если был изменен в накладной разрез:
+          if GetFirst FastFirstRow DORes where (( SpStep.NRec == DORes.cSpStep )) = tsOk
+          {
+            tKol    := tKol + DORes.Kol * GetKoefOtpEdT(SpStep.NRec, SpStep.cOtpEd, coSpStep);
+            isDoRes := True;
+          }
+    }
+  end;
+
+  GetReserv := if (isDoRes, tKol, SpStep.Reserv * GetKoefOtpEdT(SpStep.NRec, SpStep.cOtpEd, coSpStep));
+}
+
+
+//******************************************************************************
+//модиф. резерво в тек.остатков и снятие резервов в ДО:
+Procedure AfterSpRashInserted(dForm: Date; var PrCorrect: boolean; var PrMod: boolean);//PrMod - не меняется при ошибке модиф. тек.остатков
+{
+  var methRes: word;  methRes := wGetTune('Reserv.PrSchSklad');
+
+  if (prCorrect)   //для Message('отпускная цена <  учетной'):
+    prCorrect := NOT ((SpOrder.srPrice * SpOrder.Kol - SpSopr.Price * SpSopr.KolFact) > 0.001);
+
+  if KatSopr.waDoc = adSoprDocSNSell  //сторнирующая накладная
+    Exit;
+
+  //------------------------------------------------------------------------------
+  //кол-во снимаемого резерва
+  var spStepRes, resetResKol: double;
+  spStepRes := GetReserv(KatSopr.cPodrFrom, KatSopr.cMolFrom); //в уч.ед-х возвращает, позиционирует SpStep и DORes !!!
+
+  if spStepRes = 0
+    Exit;
+
+  resetResKol := if(SpOrder.kol < spStepRes,   //кол-во в ордере < резерва
+                   SpOrder.kol, spStepRes); //нормальная ситуация
+
+  var cPodr_, cMOL_, cParty_: comp;
+  cPodr_  := if(IsValid(#DORes), DORes.cPodr , SpOrder.ccPodr);
+  cMOL_   := if(IsValid(#DORes), DORes.cMOL  , SpOrder.ccMOL);
+  cParty_ := if(IsValid(#DORes), DORes.cParty, SpOrder.cParty);
+
+// снятие резерва в текущих остатках
+  fTekRun.ModifyTekMC(SpOrder.cMC, 0, -resetResKol);
+
+  if methRes = 0 AND IsValid(#DORes)
+    fTekRun.ModifySklOstAlways(SpOrder.cMC, cPodr_, 0, -resetResKol);
+
+  if (methRes = 1) OR (methRes = 2)
+    fTekRun.ModifySklOst(SpOrder.cMC, cPodr_, 0, -resetResKol);
+
+  if (methRes = 2)
+    fTekRun.ModifyTekSaldo(SpOrder.cMC, cPodr_, cMol_, cParty_, 0, -resetResKol);
+
+// снимаем резерв в позиции ДО:
+  var koestep: double;  koestep := GetKoefOtpEdT(SpStep.NRec, SpStep.cOtpEd, coSpStep);
+
+  SpStep.Reserv := SpStep.Reserv - (resetResKol / koestep);
+  if (SpStep.Reserv <= 0)
+    {
+      SpStep.SrokRes := Date(0, 0, 0);
+      SpStep.Reserv := 0;
+    }
+
+  if update current SpStep <> tsOk
+    { }
+
+// для DOres
+  if IsValid(#DOres)  //(спозиционирован GetReserv):
+    {
+      DOres.kol := DORes.kol - (resetResKol / koestep);
+
+      if (DOres.kol <= 0)
+        delete current DORes
+      else
+        update current DORes;
+    }
+
+  PrMod := true;
+}
+
+//******************************************************************************
+
+Procedure AfterMakeRashOrd(dForm: Date);
+var
+  ACount,
+  methRes    : word;
+  pDogovor   : comp;
+  datOplMax  : Date;
+  oCF        : ClndrDog;
+  Koef       : double;
+{
+
+  if KatSopr.waDoc  = adSoprDocSNSell //сторнирующая накладная
+    Exit;
+
+  pDogovor  := if (KatSopr.cAppDogovor <> 0, KatSopr.cAppDogovor, KatSopr.cDogovor);
+  datOplMax := oCF.DataOplMaxAfterOtgr(pDogovor, dForm);
+
+  if (datOplMax > Date(0, 0, 0))
+    {
+      if (GetFirst FastFirstRow StepDoc where ((KatSopr.cStepDoc == StepDoc.NRec)) = tsOk)
+        if (GetFirst FastFirstRow BaseDoc where ((StepDoc.cBaseDoc == BaseDoc.NRec)) = tsOk)
+          {
+            StepDoc.dOplMax := datOplMax;
+            if (Update current StepDoc <> tsOk)
+              { }
+          }
+    }
+  else
+    {
+      if boGetTune('Oper.ShtrafOtzr')
+        if (GetFirst FastFirstRow StepDoc where ((KatSopr.cStepDoc == StepDoc.NRec)) = tsOk)
+          if StepDoc.dOplMax = Date(0, 0, 0)//пир 101.13213
+            if (GetFirst FastFirstRow BaseDoc where ((StepDoc.cBaseDoc == BaseDoc.NRec)) = tsOk)
+              {
+                StepDoc.dOplMax := Add_Day(dForm, BaseDoc.KolDn);
+                if (Update current StepDoc <> tsOk)
+                  { }
+              }
+    }
+
+
+  if (boGetTune('Reserv.SpisReserv'))
+//     AND
+//     ((dForm >= dGetTune('TekMonth')) OR (SklOrder.SP = 1)) // по-моему, это условие лишнее
+    {
+      ACount := VisualCount;
+      StartNewVisual( vtIndicatorVisual
+                    , vfTimer
+                    , 'Установка просроченных резервов в ДО '+ f_sNumDate(BaseDoc.NoDoc, BaseDoc.dDoc)
+                    , acount
+                    );
+
+      _LOOP SpSopr where ((KatSopr.NRec == SpSopr.cSopr AND word(1) == SpSopr.PrMC))
+        if NextVisual
+          update SpStep where ((SpSopr.cSpStep == SpStep.NRec))
+            set SpStep.SrokRes := Date(1, 1, 1990);
+
+      StopVisual('', 0);
+    }
+
+   if ( (boGetTune('Reserv.SpisReservDel')) AND (SklOrder.SP = 0) ) // только для складских ордеров
+    {
+      ACount := VisualCount;
+      StartNewVisual( vtIndicatorVisual
+                    , vfTimer
+                    , 'Снятие резервов в ДО '+ f_sNumDate(BaseDoc.NoDoc, BaseDoc.dDoc)
+                    , acount
+                    );
+
+      methRes := wGetTune('Reserv.PrSchSklad');
+
+      _LOOP SpSopr where ((KatSopr.NRec == SpSopr.cSopr AND
+                           word(1)      == SpSopr.PrMC))
+        {
+          if (GetFirst FastFirstRow SpStep where ((SpSopr.cSpStep == SpStep.NRec)) <> tsOk)
+            Continue;
+
+          if (GetFirst FastFirstRow StepDoc where ((SpStep.cStepDoc == StepDoc.NRec)) <> tsOk)
+            Continue;
+
+          if (GetFirst FastFirstRow BaseDoc where ((StepDoc.cBaseDoc == BaseDoc.NRec)) <> tsOk)
+            Continue;
+
+          Koef := fEdIzm.GetKoefOtpEd(SpStep.cOtpEd);
+
+          case methRes of
+          //------------------------------------------
+          0 : { // резервирование по предприятию
+                if (BaseDoc.cParty = 0) // склад не должен быть указан
+                  fTekRun.ModifyTekMC(SpStep.cMCUSL, 0, - SpStep.Reserv * Koef);
+              }
+          //------------------------------------------
+          1 : { // резервирование по складу
+                if (BaseDoc.cParty <> 0) // склад указан
+                  {
+                    fTekRun.ModifySklOst(SpStep.cMCUSL, BaseDoc.cParty, 0, - SpStep.Reserv * Koef);
+                    fTekRun.ModifyTekMC(SpStep.cMCUSL, 0, - SpStep.Reserv * Koef);
+                  }
+              }
+          //------------------------------------------
+          2 : { // резервирование по складскому разрезу
+                _LOOP DoRes where ((SpStep.NRec == DoRes.cSpStep))
+                  {
+                    fTekRun.ModifyTekSaldo(SpStep.cMCUSL,  DoRes.cPodr, DoRes.cMol, DoRes.cParty, 0, - DoRes.Kol * Koef);
+                    fTekRun.ModifySklOst(SpStep.cMCUSL, DoRes.cPodr, 0, - DoRes.Kol * Koef);
+                    fTekRun.ModifyTekMC(SpStep.cMCUSL, 0, - DoRes.Kol * Koef);
+                  }
+
+                delete DoRes where ((SpSopr.cSpStep == DoRes.cSpStep));
+              }
+          //------------------------------------------
+          end; // case
+
+          SpStep.SrokRes := Date(0, 0, 0);
+          SpStep.Reserv  := 0;
+
+          update current SpStep;
+        }
+
+      StopVisual('', 0);
+    }
+
+   if (not boGetTune('Oper.AutoCalcBalance'))
+     Delete NoVisual Kontras where ((KatSopr.cOrg == Kontras.cOrg AND
+                                     KatSopr.dOpr <<= Kontras.dKonSal));
+}
+
+#end

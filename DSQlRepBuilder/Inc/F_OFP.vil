@@ -1,0 +1,122 @@
+// 8.0
+// Экспортируемые интерфейсы компоненты F_OFP
+
+#ifdef ComponentVersion
+#component "F_OFP"
+#end
+
+#include ofprecs.vpp // все records, которые встречаются в параметрах
+#include ofpdef.vpp  //__OFP_-defines
+
+! [Конвертация/Исправления/Корректность]
+VipInterface OfpConvert                     Licensed (Free) ;
+VipInterface OfpConvertNew                  Licensed (Free) Parameters (parViewMode : word);
+VipInterface OfpConvNew1                    Licensed (Free) Parameters (parStr : string);
+VipInterface OfpConvNew2                    Licensed (Free) Parameters (parStr : string);
+VipInterface OfpConvNew3                    Licensed (Free) ;
+
+VipInterface OfpCheck                       Licensed (ofp)  Parameters (wIntMode : word);
+
+! [Tune]
+VipInterface OfpAvailableDate               Licensed (Free);
+VipInterface OfpAvailableDocs               Licensed (Free) Parameters (wIntMode: word);
+VipInterface OfpDefDocs                     Licensed (Free);
+VipInterface OfpDirSt                       Licensed (Free) Parameters (parCgDir : word); // тип связи для RefTable (приход или расход)
+VipInterface DateFO_Check                   Licensed (Free) Parameters (dateDO : date; dateClsPeriod : date; retAction : word);
+VipInterface DateFO_New                     Licensed (Free) Parameters (dateDO : date; dateClsPeriod : date; retAction : word);
+VipInterface DateRec_Plan                   Licensed (Free) Parameters (dateClsPeriod : date; dateStart : date; dateEnd : date);
+
+! [Тест/debug]
+VipInterface aOfpHoErr                      Licensed (Free);
+VipInterface aOfpHO                         Licensed (Free);
+
+! [Pick]
+!VipInterface OfpPrior                       Licensed (Free) Parameters (parViewMode : word; parCode : word; parRetPrior : word);
+VipInterface GetKatPurpose                  Licensed (Free) Parameters (parIntMode : word; parRetPurpose : comp);
+VipInterface GetAktOFP                      Licensed (Free) Parameters (parDirect : word; parVal : comp; parModelNRec : comp; parDocReason : comp; parRetFO : comp);
+VipInterface GetPlatMean1                   Licensed (Free) Parameters (NewMeanType : word; NewPlatMean : comp; ClearType : word; Direct : word; NewTiDkGal : word);
+VipInterface GetPlatMean2                   Licensed (Free) Parameters (NewMeanType : word; NewPlatMean : comp);
+VipInterface GetPlatMean3                   Licensed (Free) Parameters (NewMeanType : word; NewPlatMean : comp);
+VipInterface GetPlatMean4                   Licensed (Free) Parameters (NewDirect : word);
+VipInterface OFPSum                         Licensed (Free) Parameters (parViewMode : word; MrkAktSum: LongInt; parAktSum : comp; parIsArchived : word; parModel : comp);
+
+// [Основная функциональность]
+VipInterface aNewPlpI                       Licensed (ofp) Parameters (parNeedGrouping : boolean; parCanFormCount : longint);
+VipInterface DateFO_Get                     Licensed (ofp) Parameters (TuneDate_isValRub : boolean; TuneDate_FOGet : word; TuneDate_FODate : date; TuneDate_DODateVis : boolean; TuneDate_DODate : date; TuneDate_PayTill : date; TuneDate_NaSrok : word; TuneDate_KolDn : word; TuneDate_FOCourse, TuneSum_CoursePrc : word; rMaketOFP   : TMaketOFP; rMaketSumma : TMaketSumma);
+VipInterface GetFopOFP                      Licensed (ofp) Parameters (parSoprHoz : comp; parRetFop : comp);
+VipInterface GetSoprHozNew                  Licensed (ofp) Parameters (parExtraFilter : word; parMarkTidkGal : string; parDogovor : comp; parBaseDoc : comp; parKontr : comp; parMeanType: word; parPlatMean: comp; parRetTiDkGal: word; parRetSoprHoz : comp);
+VipInterface GetVidDO                       Licensed (ofp) Parameters (parAllDocs : word; parDirect : word; parGetVidDO : word);
+VipInterface MakePlPor                      Licensed (ofp);
+VipInterface OFPAnSee                       Licensed (ofp) Parameters (rTunePK : TTunePK);
+VipInterface OfpModAnaliz                   Licensed (ofp) Parameters (parModelNRec : comp);
+VipInterface GetFopAkt                      Licensed (ofp) Parameters (parAktOfp: comp; parRetFop: comp);
+! #ifNdef __OFP_ByFpOborot__
+VipInterface OfpPlan                        Licensed (ofp) Parameters (
+#ifdef __OFP_BudRestore__
+    parToDo : word;
+#end
+    parMarkFO : longint);
+! #end
+VipInterface OfpRestore                     Licensed (ofp) Parameters (parViewMode : word);
+VipInterface OFPSaldn                       Licensed (ofp) Parameters (parOFPSaldo : comp; parOFPSaldoUp : comp; parCommand : word; parRecType : word);
+VipInterface OFPSaldoUpdate                 Licensed (ofp) Parameters (parDate : date; parMeanType : word; parPlatMean : comp; parVal : comp; parSumma : double);
+VipInterface RepFO                          Licensed (ofp) Parameters (parTuneFO : TTuneFO);
+VipInterface OfpPeriodToArc                 Licensed (ofp) Parameters (parDay: date);
+
+VipInterface ModeMake                       Licensed (Free) Parameters (wMode : word; rMaketOFP   : TMaketOFP; rMaketSumma : TMaketSumma);
+VipInterface DFirst_Get                     Licensed (Free) Parameters (TuneDate_FOGet : word; TuneDate_FODate : date);
+VipInterface GetClearingStatus              Licensed (Free) Parameters (parNewStatus : word);
+VipInterface GetDateSumma                   Licensed (Free) Parameters (parTitle : string; parRetDate : date; parRetSumma : double; parSimVal : string);
+VipInterface GetSumma                       Licensed (Free) Parameters (parTitle : string; parLabel: string; parMinSumma: double; parMaxSumma: double; parSimVal: string; parRetSumma: double);
+!VipInterface OfpBudget                      Licensed (Free) Parameters (parViewMode : word; parCgKat : word; parDocNRec : comp);
+VipInterface OFPIerJournalSet               Licensed (Free) Parameters (parModel : comp; parTuneFO : TTuneFO);
+!VipInterface OfpJMem                        Licensed (Free) Parameters (
+!              parViewMode  : word; // режим: cgiNo - ред-ние, cgiNotEdit - запрет ред-ния
+!              parCgKat     : word; // документ
+!              parDocNRec   : comp; //
+!              parStBudNRec : comp // статья бюджета (для позиционирования на нее)
+!);
+VipInterface OperFinPlan                    Licensed (Free) Parameters (parModulN : word; parViewMode : word; parDocType : word; parDocNRec : comp);
+VipInterface RepReq                         Licensed (Free) Parameters (parTuneFO : TTuneFO);
+
+! [ вызываются из меню/функций других модулей ]
+VipInterface OFPAlloc                       Licensed (Free) Parameters (parSoprHoz : comp);
+VipInterface OfpByDo                        Licensed (
+#include OfpByDo.Lih
+)  Parameters (parViewMode : word; parDocType : word; parDocNRec : comp);
+VipInterface OfpByDr                        Licensed (
+#include OfpByDr.Lih
+)  Parameters (parModulN : word; parViewMode : word; parDocType : word; parDocNRec : comp);
+VipInterface OFPByCredit                    Licensed (ofp)  Parameters (parViewMode : word; parDocType : word; parDocNRec : comp);
+
+VipInterface OFPAnalys                      Licensed (
+ofp
+! #include OFPAnalys.Lih
+)  Parameters (parViewMode : word; parRecModel : comp);
+VipInterface GetOFPModel                    Licensed (
+ofp
+!#include GetOFPModel.Lih
+)  Parameters (parViewMode : word; parModelNRec : comp; parNotView : comp);
+VipInterface MakeAktBy802                   Licensed (
+ofp
+!#include MakeAktBy802.Lih
+)  Parameters (parDirect : word);
+VipInterface OfpPeriodClose                 Licensed (
+ofp
+!#include OfpPeriodClose.Lih
+)  Parameters (parDay : date; parToDo : word);
+VipInterface OFPSaldo                       Licensed (
+ofp
+!#include OFPSaldo.Lih
+)  Parameters (parViewMode : word; parMeanType : word; parRecPlatMean : comp; parRecVal : comp; parLDoc: longint; parZakladka: word);
+VipInterface ReeAktOfp                      Licensed (OFP);
+VipInterface ReeDocReq                      Licensed (
+#include ReeDocReq.Lih
+)  Parameters (parViewMode : word; parRecType : word; parDocType : word);
+
+VipInterface OfpClFop                       Licensed (Free) Parameters ( parBegDate, parEndDate: date);
+
+! Я надеюсь что именно так надо экспортировать меню
+Menu OFPOut_HotKeys;
+!Dialogi
+DIALOG GetDate_OfpNewDate( BegDate: date);

@@ -1,0 +1,78 @@
+
+#ifndef __ATL_EmailRun__
+#define __ATL_EmailRun__
+
+// иначе хватает не ту компоненту
+#component "ATLANTIC"
+
+vipinterface ATL_EmailRun licensed(free)
+parameters
+(
+  email_addr :string ;
+  email_subject :string ;
+  email_attach1 :string ;
+  email_attach2 :string ;
+  email_attach3 :string ;
+  email_attach4 :string ;
+  email_attach5 :string ;
+  email_addr_copy :string='';
+  email_addr_from :string=''
+);
+Public:
+ #doc
+ Для использования в EmailSend многострочного сообщения предварительно
+ заполняем строки этой функцией.
+ num_row - номер строки
+ Первый вызов num_row=1, дальше произвольно.
+ инкрементация счетчика на программисте
+ _email_text - текст строки
+ #end
+ Function Write_Text(num_row:word;_email_text:string):boolean;
+
+ //------------------------------------
+ #doc
+   Заместить некоторые символы для корректного отображения
+   при передаче текста в html|xml
+ #end
+ Function ReplTxt2Html(const s:string):string;
+ //------------------------------------
+ #doc
+   Заместить некоторые символы для корректного отображения
+   при передаче html|xml в текст.
+ #end
+ Function ReplHtml2Txt(const s:string):string;
+
+ #doc
+ Function EmailSend
+ отправка почты
+  <p> _email_addr :string ; - кому
+  <p> _email_subject :string ;  - тема сообщения
+  <p> _email_text :string ;  - текст(одна строка, иначе пусто и используем Write_Text)
+  <p> _email_attach1 :string ;  - вложение 1
+  <p> _email_attach2 :string ;  - вложение 2
+  <p> _email_attach3 :string ;  - вложение 3
+  <p> _email_attach4 :string ;  - вложение 4
+  <p> _email_attach5 :string ;  - командная строка для гиперссылки
+  <p> _email_addr_copy :string=''; - адрес - копия
+  <p> _email_addr_from :string=''  - от кого
+ #end
+ Function EmailSend
+ (
+   _email_addr :string ;
+   _email_subject :string ;
+   _email_attach1 :string ;
+   _email_attach2 :string ;
+   _email_attach3 :string ;
+   _email_attach4 :string ;
+   _email_attach5 :string ;
+   _email_addr_copy :string='';
+   _email_addr_from :string=''
+ ) :boolean;
+
+ //----------------------------------------
+ #doc
+   получить последнюю ошибку
+ #end
+ Function GetLastError :string;
+end;
+#ENDIF//GP_EmailRun

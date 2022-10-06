@@ -1,0 +1,303 @@
+#doc
+ Документы Отгрузки ЦРПТ
+ docType = 1 - Отгрузка
+ docType = 2 - Отмена отгрузки
+#end
+
+Interface CRPT_API_ShipmentDocList  'Документы Отгрузки ЦРПТ'  Gray;
+  Show at (, , 100, 27);
+var
+  xmlDoc : longint;
+  kituForSt: string;
+Create view as
+select
+  kituInfo.cis      (fieldname = kituCis)
+ ,kituInfo.status   (fieldname = kituStatus)
+ ,kituInfo.packType (fieldname = kituPackType)
+from
+  CRPT_ShipmentDocs ShipDoc
+ ,CRPT_SpShipmentDocs spShipDoc
+ ,CRPT_KituInfo_temp kituInfo
+where ((
+  root == ShipDoc.nrec
+  and ShipDoc.nrec == spShipDoc.cDoc (noindex)
+  and kituForSt == kituInfo.cis (noindex)
+));
+
+File gfFile, jsonFile;
+
+//#include JSONView.vih;
+#include source\CRPT_API_KituInfoInterface.Vpp
+function curdatetimestr: string;
+{
+  result := datetostr(Cur_date,'YYYY-MM-DD') + ' ' + timeToStr(Cur_time,'HH:MM:SS') + ' ';
+}
+Procedure MyLog(_str : string);
+{
+  logstrtofile('_MylogFile_Ship.txt',curdatetimestr + _str)
+}  // delete уже есть
+
+Procedure SetDefaultShipDoc; {
+  clearBuffer(tnShipDoc);
+  //set ShipDoc.docType := 0;
+}
+Procedure SetDefaultSpShipDoc; {
+  clearBuffer(tnSpShipDoc);
+  set SpShipDoc.cDoc := ShipDoc.nrec;
+}
+Procedure SetEditMode(flag: boolean); {
+  flag := flag;
+}
+
+procedure createEcodCell(parent: longInt; nodeId, value: string);
+var node, textNode, nodeCell: longint;
+{
+  node     := XMLDOMDoc_CreateElement(xmlDoc, NodeId);
+  nodeCell := XMLDOMNode_AppendChild(Parent, Node);
+  XMLDOMNode_Release(Node);
+
+  textNode :=  XMLDOMDoc_CreateTextNode(xmlDoc, Value);
+  XMLDOMNode_AppendChild(NodeCell, textNode);
+
+  XMLDOMNode_Release(textNode);
+  XMLDOMNode_Release(nodeCell);
+}
+
+procedure MakeShipmentDoc; {
+var rootXMLElement, rootNode,    products_list, product:longint;
+
+   rootXMLElement:= XMLDOMDoc_CreateElement(xmlDoc, 'shipment');
+   rootNode      := XMLDOMNode_AppendChild(xmlDoc , rootXMLElement);
+   XMLDOMElement_SetAttribute(rootXMLElement, 'action_id', '10');
+   XMLDOMElement_SetAttribute(rootXMLElement, 'version', '5');
+
+
+   createEcodCell(rootXMLElement, 'trade_participant_inn_sender',   7709191580 );
+   createEcodCell(rootXMLElement, 'trade_participant_inn_receiver', ShipDoc.inn_receiver );
+   createEcodCell(rootXMLElement, 'transfer_date',                  DateToStr(ShipDoc.transfer_date,'DD.MM.YYYY'));
+   createEcodCell(rootXMLElement, 'move_document_number',           ShipDoc.move_document_number );
+   createEcodCell(rootXMLElement, 'move_document_date',             DateToStr(ShipDoc.move_document_date,'DD.MM.YYYY'));
+   createEcodCell(rootXMLElement, 'turnover_type',                  'SELLING' );
+   createEcodCell(rootXMLElement, 'to_not_participant',             'false' );
+
+   products_list := XMLDOMDoc_CreateElement(xmlDoc, 'products_list');
+   rootNode    := XMLDOMNode_AppendChild(rootXMLElement, products_list);
+
+   _loop spShipDoc {
+       product := XMLDOMDoc_CreateElement(xmlDoc, 'product');
+       rootNode := XMLDOMNode_AppendChild(products_list, product);
+       createEcodCell(product, 'kitu', SpShipDoc.kitu );
+       XMLDOMNode_Release(product);
+   }
+
+   XMLDOMNode_Release(products_list);
+   XMLDOMNode_Release(rootXMLElement);//закрываем документ
+}
+procedure MakeCancelShipmentDoc; {
+
+
+}
+function CreateXMLdocument(cDoc: comp; docType:word): string;
+var
+  _fileName, sFileExp,  docTypeName: string;
+{
+   case docType of
+   1: {
+       docTypeName := 'Shipment';
+       sFileExp := 'CRPT_API_XML_'+docTypeName+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.xml'; // Задаем путь для сохранения файла
+       _fileName:= GetStringParameter('Files','OutputFilesDirectory',0)+ 'CRPT_API_XML_'+docTypeName+'_'+string(cDoc,0,0)+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.xml';
+       sFileExp := GetStringParameter('Files','OutputFilesDirectory',0) + sFileExp ;
+       xmlDoc := XMLDOMDoc_New;
+
+       case docType of
+          1: {
+            MakeShipmentDoc();
+          }
+          2: {
+            MakeCancelShipmentDoc();
+          }
+       end;
+
+       if not xmlDOMdoc_save(xmlDoc, sFileExp) {
+          MyLog(' --- ERROR: error file save '''+ _fileName+ '''!');
+          result := 'err';
+       } else {
+          result := sFileExp;
+       }
+       XMLDOMDoc_Done(xmlDoc);
+
+   }
+   2: {
+
+       docTypeName := 'CancelShipment';
+       sFileExp := 'CRPT_API_XML_'+docTypeName+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.txt'; // Задаем путь для сохранения файла
+       _fileName:= GetStringParameter('Files','OutputFilesDirectory',0)+ 'CRPT_API_XML_'+docTypeName+'_'+string(cDoc,0,0)+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.txt';
+       sFileExp := GetStringParameter('Files','OutputFilesDirectory',0) + sFileExp;
+
+       jsonFile.OpenFile(sFileExp, stCreate);
+       //jsonFile.WriteLn('{"participant_inn": "'+ShipDoc.inn_receiver+'","shipment_number": "'+ShipDoc.CRPT_Oid+'"}');
+       jsonFile.WriteLn('{"participant_inn": "7709191580","shipment_number": "'+ShipDoc.CRPT_Oid+'"}');
+
+       jsonFile.Close;
+
+       result := sFileExp;
+   }
+   end;
+}
+
+Screen scrCRPT_DocList;
+show at (,,,5);
+  //fields
+
+  buttons
+    cmCreateAndSaveDoc ,,,'Сохранить документ в XML',,;
+    cmSendDoc ,,,'Отправить документ',,;
+    cmGetDocumentStatus ,,,'Получить статус документа',,;
+    cmCheckKituStatus ,,,'Проверить статус КИ/КИТУ',,;
+    cmSendCancelDoc ,,,'Отправить документ отмены',,;
+<<
+   <.Сохранить документ в XML.>   <.Отправить документ.>   <.Получить статус документа.>   <.Проверить статус КИ/КИТУ.>
+
+                                                           <.Отправить документ отмены.>
+>>
+end;
+
+Browse brCRPT_ShipList (,,scil478Esc);
+  Show at (,6,,10);
+Table ShipDoc;
+ Fields
+
+  ShipDoc.inn_receiver         'ИНН получателя',                       ('',,): [6], noProtect;
+  ShipDoc.transfer_date			   'Дата накладной',                       ('',,): [6], noProtect;
+  ShipDoc.move_document_number 'Номер накладной',                      ('',,): [6], noProtect;
+  ShipDoc.move_document_date   'Дата накладной',                       ('',,): [6], noProtect;
+  ShipDoc.CRPT_Oid			       'Oid документа в системе ЦРПТ',         ('',,): [6], Protect;
+  ShipDoc.docDateTime		       'Дата документа в ЦРПТ',                ('',,): [6], Protect;
+  ShipDoc.status			         'Статус документа в ЦРПТ',              ('',,): [6], Protect;
+  ShipDoc.statusDescr		       'Описание статуса в ЦРПТ',              ('',,): [6], Protect;
+  ShipDoc.sender               'Отправитель документа в ЦРПТ'          ('',,): [6], Protect;
+  ShipDoc.cancelDoc_CRPT_oid   'Oid документа отмены в системе ЦРПТ',  ('',,): [6], Protect;
+  ShipDoc.cancelDocDateTime		 'Дата документа отмены в ЦРПТ',         ('',,): [6], Protect;
+  ShipDoc.cancelStatus			   'Статус документа отмены в ЦРПТ',       ('',,): [6], Protect;
+  ShipDoc.cancelStatusDescr		 'Описание статуса отмены в ЦРПТ',       ('',,): [6], Protect;
+ end;
+
+Browse brCRPT_SpShipDocList (,,scil478Esc);
+  Show at (,11,,);
+Table spShipDoc;
+ Fields
+  spShipDoc.kitu                  'SSCC-код паллеты'        ('',,): [6], noProtect;
+  spShipDoc.cKatMc                'Ссылка на кат МЦ'        ('',,): [6], noProtect;
+ end;
+
+
+HandleEvent
+  cmCreateAndSaveDoc: {
+    CreateXMLdocument(ShipDoc.nrec, 1);
+  }
+  cmSendDoc:{
+    var docCreatedPath : string = CreateXMLdocument(ShipDoc.nrec, 1);
+    if (docCreatedPath != 'err') {
+      RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+      RunInterface('ATLANTIC::CRPT_API_PowerShellPost', 'CreateDoc', 'XML',docCreatedPath,'LP_SHIP_GOODS_XML', string(cDoc));
+    }
+    //RereadRecord;
+  }
+  cmSendCancelDoc:{
+    var docCreatedPath : string = CreateXMLdocument(ShipDoc.nrec, 2);
+    if (docCreatedPath != 'err') {
+      RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+      if (ShipDoc.CRPT_Oid != 0) {
+        RunInterface('ATLANTIC::CRPT_API_PowerShellPost', 'CreateDoc', 'MANUAL',docCreatedPath,'LP_CANCEL_SHIPMENT', string(cDoc));
+      }
+    }
+    //RereadRecord;
+  }
+  cmGetDocumentStatus:{
+      RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+      RunInterface('ATLANTIC::CRPT_API_PowerShellPost','GetDocumentStatus', ShipDoc.CRPT_Oid, string(cDoc), 'LP_SHIP_GOODS_XML');
+      if (ShipDoc.cancelDoc_CRPT_oid != 0) {
+        RunInterface('ATLANTIC::CRPT_API_PowerShellPost','GetDocumentStatus', ShipDoc.cancelDoc_CRPT_oid, string(cDoc), 'LP_CANCEL_SHIPMENT');
+      }
+  }
+  cmCheckKituStatus:{
+      set kituForSt := spShipDoc.kitu;
+      RunWindowModal(winKituInfo);
+  }
+/*
+  cmCheckField: {
+  }
+  cmIdle: {
+    //rereadRecord();
+  }
+  */
+end;
+
+
+TableEvent table ShipDoc;
+  cmSetDefault:{
+    SetDefaultShipDoc;
+    SetEditMode(true);
+    //insert current ImpDoc;
+    PutCommand(cmEdit);
+  }
+  cmUpdateRecord:{
+    update current ShipDoc;
+  }
+  cmDeleteRecord:{
+    if(message('Удалить документ?', Confirmation + YesNo) = cmYes) {
+      delete current ShipDoc;
+    }
+  }
+
+  cmPositionChanged: {
+    RedrawPanel(#SpShipDoc);
+  }
+  cmInsertRecord: {
+    Insert current ShipDoc;
+  }
+
+end;
+TableEvent table spShipDoc;
+  cmSetDefault:{
+    SetDefaultSpShipDoc;
+    SetEditMode(true);
+   // insert current SpDoc;
+    PutCommand(cmEdit);
+  }
+  cmUpdateRecord:{
+    update current SpShipDoc;
+  }
+  cmDeleteRecord:{
+    if(message('Удалить документ?', Confirmation + YesNo) = cmYes) {
+      delete current SpShipDoc;
+    }
+  }
+  cmInsertRecord: {
+    insert current SpShipDoc;
+  }
+
+end;
+
+handleevent
+/*
+cminit:{
+}
+cmEdit: {
+}
+
+cmHotKeys:{
+}
+CmDefault: {
+  //PutCommand(cmEdit);
+}
+cmUpdateRecord:{
+  //updatetable;
+}
+*/
+cmPositionChanged: {
+  RedrawPanel(#ShipDoc);
+  RedrawPanel(#SpShipDoc);
+}
+end;
+End. // Interface

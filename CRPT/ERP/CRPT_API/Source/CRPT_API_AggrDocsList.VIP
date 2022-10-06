@@ -1,0 +1,447 @@
+#doc
+ Документы Расформирования и Агрегации ЦРПТ
+ docType = 0 - No type
+ docType = 1 - Disaggregation
+ docType = 2 - Aggregation
+
+#end
+
+Interface CRPT_API_AggrDocList  'Документы Расформирования и Агрегации ЦРПТ'  Gray;
+  Show at (, , 100, 27);
+
+var
+  xmlDoc, hPartDoc, hDoc : longint;
+  kituForSt: string;
+Create view as
+select
+  kituInfo.cis      (fieldname = kituCis)
+ ,kituInfo.status   (fieldname = kituStatus)
+ ,kituInfo.packType (fieldname = kituPackType)
+from
+  CRPT_AggrDocs AggrDoc
+ ,CRPT_SpAggrDocs spAggrDoc
+ ,CRPT_KituInfo_temp kituInfo
+where ((
+  root == AggrDoc.nrec
+  and AggrDoc.nrec == spAggrDoc.cDoc (noindex)
+  and kituForSt == kituInfo.cis (noindex)
+));
+
+File gfFile;
+
+#include source\CRPT_API_KituInfoInterface.Vpp
+
+function curdatetimestr: string;
+{
+  result := datetostr(Cur_date,'YYYY-MM-DD') + ' ' + timeToStr(Cur_time,'HH:MM:SS') + ' ';
+}
+Procedure MyLog(_str : string);
+{
+  logstrtofile('_MylogFile_Aggr.txt',curdatetimestr + _str)
+}  // delete уже есть
+
+Procedure SetDefaultAggrDoc; {
+  clearBuffer(tnAggrDoc);
+  set AggrDoc.docType := 0;
+}
+Procedure SetDefaultSpAggrDoc; {
+  clearBuffer(tnSpAggrDoc);
+  set SpAggrDoc.cDoc := AggrDoc.nrec;
+}
+
+Function getNextAggrDocNpp: string; {
+   var _result : string ='';
+   _try {
+     sql select max(t.npp) + 1 from CRPT_AggrDocs t into (_result);
+   } _except else { var _empty : boolean; _empty := true;}
+
+   result := _result;
+}
+
+
+Procedure SetEditMode(flag: boolean); {
+  flag := flag;
+  /*if (isProtect = (not flag)) and isProtect_Set {
+     SetDocFieldState();
+     exit;
+  }
+  if (boVisibleRun) {
+    LoadProtector;
+    DataProtector.SetProtected(not flag);
+  } else {
+    ProtectRecord(CurTable, not flag);
+  }
+  if (flag) {
+    cfsSetProp(cfsGetCurrentContaimerSelf, fpPalette, wpBlueWindow);
+  } else {
+    cfsSetProp(cfsGetCurrentContaimerSelf, fpPalette, wpCyanWindow);
+  }
+  isProtect := not flag;          l
+  isProtect_Set := true;
+  SetDocFieldsState(); */
+}
+ procedure releaseDump(var tempNode: longInt);
+{
+  XMLDOMNode_release(tempNode);
+  tempNode := 0;
+}
+// создание ячейки данных
+procedure createEcodCell(parent: longInt; nodeId, value: string);
+var node, textNode, nodeCell: longint;
+{
+  node     := XMLDOMDoc_CreateElement(xmlDoc, NodeId);
+  nodeCell := XMLDOMNode_AppendChild(Parent, Node);
+  releaseDump(Node);
+  textNode :=  XMLDOMDoc_CreateTextNode(xmlDoc, Value);
+  XMLDOMNode_AppendChild(NodeCell, TextNode);
+
+  releaseDump(textNode);
+  releaseDump(nodeCell);
+} // Procedure createEcodCell
+
+
+procedure makeDisaggrDocHeader;
+var node: longint;
+{
+  // корневой элемент
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'disaggregation');
+  hDoc := XMLDOMNode_AppendChild(xmlDoc,Node);
+  XMLDOMElement_SetAttribute(Node, 'action_id', '31') ;
+  XMLDOMElement_SetAttribute(Node, 'version', '2') ;
+  releaseDump(Node);
+  createEcodCell(hDoc, 'trade_participant_inn', 7709191580);
+  //Invoice-Lines
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'packings_list');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+  releaseDump(Node);
+}
+procedure makePackingLine;
+var
+  node, childOne: longInt;
+{
+  _loop spAggrDoc {
+   // Line  выводим в XML
+    node     := XMLDOMDoc_CreateElement(xmlDoc, 'packing');
+    ChildOne := XMLDOMNode_AppendChild(hPartDoc, node);
+    ReleaseDump(node);
+    createEcodCell(ChildOne, 'kitu', SpAggrDoc.kitu);
+    releaseDump(ChildOne); // _ packing
+  }
+} //makePackingLine
+
+procedure makeAggrDocHeader;
+var  node: longint;
+{
+  // корневой элемент
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'unit_pack');
+  hDoc := XMLDOMNode_AppendChild(xmlDoc,Node);
+  releaseDump(Node);
+  createEcodCell(hDoc, 'trade_participant_inn', 7709191580);
+  //Invoice-Lines
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'packings_list');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+  releaseDump(Node);
+
+  /*node1 := XMLDOMDoc_CreateProcessingInstruction(xmlDoc, 'xml', 'version="4.0"');
+    message('cr proc');
+  node2 := XMLDOMNode_AppendChild(xmlDoc, node1);
+    message('nd2 proc');
+  XMLDOMNode_Release(node1);
+    message('rel1');
+  XMLDOMNode_Release(node2);
+    message('rel2');
+  node := XMLDOMDoc_CreateProcessingInstruction(xmlDoc, 'xml', 'version="1.0"');
+  hDoc := XMLDOMNode_AppendChild(xmlDoc,Node);
+  releaseDump(Node);
+  createEcodCell(hDoc, 'trade_participant_inn', 7709191580);
+  //Invoice-Lines
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'packings_list');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+  releaseDump(Node);   */
+}
+procedure makeAggrDoc; {
+var rootXMLElement,rootNode,org,id_info,LP_info,contacts,pack_content,pack_code,Document_Root, textNode:longint;
+
+   //новый xml
+   //domDocument := XMLDOMDoc_New; //
+   //корневой элемент
+   rootXMLElement:= XMLDOMDoc_CreateElement(xmlDoc, 'unit_pack');
+   rootNode      := XMLDOMNode_AppendChild(xmlDoc , rootXMLElement);
+   XMLDOMElement_SetAttribute(rootXMLElement, 'VerProg', 'VerProg1');
+   XMLDOMElement_SetAttribute(rootXMLElement, 'file_date_time', '2019-04-12T11:07:45+03:00');
+   XMLDOMElement_SetAttribute(rootXMLElement, 'VerForm', '1.03');
+   XMLDOMElement_SetAttribute(rootXMLElement, 'document_id', 'unit_pack_7FFF90D5-4785-7EC9-899E-534A7BAA2B71');
+
+   Document_Root := XMLDOMDoc_CreateElement(xmlDoc, 'Document');
+   rootNode      := XMLDOMNode_AppendChild(rootXMLElement , Document_Root);
+   XMLDOMElement_SetAttribute(Document_Root, 'document_number', AggrDoc.document_number);
+   XMLDOMElement_SetAttribute(Document_Root, 'operation_date_time', AggrDoc.operation_date_time);
+   XMLDOMNode_Release(rootNode);
+
+   org := XMLDOMDoc_CreateElement(xmlDoc, 'organisation');
+   rootNode := XMLDOMNode_AppendChild(Document_Root, org);
+
+      id_info := XMLDOMDoc_CreateElement(xmlDoc, 'id_info');
+      rootNode    := XMLDOMNode_AppendChild(org, id_info);
+
+        LP_info := XMLDOMDoc_CreateElement(xmlDoc, 'LP_info');
+        rootNode    := XMLDOMNode_AppendChild(id_info, LP_info);
+        XMLDOMElement_SetAttribute(LP_info, 'RRC', '772501001');
+        XMLDOMElement_SetAttribute(LP_info, 'LP_TIN', '7709191580');
+        XMLDOMElement_SetAttribute(LP_info, 'org_name', 'ООО Атлантик Брендс');
+        XMLDOMNode_Release(LP_info);
+
+     XMLDOMNode_Release(id_info);
+
+     contacts := XMLDOMDoc_CreateElement(xmlDoc, 'contacts');
+     rootNode    := XMLDOMNode_AppendChild(org, contacts);
+     XMLDOMElement_SetAttribute(contacts, 'email', 'Sales.Moscow@atlanticgrupa.com');
+     XMLDOMElement_SetAttribute(contacts, 'phone_number', '84995180309');
+     XMLDOMNode_Release(contacts);
+
+   XMLDOMNode_Release(org);
+
+   pack_content := XMLDOMDoc_CreateElement(xmlDoc, 'pack_content');
+   rootNode    := XMLDOMNode_AppendChild(Document_Root, pack_content);
+
+       pack_code := XMLDOMDoc_CreateElement(xmlDoc, 'pack_code');
+       rootNode    := XMLDOMNode_AppendChild(pack_content, pack_code);
+       textNode :=  XMLDOMDoc_CreateTextNode(xmlDoc, AggrDoc.pack_code);
+       XMLDOMNode_AppendChild(pack_code, TextNode);
+       XMLDOMNode_Release(TextNode);
+       XMLDOMNode_Release(pack_code);
+
+     _loop spAggrDoc {
+       cis := XMLDOMDoc_CreateElement(xmlDoc, 'cis');
+       rootNode := XMLDOMNode_AppendChild(pack_content, cis);
+       textNode :=  XMLDOMDoc_CreateTextNode(xmlDoc, SpAggrDoc.kitu);
+       XMLDOMNode_AppendChild(cis, TextNode);
+       XMLDOMNode_Release(TextNode);
+       XMLDOMNode_Release(cis);
+     }
+
+   XMLDOMNode_Release(pack_content);
+   XMLDOMNode_Release(Document_Root);
+   XMLDOMNode_Release(rootXMLElement);//закрываем документ
+
+   //XMLDOMDoc_Save(xmlDoc, GetStringParameter('Files','OutputFilesDirectory',0)+ 'CRPT_API_XML_'+timetostr(cur_time,'HHMMSS')+'.xml');
+   //XMLDOMDoc_Done(xmlDoc);
+}
+
+procedure makePackContent;
+var
+  node, childOne : longInt;
+{
+  _loop spAggrDoc {
+   // Line  выводим в XML
+    node     := XMLDOMDoc_CreateElement(xmlDoc, 'packing');
+    ChildOne := XMLDOMNode_AppendChild(hPartDoc, node);
+    ReleaseDump(node);
+    createEcodCell(ChildOne, 'kitu', SpAggrDoc.kitu);
+    releaseDump(ChildOne); // _ packing
+  }
+} //makePackingLine
+
+function CreateXMLdocument(cDoc: comp; docType:word): string;
+var
+  _fileName, sFileExp,  docTypeName: string;
+{
+   docTypeName := '';
+   case docType of
+      1: {
+        docTypeName := 'DisaggrDoc';
+      }
+      2: {
+        docTypeName := 'AaggrDoc';
+      }
+   end;
+
+   sFileExp := 'CRPT_API_XML_'+docTypeName+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.xml'; // Задаем путь для сохранения файла
+   _fileName:= GetStringParameter('Files','OutputFilesDirectory',0)+ 'CRPT_API_XML_'+docTypeName+'_'+string(cDoc,0,0)+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.xml';
+   sFileExp := GetStringParameter('Files','OutputFilesDirectory',0) + sFileExp ;
+   xmlDoc := XMLDOMDoc_New;
+
+   case docType of
+      1: {
+         makeDisaggrDocHeader;
+         makePackingLine;
+         releaseDump(hPartDoc);
+         releaseDump(hDoc);
+      }
+      2: {
+         makeAggrDoc;
+      }
+   end;
+
+   if not xmlDOMdoc_save(xmlDoc, sFileExp) {
+      MyLog(' --- ERROR: error file save '''+ _fileName+ '''!');
+      result := 'err';
+   } else {
+      result := sFileExp;
+   }
+   XMLDOMDoc_Done(xmlDoc);
+
+}
+
+Screen scrCRPT_DocList;
+show at (,,,5);
+  //fields
+
+  buttons
+    cmCreateAndSaveDoc ,,,'Сохранить документ в XML',,;
+    cmSendDoc ,,,'Отправить документ',,;
+    cmGetDocumentStatus ,,,'Получить статус документа',,;
+    cmCheckKituStatus ,,,'Проверить статус КИ/КИТУ',,;
+<<
+   <.Сохранить документ в XML.>   <.Отправить документ.>   <.Получить статус документа.>   <.Проверить статус КИ/КИТУ.>
+
+>>
+end;
+
+Browse brCRPT_AggrList (,,scil478Esc);
+  Show at (,6,,10);
+Table aggrDoc;
+ Fields
+  //AggrDoc.nrec                  'nrec'                      ('',,): [6], Protect;
+  AggrDoc.docType               'Тип документа'                ('',,): [6], noProtect, [list 0 'Не выбран', 1 'Расформирование', 2 'Агрегация'], {Font ={BackColor = if(AggrDoc.docType = 0, ColorNeed, 0) } };
+  AggrDoc.pack_code             'Код склада'                   ('',,): [6], noProtect;
+  AggrDoc.document_number       'Номер транзакции'             ('',,): [6], Protect;
+  AggrDoc.operation_date_time   'Время транзакции'             ('',,): [6], Protect;
+  AggrDoc.CRPT_Oid			        'Oid документа в системе ЦРПТ' ('',,): [6], Protect;
+  AggrDoc.docDateTime           'Дата документа в ЦРПТ',       ('',,): [6], Protect;
+  AggrDoc.status                'Статус документа в ЦРПТ',     ('',,): [6], Protect;
+  AggrDoc.statusDescr           'Описание статуса в ЦРПТ',     ('',,): [6], Protect;
+  AggrDoc.sender                'Отправитель документа в ЦРПТ' ('',,): [6], Protect;
+
+ end;
+
+Browse brCRPT_SpAggrDocList (,,scil478Esc);
+  Show at (,11,,);
+Table spAggrDoc;
+ Fields
+  spAggrDoc.kitu                  'SSCC-код паллеты'        ('',,): [6], noProtect;
+  spAggrDoc.cKatMc                'Ссылка на кат МЦ'        ('',,): [6], noProtect;
+ end;
+
+
+HandleEvent
+  cmCreateAndSaveDoc: {
+    CreateXMLdocument(AggrDoc.nrec, AggrDoc.docType);
+  }
+  cmSendDoc:{
+    var docCreatedPath : string = CreateXMLdocument(AggrDoc.nrec, AggrDoc.docType);
+    if (docCreatedPath != 'err') {
+      RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+      case AggrDoc.docType of
+        1: {
+           if(message('Отправить документ расформирования?', Confirmation + YesNo) = cmYes) {
+              RunInterface('ATLANTIC::CRPT_API_PowerShellPost', 'CreateDoc', 'XML',docCreatedPath,'DISAGGREGATION_DOCUMENT_XML', string(cDoc));
+           }
+        }
+        2: {
+           if(message('Отправить документ агрегация?', Confirmation + YesNo) = cmYes) {
+              RunInterface('ATLANTIC::CRPT_API_PowerShellPost', 'CreateDoc', 'XML',docCreatedPath,'AGGREGATION_DOCUMENT_XML', string(cDoc));
+           }
+        }
+      end;
+    }
+   // RereadRecord;
+  }
+  cmGetDocumentStatus:{
+      RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+      RunInterface('ATLANTIC::CRPT_API_PowerShellPost','GetDocumentStatus', AggrDoc.CRPT_Oid, string(cDoc), 'DISAGGREGATION_DOCUMENT_XML');
+  }
+  cmCheckKituStatus:{
+      set kituForSt := spAggrDoc.kitu;
+      //RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+      //RunInterface('ATLANTIC::CRPT_API_PowerShell','GetKituInfo', kituForSt);
+      RunWindowModal(winKituInfo)
+  }
+  cmCheckField: {
+    if curfield = #aggrDoc.docType {
+      if (aggrDoc.docType =  2) {
+        var curDT : _DateTime = _CurDateTime;
+        set aggrDoc.npp := getNextAggrDocNpp;
+        set aggrDoc.operation_date_time := _DateTimeToStr(curDT,'YYYY-MM-DD')+'T'+_DateTimeToStr(curDT,'HH:NN:SS+03:00');   //2020-12-16T15:48:14+03:00
+        set aggrDoc.document_number := _DateTimeToStr(curDT,'DDMMYYYY') + LpadCh(aggrDoc.npp, '0', 3);
+      } else {
+        set aggrDoc.document_number = '';
+        set aggrDoc.operation_date_time = '';
+        set aggrDoc.pack_code = '';
+      }
+    }
+  }
+//  cmIdle: {     //rereadRecord();  }
+end;
+
+
+TableEvent table AggrDoc;
+  cmSetDefault:{
+    SetDefaultAggrDoc;
+    SetEditMode(true);
+    //insert current ImpDoc;
+    PutCommand(cmEdit);
+  }
+  cmUpdateRecord:{
+    update current AggrDoc;
+  }
+  cmDeleteRecord:{
+    if(message('Удалить документ?', Confirmation + YesNo) = cmYes) {
+      delete current AggrDoc;
+    }
+  }
+
+  cmPositionChanged: {
+    RedrawPanel(#SpAggrDoc);
+  }
+  cmInsertRecord: {
+    Insert current AggrDoc;
+  }
+
+end;
+TableEvent table spAggrDoc;
+  cmSetDefault:{
+    SetDefaultSpAggrDoc;
+    SetEditMode(true);
+   // insert current SpDoc;
+    PutCommand(cmEdit);
+  }
+  cmUpdateRecord:{
+    update current SpAggrDoc;
+  }
+  cmDeleteRecord:{
+    if(message('Удалить документ?', Confirmation + YesNo) = cmYes) {
+      delete current SpAggrDoc;
+    }
+  }
+  cmInsertRecord: {
+    insert current SpAggrDoc;
+  }
+
+end;
+
+handleevent
+/*
+cminit:{
+
+}
+cmEdit: {
+  //RunWindowModal(wnCRPT_DocEdit);
+}
+
+cmHotKeys:{
+}
+CmDefault: {
+  //PutCommand(cmEdit);
+}
+
+cmUpdateRecord:{
+  //updatetable;
+}
+*/
+cmPositionChanged: {
+  RedrawPanel(#AggrDoc);
+  RedrawPanel(#SpAggrDoc);
+}
+end;
+End. // Interface

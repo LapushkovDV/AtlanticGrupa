@@ -1,0 +1,8 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента C_EXPIMP
+
+#ifdef ComponentVersion
+#component "C_USERMANUAL"
+#end
+
+VipInterface vUserManual     licensed (FREE);

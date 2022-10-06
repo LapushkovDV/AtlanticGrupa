@@ -1,0 +1,58 @@
+////////////// подменяем обработчик событий 
+#component "F_UTILS"
+alter interface GoNewMon;
+overload
+  procedure Start_GoNewMon;
+end;
+create view
+from PLanssch PLanssch_lapus
+;
+procedure Start_GoNewMon;
+var
+  Dat_M_Ot,
+  New_Dat_M_Ot : date;
+{
+  if (not CheckExclusive('что хотите перейти к новому'))
+    Exit;
+  StartNewVisual(vtRotateVisual, vfTimer, NewStr, 0);
+
+  Dat_M_Ot     := dGetTune('Dat_M_Ot');
+  New_Dat_M_Ot := Add_Months(Dat_M_Ot,1);
+
+  BuhErrorDelayShow(SaldLogMode = 1);
+
+  // Расчет входящего сальдо на следующий отчетный период
+  _loop PLanssch_lapus where PLanssch_lapus.kodreg = 351 {
+              Calc_NewSaldo(0,PLanssch_lapus.nrec,coSaldMoun,cgDefSch,cgDefSub,0,
+                            SetDefKau,SetDefKau,SetDefKau,SetDefKau,SetDefKau,SetDefKau,
+                            Dat_M_Ot, Sub_Day(New_Dat_M_Ot,1));
+                }
+  /*  ОРИШГИНАЛ БЫЛ ПО ВСЕМ СРАЗУ пс
+    Calc_NewSaldo(0,0,coSaldMoun,cgDefSch,cgDefSub,0,
+                            SetDefKau,SetDefKau,SetDefKau,SetDefKau,SetDefKau,SetDefKau,
+                            Dat_M_Ot, Sub_Day(New_Dat_M_Ot,1));
+
+  */
+  // Вызов Паскаля, там:
+  // - сжатие жанных по срокам хранения
+  Go_BuhNewMon;
+
+  // Перевод ОС и НМА в следующий отчетный период
+  if (not boGetTune('OS.NoOtchPeriodFin')) {
+#ifndef __YUKOS_OSSP__
+    RunInterface('KatOss',15,0,111,0,0,0,0);
+#else
+    RunInterface('OtchPerOsRun',111);
+#end
+
+    SaveMyDsk(False, 'ShowTuneMess');
+    dSetTune('Os.OtchPeriod',New_Dat_M_Ot);
+    dSetTune ('OS.OtchPeriodDouble', New_Dat_M_Ot);
+    SaveMyDsk(True, 'ShowTuneMess');
+  }
+  // Вот и новый отчетный период
+  dSetTune('Dat_M_Ot',New_Dat_M_Ot);
+
+  FinalAction(NewStr);
+} // Start_GoNewMon
+end. // interface

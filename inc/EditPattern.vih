@@ -1,0 +1,121 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 8.10 - Спецодежда
+// Интерфейс настройки шаблона
+//------------------------------------------------------------------------------
+
+#ifndef __EDITPATTERN_VIH__
+#define __EDITPATTERN_VIH__
+
+#ifdef ComponentVersion
+#Component "F_COMMON"
+#end
+
+table struct QPattern
+(
+#ifdef Gal9_1
+  nrec       : tNrec
+, cSpBankDocF: tNrec
+, IndexF     : word  // Номер признака
+#else
+  IndexF     : word  // Номер признака
+#end
+, Name       : s30   // Название признака
+, ShortName  : s10   // короткое название признака
+, Position   : word  // Позиция следования признака
+, FieldPos   : word  // С какой позиции брать признак
+, FieldNum   : word  // Сколько брать символов из признака
+, SymbFill   : s1    // Символ-заполнитель
+, SymbDiv    : s4    // Символ-разделитель
+, DiffPart   : word  // Тип переменной части: символьный / числовой
+, ConstPart  : s100  // Постоянная часть
+, wPriznak   : word  // Признак отображения полей (не знаю как буду использовать; посмотрим позже) //???????
+		    // 8 - есть переменная часть; 9 - есть постоянная часть
+)
+With index
+(
+#ifdef Gal9_1
+  Index0 =  NRec(Unique, Surrogate, Journal)
+, Index1 = Position
+#else
+  Index1 = Position
+#end
+, Index2 = IndexF
+#ifdef Gal9_1
+, Index3 = IndexF + Position
+, Index4 = cSpBankDocF
+, Index5 = NRec + IndexF
+#end
+)
+;
+
+type TQPatternRec = record as table QPattern;
+
+#doc
+Объектный интерфейс настройки шаблона
+#end
+
+ObjInterface ObjEditPattern;
+//--------------------------------------------------------------------------//
+//------------------------ Методы интерфейса -------------------------------//
+//--------------------------------------------------------------------------//
+#doc
+Установка параметров
+#end
+procedure SetParameters(In_wMode : word);  // режим вызова
+
+#doc
+Перерисовка окна
+#end
+procedure ReFreshScreen;
+
+#doc
+Установить наименования столбцов и подсказок
+#end
+procedure SetColTitle(wNumber   : word;   // номер поля: 0 - категории для выбора; 1 - выбран. категор. и т. д.
+                      sColTitle : string);
+
+#doc
+Разрешить закрытие окна редактирования
+#end
+procedure CloseEditWindow;
+
+#doc
+Возвращает строку шаблона
+#end
+function GetPattern : string;
+
+#doc
+Возвращает именованую строку шаблона
+#end
+// pwMode = 0 - шаблон (GetPattern)
+//          1 - полные наименования составляющих (без указания длин)
+// and      2 - сокращенные наменования составляющих                 
+// and      4 - длины состаляющих в скобках 
+function GetNamePattern(pwMode: word) : string;
+
+#doc
+Возвращает аббревиатуру шаблона
+#end
+function GetShortNamePattern : string;
+//--------------------------------------------------------------------------//
+//----------------------- События интерфейса -------------------------------//
+//--------------------------------------------------------------------------//
+#doc
+Событие, возникающее при изменении данных
+#end
+// Событие, возникающее при изменении данных
+Event procedure EventChangeData(wType           : word;          // Тип события: 1 - изменения в интерфейсе
+				var QPatternBuf : TQPatternRec); //              2 - изменения в окне редактирования
+
+End;
+
+VipInterface EditPattern implements ObjEditPattern
+
+#ifdef ATL51
+  Licensed (Free)
+  Parameters (wMode : word) // режим вызова
+#end
+;
+
+#end // __EDITPATTERN_VIH__

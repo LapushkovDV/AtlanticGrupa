@@ -1,0 +1,104 @@
+#Component "ATLANTIC"
+
+#include AdrFunc.var
+
+interface ReportOrg 'Список Организаций с адресами', EscClose;
+create view
+ var
+      AF: AddressFunc;
+      // набор вспомогательных методов каталога организаций
+
+
+select
+   Nrec
+
+ from
+   KatOrg
+
+;
+//------------------------------------------------------------------------------
+// Инициализация главного окна
+//------------------------------------------------------------------------------
+Browse brKatOrg 'Список организаций с адресами';
+  table KatOrg;
+Fields
+  KatOrg.Name          'Почтовый адрес'   ('Почтовый адрес',, sci13Esc): [20],protect;
+  KATORG.SHORTNAME     'Альтернативное наименование'                  ('Альтернативное наименование',, sci13Esc): [20],protect;
+  KatOrg.Unn           'ИНН'                    ('ИНН',, sci13Esc): [5],protect;
+  KATORG.KODPLATNDS    'КПП'                    ('КПП',, sci13Esc): [5],protect;
+  [PostAddressStr] AF.GetFullAddressInd(KatOrg.cPostAddr)           'Почтовый адрес' ('Почтовый адрес',, sci13Esc): [20],protect;
+  [JuridicalAddressStr] AF.GetFullAddressInd(KatOrg.cJuridicalAddr) 'Юридический адрес'('Юридический адрес',, sci13Esc): [20],protect;
+   KATORG.ADDR  'Адрес из вкладки прочее' ('Адрес из вкладки прочее',, sci13Esc): [20],protect;
+End;
+
+
+
+Handleevent
+cmInit:
+{
+
+}
+cmDefault:
+ {
+  RunInterface(L_KATORG::KatORg,KAtOrg.Nrec);
+ }
+
+end;
+end.
+//------------------------------------------------------------------------------
+// Отчеты пользователя
+//------------------------------------------------------------------------------
+
+#Component "F_UserReport"
+
+ObjInterface IUserReport;
+  // Запуск отчета на вvполнение при выборе его из списка отчетов
+  procedure Run;
+  // Наименование отчета в списке
+  function GetReportName : String;
+  // Наименования групп, в которvе входит отчет
+  // +Группа n+1 делается подчиненной группе n
+  function GetGroupName (Level : Word) : String;
+  // Приоритет отчета - сортировка внутри группv вvполняется сначала
+  // по приоритету, а затем по наименовани_
+  function GetPriority : Integer;
+  // ModuleID модулей, в которvх будет виден отчет
+  // '*' - отчет будет виден в любом модуле
+  function VisibleInModule (Ind : Byte) : String;
+end;
+
+VipInterface UserReport_ReportOrgAddres Implements IUserReport;
+
+Interface UserReport_ReportOrgAddres
+
+create view;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'SELL';
+  end;
+end;
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+  case Level of
+    1 : GetGroupName := '';
+  end;
+end;
+
+function GetReportName: String;
+begin
+  GetReportName := 'Список организаций с адресами'
+end;
+!-------------------------------------------------------------------------------
+procedure Run;
+begin
+  runinterface(ATLANTIC::ReportOrg);
+end;
+!-------------------------------------------------------------------------------
+end.

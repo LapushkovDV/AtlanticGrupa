@@ -1,0 +1,42 @@
+//------------------------------------------------------------------------------
+//                                           (c) корпорация ГАЛАКТИКА
+// Версия        : 7.12
+// Назначение    : Интерфейс выбора особых условий для должностей
+//------------------------------------------------------------------------------
+
+#ifndef _Sel_Kps_INCLUDED_
+#define _Sel_Kps_INCLUDED_
+
+#ifdef ComponentVersion
+#component "z_Staff"
+#end
+
+#doc
+Интерфейс выбора особых условий для должностей
+#end
+objinterface ISel_Kps;
+
+#doc
+Инициализация таблицы в памяти
+#end
+procedure tmpAdvisesInit(_dept : comp; _post : comp);
+
+#doc
+Кол-во записей в проинициализированной таблице
+#end
+function GetRecordInAdvises : longint;
+
+#doc
+Запуск окна выбора
+#end
+function Run_Window(cur_npp : longint) : longint;
+
+end;
+
+vipinterface Sel_Kps implements ISel_Kps
+#ifdef ATL51
+Licensed (free)
+parameters(cDept : comp; cPost : comp; logintNPP : longint)
+#end
+;
+#end

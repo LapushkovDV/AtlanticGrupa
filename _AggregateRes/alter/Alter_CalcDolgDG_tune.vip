@@ -1,0 +1,42 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - настройки
+// Создание/модификация настроек в компонентах
+//********************************************************************************
+
+#include CreateTune.vih
+
+//------------------------------------------------------------------------------
+Handler with replace ATLANTICDOLGDOG_DateModifyTune on ExtensionPoint
+  epDateModifyTune (TS : ObjStartCreateTune)
+Action
+{
+  TS.SetLastDateModTune(01,10,2018);
+  Result := true;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+Handler with replace ATLANTICDOLGDOG_CreateTuneComponent on extensionPoint
+  epCreateTuneComponent (TR: ObjCreateTuneEx)
+  // Внимание, приоритеты вызова обработчиков см. в CreateTune.vih
+Action
+{
+
+  //----------------------------------------------------------------------------
+  // Обязательно установить  имя компонента
+  TR.SetComponent('ATLANTIC');
+  //----------------------------------------------------------------------------
+
+  TR.AddPart(   ttSysUserTune
+             , 'USERTUNE'
+             , 'Tune'
+             , 'Настройки пользовательских доработок'
+             , 0);
+
+   TR.AddPart (ttSysUserTune,'USERTUNE.DOLGCONTROL','USERTUNE','Контроль задолженности',0);
+        TR.AddTune (ttUSERTUNE,'USERTUNE.DOLGCONTROL.USEATLANTICFUNCTION','USERTUNE.DOLGCONTROL','Использовать алгоритм ATLANTIC для расчета долга по договору сбыта в ДО',FtBoolean,'0','',0);
+        TR.AddTune (ttUSERTUNE,'USERTUNE.DOLGCONTROL.ISSUPERUSER'   ,'USERTUNE.DOLGCONTROL','Разрешать обрабатывать документ в любом случае (SUPERUSER)',FtBoolean,'0','',0);
+        TR.AddTune (ttUSERTUNE,'USERTUNE.DOLGCONTROL.CALLCDATEPROSR','USERTUNE.DOLGCONTROL','Обрабатывать срок задолженности',FtBoolean,'0','',0);
+  Result := true;
+}

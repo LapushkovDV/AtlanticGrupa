@@ -1,0 +1,75 @@
+/*
+                       (c) 1994,2004 корпорация ГАЛАКТИКА
+  Проект        : ГАЛАКТИКА
+  Система       : Заработная плата
+  Назначение    : obj-интерфейсы "Сессия контекста" и "Список контекстов"
+  Ответственный : Корзюк Виталий Францевич
+
+Для ознакомления с базовыми понятиями см. комментарии в pas\money\contexts.pas
+
+"Сессия контекста" инкапсулирует хранение и освобождение экспортируемых в vip
+ссылок на одноименный com-интерфейс. "Список сессий" - это враппер для функций
+захвата и освобождения зарегистрированных контекстов. Существует единственная
+реализация этого obj-интерфейса: ContextList.
+
+Типичный пример использования механизма контекстов:
+
+//------------------------------------------------------------------------------
+#include Contexts.vih
+
+interface Test;
+  create view x
+    var
+      CS: IContextSession;
+      ...
+  as select
+  ...
+  ;
+  ...
+
+  handleevent
+    cmInit:
+    {
+      // захват зарегистрированных контекстов
+      var CL: ContextList;
+      if not CL.Add(CS, 'RegisteredContext1')
+      or not CL.Add(CS, 'RegisteredContext2')
+      or not ...
+      {
+        abort;
+        exit;
+      }
+    }
+    ...
+  end;
+end.
+//------------------------------------------------------------------------------
+
+Обратите внимание на то, что никаких дополнительных действий по закрытию сессии
+и освобождению связанных с ней контекстов выполнять не нужно - это будет сделано
+автоматически: в момент разрушения логической таблицы отработает код очистки
+переменной CS. В этом коде будет выполнено освобождение импортированной ссылки
+на com-интерфейс сессии, что, в свою очередь, приведет к освобождению связанных
+с ним контекстов.
+*/
+
+#ifndef _CONTEXTS_OBJ_INCLUDED_
+#define _CONTEXTS_OBJ_INCLUDED_
+
+#ifdef ComponentVersion
+#component "z_zar"
+#end
+
+// сессия контекста
+objinterface IContextSession;
+  procedure SetHandle(Value: longint);
+  function GetHandle: longint;
+end;
+
+// список контекстов
+objinterface IContextList;
+  function Add(var ContextSession: IContextSession; const ContextName: string): boolean;
+  procedure Close(const ContextSession: IContextSession);
+end;
+
+#end

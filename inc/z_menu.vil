@@ -1,0 +1,4 @@
+#ifdef ComponentVersion
+#component "z_menu"
+#end
+

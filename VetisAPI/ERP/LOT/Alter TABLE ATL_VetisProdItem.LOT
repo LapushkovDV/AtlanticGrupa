@@ -1,0 +1,5 @@
+Alter table ::ATL_VetisProdItem
+Add
+(
+  katotpedNrec : comp "nrec KatOtpEd"
+)

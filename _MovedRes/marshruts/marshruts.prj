@@ -1,0 +1,19 @@
+#include PreDefs.inc; 
+const
+#include GloConst.inc;
+#include Galnet.csc;
+#include Galnet.ccm;
+end;
+
+#include DicTypes.def
+#include GloDefs.inc
+#include StatDefs.inc
+
+#define ComponentVersion  
+#include ExtAttr.vih
+#include ExtClass.vih
+#include ExtClass.var  // piExtClass
+
+#Component "l_basedoc"
+//
+#make "reports\marshruts.vip"

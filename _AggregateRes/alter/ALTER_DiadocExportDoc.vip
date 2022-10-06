@@ -1,0 +1,165 @@
+#component "C_DIADOC"
+alter interface iDiadocExportDoc;
+var _Log : string = '';
+
+overload
+/*
+Function ObjDiadocExportDoc.Export(_cDiaDocsToSend : comp
+   ; _pKatOrgReceipt : comp = 0
+   ; _pDiaOrgReceipt : comp = 0
+   ; _sDPPS          : string = ''//ERP-5184 "ДатаПрин" DD.MM.YYYY
+   ) : boolean;
+*/
+procedure Check_TmpSpSopr;
+end;
+create view
+from katmc katmc_check
+, ATL_PickingRep_SPEC
+, ATL_PickingRep_HEAD
+where ((
+      spsopr.cmcusl == katMc_check.nrec
+      ))
+;
+Procedure MyLog(_Str: string);
+{
+ if instr('DEBUG',_Str) <> 0 then exit;
+ if _Log = '' then _Log := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'DiadocExportDoc_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+ LogStrtoFile(_log,DateToStr(Cur_date, 'YYYY.MM.DD') + '_' + timetostr(Cur_time, 'HH:MM:SS') + ': ' + _Str);
+}
+
+//Function Export(_cDiaDocsToSend : comp   ; _pKatOrgReceipt : comp = 0   ; _pDiaOrgReceipt : comp = 0   ; _sDPPS          : string = ''//ERP-5184 "ДатаПрин" DD.MM.YYYY
+//   ) : boolean;
+procedure Check_TmpSpSopr ;
+{
+  MyLog('procedure Check_TmpSpSopr');
+  MyLog('boGetTune(USERTUNE.DIADOC.USEATLANTICTABLE) = ' + string(boGetTune('USERTUNE.DIADOC.USEATLANTICTABLE')));
+  MyLog(' DiaDocsToSend.cDoc   ='+DiaDocsToSend.cDoc);
+  MyLog(' DiaDocsToSend.wtable ='+DiaDocsToSend.wtable);
+
+ if boGetTune('USERTUNE.DIADOC.USEATLANTICTABLE') then
+  {
+   delete all TmpSerNom;
+   if getfirst katsopr = tsOK
+   {
+  MyLog(' katsopr.nrec ='+katsopr.nrec);
+   _loop SpSopr
+    if getfirst katmc_check = tsOK
+    {
+      if getfirst ATL_PickingRep_HEAD where ((katsopr.nrec == ATL_PickingRep_HEAD.cSopr)) = tsOK
+      {
+        var _SapCode : string = katmc_check.Barkod2;
+
+       MyLog(' ATL_PickingRep_HEAD.wStatus ='+ATL_PickingRep_HEAD.wStatus );
+         if ATL_PickingRep_HEAD.wStatus  = 1  //  'ЧЗ проверен'
+         {
+           _loop ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
+                                                         and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
+                                         ))
+           {
+             clearbuffer(tnTmpSerNom);
+           //  TmpSerNom.KM  := '_' ;
+           //  TmpSerNom.KM1 := '_-' ;
+           //  TmpSerNom.KM2 := '_-_' ;
+             if upcase(ATL_PickingRep_SPEC.DataMatrix) = 'FULL'
+                    or ATL_PickingRep_SPEC.DataMatrix = ''
+               then TmpSerNom.KM2 := ATL_PickingRep_SPEC.SSCCManuf
+               else TmpSerNom.KM1 := '![CDATA['+ATL_PickingRep_SPEC.DataMatrix + ']]';
+
+                 TmpSerNom.Serial := 'serial' ;
+        //        ,TmpSerNom.KM     := 'CODES  '+ string(SpSopr.cSopr)//КИЗ Контрольный идентификационный знак
+        //        ,TmpSerNom.KM1    := 'CODES1 '+ string(SpSopr.nrec) //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+        //        ,TmpSerNom.KM2    := 'CODES2 '+ string(SpSopr.cSopr) //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
+                TmpSerNom.wTable := coSpSopr;
+                TmpSerNom.cRec   := SpSopr.nrec ;
+               insert current TmpSerNom;
+                MyLog(' TmpSerNom.wTable ='+TmpSerNom.wTable );
+              MyLog(' TmpSerNom.cRec   ='+TmpSerNom.cRec   );
+
+               // попробуем еще спец СФ добавить.... где то там на них тожде смотряь
+                TmpSerNom.wTable := coSPSCHF;
+                TmpSerNom.cRec   := SpSopr.CSPSCHF;
+               insert current TmpSerNom;
+
+
+              MyLog(' TmpSerNom.Serial ='+TmpSerNom.Serial );
+              MyLog(' КИЗ            TmpSerNom.KM     ='+TmpSerNom.KM     ); //КИЗ Контрольный идентификационный знак
+              MyLog(' НомУпак        TmpSerNom.KM1    ='+TmpSerNom.KM1    ); //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+              MyLog(' ИдентТрансУпак TmpSerNom.KM2    ='+TmpSerNom.KM2    ); //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
+              MyLog(' TmpSerNom.wTable ='+TmpSerNom.wTable );
+              MyLog(' TmpSerNom.cRec   ='+TmpSerNom.cRec   );
+
+           }
+         }
+         else {
+           MyLog(' статус ошибка... пропускаем документ');
+         }
+      }
+    }
+   }
+   /*
+ var _wTable : word =0;
+  var _cRec   : comp =0;
+  if IsExistSF
+  { _wTable := coSpSchF;
+    _crec   := TmpSpSchF.NRec;
+  }
+  else
+  { _wTable := coSpSopr;
+    _crec   := TmpSpSopr.NRec;
+  }
+  if _crec = 0 then Exit;
+
+
+  if Getfirst TmpSerNom where ((
+                  _wTable == TmpSerNom.wTable
+              and _cRec   == TmpSerNom.cRec
+              and (TmpSerNom.KM<>'' or TmpSerNom.KM1<>'' or TmpSerNom.KM2<>'')
+            )) ordered by index TmpSerNom01 <> tsok
+    Exit; // пока не ясно что тут
+
+  var _km2 : string =TmpSerNom.KM2;
+  result := AddNode(_Node, _NodeName);
+  if TmpSerNom.KM2 <>''
+    AttribOptional(result, 'ИдентТрансУпак',TmpSerNom.KM2); //Уникальный идентификатор транспортной упаковки
+  mtClear(#tmpKITU,mfNormal);
+  _Loop TmpSerNom where ((
+                  _wTable == TmpSerNom.wTable
+              and _cRec   == TmpSerNom.cRec
+              and (TmpSerNom.KM<>'' or TmpSerNom.KM1<>'' or TmpSerNom.KM2<>'')
+            )) ordered by index TmpSerNom01
+  { if (TmpSerNom.KM<>'' or TmpSerNom.KM1<>'' or TmpSerNom.KM2<>'')
+    { //AttribOptional(result, 'КИЗ',TmpSerNom.KM);//Контрольный идентификационный знак
+      //AttribOptional(result, 'НомУпа',TmpSerNom.KM1);//Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+      if TmpSerNom.KM2<>_km2  // может быть только один
+      {
+        _km2 :=TmpSerNom.KM2;
+        result := AddNode(_Node, _NodeName);
+        if TmpSerNom.KM2 <>''
+          AttribOptional(result, 'ИдентТрансУпак',TmpSerNom.KM2); //Уникальный идентификатор транспортной упаковки
+      }
+   */
+
+  }
+  inherited::Check_TmpSpSopr;
+}
+
+end. // interface
+
+/*
+ExportSopr_base
+
+Procedure SetTmpSerNom(_wTable: word; _cRec: comp; isOld : boolean = false);
+{ var _pSpSopr : comp   = 0;
+  var _wKitu  : word = 0; //1 КИТУ, 2 Нужно преобразовывать.
+  var bChangenRec : boolean = (isOld and _wTable = coSpSchF);
+  case _wTable of
+  coSpSopr:
+  { _pSpSopr := _crec;
+
+  }
+  coSpSchF:
+  {
+    _Loop TmpSpSopr where (( _cRec == TmpSpSopr.cSpSchf ))
+
+
+*/

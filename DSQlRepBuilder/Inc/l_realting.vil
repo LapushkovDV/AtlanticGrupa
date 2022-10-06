@@ -1,0 +1,152 @@
+#ifdef ComponentVersion
+#component "L_REALTING"
+#end
+
+VipInterface RltDogInfo
+  Licensed (FREE)
+  Parameters (pDogovor : comp); // ссылка на договор
+
+VipInterface GetObj4Rent
+  Licensed (FREE)
+  Parameters
+  (
+    pDogovor  : comp;           // ссылка на договор
+    OnDogovor : boolean;        // true - вставка в договор; false - в ПКП
+    pOrg                        // ссылка на организацию
+   ,pVal      : comp;           // ссылка на валюту
+    dF, dT    : date;           // период
+    doKoef    : double;         // поправочный коэффициент
+    wParam    : word            // изменять на doKoef : 0 - количество; 1 - цену
+  );
+
+VipInterface vipRltObjTree
+  Licensed
+  (
+  #include vipRltObjTree.lih
+  )
+  Parameters
+  (
+    wVidObj : word;             // вид объекта
+    pObj    : comp              // ссылка на объект
+  );
+
+VipInterface RltUsersInfo
+  Licensed (Realting);
+
+VipInterface RltObjReanimator
+  Licensed (Realting);
+
+VipInterface RltLinksChecker
+  Licensed (Realting);
+
+VipInterface BatComPays
+  Licensed (REALTING);
+
+VipInterface InfoAboutRltObjs
+  Licensed (REALTING)
+  Parameters (wVidObj : word);  // вид отчета
+
+VipInterface rltReestrComPay
+  Licensed (Realting);
+
+VipInterface RltInfoOnChilds
+  Licensed (FREE)
+  Parameters
+  (
+    wVidObj : word;
+    pObj    : comp;
+    dInfo   : date
+  );
+
+VipInterface RltObjInfo
+  Licensed (FREE)
+  Parameters
+  (
+    wVidObj : word;
+    pObj    : comp
+  );
+
+VipInterface GetFloor
+  Licensed (FREE)
+  Parameters
+  (
+    pBuilding         // ссылка на здание
+   ,pFloor    : comp  // ссылка на этаж
+  );
+
+VipInterface GetHouse
+  Licensed (FREE)
+  Parameters
+  (
+    pBuilding         // ссылка на здание
+   ,pFloor            // ссылка на этаж
+   ,pHouse    : comp  // ссылка на помещение
+  );
+
+VipInterface GetObj4Link
+  Licensed (FREE)
+  Parameters
+  (
+    pDogovor : comp;  // ссылка на договор
+    dF       : date;  // начальная дата периода
+    wVidObj  : word;  // тип объекта недвижимости
+    cObj     : comp   // ссылка на объект недвижимости
+  );
+
+VipInterface GetRltBuilding
+  Licensed (FREE)
+  Parameters
+  (
+    pZemCompl            // ссылка на здание
+   ,pBuilding : comp;    // ссылка на здание
+    OkOne     : boolean  // true - одиночный выбор
+  );
+
+VipInterface GetRooms4CalcUsl
+  Licensed (FREE)
+  Parameters
+  (
+    pBuilding
+   ,pUsl      : comp;
+    wM
+   ,wY        : word;
+    Marker    : longint;
+    wRasp     : word
+  );
+
+VipInterface GetSpSoprOnUsl
+  Licensed (FREE)
+  Parameters
+  (
+    pOrg
+   ,pUsl
+   ,pKatSopr
+   ,pSpSopr  : comp
+  );
+
+VipInterface GetZemCompl
+  Licensed (FREE)
+  Parameters(pZemCompl : comp);
+
+VipInterface DgRent_n
+  Licensed (FREE)
+  Parameters(pNRec : comp);
+
+VipInterface Nastr_Ar
+  Licensed (FREE)
+  Parameters(NReport : word; pNRec : comp);
+
+VipInterface Nastr_Nedv
+  Licensed (FREE)
+  Parameters(NReport : word; pNRec : comp);
+
+VipInterface RltGroupingTune
+  Licensed (FREE)
+  Parameters(dInfo : date);
+
+VipInterface GetObjFinder
+  Licensed (FREE)
+  Parameters
+  (wVidObj : word;
+   pObj    : comp
+  );

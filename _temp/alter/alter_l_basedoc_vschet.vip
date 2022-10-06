@@ -1,0 +1,743 @@
+////////////// подменяем обработчик событий 
+#component "L_BASEDOC"
+alter interface VSCHET;
+
+table struct  tMC_BCP
+(
+   mcName  : string
+ , cMC     : comp
+ , cGrNal  : comp
+ , BCP     : string
+ , barkod  : string
+ , sapcode : string
+// , isArch  : string
+ , OtpEdName : string
+ , cOtpEd    : comp
+ , TekKol  : double
+ , OstRes  : double
+ , OstKol  : double
+)
+with index
+(
+ ind0 = mcName
+)
+;
+ function GetNameSkidkaWrapper(aType: word): string; forward;
+ function GetFoeffUpakovka : double; Forward;
+ function GetMercuryField: string; forward;
+ function getMercuryFieldColor: word; forward;
+ function GetPickingReportField: string; forward;
+ function getPickingReportFieldColor: word; forward;
+
+create view
+var _curDOview, _newNote : comp;
+//    extAttr: iExtAttr;
+     fWarning
+    ,fWarning2 : string;
+    _cCurrDO : comp;
+as select GetNameSkidkaWrapper(0) (fieldname=NameSkidka0),
+          GetNameSkidkaWrapper(1) (fieldname=NameSkidka1),
+          //GetNameMaravtWrapper(ttndoc1.cMarAvt) (fieldname=MaravtName),
+          maravtAtlantic.NMARAVT (fieldname=MaravtName),
+         (SPSTEP.KOLSKL*KatOtpEd.Koef/GetFoeffUpakovka) (fieldname=KolUpakovok),
+         extAttr.dogetAttr(cospstep,spstep.nrec,'SL. Начальное количество в заказе') (fieldname=KolBEGIN),
+         extAttr.sgetAttr( cospstep,spstep.nrec,'SL. Причина недопоставки') (fieldname=SL_REASON),
+         if(SPSTEP.KOLSKL = KolBEGIN, 0, if(SL_REASON <> '',0, 10)) (fieldname=SL_BackColor)
+         , GetMercuryField() (Fieldname = MercuryField)
+         , getMercuryFieldColor() (Fieldname = MercuryFieldColor)
+         , GetPickingReportField() (Fieldname = PickingReportField)
+         , getPickingReportFieldColor() (Fieldname = PickingReportFieldColor)
+
+         ,extAttr.sgetAttr( coKatOrg,baseDoc.cOrg,'Доп. информация') (fieldname=OrgAddInfo)
+
+         , if( (KatOrg.Unn = '3123302222' or KatOrg.Unn = '7804146186' )
+                  and
+               (KATMC.BARKOD2 = '1007792' or KATMC.BARKOD2 = '1007793' or KATMC.BARKOD2 = '1008804' or KATMC.BARKOD2 = '1008805')
+               ,1 // надо подкрашивать позицию
+               ,0 // НЕ надо подкрашивать позицию
+             ) (fieldname=NeedColorSpec)
+
+from  KatotpEd KatOtpUpak
+    , KatotpEd KatOtpUpak1_2
+    , KatotpEd KatOtpUpak1_6
+    , KatotpEd KatOtpUpak1_12
+    , KatotpEd KatOtpUpak1_36
+
+    , maravt maravtAtlantic
+    , SkidSum SkidSumAtlantic0
+    , KATSKID KATSKIDAtlantic0
+    , SkidSum SkidSumAtlantic1
+    , KATSKID KATSKIDAtlantic1
+    , StatLog StatLog_new
+    , StatLog StatLog_prev
+    , KatNotes NewStatus
+    , BaseDoc DO_ForStatus
+    // ServiceLevel
+    , SpKau SpKauSL
+    , SpSopr SpSoprSL
+    , ATL_MERCURY_HEAD
+    , ATL_PickingRep_HEAD
+    ,tMC_BCP
+where
+ ((
+//упаковки
+                       1 == KatOtpUpak.PrMc
+          and KatMC.Nrec == KatOtpUpak.cmcUsl
+   and 0000000000000003h == KatOtpUpak.cKatEd // упаковка
+
+   and                 1 == KatOtpUpak1_2.PrMc
+          and KatMC.Nrec == KatOtpUpak1_2.cmcUsl
+   and 03E800000000000Ch == KatOtpUpak1_2.cKatEd // упаковка 1/2
+
+    and                1 == KatOtpUpak1_6.PrMc
+          and KatMC.Nrec == KatOtpUpak1_6.cmcUsl
+   and 03E8000000000009h == KatOtpUpak1_6.cKatEd // упаковка 1/6
+
+   and                 1 == KatOtpUpak1_12.PrMc
+          and KatMC.Nrec == KatOtpUpak1_12.cmcUsl
+   and 03E800000000000Bh == KatOtpUpak1_12.cKatEd // упаковка 1/12
+
+   and                 1 == KatOtpUpak1_36.PrMc
+          and KatMC.Nrec == KatOtpUpak1_36.cmcUsl
+   and 03E800000000000Ah == KatOtpUpak1_36.cKatEd // упаковка 1/36
+
+
+// маршруты
+   and ttndoc1.cMarAvt ==  maravtAtlantic.nrec
+// скидки
+             and 1 == SkidSumAtlantic0.cotable
+   and spstep.nrec == SkidSumAtlantic0.crec
+    and (SkidSumAtlantic0.cSkidPrim <> 0h)  // 'Авт.'
+    and SkidSumAtlantic0.CKATSKID == KATSKIDAtlantic0.nrec
+
+             and 1 == SkidSumAtlantic1.cotable
+   and spstep.nrec == SkidSumAtlantic1.crec
+    and (SkidSumAtlantic1.cSkidPrim = 0h)   // 'Окр.', 'Ручн.'
+    and SkidSumAtlantic1.CKATSKID == KATSKIDAtlantic1.nrec
+
+  and  _newNote     == NewStatus.nrec
+
+   and _curDOview   == DO_ForStatus.nrec
+   and            40 == StatLog_prev.DOCTYPE
+   and DO_ForStatus.nrec == StatLog_prev.CDOC
+   and 0   <<= StatLog_prev.DOPER
+   and 0 <<= StatLog_prev.TIMEOPER (noindex)
+   and katsopr.nrec == ATL_MERCURY_HEAD.CSOPR
+   and katsopr.nrec == ATL_PickingRep_HEAD.CSOPR
+ ))
+ bounds CurDOinMark _cCurrDO == BaseDoc.nrec (noindex)
+ ;
+#include Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp
+
+window winSelMcWithTheSameBCP, DoAccept
+browse brSelMcWithTheSameBCP;
+table tMC_BCP;
+fields //{font = {bold = (tMC_BCP.cMC = spstep.cmcusl)}};
+ tMC_BCP.mcName    'МЦ наименование' ('МЦ наименование',,):[20], Protect;
+ tMC_BCP.BCP       'BCP code'        ('BCp code'       ,,):[10], Protect;
+// tMC_BCP.barkod    'номен. номер'    ('номенклатурный номер'   ,,):[10], Protect;
+ tMC_BCP.sapcode   'SAP code'        ('SAP code'       ,,):[10], Protect;
+ tMC_BCP.OtpEdName 'Отп. ед'         ('Отпускная единица активная'       ,,):[10], Protect;
+// tMC_BCP.isArch    'В архиве'        ('В архиве'       ,,):[5], Protect;
+ tMC_BCP.TekKol  'Текущее наличие'   ('Текущее наличие' ,,):[10,'\3p[|-]3666`666`666`666`666.88'], Protect;
+ tMC_BCP.OstRes  'Резерв'   ('Резерв' ,,):[10,'\3p[|-]3666`666`666`666`666.88'], Protect;
+ tMC_BCP.OstKol  'Остаток'   ('Остаток' ,,):[10,'\3p[|-]3666`666`666`666`666.88'], Protect;
+
+end;
+handleevent
+cminit:
+{
+  rereadrecord;
+}
+cmDefault:
+{
+ // message(tMC_BCP.mcName + ' ' + string(tMC_BCP.cMC,0,0) ) ;
+ set SpStep.cmcUsl := tMC_BCP.cMC;
+ set SpStep.cOtpEd := tMC_BCP.cOtpEd;
+ set SpStep.cGrNal := tMC_BCP.cGrNal;
+ update current spstep;
+ setmodified(true);
+  GetTotal(false) ;
+//  update current spstep;
+  ModifDo;
+  rescanPanel(tnspstep);
+}
+end;
+end;
+Function Fill_tMC_BCP(_BCP:string): boolean;
+{
+  delete all tMC_BCP;
+ // message(_BCP)
+  if trim(_BCP) <> ''
+  then
+  {
+      _try
+      {
+        sql
+        select
+              mc.Name       as mcName,
+              Mc.Nrec       as cMC,
+              MC.cGrNal     as cGrNal,
+              avBCP.vString as BCP,
+              mc.barkod     as barkod,
+              mc.barkod2    as sapcode,
+              //case when mc.isarch =1 then '+' else '' end as isArch,
+              Otped.Name as OtpEdName,
+              OtpEd.nrec as cOtpEd   ,
+              sum(coalesce(TekSaldo.Kol,0)) as TekKol,
+              sum(coalesce(tekSaldo.Res,0)) as OstRes,
+              sum(coalesce(TekSaldo.Kol,0) -  coalesce(TekSaldo.Res,0)) as OstKol
+            from KatMC MC
+             join AttrNam ANBCP on AnBCP.Wtable = 1411
+                                and anBCP.name = 'BCP (Base Commercial Product)'
+             join AttrVal AVBCP on aVBCP.wtable = ANBCP.wTable
+                                      and AVBCP.cAttrnam = ANBCP.nrec
+                                      and avBCP.crec = MC.Nrec
+             join KatOtped Otped on Otped.cmcusl = mc.nrec
+                         and Otped.prmc = 1
+                         and Otped.AKT  = 1
+            left join Teksaldo on Teksaldo.cmc = mc.nrec
+                            and TekSaldo.cPodr = :(03E800000000027Ah) // Склад Внуково
+            where avBCP.vstring = :(_BCP)
+                and mc.isarch = 0
+                group by mc.Name, Mc.Nrec, MC.cGrNal, avBCP.vString, mc.barkod, mc.barkod2, Otped.Name, OtpEd.nrec
+            into tMC_BCP;
+             var _Title : string;
+                _Title := 'Выбор МЦ по BCP "' + _BCP+'". Остатки на складе "Склад АДМИРАЛ Внуково "' ;
+             SetWindowTitle(winSelMcWithTheSameBCP, _Title);
+      }
+       _Except
+      else {var _empty : boolean; _empty := false;} //чтобы компилятор ничего не говорил
+
+  }
+  //message('RecordsInTable(tntMC_BCP) '+RecordsInTable(tntMC_BCP));
+  result := (RecordsInTable(tntMC_BCP) > 1);
+}
+function GetNameSkidkaWrapper(aType: word): string;
+{
+//  result := GLOB_AtlanticShowSkidki::GetNameSkidka(aSpstepNrec, aType);
+ var _result : string;
+  _result := '';
+  if aType = 0 _loop SkidSumAtlantic0 { _result := if(_result = '', '', '| ') + KATSKIDAtlantic0.NAME }
+  if aType = 1 _loop SkidSumAtlantic1 { _result := if(_result = '', '', '| ') + KATSKIDAtlantic1.NAME }
+  result  := _result
+}
+
+function GetFoeffUpakovka: double;
+{
+  var _result : double;
+  _result := 0;
+ if _result = 0 {if isValid(tnKatOtpUpak)     then _result := KatOtpUpak.Koef}
+ if _result = 0 {if isValid(tnKatOtpUpak1_2)  then _result := KatOtpUpak1_2.Koef }
+ if _result = 0 {if isValid(tnKatOtpUpak1_6)  then _result := KatOtpUpak1_6.Koef }
+ if _result = 0 {if isValid(tnKatOtpUpak1_12) then _result := KatOtpUpak1_12.Koef}
+ if _result = 0 {if isValid(tnKatOtpUpak1_36) then _result := KatOtpUpak1_36.Koef}
+ result := _result;
+}
+Procedure AtlanticSetWarning2;
+{
+  fWarning2 := '';
+  //cfsSetProp('fWarning','visible', false);
+  var isExist : byte = 0;
+  var _cBaseDoc : comp = basedoc.nrec;
+//   message(isExist);
+  if not (KatOrg.Unn = '7814148471' // ЛЕНТА
+       or KatOrg.Unn = '7704218694' // метро кеш энд кери
+       or KatOrg.Unn = '7743543761' // Гипер глобус
+         ) then exit;
+
+  //       message(_cBaseDoc)
+  _try
+  { sql
+     select top 1
+       1
+      from StepDoc StD
+      join SpStep SpSt on SpSt.cStepDoc = StD.nrec
+                        and SpSt.prmc = 1
+       join katotpEd koe on koe.nrec = SpSt.cOtped
+      where StD.cBasedoc = :(_cBaseDoc)
+      and KOE.NAME not like '%упа%'
+      into (isExist)
+     ;
+  }
+  _except else {var _empty : boolean; _empty := false;} //чтобы компилятор ничего не говорил
+  if isExist = 1
+  {
+    fWarning2 := 'ВНИМАНИЕ! ОТГРУЗКА В УПАКОВКАХ!';
+  //  cfsSetProp('fWarning','visible', true);
+  }
+}
+procedure AtlanticSetWarning;
+{
+   AtlanticSetWarning2;
+   // харкодим ИНН организаций и сапкоды МЦ, хотя предлагал в атрибуты вынести
+  fWarning := '';
+  //cfsSetProp('fWarning','visible', false);
+  var isExist : byte = 0;
+  var _cBaseDoc : comp = basedoc.nrec;
+//   message(isExist);
+  if not (KatOrg.Unn = '3123302222' or KatOrg.Unn = '7804146186' ) then exit;
+  _try
+  { sql
+    select top 1
+       1
+      from StepDoc StD
+      join SpStep SpSt on SpSt.cStepDoc = StD.nrec
+                        and SpSt.prmc = 1
+      join KatMc MC on Mc.nrec = SpSt.cmcUsl
+      where StD.cBasedoc = :(_cBaseDoc)
+      and Mc.BarKod2 in ('1007792', '1007793','1008804','1008805')
+      into (isExist)
+      ;
+  }
+  _except else {var _empty : boolean; _empty := false;} //чтобы компилятор ничего не говорил
+//  message(isExist);
+  if isExist = 1
+  {
+    fWarning := 'ВНИМАНИЕ! На овощные каши скидка отличная от других каш!';
+  //  cfsSetProp('fWarning','visible', true);
+  }
+
+  rescanpanel(tnBaseDoc);
+}
+
+window WVSCHET;
+
+handleEvent
+ cminit:
+ {
+   inherited::handleEvent(cmInit);
+   AtlanticSetWarning;
+   rereadrecord;
+ }
+//cmKauReff:
+//{
+//  if inherited::handleevent(cmKauReff) = heOk
+//  {
+//    if not IsSlozhSkid(True)
+//      Exit;
+//
+//    var TmpSid_   : double;
+//    var pTable    : word;
+//    var pRec      : comp;
+//
+//    if (CurTable = #BaseDoc)
+//    {
+//      pTable := 0;
+//      pRec := BaseDoc.NRec;
+//    }
+//    else
+//    {
+//      pTable := 1;
+//      pRec := SpStep.Nrec;
+//    }
+//
+//    TmpSid_ := piCalcSkid.RePasteInDocSkid(pRec, pTable);
+//
+//    message(TmpSid_);
+//
+//    RereadRecord(#BaseDoc);
+//    RereadRecord(#SpStep);
+//
+//    if IsValid(#SpStep)
+//      GetTotalSkid(False); // пересчет всех позиций
+//
+//    IsNeedReCalcSloznSkid := False;
+//
+//    RescanPanel(#BaseDoc);
+//
+//  }
+//}
+
+//  cmValFld13: { //Налоги=Command 2226/Продать набор=3213
+//    if (basedoc.direct = 1) {                            //направление продажа
+//      //and (basedoc.total > 0)                          //есть сумма но новиков сказал убрать
+//      if (wGetTune('Oper.AlgSkid') = 1) {                //работа со сложными скидками включена
+////      var calcSkid: iCalcSkid;
+////      var skidSum: double;
+////      skidSum := calcSkid.reCalcSkidAll(basedoc.nrec);
+////      //
+////      rescanpanel(#BaseDoc);
+////    }
+//
+//        var extAttr: iExtAttr;
+//        if (message('Рассчитать скидку автоматически?'
+//          + chr(13)+'При отказе скидку по документу можно будет ввести вручную', YesNo) != cmYes) {
+//          extAttr.sSetAttr(coBasedoc, basedoc.nRec, 'Скидка', 'ручная');
+//          //putcommand(cmValue22); // удаляем сложные скидки
+//          delete skidSum where ((word(0)==coTable and basedoc.nRec==cRec));
+//          //set basedoc.skidka = 0;
+//          set basedoc.vhskid = 1;
+//          setFieldOption(#basedoc.skidka, ofSelectable);
+//        }
+//        else {
+//          extAttr.sSetAttr(coBasedoc, basedoc.nRec, 'Скидка', 'авто');
+//          putcommand(cmInsertEditKN); // считаем сложные скидки по контрагенту
+//        }
+//      }
+//      else message('Не включена настройка для использования сложных скидок!', information);
+//    }
+//    else inherited::handleevent(cmValFld13);
+//  }
+
+end; //he
+
+end; //window
+
+tableEvent table baseDoc;
+cmPick: {
+  case curField of
+    #KatNotes.Name: {
+      if not updateTable exit;
+      if (baseDoc.Status = 1) { // 'оформляемый'
+//        var extAttr: iExtAttr;
+        if (extAttr.coGetAttr(coBasedoc, Basedoc.nRec, 'Канал сбыта') = 0) {
+          var cSbyt: comp;
+          var sSbyt: string;
+          sSbyt := extAttr.sGetAttr(coKatOrg, basedoc.cOrg, 'Канал сбыта');
+          cSbyt := extAttr.coGetAttr(coKatOrg, basedoc.cOrg, 'Канал сбыта');
+          if (cSbyt != 0) {  
+            if extAttr.coSetAttr(coBasedoc, Basedoc.nRec, 'Канал сбыта', cSbyt, sSbyt) {
+              reReadRecord(#BaseDoc);
+              message(' Заполнен канал сбыта по умолчанию:' + ''#13' '+ sSbyt );
+            }
+          } //есть в организации
+          else {
+            message('Не выбран канал сбыта !');
+            exit;
+          }
+        } //не заполнен канал сбыта
+      }  // 'оформляемый'
+    } //CurField =  #KatNotes.Name
+  end; //case
+  if (inherited::handleevent(cmPick) = heAbort) {
+    abort;
+    exit;
+  }
+}
+
+cmPositionChanged:
+{ // проверка возможности редактирования записи
+  inherited :: handleevent(cmPositionChanged);
+   AtlanticSetWarning;
+
+}
+end; // tableEvent
+tableEvent table SpStep;
+
+cmPick: {
+  case curField of
+    #SL_REASON:
+     {
+       var _crec : comp = 0h;
+       _crec := extattr.coGetAttr(coSpStep, SpStep.nrec, 'SL. Причина недопоставки');
+        if iGetKAU.GetCodeKAU(cgiPick, 10029, _crec) <> 0
+        If getfirst FastFirstRow SpKauSL where ((_crec ==  SpKauSL.nrec)) = tsOK
+         {
+          extattr.coSetAttr(coSpStep, SpStep.nrec, 'SL. Причина недопоставки', SpKauSL.nrec, SpKauSL.name);
+          rescanPanel(tnSpStep);
+         }
+     } //CurField =  SL_REASON
+    #NamTovar, #Nomenkl:
+     {
+      if KolBEGIN <> 0
+       {
+         if Fill_tMC_BCP(extAttr.sgetAttr(cokatMC,spstep.cmCUsl,'BCP (Base Commercial Product)'))
+         then
+          {
+            runwindowModal(winSelMcWithTheSameBCP);
+             Abort;
+             Exit;
+          }
+         else
+         {
+          Message('Данная позиция закачана автоматически. '+
+              +''#13'' + 'МЦ для выбора с таким же BCP не найдено'+
+              +''#13''+'Перевыбор запрещен',error);
+          Abort;
+          Exit;
+         }
+       }
+     }
+  end; //case
+  if (
+    inherited::handleevent(cmPick) = heAbort) {
+    abort;
+    exit;
+  }
+    AtlanticSetWarning;
+    rescanpanel(tnBASEDOC);
+}
+cmMarkDelete:  //перекроем полностью
+{
+  Abort;
+
+  if not oProtector.CanEdit(BaseDoc.nRec, 0, cpT_Function, coBaseDoc, cpF_EditGrSch, '', cpM_ShowAll)
+    Exit;
+
+  if ( Message(FormatStr_1('Удалить помеченные записи (%d)?', pSpMarker.Count), YesNo + Confirmation + mfSwapButtons) <> cmYes )
+    Exit;
+
+  var pSpStep: comp = SpStep.nRec;
+
+  SubBounds(tbRMSpStep1);
+  AddBounds(tbRMSpStep2);   // устанавливаем ограничения по выделенным записям
+
+  var wFirstNum : tNpp = 1;
+
+  StartNewVisual(vtIndicatorVisual, vfThread + vfTimer, 'Удаление записей', pSpMarker.Count);
+
+  _loop pSpMarker ordered by pSpMarker.npp
+    {
+      if (wFirstNum > SpStep.Npp)
+        wFirstNum := SpStep.Npp;
+
+      NextVisual;
+      // это кусок по ServiceLevel
+     if KolBEGIN <> 0 or GetFirst SpSoprSL where ((SpStep.nrec == SpSoprSL.cSpStep)) = tsOK
+      then
+       {
+          set SpStep.KOLSKL := 0;
+          setmodified(true);
+          CheckSpStepkolSkl;
+       }
+       else
+        {
+         DoSpStepDelete; // original
+        }
+      // end это кусок по ServiceLevel
+    }
+
+  SubBounds(tbRMSpStep2);
+  AddBounds(tbRMSpStep1);   // снимаем ограничения по выделенным записям
+
+  KillPick2;
+
+  ModifDo;
+
+  while (GetFirst SpStep where (( StepDoc.nRec == SpStep.cStepDoc
+                              AND wFirstNum   <<= SpStep.Npp  )) ordered by SpStep.Npp = tsOk) do
+    Update current SpStep set SpStep.Npp := wFirstNum++;
+
+  if (GetFirst SpStep where (( pSpStep == SpStep.nRec )) <> tsOk )
+    if (GetFirst SpStep <> tsOk)
+       {var _empty : boolean; _empty := false;} //чтобы компилятор ничего не говорил
+
+  StopVisual;
+
+  ReReadRecord(#SpStep);
+}
+cmDeleteRecord:
+{
+  // Запрещаем удаление
+  if KolBEGIN <> 0 or GetFirst SpSoprSL where ((SpStep.nrec == SpSoprSL.cSpStep)) = tsOK
+  {
+      if (Message('Обнулить количество в текущей записи?_', YesNo + Confirmation + mfSwapButtons) <> cmYes)
+        {
+          Abort;
+          Exit;
+        }
+        else
+        {
+          //Update Current SpStep set SpStep.KOLSKL := 0;
+          //updatetable;
+          //ModifDo;
+          set SpStep.KOLSKL := 0;
+          setmodified(true);
+          CheckSpStepkolSkl;
+          //processcommand(cmcheckField); //(SpStep.KOLSKL));
+//          RescanPanel(tnSpStep);
+        }
+  }
+  else
+  {
+
+   if (inherited::handleevent(cmDeleteRecord) = heAbort) {
+      abort;
+      exit;
+    }
+     AtlanticSetWarning;
+  }
+}
+cmUpdateRecord:
+{
+  if (inherited::handleevent(cmUpDateRecord) = heAbort) {
+      abort;
+      exit;
+    }
+     AtlanticSetWarning;
+}
+cmcheckfield:
+{
+  case curfield of
+   #SPSTEP.KOLSKL:
+    {
+     if NameSkidka0 <> '' or NameSkidka1 <> ''
+     {
+       Message('Перед изменением количества удалите скидки по документу',error);
+
+       rereadrecord;
+      //stop; abort; exit;
+     }
+    }
+  end;
+  if (inherited::handleevent(cmcheckfield) = heAbort) {
+      abort;
+      exit;
+    }
+
+}
+end; // tableEvent
+Handleevent
+cmValue60:
+{
+   if pMarker.Count = 0
+   {
+     message('Не выбран ни один документ') ;
+     stop; abort;exit;
+   }
+  if ( RunInterface('L_DOGOVOR::GetSomKatNotes'
+                    , 51
+                    , 0
+                    , 0
+                    , FALSE
+                    , _NewNote
+                    , 0h) = cmCancel )
+    Exit;
+   set _NewNote := _NewNote;
+   if not isValid(tnNewStatus) then exit;
+   var _NEWSTATUS : word;
+   _NEWSTATUS := NewStatus.status ;
+
+
+    var tmpKM : TPtr = InitMarker('', 8, 100, 10);
+    pMarker.ExportTo(tmpKM);
+//    message(getmarkercount(tmpKM));
+   var i: word;
+   var _cRec : comp = 0h;
+   for(i := 0; i < GetMarkerCount(tmpKM); i++)
+    if GetMarker(tmpKM, i, _cRec)
+    {
+     set _curDOview := _cRec  ;
+
+     if not isValid(tnDO_ForStatus) then continue;
+     if DO_ForStatus.CNOTE = _NEWSTATUS then continue;
+
+     var _COLDNOTE : comp = 0h;
+     var _OLDSTATUS : comp = 0h;
+
+     if(getlast StatLog_prev) = tsOK
+      then
+      {
+        _COLDNOTE  := StatLog_prev.CNEWNOTE;
+        _OLDSTATUS := StatLog_prev.NEWSTATUS;
+      }
+
+     StatLog_new.nrec      := 0h;
+     StatLog_new.CDOC      := _curDOview;
+     StatLog_new.COLDNOTE  := _COLDNOTE;
+     StatLog_new.COMMENT   := 'Групповая смена смена статуса по функции локального меню';
+     StatLog_new.DESCR     := sGetTune('USER.DESCR');
+     StatLog_new.DESGR     := sGetTune('USER.DESGR');
+     StatLog_new.DOCTYPE   := 40;
+     StatLog_new.CNEWNOTE  := _NEWNOTE;
+     StatLog_new.NEWSTATUS := _NEWSTATUS;
+     StatLog_new.OLDSTATUS := _OLDSTATUS;
+     StatLog_new.TIMEOPER  := cur_time;
+     StatLog_new.DOPER     := cur_date;
+     Insert Current StatLog_new;
+
+     Update current DO_ForStatus Set
+        DO_ForStatus.STATUS := _NEWSTATUS
+       ,DO_ForStatus.CNOTE  := _NEWNOTE
+    }
+
+  ReReadRecord(#BaseDoc);
+  ProcessCommand(cmValue39);
+}
+cmValue68:
+{
+  var tmpKM : TPtr = InitMarker('', 8, 100, 10);
+    pMarker.ExportTo(tmpKM);
+
+   RunInterface('ATLANTIC::ReportMassa_DO_NAKL'
+                    , 0
+                    , tmpKM
+               )
+}
+cmValue67:
+{
+  if pMarker.Count = 0
+   {
+     message('Не выбран ни один документ') ;
+     stop; abort;exit;
+   }
+if (message(' Обнулить количество в выбранных ДО и установить причину "недопоставки"?'
+          + chr(13)+'При положительном ответе в следующем окне надо будет выбрать причину', YesNo) != cmYes)
+          {
+             Stop; abort; exit;
+          }
+          var _crec: comp;
+   if iGetKAU.GetCodeKAU(cgiPick, 10029, _crec) = 0
+   {
+     Message('Обнуление отменено: не выбрали причину "недопоставки"',warning);
+             Stop; abort; exit;
+   }
+   If getfirst FastFirstRow SpKauSL where ((_crec ==  SpKauSL.nrec)) <> tsOK
+    {
+      Message('Ошибка выбора причины недопоставки, обнуление отменено',warning);
+        Stop; abort; exit;
+    }
+  var tmpKM : TPtr = InitMarker('', 8, 100, 10);
+    pMarker.ExportTo(tmpKM);
+    var i: word;
+    var _LogFile : string;
+_LogFile := GetStringParameter('Files','OutputFilesDirectory',0) + 'SetKoltoNULLinClosedDO_' + datetostr(cur_date,'YYYYMMDD')+'.Log';
+ Deletefile(_LogFile);
+   for(i := 0; i < GetMarkerCount(tmpKM); i++)
+    if GetMarker(tmpKM, i, _cCurrDO)
+    {
+      set _cCurrDO := _cCurrDO;
+      addBounds(tbCurDOinMark);
+      if getfirst BaseDoc = tsOK
+      {
+        if BASEDOC.STATUS = 3 // только закрытые обрабатываем
+        {
+          _loop SpStep
+           {
+            //message(SpStep.nrec);
+             update current SpStep
+               set SpStep.KOLSKL := 0
+                  ,SpStep.kol    := 0
+                  ,SpStep.SUMMA  := 0
+                  ,SpStep.NDS    := 0
+               ;
+            extattr.coSetAttr(coSpStep, SpStep.nrec, 'SL. Причина недопоставки', SpKauSL.nrec, SpKauSL.name);
+            DelPosSpDocNal;
+           }
+          Update current basedoc set basedoc.SUMMA := 0, basedoc.NDS :=0, basedoc.TOTAL :=0, basedoc.TOTALNDE :=0;
+          update current stepdoc set StepDoc.SUMMA := 0;
+          update current SOPRHOZ set SOPRHOZ.summa := 0;
+           LogStrToFile(_LogFile,'Счет ' + Basedoc.NoDoc  + ' от ' + BaseDoc.dDoc + ' ОБНУЛЕН');
+         }
+         else
+         {
+            LogStrToFile(_LogFile,'Счет ' + Basedoc.NoDoc  + ' от ' + BaseDoc.dDoc + ' ПРОПУЩЕН: статус НЕ закрытый');
+         }
+      }
+      subBounds(tbCurDOinMark);
+    }
+    ProcessText(_LogFile,vfEscable or vfNewTitle or vfMacroSize,'Протокол обнуления ДО');
+    Rescanpanel(tnbasedoc);
+}
+cmValue66:
+{
+  _MercuryPRJ_View.ShowMercuryData(KatSopr.Nrec)  ;
+}
+cmValue65:
+{
+  _PickingReport_View.ShowPickingReportData(if(isValidAll(tnKatSopr), KatSopr.Nrec,0h), BaseDoc.nrec)  ;
+}
+
+end;
+end. // interface

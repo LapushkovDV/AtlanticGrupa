@@ -1,0 +1,6 @@
+SQL Function ATL_GET_DB_NAME():String
+{
+  return '';
+}
+
+

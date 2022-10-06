@@ -1,0 +1,24 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_FpCatalog
+
+#ifdef ComponentVersion
+#component "F_FpCatalog"
+#end
+
+! =Н=
+VipInterface GetValScenario
+licensed (FREE)
+Parameters (
+  wIntMode   : word;
+  cNodeTop   : comp;
+  cGetRec    : comp
+);
+VipInterface GalIndexAll
+licensed (FREE)
+Parameters (
+  wIntMode   : word;
+  wAttrType  : word;
+  myTable    : longint;
+  myRecord   : comp;
+  cGetRec    : comp
+);

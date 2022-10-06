@@ -1,0 +1,100 @@
+#ifdef ComponentVersion
+#component "L_PRICES"
+#end
+
+#include oPrT.obj
+
+vipinterface ConfirmPrices        licensed (FREE)             Parameters (KlPrNrec : comp; OnParty: boolean);
+vipinterface GetGrPrice           licensed (FREE)             Parameters (p1 : comp);
+vipinterface GetKlPr              licensed (FREE)             Parameters (c1 : comp; Vh, UN, Us1 : word);
+vipinterface GetKlPr1             licensed (FREE)             Parameters (c1 : comp; us, Vh : word);
+vipinterface GetKlPr2             licensed (FREE)             Parameters (c1 : comp; p2, p3 : word);
+vipinterface GetKlPr3             licensed (FREE)             Parameters (c1 : comp);
+vipinterface GetNacen             licensed (FREE)             Parameters (was : comp; p1 : string; bool : boolean);
+vipinterface GetParPrice          licensed (FREE)             Parameters (c1 : comp; StartKol : double);
+vipinterface GetPrice_ShterCement licensed (FREE)             Parameters (pPr : comp;
+                                                              pGroup, pfixedKol : boolean;
+                                                              cRetPrices : comp;
+                                                              cRetKolPrices : double);
+vipinterface GetPrcSv             licensed (FREE)             Parameters (cPrices : comp;
+                                                              Kol2 : double;
+                                                              cEd2 : comp;
+                                                              prc2, prc2v, Sum, Prc1, Sumv, Prc1v : double;
+                                                              cEd1 : comp);
+vipinterface GetPrice             licensed (FREE)             Parameters (VNRec, VNRecSkl : comp; PrMC : word; SelectOnDoRes : boolean);
+vipinterface GetRazKol            licensed   ( FREE )         Parameters (OnlyRazrez: boolean; pPrices, pSklad, pMol, pParty: comp; PickKol: double);
+vipinterface GetReCurMC           licensed (FREE)             Parameters (CodPr : comp;
+                                                              S2 : string;
+                                                              DoRep,
+                                                              w1,
+                                                              ToAll,
+                                                              NeedNalNac,
+                                                              ParSklad : word;
+                                                              Sklad : comp;
+                                                              Switch_Price,
+                                                              CalcOst,
+                                                              w2,
+                                                              NewPriceZero : word;
+                                                              dPrice_1 : date;
+                                                              KodVal_1 : comp;
+                                                              dCurse_1 : date;
+                                                              CursVal_1 : double;
+                                                              pBasePrice : comp);
+vipinterface GetReCur             licensed (FREE)             Parameters (IsOk : boolean;
+                                                              CodPr : comp;
+                                                              S2 : string;
+                                                              DoRep,
+                                                              w1,
+                                                              ToAll,
+                                                              NeedNalNac,
+                                                              ParSklad : word;
+                                                              Sklad : comp;
+                                                              Switch_Price,
+                                                              CalcOst,
+                                                              w2,
+                                                              NewPriceZero : word;
+                                                              dPrice_1 : date;
+                                                              KodVal_1 : comp;
+                                                              dCurse_1 : date;
+                                                              CursVal_1 : double;
+                                                              pBasePrice : comp);
+vipinterface GetReCurUsl          licensed (FREE)             Parameters (CodPr : comp;
+                                                              S2 : string;
+                                                              DoRep,
+                                                              w1,
+                                                              ToAll,
+                                                              NeedNalNac,
+                                                              NewPriceZero : word;
+                                                              dPrice_1 : date;
+                                                              KodVal_1 : comp;
+                                                              dCurse_1 : date;
+                                                              CursVal_1 : double);
+vipinterface KatNacen             licensed (FREE) ;
+vipinterface PriceL               licensed (FREE) Parameters (KlPriceNRec : comp; KlPriceTip, Tuda, VMCUsl : word);
+vipinterface PriceLs              licensed (FREE) Parameters (VcPrice : comp; VcTovUsl, VTMoney : word);
+vipinterface PriceSkl             licensed (FREE)             ;
+vipinterface PrintYukosPrice      licensed (FREE)             Parameters (cPr : comp; TipPriceSort : word);
+vipinterface PrnPrice
+  Licensed (FREE)
+  Parameters (VNRec         : comp;
+              vKodGr        : string;
+              ShowExactKol  : boolean;
+              Bnd           : word;
+              fltSkl
+            , fltMOL
+            , fltParty      : comp;
+              fltStr        : string;
+              fltFreeExists : word);
+vipinterface PricesOtherInfo      licensed (FREE)             Parameters (MCRec, PRRec : comp; KindPR : word);
+vipinterface RasKlPrice           licensed (FREE)             Parameters (WasArbeit : word);
+vipinterface SeePrice             licensed (FREE) Parameters (_KlPr : comp; Marker : longint);
+vipinterface UpPrice              licensed (FREE) ;
+vipinterface GetOprSopr           licensed (FREE) ;
+vipinterface GetMcAndParty        licensed (FREE) ;
+vipinterface PricesChangeInfo     licensed (FREE)             Parameters (MCRec, PRRec : comp; KindPR : word);
+#ifdef __StatusInPriceL__
+vipinterface CheckPriceLNotes     licensed (FREE) ;
+vipinterface PrStatChanger        licensed (FREE) ;
+#end
+
+Menu PriceList;

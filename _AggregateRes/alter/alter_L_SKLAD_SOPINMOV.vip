@@ -1,0 +1,28 @@
+////////////// подменяем обработчик событий 
+#component "L_SKLAD"
+alter interface SOPINMOV;
+function GetPickingReportField: string; forward;
+function getPickingReportFieldColor: word; forward;
+
+create view
+ as select
+   GetPickingReportField() (Fieldname = PickingReportField)
+ , getPickingReportFieldColor() (Fieldname = PickingReportFieldColor)
+from
+  ATL_PickingRep_HEAD
+  , ATL_MERCURY_HEAD
+where ((
+         katsopr.nrec == ATL_MERCURY_HEAD.CSOPR
+and      katsopr.nrec == ATL_PickingRep_HEAD.CSOPR
+      ))
+;
+#include Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp
+Handleevent
+
+cmValue65:
+{
+  _PickingReport_View.ShowPickingReportData(KatSopr.Nrec, 0h)  ;
+}
+
+end;
+end. // interface

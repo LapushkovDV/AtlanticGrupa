@@ -1,0 +1,12 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_BankDocF
+
+#ifdef ComponentVersion
+#component "F_BankDocF"
+#end
+
+VipInterface VypSet        Licensed (B_Finans)      Parameters (parTipVip : word);
+VipInterface GetGroupNastr #Licensed_KBU            Parameters (cRec : comp);
+VipInterface GetIerar      Licensed (Free)          Parameters (parTypeVed : word; parRetTune : comp);
+VipInterface VypConv       Licensed (B_Finans,OFP);
+

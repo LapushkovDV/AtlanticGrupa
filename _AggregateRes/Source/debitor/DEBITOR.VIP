@@ -1,0 +1,575 @@
+/*                                                      
+  ╔═════════════════════════════════════════════════════════════════════╗
+  ║                     ЗАО "ГАЛАКТИКА СОФТ"                            ║
+  ║      Проект    : ГАЛАКТИКА  (с) 2011                                ║
+  ║      Система   : Сбыт                                               ║
+  ║      Версия    : 8.1                                                ║
+  ║      Разработал: Пригродский Б.М.     18/04/2012                    ║
+  ║      Назначение: Отчет о простроченной дебиторской задолженности    ║
+  ║      Изменения :                                                    ║
+  ║       Заказчик : Для Галактики СРВ                                  ║
+  ╚═════════════════════════════════════════════════════════════════════╝
+*/
+//
+//
+Const
+   cmChek=50001;
+   cmNorm=50002;
+   cmBlik=50003;
+   cmUpAll=50004;
+end;
+type ParamsType = record
+  recRep:comp;
+  Rep:string;		 
+  dRep:date;		//дата отчета 
+  dBeg:date;
+  dRep1:date;		//дата отчета 
+  dBeg1:date;
+  path:string;
+  cauntRows: array [1..65000] of longint;
+  namRazdel: array [1..65000] of string;
+  cauntCol: array [1..256] of longint;
+  VidDoc: array [1..500] of word;
+  summa: array [1..15] of double;
+  asumma: array [1..15] of double;
+  dayBeg1:longint;
+  dayBeg2:longint;
+  dayBeg3:longint;
+  dayBeg4:longint;
+  dayBeg5:longint;
+  dayBeg6:longint;
+  dayBeg7:longint;
+  dayEnd1:longint;
+  dayEnd2:longint;
+  dayEnd3:longint;
+  dayEnd4:longint;
+  dayEnd5:longint;
+  dayEnd6:longint;
+  dayEnd7:longint;
+  kolCom:longint;
+  kolMess:longint;
+  isErr:word;
+  ans:word;
+  userType:word;
+  userNrec:comp;
+  userDeskr:string;
+  userName:string;
+  kolUser:word;
+  time1:time;
+  time2:time;
+  namePage:string;
+  Asum,AsumP,Isum,IsumP,SumPlat,SumPlat1:double;
+  cOrg:comp;
+end;
+
+//#ifdef ComponentVersion
+#component "C_Partner"
+//#end
+
+interface  Debitor 'Отчет о простроченой дебиторской задолженности v.1.2.', EscClose, Gray;
+show at (,,84,12);
+
+table struct tmpForSelect (
+  crec:comp,
+  kod:word,
+  kods:string,
+  name:string
+)
+with index(idx1=kod);
+//отбор матценностей
+table struct tMC (
+  nrec: comp,
+  cmc: comp,
+  ced: comp,
+  ed: string,
+  cUed: comp,
+  name: string[255],
+  kod: string[255],
+  massa: double
+)
+with index(idx1=name,idx2=nrec,idx3=kod,idx4=cmc);
+//События Галактики
+table struct tGalMes (
+  nrec: comp,
+  cpodr: comp,
+  cMOL: comp,
+  namePodr: string[255],
+  kodPodr: string[255],
+  oper:string,   // операция с записью: удаление, вставка, модификация
+  cUser:comp,
+  nameUser:string,
+  namDoc:string,
+  datDoc:date,
+  number:string,
+  comment:string,
+  DataMes:date,
+  TimeMes:time
+  
+  
+)
+with index(idx1=cUser,idx2=nrec,idx3=kodPodr,idx4=cpodr);
+//Шапки отчетов
+table struct tHeder (
+  crec: comp,
+  nRep: word,
+  nameRep: string[255],
+  nomEl:longint, 
+  nRow: longint,
+  nCol: longint,
+  stepRow: longint,
+  stepCol: longint,
+  tipVal: string[10], //string,double,formula,variant
+  sValue: string,
+  dValue: double,
+  fValue: string,
+  vValue: variant
+  
+)
+with index(idx1=nRep,idx2=nRep+nomEl,idx3=nRep+nRow+nCol);
+//Данные отчетов
+table struct tData (
+  crecGrp: comp,   //ссылка на НРЕК таблицы по которой группировка
+  crecGrp1: comp,   //ссылка на НРЕК таблицы по которой группировка1
+  crecGrp2: comp,   //ссылка на НРЕК таблицы по которой группировка2
+  nRep: word,
+  nPart: word,
+  nameRep: string[255],
+  nomEl:longint, 
+  nRow: longint,
+  nRow1: longint,
+  nCol: longint,
+  stepRow: longint,
+  stepCol: longint,
+  tipVal: string[10], //string,double,formula,variant
+  sValue: string,
+  dValue: double,
+  fValue: string,
+  vValue: variant,
+  mark:word,
+  Color:longint
+  
+)
+with index(idx1=nRep,idx2=nRep+nomEl,idx3=nRep+nRow+nCol,idx4=nRep+nRow+nPart,
+	idx5=crecGrp+crecGrp1+crecGrp2,idx6=nRow,idx7=nRep+nPart+nomEl,
+	idx8=nRow+nCol,idx9=nRep+nCol+nPart,idx10=crecGrp1+nCol,
+	idx11=nRep+tipVal+nPart,idx12=mark,idx13=nRep+nPart+nCol+sValue);
+//Группировки данных
+table struct tGroupData 
+(
+  nrec: comp,		             // номер записи
+  recGrp: comp, 		             // nrec таблицы группировки
+  Level:word,
+  NameGrp: string,                   // названия группировки данные
+  CodeGrp: string,                   // код группировки данные
+  SumData: array [1..30] of double,   // итоги
+  Npp: integer 
+)
+with index(idx1=nrec,idx2=NameGrp,idx3=Npp,idx4=recGrp,idx5=CodeGrp,idx6=Level);
+table struct tGroupItog 
+(
+  nrec: comp,		             // номер записи
+  cGrp: comp,		             // nrec таблицы группировки
+  Level:word,
+  Col: longint,                   // названия группировки данные
+  Row: longint,                   // код группировки данные
+  SumData:double,                // итоги
+  KolData:double                // итоги
+)
+with index(idx1=nrec,idx4=cGrp,idx6=Level);
+
+create view  tDebitor
+var 
+  nomAlg:integer;
+  filterMC,pat:string;
+  _Delta : double;
+as select *  
+from    tGalMes,tmpForSelect,
+	tData,tHeder,
+	ATTRVAL,
+        TUNEVAL,
+	ATTRNAM,
+	PICK,
+	KATSOPR,
+	X$USERS,
+	Katorg,
+        KLPRICE,
+        PLPOR,
+        ZKAUVED
+;
+//parameters cPrice;
+
+var p: ParamsType;
+
+
+ // panel Calc_panel1
+ screen scDebitor_SCR1;
+ show at (1,1,83,11);
+ fields
+   p.dBeg1:noprotect;
+   p.dRep1:noprotect;
+   p.path  ('Шаблон отчета',,sciFaceSelect) : noprotect, pickButton,
+	{ font = { bold = true;color = 2}};
+  _Delta : NoProtect;
+//   p.dBeg:noprotect;
+//   p.dRep:noprotect;
+   p.dayBeg1: noprotect;
+   p.dayEnd1: noprotect;
+   p.dayBeg2: noprotect;
+   p.dayEnd2: noprotect;
+   p.dayBeg3: noprotect;
+   p.dayEnd3: noprotect;
+   p.dayBeg4: noprotect;
+   p.dayEnd4: noprotect; 
+   p.dayBeg5: noprotect; 
+   p.dayEnd5: noprotect;
+   p.dayBeg6: noprotect;
+   p.dayEnd6: noprotect;
+   p.dayBeg7: noprotect;
+   p.dayEnd7: noprotect;
+ buttons
+   cmOK,[singleLine];
+   cmCancel,[singleLine];
+
+
+ <<                                                                 
+ Показывать реализацию и оплату за период с .@@@@@@@@@@ по .@@@@@@@@@@
+ Шаблон отчета.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ Не выводить записи если сальдо и обороты менее чем .@@@@@@ р
+ Интервалы задолженности, дней:
+                         1: от.@@@@ до.@@@@                  <.Сформировать.>
+                         2: от.@@@@ до.@@@@                  <.   Отмена   .>
+                         3: от.@@@@ до.@@@@
+                         4: от.@@@@ до.@@@@
+                         5: от.@@@@ до.@@@@
+                         6: от.@@@@ до.@@@@
+                         7: от.@@@@ до.@@@@
+ >>
+ end; // screen
+
+
+//Получить кол. записей в PICK 
+Function GetKolPick(parf : word) : word;
+{
+  GetKolPick := 0;
+  DELETE ALL tGalMes;
+  _loop Pick Where ((word(parf)==Pick.wList))
+   {
+    inc(GetKolPick);
+    if(getfirst KLPRICE WHERE((PICK.CREC==KLPRICE.NREC)))=tsOk
+     {
+      INSERT tGalMes SET comment:=KLPRICE.NAME, nrec:=KLPRICE.NREC, cpodr:=KLPRICE.CGRPRICE;
+     }
+   }
+}
+function getMaxDaysDolg(_cOrg: comp) : double;
+{
+  var _result : double = 0;
+  _try
+      {
+
+        sql
+            select
+             top 1
+               // Coalesce(US.MAXDEBTSAGE,DOG.MAXDEBTSAGE) as  MAXDEBTSAGE
+              case when PlanDog.VidPlat  = 2 then PlanDog.DayPlat else 0 end
+            from KatOrg Org
+            join Dogovor Dog on DOG.CORG = org.nrec
+            join Dogovor US on Us.cDogovor = dog.nrec
+            join PlanDog on PlanDog.cDogovor = US.nrec
+            where us.status = 1
+            and us.cOrg =:(_cOrg)
+           into (_result) ;
+      }
+      _except else {var _empty : boolean; _empty:= false;} //чтобы компилятор ничего не говорил
+ result := _result
+}
+
+#include Func.vpp
+//#include iMarket.vpp
+
+
+handleEvent
+  cmInit: 
+{
+    p.path:= translatePath('%StartPath%DrogaResources\XLT\Debitor_channel_01.xls');
+    //GetFileParameter('Files','OutputFilesDirectory',ifFirstParameter);
+    nomAlg:=0;
+    p.userType:=0;
+
+    p.dayBeg1 := 0;
+    p.dayEnd1 := 15;
+    p.dayBeg2 := 16;
+    p.dayEnd2 := 30;
+    p.dayBeg3 := 31;
+    p.dayEnd3 := 45;
+    p.dayBeg4 := 46;
+    p.dayEnd4 := 60;
+    p.dayBeg5 := 61;
+    p.dayEnd5 := 90;
+    p.dayBeg6 := 91;
+    p.dayEnd6 := 180;
+    p.dayBeg7 := 181;
+    p.dayEnd7 := 3000;
+
+
+
+    if not readMyDsk(_Delta,'Debitor_Delta', true) then _Delta := 10;
+    readMyDsk(p.dBeg1,'Debitor_dBeg1', true);
+    readMyDsk(p.dRep1,'Debitor_dRep1', true);
+    //readMyDsk(p.path,'Debitor_path', true);
+    readMyDsk(p.dayBeg1,'Debitor_dayBeg1', true);
+    readMyDsk(p.dayEnd1,'Debitor_dayEnd1', true);
+    readMyDsk(p.dayBeg2,'Debitor_dayBeg2', true);
+    readMyDsk(p.dayEnd2,'Debitor_dayEnd2', true);
+    readMyDsk(p.dayBeg3,'Debitor_dayBeg3', true);
+    readMyDsk(p.dayEnd3,'Debitor_dayEnd3', true);
+    readMyDsk(p.dayBeg4,'Debitor_dayBeg4', true);
+    readMyDsk(p.dayEnd4,'Debitor_dayEnd4', true);
+    readMyDsk(p.dayBeg5,'Debitor_dayBeg5', true);
+    readMyDsk(p.dayEnd5,'Debitor_dayEnd5', true);
+    readMyDsk(p.dayBeg6,'Debitor_dayBeg6', true);
+    readMyDsk(p.dayEnd6,'Debitor_dayEnd6', true);
+    readMyDsk(p.dayBeg7,'Debitor_dayBeg7', true);
+    readMyDsk(p.dayEnd7,'Debitor_dayEnd7', true);
+
+
+
+  if(getfirst X$USERS WHERE((UserName==XU$LOGINNAME)))=tsOk
+    {   p.userType:=X$USERS.XU$TYPE; p.userName:=X$USERS.XU$LOGINNAME; p.userNrec:=X$USERS.ATL_NREC;
+
+     if(getfirst tuneval Where((40004AC72914388Ch==tuneval.ctune  
+	and (p.userNrec=tuneval.cuser))))=tsOk
+      {p.userDeskr:=tuneval.strval;}
+
+    }
+
+}
+  cmPick: {
+    case (curField) of
+   		#p.path:
+		{p.path:=GetFileName ('*.xls','Выберите шаблон отчета'); //GetDirName ('Выберите каталог с шаблоном отчета')+'\';
+		 rereadrecord();
+		}
+   end; // case                    
+  }
+
+  cmOK: 
+  {
+
+    SaveMyDsk(_Delta,'Debitor_Delta');
+    SaveMyDsk(p.dBeg1,'Debitor_dBeg1');
+    SaveMyDsk(p.dRep1,'Debitor_dRep1');
+    SaveMyDsk(p.path,'Debitor_path');
+    SaveMyDsk(p.dayBeg1,'Debitor_dayBeg1');
+    SaveMyDsk(p.dayEnd1,'Debitor_dayEnd1');
+    SaveMyDsk(p.dayBeg2,'Debitor_dayBeg2');
+    SaveMyDsk(p.dayEnd2,'Debitor_dayEnd2');
+    SaveMyDsk(p.dayBeg3,'Debitor_dayBeg3');
+    SaveMyDsk(p.dayEnd3,'Debitor_dayEnd3');
+    SaveMyDsk(p.dayBeg4,'Debitor_dayBeg4');
+    SaveMyDsk(p.dayEnd4,'Debitor_dayEnd4');
+    SaveMyDsk(p.dayBeg5,'Debitor_dayBeg5');
+    SaveMyDsk(p.dayEnd5,'Debitor_dayEnd5');
+    SaveMyDsk(p.dayBeg6,'Debitor_dayBeg6');
+    SaveMyDsk(p.dayEnd6,'Debitor_dayEnd6');
+    SaveMyDsk(p.dayBeg7,'Debitor_dayBeg7');
+    SaveMyDsk(p.dayEnd7,'Debitor_dayEnd7');
+
+ PutHeder(1,6,9+1+1+1+2,'`'+p.dayBeg1+' - '+p.dayEnd1,'string',0h);
+ PutHeder(1,6,10+1+1+1+2,'`'+p.dayBeg2+' - '+p.dayEnd2,'string',0h);
+ PutHeder(1,6,11+1+1+1+2,'`'+p.dayBeg3+' - '+p.dayEnd3,'string',0h);
+ PutHeder(1,6,12+1+1+1+2,'`'+p.dayBeg4+' - '+p.dayEnd4,'string',0h);
+ PutHeder(1,6,13+1+1+1+2,'`'+p.dayBeg5+' - '+p.dayEnd5,'string',0h);
+ PutHeder(1,6,14+1+1+1+2,'`'+p.dayBeg6+' - '+p.dayEnd6,'string',0h);
+ PutHeder(1,6,15+1+1+1+2,'`'+p.dayBeg7+' - '+p.dayEnd7,'string',0h);
+
+ if(getfirst ZKAUVED Where((3==ZKAUVED.CREC1)))=tsOk
+  {
+   PutHeder(1,3,6+5,ZKAUVED.KAUNAMED1,'string',0h);
+  }
+ if(getfirst ZKAUVED Where((4==ZKAUVED.CREC1)))=tsOk
+  {
+   PutHeder(1,4,5+5,ZKAUVED.KAUNAMED1+' реализация и оплата за период с '+p.dBeg1+' по '+p.dRep1,'string',0h);
+   p.dBeg:=StrToDate(ZKAUVED.PSTRING1,'DD/MM/YYYY'); 
+   p.dRep:=StrToDate(ZKAUVED.PSTRING2,'DD/MM/YYYY'); 
+//message('ZKAUVED.PSTRING1='+ZKAUVED.PSTRING1+'  ZKAUVED.PSTRING2='+ZKAUVED.PSTRING2)
+  }
+
+//message('p.dBeg='+p.dBeg+'   p.dRep='+p.dRep)
+
+ DELETE ALL tmpForSelect;p.Isum:=0;p.IsumP:=0;
+ _loop ZKAUVED Where((1==ZKAUVED.CREC1))
+  {
+   INSERT tmpForSelect SET crec:=ZKAUVED.CREC11, name:=ZKAUVED.KAUNAMED1;
+  }
+    for(p.kolCom:=1;p.kolCom<=7;p.kolCom:=p.kolCom+1){p.asumma[p.kolCom]:=0;}
+ _loop tmpForSelect
+  {
+    p.cOrg:=0h;p.SumPlat:=0;
+    p.cauntRows[1]:=p.cauntRows[1]+1;
+
+
+
+    PutData(1,1,p.cauntRows[1],1,tmpForSelect.name,0,'string',0h);
+   if(getfirst KATORG Where((tmpForSelect.name==KATORG.NAME)))=tsOk
+    {
+      var MaxDaysDolg: double = 0;
+
+     MaxDaysDolg := getMaxDaysDolg(KATORG.nrec);
+     p.cOrg:=KATORG.NREC;
+     PutData(1,1,p.cauntRows[1],2,'',KATORG.MAXDOLGRUB,'double',0h);
+     PutData(1,1,p.cauntRows[1],3,'',MaxDaysDolg,'double',0h);
+
+     PutData(1,1,p.cauntRows[1],2+2,extAttr.sGetAttr(coKatOrg, KATORG.NREC,'Канал сбыта'),0,'string',0h);
+     PutData(1,1,p.cauntRows[1],3+2,extAttr.sGetAttr(coKatOrg, KATORG.NREC,'Менеджер'),0,'string',0h);
+
+    }
+
+ // message('p.cOrg='+p.cOrg+'  NAME='+tmpForSelect.name);
+
+ var _sumOtrg , _sumPLat : double = 0;
+   _loop KATSOPR Where((p.cOrg==KATSOPR.CORG and p.dBeg1<<=KATSOPR.DOPR and (201=KATSOPR.VIDSOPR and p.dRep1>=KATSOPR.DOPR)))
+    {
+     p.SumPlat:=p.SumPlat+KATSOPR.SUMMA;
+    }
+     _sumOtrg := p.SumPlat;
+    PutData(1,1,p.cauntRows[1],2+1+1+2,'',p.SumPlat,'double',0h);p.asumma[10]:=p.asumma[10]+p.SumPlat;
+
+    p.SumPlat:=0;p.SumPlat1:=0;
+   _loop PLPOR Where((2==PLPOR.TIDKGAL and p.dBeg1<<=PLPOR.DATOB and (p.dRep1>=PLPOR.DATOB and p.cOrg=PLPOR.CPLAT)))
+    {
+     p.SumPlat1:=p.SumPlat1+PLPOR.SUMPLAT;
+    }
+    PutData(1,1,p.cauntRows[1],4+1+1+2,'',p.SumPlat1,'double',0h);p.asumma[11]:=p.asumma[11]+p.SumPlat1;
+    p.SumPlat:=0;
+   _loop PLPOR Where((10==PLPOR.TIDKGAL and p.dBeg1<<=PLPOR.DATOB and (p.dRep1>=PLPOR.DATOB and p.cOrg=PLPOR.CPLAT)))
+    {
+     p.SumPlat:=p.SumPlat+PLPOR.SUMPLAT;
+    }
+    PutData(1,1,p.cauntRows[1],5+1+1+2,'',p.SumPlat,'double',0h);p.asumma[12]:=p.asumma[12]+p.SumPlat;
+    PutData(1,1,p.cauntRows[1],3+1+1+2,'',p.SumPlat+p.SumPlat1,'double',0h);p.asumma[13]:=p.asumma[13]+p.SumPlat+p.SumPlat1;
+     _sumPLat := p.SumPlat+p.SumPlat1;
+    for(p.kolCom:=1;p.kolCom<=7;p.kolCom:=p.kolCom+1){p.summa[p.kolCom]:=0;}
+    p.Asum:=0;p.AsumP:=0;
+
+    p.summa[99] := 0;
+
+   _loop ZKAUVED Where((2==ZKAUVED.CREC1 and tmpForSelect.crec==ZKAUVED.CREC2))
+    {
+     p.Asum:=p.Asum+ZKAUVED.PDOUBLE2;p.AsumP:=p.AsumP+ZKAUVED.PDOUBLE3;
+     p.Isum:=p.Isum+ZKAUVED.PDOUBLE2;p.IsumP:=p.IsumP+ZKAUVED.PDOUBLE3;
+     if (ZKAUVED.PDOUBLE3 < 0)
+       p.summa[99] := p.summa[99] + ZKAUVED.PDOUBLE3;
+
+     if(ZKAUVED.PWORD2>=p.dayBeg1 and ZKAUVED.PWORD2<=p.dayEnd1 and ZKAUVED.PDOUBLE3 > 0){p.summa[1]:=p.summa[1]+ZKAUVED.PDOUBLE3;continue;}
+     if(ZKAUVED.PWORD2>=p.dayBeg2 and ZKAUVED.PWORD2<=p.dayEnd2 and ZKAUVED.PDOUBLE3 > 0){p.summa[2]:=p.summa[2]+ZKAUVED.PDOUBLE3;continue;}
+     if(ZKAUVED.PWORD2>=p.dayBeg3 and ZKAUVED.PWORD2<=p.dayEnd3 and ZKAUVED.PDOUBLE3 > 0){p.summa[3]:=p.summa[3]+ZKAUVED.PDOUBLE3;continue;}
+     if(ZKAUVED.PWORD2>=p.dayBeg4 and ZKAUVED.PWORD2<=p.dayEnd4 and ZKAUVED.PDOUBLE3 > 0){p.summa[4]:=p.summa[4]+ZKAUVED.PDOUBLE3;continue;}
+     if(ZKAUVED.PWORD2>=p.dayBeg5 and ZKAUVED.PWORD2<=p.dayEnd5 and ZKAUVED.PDOUBLE3 > 0){p.summa[5]:=p.summa[5]+ZKAUVED.PDOUBLE3;continue;}
+     if(ZKAUVED.PWORD2>=p.dayBeg6 and ZKAUVED.PWORD2<=p.dayEnd6 and ZKAUVED.PDOUBLE3 > 0){p.summa[6]:=p.summa[6]+ZKAUVED.PDOUBLE3;continue;}
+     if(ZKAUVED.PWORD2>=p.dayBeg7 and ZKAUVED.PWORD2<=p.dayEnd7 and ZKAUVED.PDOUBLE3 > 0){p.summa[7]:=p.summa[7]+ZKAUVED.PDOUBLE3;continue;}
+    }
+
+//    message(p.summa[1] + ' | ' + p.summa[2] + ' | ' + p.summa[3] + ' | ' + p.summa[4] + ' | ' + p.summa[5] + ' | ' + p.summa[6] + ' | ' + p.summa[7] + ' | ' + p.summa[99]);
+    p.summa[7] := p.summa[7] + p.summa[99];
+    if (p.summa[7] < 0){
+      p.summa[6] := p.summa[6] + p.summa[7];
+      p.summa[7] := 0;
+    }
+    if (p.summa[6] < 0){
+      p.summa[5] := p.summa[5] + p.summa[6];
+      p.summa[6] := 0;
+    }
+    if (p.summa[5] < 0){
+      p.summa[4] := p.summa[4] + p.summa[5];
+      p.summa[5] := 0;
+    }
+    if (p.summa[4] < 0){
+      p.summa[3] := p.summa[3] + p.summa[4];
+      p.summa[4] := 0;
+    }
+    if (p.summa[3] < 0){
+      p.summa[2] := p.summa[2] + p.summa[3];
+      p.summa[3] := 0;
+    }
+    if (p.summa[2] < 0){
+      p.summa[1] := p.summa[1] + p.summa[2];
+      p.summa[2] := 0;
+    }
+    if (p.summa[1] < 0){
+      p.AsumP := p.AsumP - p.summa[1];
+      p.IsumP := p.IsumP - p.summa[1];
+      p.summa[1] := 0;
+    }
+
+
+    if  abs(Round(p.Asum  ,3)) <= _Delta
+    and abs(Round(_sumOtrg,3)) <= _Delta
+    and abs(Round(_sumPLat,3)) <= _Delta then
+    {
+      delete tData where tData.nRow = p.cauntRows[1];
+      p.cauntRows[1] := p.cauntRows[1] - 1;
+      continue; // если нет сальдо и отгрузок и платежей
+    }
+    PutData(1,1,p.cauntRows[1],6+1+1+2,'',p.Asum,'double',0h);
+    PutData(1,1,p.cauntRows[1],7+1+1+2,'',p.Asum-p.AsumP,'double',0h);
+    PutData(1,1,p.cauntRows[1],8+1+1+2,'',p.summa[1] + p.summa[2]+p.summa[3]+p.summa[4]
+                                       +p.summa[5] + p.summa[6] + p.summa[7],'double',0h);
+
+
+    PutData(1,1,p.cauntRows[1],8+1+1+1+2,'',p.summa[1],'double',0h);p.asumma[1]:=p.asumma[1]+p.summa[1];
+    PutData(1,1,p.cauntRows[1],9+1+1+1+2,'',p.summa[2],'double',0h);p.asumma[2]:=p.asumma[2]+p.summa[2];
+    PutData(1,1,p.cauntRows[1],10+1+1+1+2,'',p.summa[3],'double',0h);p.asumma[3]:=p.asumma[3]+p.summa[3];
+    PutData(1,1,p.cauntRows[1],11+1+1+1+2,'',p.summa[4],'double',0h);p.asumma[4]:=p.asumma[4]+p.summa[4];
+    PutData(1,1,p.cauntRows[1],12+1+1+1+2,'',p.summa[5],'double',0h);p.asumma[5]:=p.asumma[5]+p.summa[5];
+    PutData(1,1,p.cauntRows[1],13+1+1+1+2,'',p.summa[6],'double',0h);p.asumma[6]:=p.asumma[6]+p.summa[6];
+    PutData(1,1,p.cauntRows[1],14+1+1+1+2,'',p.summa[7],'double',0h);p.asumma[7]:=p.asumma[7]+p.summa[7];
+  }
+
+    p.cauntRows[1]:=p.cauntRows[1]+1;
+    PutData(1,1,p.cauntRows[1],1     ,'Итого по ведомости:',0,'string',0h);
+    PutData(1,1,p.cauntRows[1],6+1 +1+2,'',p.Isum,'double',0h);
+    PutData(1,1,p.cauntRows[1],2+1 +1+2,'',p.asumma[10],'double',0h);
+    PutData(1,1,p.cauntRows[1],4+1 +1+2,'',p.asumma[11],'double',0h);
+    PutData(1,1,p.cauntRows[1],5+1 +1+2,'',p.asumma[12],'double',0h);
+    PutData(1,1,p.cauntRows[1],3+1 +1+2,'',p.asumma[13],'double',0h);
+    PutData(1,1,p.cauntRows[1],7+1 +1+2,'',p.Isum-p.IsumP,'double',0h);
+    PutData(1,1,p.cauntRows[1],8+1 +1+2  ,'',p.asumma[1] + p.asumma[2] + p.asumma[3] + p.asumma[4]
+                                          +p.asumma[5] + p.asumma[6] + p.asumma[7],'double',0h);
+
+    PutData(1,1,p.cauntRows[1],8+1 +1+1+2,'',p.asumma[1],'double',0h);
+    PutData(1,1,p.cauntRows[1],9+1 +1+1+2,'',p.asumma[2],'double',0h);
+    PutData(1,1,p.cauntRows[1],10+1+1+1+2,'',p.asumma[3],'double',0h);
+    PutData(1,1,p.cauntRows[1],11+1+1+1+2,'',p.asumma[4],'double',0h);
+    PutData(1,1,p.cauntRows[1],12+1+1+1+2,'',p.asumma[5],'double',0h);
+    PutData(1,1,p.cauntRows[1],13+1+1+1+2,'',p.asumma[6],'double',0h);
+    PutData(1,1,p.cauntRows[1],14+1+1+1+2,'',p.asumma[7],'double',0h);
+
+    pat:=GetFileParameter('Files','OutputFilesDirectory',ifFirstParameter);
+   var    _fileName : string =  'RepDebitor'+datetostr(cur_date,'YYYYMMDD')+timetostr(cur_time,'HHMMSS')+'.xls';
+    CopyMoveFile(p.path,pat+_fileName,false, 4+8);
+    xlOpenExcel(true);
+   If(xlOpenWorkBook(pat+_fileName))
+    {
+    xlSetActiveWorkBookByName(_fileName);
+    xlSetActiveSheetByName('Report');
+
+		    outHeder(1,'Report',0,0);
+
+		    outData(1,1,'Report',8,2,p.cauntRows[1],14+1+2+2+1);
+     }
+    else{message('Шаблон отчета не найден');} 	
+
+    xlKillExcel;
+
+   
+  CloseInterface(cmOK);
+  }
+
+  cmCancel:
+  {
+   CloseInterface(cmCancel);
+  }
+
+end; // handleEvent
+end. // interface

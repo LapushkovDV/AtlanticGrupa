@@ -1,0 +1,9 @@
+////////////// подменяем обработчик событий 
+#component "L_SOPRDOC"
+alter interface AKTUSLB_111;
+extendformats BRSELECTNAKL;
+browse BRSELECTNAKL;
+fields
+  BDNKLDES 'Связан с накладной' : [10], protect, Centered;
+end;
+end. // interface

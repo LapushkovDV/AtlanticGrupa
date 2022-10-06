@@ -1,0 +1,41 @@
+Create table CRPT_ReceiptDocs "ЦРПТ Документы Вывода из оборота"
+With table_Code = 31641
+with Replace
+(
+  NRec                 : comp            "Номер записи",
+  npp                  : word			 "Номер по порядку",
+  withdrawal_type      : word            "Тип списания",
+  withdrawal_date      : date            "Дата списания",
+  
+  primary_doc_type     : word            "Тип первичного документа",
+  primary_doc_number   : string          "Номер первичного документа",
+  primary_doc_date     : date            "Дата первичного документа",
+  primary_doc_name     : string          "Имя первичного документа",
+  
+  CRPT_Oid			   : string 		 "Oid документа в системе ЦРПТ",
+  docDateTime		   : string 		 "Дата документа в ЦРПТ",
+  status			   : string 		 "Статус документа в ЦРПТ",
+  statusDescr		   : string 		 "Описание статуса в ЦРПТ",
+  sender			   : string 		 "Отправитель документа в ЦРПТ"
+
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+Create table CRPT_SpReceiptDocs "ЦРПТ Спецификация документов Вывода"
+With table_Code = 31642
+with Replace
+(
+  NRec                 : comp                        "Номер записи",
+  fileName			   : string 		 "Имя файла при загрузке из CSV",
+  cDoc				   : ref(CRPT_ReceiptDocs)       "Ссылка на документ",
+  kitu                 : string                      "SSCC-код паллеты",
+  cKatMc			   : comp 						 "Ссылка на кат МЦ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+

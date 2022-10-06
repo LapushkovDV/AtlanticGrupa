@@ -1,0 +1,317 @@
+vipinterface atl_katskid licensed(free);
+interface atl_katskid 'Справочник скидок по позиции спецификации' (,,sci1Esc);
+var
+  tmp : string;
+  pmarker: iMarker(marker) new;
+  iAttr: iExtAttr;
+//------------------------------------------------------------------------------
+create view
+var
+  filter_check: word;
+  customer, brand, customer_f, brand_f: comp;
+as select
+  if(skidprim.isuses = 0, ' ', '+') (fieldname = isActive)
+, iAttr.dGetAttr(coSkidPrim, skidprim.nrec, 'Период действия скидки. С') (fieldname = dFrom)
+, iAttr.dGetAttr(coSkidPrim, skidprim.nrec, 'Период действия скидки. По') (fieldname = dTo)
+from
+  pmarker, katskid, skidtf, skidprim (SKIDPRIM06), skidsum, katorg, groupmc
+, katorg filter_katorg, groupmc filter_groupmc
+where ((
+    0 == skidprim.vid
+and skidprim.ckatskid == katskid.nrec
+and skidprim.ckatskid == skidtf.ckatskid
+and skidprim.corg == katorg.nrec
+and skidprim.cgroupmcusl == groupmc.nrec
+and customer_f == filter_katorg.nrec
+and brand_f == filter_groupmc.nrec
+))
+bounds _org = customer == skidprim.corg (noindex)
+bounds _grp = brand == skidprim.cgroupmcusl (noindex)
+;
+//------------------------------------------------------------------------------
+file src_file;
+//------------------------------------------------------------------------------
+browse br01 (,,sci1378Esc);
+table skidprim;
+recMarker = pmarker {skidprim.nrec};
+fields
+  katorg.name      #3'customer' ('Контрагент'): [20], protect, pickbutton;
+  groupmc.name     #3'sub brand'('Группа МЦ'): [15], protect, pickbutton;
+  dFrom            #3'from': [12], centered, noautosize, noprotect;
+  dTo              #3'to': [12], centered, noautosize, noprotect;
+  skidtf.skidprocent #3'value': [5.2, '\2p67.88'], noprotect;
+  isActive         #3'is act' ('Использовать в расчете'): [5], protect, noautosize, centered;
+end;
+//------------------------------------------------------------------------------
+window win01 'Настройка фильтров' ('Настройка фильтров',,sci1EnEsc) gray, alwaysreturn;
+show (,,73,6);
+screen scr01 ('',,sci1Esc);
+notablenavigation;
+fields
+  filter_check            ('Применимости фильтров'): noprotect;
+  filter_katorg.name      ('Контрагент',, sci13Esc): protect, pickbutton;
+  filter_groupmc.name     ('Группа МЦ/Усл',, sci13Esc): protect, pickbutton;
+buttons
+  cmOk,,closeowner;
+  cmCancel;
+<<
+
+  [.] Контрагент          ` .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  [.] Группа МЦ/Усл       ` .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+                     <.   Продолжить   .>  <.     Отмена     .>
+>>
+end; //scr
+handleevent
+cmCheckField:
+  if curfield = filter_check {
+    if (filter_check and 1) != 1 {
+      set customer_f := 0;
+      rereadrecord(#filter_katorg);
+    }
+    else
+    if customer_f = 0 {
+      selectfield(#filter_katorg.name);
+      putCommand(cmPick);
+    }
+    if (filter_check and 2) != 2 {
+      set brand_f := 0;
+      rereadrecord(#filter_groupmc);
+    }
+    else
+    if brand_f = 0 {
+      selectfield(#filter_groupmc.name);
+      putCommand(cmPick);
+    }
+    togglefieldselectable(#filter_katorg.name, (filter_check and 1) = 1);    
+    togglefieldselectable(#filter_groupmc.name, (filter_check and 2) = 2);
+  }
+cmPick: {
+  case curfield of
+    #filter_katorg.name:
+      if runinterface('L_KATORG::GetKatOr', customer_f, comp(0), false, comp(0), comp(0)) <> cmCancel
+        set filter_check := filter_check or 1;
+    #filter_groupmc.name:
+      if runinterface('L_MCU::getGrMC', brand_f, '') <> cmCancel
+        set filter_check := filter_check or 2;
+  end;
+}
+end; //he win
+end; //win
+//------------------------------------------------------------------------------
+function xlInit(_file: string): boolean;
+begin
+  _try {
+    result := xlOpenExcel(false);
+    result := xlOpenWorkBook(_file);
+    result := xlIsExcelValid;
+    result := xlSetActiveSheet(1);
+  }
+  _except
+  on exOleCantCreateObject: {
+    message('Ошибка создания OLE-объекта! Возможно требуется перерегистрировать OCX');
+    result := false;
+  }
+end;
+//------------------------------------------------------------------------------
+function get_org(val: string): comp;
+{
+  result := 0;
+  if getfirst fastfirstrow katorg where ((val == name)) = tsOk
+    result := katorg.nrec;
+}
+//------------------------------------------------------------------------------
+function get_grp(val: string): comp;
+{
+  result := 0;
+  if getfirst fastfirstrow groupmc where ((val == name)) = tsOk
+    result := groupmc.nrec;
+}
+//------------------------------------------------------------------------------
+procedure setField(num: word; val: string);
+{
+  case num of
+   3: set skidprim.corg = get_org(val);
+  //4: set tmp_doc.dog_date = strtodate(val, 'DD.MM.YYYY');
+  10: set skidprim.cgroupmcusl = get_grp(val);
+  18: set skidtf.skidprocent = double(trim(replace(replace(val, '%', ''), ',', '.')))* 100;
+  end; //case
+}
+//------------------------------------------------------------------------------
+procedure set_default;
+{
+  set skidprim.ckatskid = getnextnrec(#katskid, 0);
+  set skidprim.prmc = 1;
+  set skidprim.npp = 1;
+  set katskid.nrec = skidprim.ckatskid;
+  set katskid.name = string(skidprim.ckatskid);
+  set katskid.prskid = 1;
+  set skidtf.ckatskid = skidprim.ckatskid;  
+}
+//------------------------------------------------------------------------------
+function xlRead(_file: string): boolean;
+var
+  eof: boolean;
+  row, col: longint;
+  str: string;
+{
+  result := xlInit(_file);
+  if not result exit;
+  startNewVisual(vtRotateVisual, vfTimer+vfBreak, 'Загрузка данных из книги Excel ... 0', 0);
+  setvisualtitle('Загрузка');
+  resetbounds(#skidprim);
+  eof := false;
+  row := 3;
+  if #last_col > 0 do {
+    row++;
+    setvisualheader('Загрузка данных из книги Excel ... '+ string(row));
+    col := 3;
+    clearbuffer(#katskid);
+    clearbuffer(#skidtf);
+    clearbuffer(#skidprim);
+    set_default;
+    do {
+      if not nextvisual {
+        eof := true;
+        break;
+      }
+      str := '';
+      result := xlGetCellValue(row, col, str);
+      if not result {
+        message('Не удалось прочитать данные из колонки: '+string(col)+', строка: '+ string(row)+ '!');
+        continue;
+      }
+      else str := trim(str);
+      if (str = '') {
+        eof := (col = 3);
+        if eof break;
+        if (col > #last_col) {
+          insert current skidprim;
+          insert current katskid;
+          insert current skidtf;
+          iAttr.dSetAttr(coSkidPrim, skidprim.nrec, 'Период действия скидки. С' , date(1,1,year(cur_date)));
+          iAttr.dSetAttr(coSkidPrim, skidprim.nrec, 'Период действия скидки. По', sub_day(date(1,1,year(cur_date)+ 1), 1));
+          break;
+        }
+        else col++;
+      }
+      else
+        setField(col++, str);
+    } while true;
+    if eof break;
+  } while true;
+  setbounds(#skidprim);
+  rereadrecord(#skidprim);
+  result := true;
+  stopvisual('', 0);
+  xlKillExcel;
+}
+//------------------------------------------------------------------------------
+tableevent table skidprim
+cmSetDefault: {
+  set_default;
+  if boundactive(tb_org) set skidprim.corg = customer;
+  if boundactive(tb_grp) set skidprim.cgroupmcusl = brand;
+}
+cmUpdateRecord: {
+  update current skidprim;
+  update current skidtf;
+}
+cmInsertRecord: {
+  insert current skidprim;
+  insert current katskid;
+  insert current skidtf;
+}
+cmDeleteRecord: {
+  if getfirst skidsum where ((skidprim.ckatskid == ckatskid)) = tsOk {
+    message('Скидка уже использована в документах. Удаление невозможно!', information);
+    abort;
+    exit;
+  }
+  else
+  if (iMarker(pmarker).count = 0)
+    if message('Удалить запись?', yesno) <> cmYes {
+      abort;
+      exit;
+    }
+  if delete current skidtf <> tsOk {}
+  if delete current katskid <> tsOk {}
+  iAttr.deleteValue(coSkidPrim, skidprim.nrec, 'Период действия скидки. С');
+  iAttr.deleteValue(coSkidPrim, skidprim.nrec, 'Период действия скидки. По');
+  delete current skidprim;
+}
+end;
+//------------------------------------------------------------------------------
+handleEvent
+cmInit: {
+}
+cmExprFieldChanged: {
+//if not updatetable exit;
+  case curfield of
+    #dFrom: iAttr.dSetAttr(coSkidPrim, skidprim.nrec, 'Период действия скидки. С' , strtodate(exprfieldvalue, 'DD/MM/YYYY'));
+    #dTo: iAttr.dSetAttr(coSkidPrim, skidprim.nrec, 'Период действия скидки. По', strtodate(exprfieldvalue, 'DD/MM/YYYY'));
+  end;
+}
+cmFilterSave: {
+  if runwindowmodal(win01) = cmOk {
+    if boundactive(tb_org) subbounds(tb_org);
+    if boundactive(tb_grp) subbounds(tb_grp);
+    tmp := '';
+    customer := customer_f;
+    if customer > 0 {
+      addbounds(tb_org);
+      tmp := katorg.name;
+    }
+    brand := brand_f;
+    if brand > 0 {
+      addbounds(tb_grp);
+      tmp += if(tmp <> '', ' & ', '')+ groupmc.name;
+    }
+    togglefieldselectable(#katorg.name, not boundactive(tb_org));
+    togglefieldselectable(#groupmc.name, not boundactive(tb_grp));
+    if tmp <> '' tmp := ' ('+ tmp+ ')';
+    settitle('Справочник скидок по позиции спецификации'+ tmp);
+  }
+  if not isvalid(#skidprim)
+    message('Нет записей, удовлетворяющих условиям фильтра!', information);
+}
+cmImp: {
+  tmp := getfilename(''#0'Книга Excel'#0'*.xls?', 'Выбор файла для загрузки данных');
+  if (tmp = '') exit;
+  xlRead(tmp);
+}
+cmPick: {
+  case curfield of
+    #groupmc.name: runinterface('L_MCU::getgrmc', skidprim.cgroupmcusl, '');
+    #katorg.name: runinterface('L_KATORG::getkator', skidprim.corg, comp(0), false, comp(0), comp(0));
+    #isActive: {
+      if not isvalid(#skidprim) {
+        message('Поле можно изменить только в сохраненных записях.', information);
+        exit;
+      }
+      else set skidprim.isuses := if(skidprim.isuses = 0, 1, 0);
+    }
+  end; //case
+//isModif_ := True;
+}
+cmDelOnProtect: {
+  case curfield of
+    #filter_katorg.name: {
+      customer_f := 0;
+      set filter_check := (filter_check xor 1);
+      rereadrecord(#filter_katorg);
+    }
+    #filter_groupmc.name: {
+      brand_f := 0;
+      set filter_check := (filter_check xor 2);
+      rereadrecord(#filter_groupmc);
+    }
+  end;
+}
+cmHotKeys: putHotCommand(runMenu('mnuSkidPrim'));
+end;
+end.
+mnuSkidPrim menu {
+- 'Фильтр...', cmFilterSave, 'Установка пользовательских фильтров', hcHotKeyFiltr, 'Alt+B', kbAltB, sci1Esc,,,,bmpBuhFilter;
+- 'Импорт', cmImp, 'Импорт из excel', hcNoContext, 'Alt+I', kbAltI, sci1Esc,,,,bmpImpDoc;
+}

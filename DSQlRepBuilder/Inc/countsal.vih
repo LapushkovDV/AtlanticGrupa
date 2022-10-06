@@ -1,0 +1,30 @@
+
+#ifndef __CountSal_vih__
+#define __CountSal_vih__
+
+#ifdef ComponentVersion
+#component "L_Sklad"
+#end
+
+#doc
+Для реализации public-функций для расчета сальдовых остатков
+#end
+ObjInterface CountSalObj;
+
+#doc
+Пересчет сальдо для указанной МЦ
+#end
+  Function CountMC(pcMC: comp; pwSkPr, pwTypeCalc: word; pdDateCalc: date): boolean;
+end;
+
+VipInterface CountSal implements CountSalObj
+Licensed
+(
+  #include CountSal.lih
+)
+Parameters
+(
+  SkPr :word
+);
+
+#end // __CountSal_vih__

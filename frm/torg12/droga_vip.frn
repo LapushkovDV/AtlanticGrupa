@@ -1,0 +1,120 @@
+.begin
+ noNDS10 := NDS10 := AllNDS10 := 0; 
+ noNDS18 := NDS18 := AllNDS18 := 0; 
+ if (prim.getFirst baseDoc = tsOk) {
+   ОснованиеПримечание := Prim.baseDoc.Name;
+ }
+ _sign := 0;
+ code_name := 'код';
+ code_attr := '';
+!Заполнение графы 10
+ wFillCol10 := wGetTune('Doc.SD.PrnNakl.Torg12Col10');
+
+#ifdef _TTN_ASHAN_
+ code_attr := 'Код Ашана';
+#else
+#ifdef _TTN_BAHETLE_
+ code_attr := 'Код Бахетле';
+#else
+#ifdef _TTN_GLOBUS_
+ code_attr := 'Код Гиперглобуса';
+#else
+#ifdef _TTN_ZELGROS_
+ code_attr := 'Код Зельгрос';
+#else
+#ifdef _TTN_LENTA_
+ code_attr := 'Код Лента';
+#else
+#ifdef _TTN_METRO_
+ code_attr := 'Код МЕТРО';
+#else
+#ifdef _TTN_MOSMART_
+ code_attr := 'Код Мосмарт';
+#else
+#ifdef _TTN_MOSMART_MOS_
+ code_attr := 'Код Мосмарт(Москва)';
+#else
+#ifdef _TTN_PEREKRESTOK_
+ code_attr := 'Код Перекресток';
+ code_name := 'PLU';
+ wFillCol10 := 1;
+#else
+#ifdef _TTN_KORABLIK_
+ wFillCol10 := 1;
+#end
+#end
+#end
+#end
+#end
+#end
+#end
+#end
+#end
+#end
+
+ tSpec.delete all tblT12Tmp;
+ количество_SpSopr := 0;
+ pop.curCode :='001';
+ if (pop.getfirst SpKAU=tsOk) 
+   osn:=pop.spkau.name; 
+ pop.curCode :='01';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_01:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_01:=pop.spkau1.name
+ }
+ pop.curCode :='02';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_02:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_02:=pop.spkau1.name
+ }
+ pop.curCode :='03';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_03:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_03:=pop.spkau1.name
+ }
+ pop.curCode :='04';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_04:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_04:=pop.spkau1.name
+ }
+ pop.curCode :='05';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_05:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_05:=pop.spkau1.name
+ }
+ pop.curCode :='06';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_06:=pop.spkau.name;
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_06:=pop.spkau1.name
+ }
+ pop.curCode :='07';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_07:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_07:=pop.spkau1.name
+ }
+ pop.curCode :='08';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_08:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_08:=pop.spkau1.name
+ }
+ pop.curCode :='09';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_09:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_09:=pop.spkau1.name
+ }
+ pop.curCode :='10';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_10:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_10:=pop.spkau1.name
+ }
+ pop.curCode :='11';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_11:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_11:=pop.spkau1.name
+ }
+ pop.curCode :='12';
+ if (pop.getfirst SpKAU=tsOk) {
+   Podp_dol_12:=pop.spkau.name; 
+   if (pop.getfirst KAUreff=tsOk) if (pop.getfirst SpKAU1=tsOk) Podp_fio_12:=pop.spkau1.name
+ }
+end.

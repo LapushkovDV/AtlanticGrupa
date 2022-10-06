@@ -1,0 +1,306 @@
+#include Query.vih
+#component "ATLANTIC"
+Interface PickingReport_CopyBetweenDocs 'Копирование данных PickingReport между документами';
+  show at (,, 91, 23);
+
+//#include VarsTypes.vip
+Table struct tBdKS
+(
+    typeDoc : word //'ДО на закупку'
+  , cDoc    : comp
+  , dDoc    : date
+  , nodoc   : string
+  , cPkrHead : comp
+)
+with index
+ (
+  ind0 = typeDoc
+ )
+;
+
+ function GetMercuryField: string; forward;
+ function getMercuryFieldColor: word; forward;
+ function GetPickingReportField: string; forward;
+ function getPickingReportFieldColor: word; forward;
+ procedure filltBdKS; forward;
+create view
+var
+   _datB
+ , _datE : date;
+ _cDoc  : comp;
+ _TypeDoc : word;
+  _logFile : string;
+  _cPkRH_Ins : comp;
+as select
+  if(tBdKS.typeDoc = 1
+    , 'ДО снабжение'
+    , if( tBdKS.typeDoc = 2
+         , 'Накл. внутр. перемещ.'
+         , '--непредусмотренный тип--'
+        )
+   ) (FieldName = TypeDocStr)
+   , GetPickingReportField() (Fieldname = PickingReportField)
+   , getPickingReportFieldColor() (Fieldname = PickingReportFieldColor)
+from
+   ATL_PickingRep_HEAD  PkRH
+ , ATL_PickingRep_Spec  PkRSp
+ , Basedoc BD_check
+ , KatSopr KS_CHECK
+ , ATL_PickingRep_LOG PkRLog
+ , ATL_MERCURY_HEAD
+ , ATL_PickingRep_Head
+ , ATL_PickingRep_HEAD  PkRH_ins
+ , ATL_PickingRep_Spec  PkRSp_ins
+ , ATL_PickingRep_LOG   PkRLog_Ins
+
+ , tBdKS
+where ((root == tBdKS.typedoc
+and tBdKS.cPkrHead == PkRH.nrec
+
+ and PkRH.nrec == ATL_PickingRep_HEAD.nrec
+  and PkRH.cPickingRepLog == PkRLog.nrec
+  and      PkRH.nrec == PkRSp.cHead
+  and     PkRSp.cMc == KatMc.Nrec
+
+   and  _cPkRH_Ins ==  PkRH_ins.nrec
+   and PkRH_ins.cPickingRepLog == PkRLog_Ins.nrec
+  and      PkRH_ins.nrec == PkRSp_ins.cHead
+
+
+))
+;
+#include Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp
+
+window WinSelectDocAndCopy 'Выбор документа для копирования из него данных PickingReport' ;
+Screen scrSelectDocAndCopyDocs(,,sci1Esc);
+show at (,,58,1);
+ table tBdKS;
+fields
+ _DatB : NoProtect;
+ _DatE : NoProtect;
+
+<<
+   Документы с.@@@@@@@@@@@@@ по.@@@@@@@@@@@@@
+>>
+end;
+
+ browse brSelectDocAndCopy;
+  show at (,2,58,);
+  table tBdKS;
+ fields
+  TypeDocStr 'Тип ' ('Тип документа',,):[8], Protect, NoPickButton;
+  tBdKS.dDoc 'Дата ' ('Дата документа',,):[5], Protect, NoPickButton;
+  tBdKS.nodoc 'Номер ' ('Номер документа',,):[9], Protect, NoPickButton;
+  PickingReportField 'Статус PickingReport' ('Статус PickingReport'):[10], protect, {Font = {backcolor = PickingReportFieldColor}}, NoPickButton;
+ end;
+
+
+Screen scrSelectDocAndCopyPickRep(,,sci1Esc);
+show at (59,,,1);
+
+<<
+   Данные загруженного файла PickingReport
+>>
+end;
+
+   Browse brSelectDocAndCopyPickRep(,,sci18Esc);
+   Show at (59,2,,);
+   table PkRSp;
+   fields
+    if(PkRSp.IsManual,'+','')   'ручн.'    ('добавлено вручную'): [1],protect, NoPickButton;
+    PkRSp.SapCode    'SAP Code'    ('SAP Code'): [5],protect, NoPickButton;
+    PkRSp.DateSborka 'Дата сборки' ('Дата сборки'): [5],protect, NoPickButton;
+    PkRSp.Nsopr      'Nsopr'       ('Nsopr'): [5],protect, NoPickButton;
+    PkRSp.SSCCWMS    'SSCCWMS'     ('SSCCWMS'): [10],protect, NoPickButton;
+    PkRSp.DataMatrix 'DataMatrix'  ('DataMatrix'): [10],protect, NoPickButton;
+    PkRSp.SSCCManuf  'SSCCManuf'   ('SSCCManuf'): [10],protect, NoPickButton;
+    PkRSp.ErrDescr   'ErrDescr  ОпиErrDescr описание ошибки'('Описание ошибки, если пусто, значит все ОК'): [20],protect, NoPickButton;
+  end;  // Browse brShowPickingRepData1SpSopr
+
+
+end;
+tableevent table tBdKS ;
+cmCheckField:{
+ case curfield of
+ #_datb, #_datE : filltBdKS
+ end;
+}
+end;
+
+windowevent WinSelectDocAndCopy;
+cmDefault: {
+   if not isvalidall(tnPkRH) then  {
+       message('У данного документа нет данных PickingReport',error) ;
+       stop; abort; exit;
+     }
+
+   Case _TypeDoc of
+    1 : {
+         if getfirst PkRH_ins where ((_cDoc == PkRH_ins.cBaseDoc)) = tsOK then set _cPkRH_Ins := PkRH_ins.nrec;
+       }
+    2 : {
+         if getfirst PkRH_ins where ((_cDoc == PkRH_ins.cSopr)) = tsOK then set _cPkRH_Ins := PkRH_ins.nrec;
+      }
+    else
+     {
+       message('_TypeDoc равен ' + _TypeDoc+ ' что не предусмотрено программой',error);
+       stop; abort; exit;
+     }
+   end;
+  if _cPkRH_Ins = 0h {// например вообще нет данных, и мы хотим залить
+     clearbuffer(tnPkRH_ins);
+      PkRH_ins.cSopr    := if(_TypeDoc = 1, _cDoc,0h);
+      PkRH_ins.filename := 'Скопировано из документа: '  + TypeDocStr +' '+ tBdKS.nodoc +' '+ tBdKS.dDoc;
+      PkRH_ins.Nakl_Num := '';
+      PkRH_ins.isOK     := true;
+      PkRH_ins.cBaseDoc := if(_TypeDoc = 2, _cDoc,0h);
+    insert current PkRH_ins;
+    set _cPkRH_Ins := PkRH_ins.nrec;
+  }
+
+ if getfirst PkRLog_Ins <> tsOK {
+         PkRLog_Ins.LogDate  := _curDateTime; //"Дата-время запуска задания"
+         PkRLog_Ins.State    := PkRLog.state ; // "0draft,1readyToSend,2send,3NotNeedToSen"
+         PkRLog_Ins.Email    := sGetTune('USERTUNE.MERCURYPRJ.E-MAILS'); //String "E-Mails"
+         PkRLog_Ins.cEmail   := sGetTune('USERTUNE.MERCURYPRJ.COPYE-MAILS'); //String "Copy Emails"
+         insert current PkRLog_Ins;
+        update current PkRH_ins set PkRH_ins.cPickingRepLog := PkRLog_Ins.nrec;
+      }
+
+  _loop PkRSp_ins delete current PkRSp_ins;
+
+  _loop PkRSp
+   {
+     PkRSp_ins.buffer := PkRSp.buffer;
+     PkRSp_ins.nrec  := 0;
+     PkRSp_ins.cHead := PkRH_ins.nrec;
+     insert current PkRSp_ins;
+   }
+
+  var _memoFile : longint = 0;
+   if File_OpenMemo(PkRLog_Ins.log, _memoFile) {
+     File_WriteLn('Скопировано из документа: '  + TypeDocStr +' '+ tBdKS.nodoc +' '+ tBdKS.dDoc, _memoFile);
+    update current PkRLog_Ins;
+   }
+
+  var _strMessage : string = 'Данные скопированы';
+  if  PkRH.wStatus  = 2 // 2 : Result := 'ЧЗ ошибка'
+  then _strMessage := _strMessage +''#13''+'Коды ранее проверены с ошибками.'+''#13''+'Необходимо провести проверку'  ;
+  message(_strMessage );
+  closewindow(WinSelectDocAndCopy);
+}
+end;
+PROCEdURE ClearAll;
+{
+ delete all tBdKS;
+} // PROCEdURE ClearAll;
+
+procedure MyLog(_log : string);
+{
+  if _logFile = '' then
+   {
+     _logFile := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'PickingReport_CopyBetweenDocs_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+     deletefile(_logFile);
+   }
+  logstrtofile(_logFile,DateToStr(Cur_date, 'YYYY.MM.DD') + ' ' + timetostr(Cur_time, 'HH:MM:SS')+ ': ' + _log);
+}
+procedure MysqlAddStr(var query_handle: longInt; add_query_str: string);
+{
+   sqlAddStr(query_handle, add_query_str);
+   MyLog(add_query_str);
+} //Function MysqlAddStr(var query_handle: longInt; add_query_str: string): longInt;
+
+procedure filltBdKS;
+{
+ StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Выполнение запроса', 1);
+      ClearAll;
+       var hstr : longint = 0;
+      MysqlAddStr(hstr, 'select ');
+      MysqlAddStr(hstr, '    1         as typeDoc   ');//'ДО на закупку'
+      MysqlAddStr(hstr, '  , bd.nrec   as cDoc      ');
+      MysqlAddStr(hstr, '  , bd.ddoc   as dDoc      ');
+      MysqlAddStr(hstr, '  , bd.nodoc  as nodoc    ');
+     MysqlAddStr(hstr, '  , Coalesce(PkRH.nrec,#comp(0)) as cPkrHead');
+      MysqlAddStr(hstr, 'from          ');
+      MysqlAddStr(hstr, ' basedoc bd   ');
+      MysqlAddStr(hstr, 'left join ATL_PickingRep_HEAD PkRH on bd.nrec = PkRH.cBaseDoc');
+      MysqlAddStr(hstr, 'where bd.viddoc = 101  ');
+      MysqlAddStr(hstr, '  and bd.ddoc >= #date('+datetostr(_datB,'DD,MM,YYYY') +')');
+      MysqlAddStr(hstr, '  and bd.ddoc <= #date('+datetostr(_datE,'DD,MM,YYYY') +')');
+if _typeDoc = 1 then       MysqlAddStr(hstr, '  and bd.nrec <> #comp('+String(_cDoc)+')');
+      MysqlAddStr(hstr, '          ');
+      MysqlAddStr(hstr, 'union all ');
+      MysqlAddStr(hstr, '          ');
+      MysqlAddStr(hstr, 'select    ');
+      MysqlAddStr(hstr, '    2        as typeDoc    ');// 'Накл. внутр. перем'
+      MysqlAddStr(hstr, '  , ks.nrec  as cDoc     ');
+      MysqlAddStr(hstr, '  , ks.dSopr as dDoc     ');
+      MysqlAddStr(hstr, '  , ks.nsopr as nodoc    ');
+     MysqlAddStr(hstr, '  , Coalesce(PkRH.nrec,#comp(0)) as cPkrHead  ');
+      MysqlAddStr(hstr, '  from katsopr ks ');
+      MysqlAddStr(hstr, 'left join ATL_PickingRep_HEAD PkRH on ks.nrec = PkRH.cSopr');
+      MysqlAddStr(hstr, 'where ks.vidsopr= 600 ');
+      MysqlAddStr(hstr, 'and ks.dsopr >= #date('+datetostr(_datB,'DD,MM,YYYY') +')');
+      MysqlAddStr(hstr, 'and ks.dsopr <= #date('+datetostr(_datE,'DD,MM,YYYY') +')');
+if _typeDoc = 2 then       MysqlAddStr(hstr, '  and KS.nrec <> #comp('+String(_cDoc)+')');
+
+ var objQuery: iQuery;
+          objQuery := queryManager.createQuery(hstr);
+        if objQuery.execute.errorCode != tsOk
+         then {
+               StopVisual('',0);
+               MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+               exit;
+              }
+        else
+        {
+          var _iresultSet : iResultSet;
+          _iresultSet := objQuery.getResultSet;
+//          mylog('_iresultSet.count = '+_iresultSet.count);
+          sqlCopyInto(_iresultSet, tntBdKS, true);
+          /*
+           if oResultSet.GetFirst()=tsok
+         {
+          do
+          {
+           File_Writeln('  - Позиция расхода №'+oResultSet.row.val('npp')+' Номенклатурный номер : '+oResultSet.row.val('barkod'),fh);
+          }
+          while oResultSet.GetNext()=tsok;
+         }
+          */
+        }
+//  mylog('Recordsintable(tntBdKS) ='+ Recordsintable(tntBdKS));
+if getfirst tBdKS = tsOK {}
+Rereadrecord;
+  stopvisual;
+}
+
+Procedure copyTo(_pcBaseDoc, _cpSopr : comp) ;
+{
+  if _pcBaseDoc = 0h and _cpSopr = 0h then  {
+     MyLog('Ссылки на ДО и накладную пустые');
+     Message('Ссылки на ДО и накладную пустые', error);
+    exit;
+  }
+
+  if _pcBaseDoc <> 0h
+  if getfirst BD_check where ((_pcBaseDoc == bd_check.nrec)) <> tsOK  {
+     MyLog('Ссылка на ДО некорректная ' + _pcBaseDoc);
+     Message('Ссылка на ДО некорректная ' + _pcBaseDoc, error);
+     exit;
+   }
+  if _cpSopr <> 0h
+  if getfirst KS_check where ((_cpSopr == KS_check.nrec)) <> tsOK  {
+     MyLog('Ссылка на накладную некорректная ' + _cpSopr);
+     Message('Ссылка на накладную некорректная ' + _cpSopr, error);
+     exit;
+   }
+    set    _cDoc := if(isvalidall(tnBd_check),BD_check.nrec,ks_check.nrec);
+    set _typeDoc := if(isvalidall(tnBd_check),1,2);
+    set _datB := Add_months(if(isvalidall(tnBd_check),BD_check.dDoc,ks_check.dSopr),-12);
+    set _datE := Add_months(if(isvalidall(tnBd_check),BD_check.dDoc,ks_check.dSopr), 12);
+     filltBdKS;
+    RunWindowModal(WinSelectDocAndCopy);
+}
+
+End.//Interface

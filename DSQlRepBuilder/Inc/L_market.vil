@@ -1,0 +1,85 @@
+#ifdef ComponentVersion
+#component "L_Market"
+#end
+
+// Vip
+vipinterface AdverDir
+  licensed (mnuMarket);
+
+vipinterface AdverPay
+  licensed (mnuMarket);
+
+vipinterface MediaMrk
+  licensed (mnuMarket);
+
+vipinterface TotalAdver
+  licensed (mnuMarket);
+
+vipinterface Anad01
+  licensed (mnuMarket);
+
+vipinterface Anad02
+  licensed (mnuMarket);
+
+vipinterface IntClass
+  licensed (AFPlan,APlan,mnuMarket);
+
+vipinterface MarkNastr
+  licensed (mnuMarket);
+
+vipinterface MarkNastrPt
+  licensed (mnuMarket);
+
+vipinterface CopyAdverToCRM
+  licensed (mnuMarket);
+
+vipinterface PickAdverMaker
+  licensed (FREE)
+  Parameters
+  (
+    cRecNo : Comp
+  );
+
+vipinterface PickIntClass
+  licensed (FREE)
+  Parameters
+  (
+    strClassName : String;
+    cRecNo : Comp;
+    strClassValue : String
+  );
+
+vipinterface PickLinkPred
+  licensed (FREE)
+  Parameters
+  (
+    cRecO, cRecNo : Comp
+  );
+
+vipinterface PickPredLink
+  licensed (FREE)
+  Parameters
+  (
+    cRecO, cRecNo : Comp
+  );
+
+vipinterface PickPlPor
+  licensed (FREE)
+  Parameters
+  (
+    lRecNo : Comp
+  );
+
+vipinterface PredLinkV1
+  licensed (FREE)
+  Parameters
+  (
+    cRecO, cRecNo : Comp
+  );
+
+vipinterface PredLinkV
+  licensed (FREE)
+  Parameters
+  (
+    cRecO, cRecNo : Comp
+  );

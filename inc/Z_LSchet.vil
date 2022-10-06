@@ -1,0 +1,55 @@
+#ifdef ComponentVersion
+#component "z_LSchet"
+#end
+
+vipinterface BuildPersonalAccountXRefs licensed(free);
+vipinterface ByWorkers
+  licensed (menuzarp,menuzarp2);
+vipinterface ByWorkerPersonalCard
+  licensed (menuzarp,menuzarp2);
+vipinterface getpmeu1 licensed(free) parameters(prCpodr, prCex: comp);
+vipinterface getpmeu2 licensed(free) parameters(PrCpodr, prCex: comp; prsum: double; prvip: word);
+vipinterface getpmeu3 licensed(free) parameters(prCpodr, prCex: comp; PrSovM: word);
+vipinterface ChooseEmployees licensed(free) parameters(Markers: longint; MultipleSelection: boolean; P2: double);
+vipinterface ValidateClockNumber licensed(free) parameters(ClockNumber: longint;  AccountNumber, Department: comp);
+vipinterface LinkPersonalAccounts licensed(free);
+vipinterface LschetFuncs licensed(free);
+vipinterface FillExtrKau licensed(free);
+vipinterface SERVICEMOVELSCHFILIAL licensed(free);
+vipinterface lschet1
+  licensed
+  (
+  #include lschet1.lih
+  )
+  parameters(prcex: comp; p1: comp; p2: double);
+vipinterface LSchet
+  licensed (menuzarp,menuzarp2);
+vipinterface OklVal licensed(free) parameters(prNrec: comp; p2: double);
+vipinterface perexijd licensed(free);
+vipinterface Pick licensed(free) parameters(Options: objref);
+vipinterface pickFIO1 licensed(free) parameters(prcex: comp; TabN: longint; lschet_nrec, persons_nrec, Cex: comp);
+vipinterface ViewMarks licensed(free) parameters(Options: objref);
+vipinterface servconv licensed(free);
+vipinterface NorthernCategoriesCorrection licensed(free);
+vipinterface NorthernCategoriesAgeGradation licensed(free);
+vipinterface sfijd licensed(free) parameters(SortOrder: word);
+vipinterface Vshkala licensed(free);
+vipinterface SurnameFinder licensed(free) parameters(Caller: objref);
+vipinterface SearchLschetByTabN licensed(free) parameters(Caller: objref);
+vipinterface SearchLschetByStrTabN licensed(free) parameters(Caller: objref);
+vipinterface PickSH licensed(free) parameters(LS_Nrec: comp; CORG: comp; CB: comp; CNS: tNomLSch; CNC: string[35]; LS_summa27: double);
+vipinterface Perexod1
+  licensed
+  (
+    #include Perexod1.lih
+  )
+  parameters(prnrec: comp; prcex: comp; p1: comp; p2: double);
+
+vipinterface PacketChange licensed(free);
+vipinterface PersonalAccountValidatorBrowser licensed(free) parameters(Validator: objref);
+vipinterface LgotFOT licensed(free) parameters(prcLschet: comp);
+vipinterface PesonalAccountFired licensed(free);
+vipinterface IFilterCLschetByCexoz licensed(free);
+
+vipInterface TreeLSchByOuterClassifier licensed(free);
+vipInterface OuterClassification licensed(free) parameters(mrkOuterClassifier: longint);

@@ -1,0 +1,76 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 5.85 - Финансовый контур
+// Интерфейс пред- и постобработки файла банковской выписки
+//------------------------------------------------------------------------------
+#include VypScript.vih
+
+interface IBankVypScript;
+//Create view;  // перенес в BnkInSS.vpp
+#include vypScript.vpp  // структура DBF - файла выписки и функции
+
+//-------------------------------------------------------------------------
+//[PUBLIC] Предобработка файла банковской выписки
+  Function BeforeImport(var asFileName  : string;   // Путь и имя файла с выпиской
+                            abDbf       : boolean;  // true - DBF-формат, false - TXT-формат
+                            adDate      : date;
+                            awTipVip    : word;     // 0 - рублевая, 1 - валютная, 2 - ???
+                            acBankOrVal : comp;     // if (awTipVip = 2) KlVal.nRec else CashBank.nRec
+                            acBankDocF  : comp      // BankDocF.nRec
+                                      ) : boolean;
+{
+  result := false;
+  string(asFileName);
+  boolean(abDbf);
+  longint(adDate);
+  word(awTipVip);
+  comp(acBankOrVal);
+  comp(acBankDocF);
+// -----------------------------    droga
+  if abDbf {  // DBF-формат
+    if not existFile(asFileName) exit;
+    if pos('.dbf', loCase(asFileName)) = 0 exit ;  //обрабатывем только DBF
+    if not loadFromDBF(asFileName) {
+      message('Нет данных для импорта!', information);
+      exit;  // загружаем во временную таблицу
+    }
+    var sFileOld, sFileNew: string;
+
+    sFileOld := substr(asFileName, 1, length(asFileName)- 4) + '_old.dbf';
+
+    if existFile(sFileOld)
+      if not deleteFile(sFileOld)
+        message(''#3'Ошибка удаления '''+ sFileOld+ '''');
+
+    copyMoveFile(asFileName, sFileOld , true, ecmfClientFrom+ecmfClientTo);  //переименовываем файл выписки
+
+    result := putTableToDBF(#bnkInSS, asFileName, ptfFullTable) = tsOk;
+
+    sFileNew := substr(asFileName, 1, length(asFileName)- 4)+ '_new.dbf';
+    if existFile(sFileNew)
+      if not deleteFile(sFileNew)
+        message(''#3'Ошибка удаления '''+ sFileNew+ '''');
+
+    copyMoveFile(asFileName, sFileNew, false, ecmfClientFrom+ecmfClientTo);  //копируем файл выписки
+    message('Файл: '+ asFileName+ chr(13)+ 'Вх. платежей: '+ lPlatIn+ chr(13)+ 'Исх. платежей: '+ lPlatOut, information);
+    // CopyMoveFile (From,To : String; IsDel : Boolean) 
+    //  import drogaBnkInSS  from dbf asFileName F S;
+    //  select * from drogaBnkInSS to dbf asFileName;
+  } //abDbf
+  else result := true;
+} //BeforeImport
+
+//-------------------------------------------------------------------------
+// [PUBLIC] Постобработка файла банковской выписки
+Procedure AfterImport;
+{
+}
+
+//-------------------------------------------------------------------------
+// [PUBLIC] Необходимость выполнения распределения платежа по договору, 
+//          ссылка на который передана через поле "Тип платежа"
+function VidPlatIsDogRef: boolean;
+{
+  VidPlatIsDogRef := false;
+}
+end.

@@ -1,0 +1,22 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонентой F_MBPPub
+
+#ifdef ComponentVersion
+#component "F_MBPPub"
+#end
+
+// Для этих интерфейсов имеются VIH-и
+// VipInterface Confirm      licensed (FREE);
+// VipInterface FilterBlock  licensed (FREE);
+// VipInterface FltCntrl     licensed (FREE);
+// VipInterface GRP_Razr     licensed (FREE);
+// VipInterface TransLib     licensed (FREE);
+
+// Пока локальный, но может вдруг понадобиться
+VipInterface ConfirmDlg   Licensed (FREE) Parameters (_DlgStr : String; _DlgType : Longint; _nButton : Longint);
+
+VipInterface GetNastrMBP  Licensed (FREE) Parameters (pCommand : Word; pModule : Word; pRec : Comp);
+VipInterface GetGrouping  Licensed (FREE) Parameters (pCommand : Word; pModule : Word; pRec : Comp);
+VipInterface GetSelection Licensed (FREE) Parameters (pCommand : Word; pModule : Word; pList : Word; pRec : Comp);
+
+DIALOG GetMBPNastrName (nName : String[80]);

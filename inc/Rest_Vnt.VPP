@@ -1,0 +1,108 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Логистика - склад
+// пересчет цен в ордерах на внт. перемещение
+//******************************************************************************
+
+//пересчет цен в ордерах на внт. перемещение для одной МЦ
+Function RecalcVntAndSaldo(bDate_: Date): boolean;
+{
+  RecalcVntAndSaldo := FALSE;
+
+  delete novisual SaldoMC where ((SkPr      == SaldoMC.SP    AND
+                                  Pick.cRec == SaldoMC.cMC   AND
+                                  bDate_    << SaldoMC.dSaldo )); //т.к. +1
+
+  //спрятанные ордера на внутреннее перемещение
+  _LOOP SpOrder where (( SkPr       == SpOrder.SP  AND
+                         Pick.cRec  == SpOrder.cMC AND
+                         bDate_    <<= SpOrder.dOrd ))
+    {
+      if NOT NextVisual
+        Exit;
+
+      if SpOrder.tipOrd = 3
+        {
+          NalT(SpOrder.dOrd, Pick.cRec, 0, 0, 0);
+
+          SpOrder.srPrice  := AveragePrice;
+          SpOrder.vPrice   := AverageVPrice;
+          SpOrder.cVal     := GetCurVal;
+          SpOrder.priceN   := AveragePriceN;//д.б. средняя по предприятию
+          SpOrder.SummN    := SpOrder.PriceN*SpOrder.Kol;
+          SpOrder.SummN    := oSaldo_K.RoundRubOrd(SpOrder.priceN, SpOrder.Kol)*SpOrder.Kol;
+          SpOrder.rSrPrice := SpOrder.srPrice;
+          SpOrder.rVPrice  := SpOrder.vPrice;
+
+          if (update current SpOrder <> tsOk)
+            {
+              frmErr.Write('! НЕ МОДИФИЦИРОВАЛСЯ РАСХОДНЫЙ ОРДЕР НА ВНУТРЕННЕЕ ПЕРЕМЕЩЕНИЕ');
+              frmErr.Write('! возможны расхождения в оборотной ведомости и т.п.');
+              Exit;
+            }
+          else //ордер был модифицирован - необходимо делать UpDate SoprHoz
+            InsertPick555(SpOrder.cSklOrder);
+        }
+
+      //восстановливаем сальдо
+      oModifSal.AddSaldoMC_New(SpOrder.SP, SpOrder.cMC, SpOrder.ccPodr,
+                 SpOrder.ccMOL, SpOrder.cParty, SpOrder.kol,
+                 if(wGetTune('Oper.SaldoByOrder') = 0, SpOrder.SrPrice, SpOrder.RSrPrice), //  Сальдовые остатки считаем на основании суммы/цены в ордере
+                 if(wGetTune('Oper.SaldoByOrder') = 0, SpOrder.VPrice , SpOrder.RVPrice),
+                 SpOrder.srPrice, SpOrder.vPrice, SpOrder.cVal,
+                 SpOrder.priceN, SpOrder.vPriceN,
+                 SpOrder.dOrd, presision, FALSE, SpOrder.VidOrder, SpOrder.TipOrd);
+
+    }//_LOOP SpOrder
+
+  RecalcVntAndSaldo := TRUE;
+} //f
+
+//******************************************************************************
+//------пересчет ордеров на внутреннее перемещение---------------
+Function ReCalc_InterOrder: boolean;
+var bdate: Date; error_: boolean;
+    i_: word;
+{
+  ReCalc_InterOrder := FALSE;
+
+  if (GetFirst SpOrder where (( SkPr     == SpOrder.SP AND
+                                ZeroDate << SpOrder.dOrd ))  <> tsOk )
+    {
+      frmErr.Write('! Ордеров на внутреннее перемещение не выявлено');
+      ReCalc_InterOrder := TRUE;
+      Exit;
+    }
+
+  bDate := if(pdOrder <> ZeroDate, pdOrder, SpOrder.dOrd);
+
+  if (bDate = ZeroDate) OR (bDate < SpOrder.dOrd)
+    bDate := SpOrder.dOrd;// с нуля нельзя !
+
+  InitMCInfo(bDate);
+
+  error_ := FALSE;
+
+  i_ := 0;
+
+  _LOOP Pick where ((word(7) == Pick.wList))
+    {
+      i_++;
+
+      if NOT iNextVisual('В ордерах внутреннего перемещения'#13#3+string(i_*100/kolPickMC, 3, 0)+'%')
+        {
+          error_ := TRUE;
+          Break;
+        }
+
+      if NOT RecalcVntAndSaldo(bDate)
+        {
+          error_ := TRUE;
+          Break;
+        }
+    }//_LOOP
+
+  DoneMCinfo;
+
+  ReCalc_InterOrder := not(error_);
+}

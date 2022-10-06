@@ -1,0 +1,8 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_BuhRep
+
+#ifdef ComponentVersion
+#component "C_FROverView"
+#end
+
+VipInterface DBStruct Licensed(Free);

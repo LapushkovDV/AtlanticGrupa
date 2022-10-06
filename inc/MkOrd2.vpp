@@ -1,0 +1,27 @@
+#ifndef _MKORD2_VPP
+#define _MKORD2_VPP
+
+// Вставка SoprHoz по ордерам при формировании ордеров по накладным
+Procedure InsertSoprHozByOrder(sum : double; vSum : double; val : comp);
+{
+  SoprHoz.TipDoc   := GetSoprHozTipDoc(SklOrder.SP, SklOrder.VidOrder);
+  SoprHoz.Direct   := if (SklOrder.VidOrder = 0,1,2);
+  SoprHoz.cFilKor  := if (KatSopr.cOrg <> 0,Filial.NRec,0);
+  SoprHoz.cSoprDoc := SklOrder.Nrec;
+  SoprHoz.NoDoc    := SklOrder.NOrder;
+  SoprHoz.Nrec     := 0;
+  SoprHoz.DatOb    := SklOrder.dOrd;
+  SoprHoz.cHozOper := 0;
+  SoprHoz.TiDkGal  := SoprHoz.TipDoc;
+  SoprHoz.prObor   := 0;
+  SoprHoz.SummaSp  := Sum;
+  SoprHoz.SumValSp := VSum;
+  SoprHoz.kodValSp := Val;
+  SoprHoz.FilialNo := lGetTune('Konsolid.FilialNo');
+  SoprHoz.Descr    := SklOrder.descr;
+  SoprHoz.DesGr    := SklOrder.desGr;
+  SoprHoz.cStepDoc := KatSopr.cStepDoc;
+  iSHoz.InsByHan(SoprHoz.BufferP);
+}
+
+#end //_MKORD2_VPP

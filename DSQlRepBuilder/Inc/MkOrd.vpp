@@ -1,0 +1,166 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Логистика
+// Сервисные функции для формирования ордеров
+//******************************************************************************
+
+#ifndef _MKORD_VPP
+#define _MKORD_VPP
+
+Function ModifyTekOst : boolean;
+{
+  Result := true;
+}
+
+// Вставка SoprHoz по ордерам при формировании ордеров по накладным
+#include MKOrd2.vpp
+
+// Расширенный вариант функции модификации таблицы разноски хозопераций при формировании ордеров
+// Добавлена поддержка работы в пакетных режимах (без взаимодействия с пользователем).
+Function ModifySoprHozEx(
+  const sum  : double;  // Сумма в рублях по складскому ордеру
+  const vSum : double;  // Сумма в валюте по складскому ордеру
+  const  val : comp;    // Валюта складского ордера
+  showMess   : boolean; // true, если необходимо выводить сообщения пользователю
+  out errMsg : string   // Сообщение о причине ошибки, если таковая произошла (ф-ция вернула false)
+  ) : boolean;
+{
+  result := true;
+  errMsg := '';
+
+  if (GetFirst SoprHoz where ((KatSopr.VidSopr == SoprHoz.TipDoc and
+                               KatSopr.NRec    == SoprHoz.cSoprDoc)) = tsOk)
+    {
+      SoprHoz.SummaSp  += sum;
+      SoprHoz.SumValSp += vSum;
+      SoprHoz.kodValSp := val;
+
+      iSHoz.UpdByHan(SoprHoz.BufferP);
+    }
+  else
+    {
+      errMsg := 'Невозможно обновить хозяйственную операцию. Модифицируйте документ и повторите операцию.';
+
+      if showMess
+        Message(errMsg, Warning);
+
+      result := false;
+      Exit;
+    }
+
+  //для ордера
+  InsertSoprHozbyOrder(Sum,vSum,Val);
+}
+
+// Модификация таблицы разноски хозопераций при формировании ордеров
+// Функция оставлена для совместимости со старым кодом, использовавшим ее.
+// Рекомендуется применять ModifySoprHozEx.
+Function ModifySoprHoz(const sum : double; const vSum : Double; const  val : comp) : boolean;
+{
+  var dummy: string; // неиспользуемый возвращаемый параметр
+  result := ModifySoprHozEx(sum, vSum, val, true, dummy);
+}
+
+! Установка даты формирования ордеров в накладной после их формирования
+procedure SetdOprTTN(dat : date);
+{
+  StartNewVisual(vtNumericVisual,vfTimer,'Установка даты проведения документа:'#13#3,1);
+
+  set KatSopr.dOpr := dat;
+
+  Update_Current_KatSopr;
+
+  ResetBounds(#SpSopr);
+
+  update SpSopr where (( KatSopr.NRec == SpSopr.cSopr )) set SpSopr.dOprTTN := dat;
+
+  _LOOP SpSopr where ((KatSopr.NRec == SpSopr.cSopr))
+    {
+      NextVisual;
+
+      RunInterface('iKatPartydGodn', SpSopr.cParty, KatSopr.nRec);
+      RunInterface('iKatPartyKATPARTYCENAZAV', SpSopr.nRec);
+    }
+
+  SetBounds(#SpSopr);
+
+  _try
+    {
+      // доработка для ЧТН
+      var oCHTN: CHTNObj;
+
+      if LoadVipRef(oCHTN, 'L_SKLAD::iCHTN')
+        {
+          oCHTN.SetSoprAn(KatSopr.nRec, dat);
+          FreeVipInterface(oCHTN);
+        }
+    }
+  _except on ExObjIfcBadVar: {}
+  _except on ExObjIfcNoLoad: {}
+  _except on ExObjIfcNoImpl: {}
+
+  StopVisual('',0);
+}
+
+
+! Проверка на существование нулевых товарных позиций перед формированием
+! ордеров. Возвращает количество нулевых позиций в спецификации.
+function KolNullPos: word;
+{
+  Result := 0;
+
+  StartNewVisual(vtNumericVisual,vfTimer,'Проверка количества МЦ в спецификации:'#13#3,1);
+  
+  var AllNull: boolean; AllNull := true;
+
+  ResetBounds(#SpSopr);
+  PushPos(#SpSopr);
+  
+  _LOOP SpSopr where ((Katsopr.NRec == SpSopr.cSopr and
+                            word(1) == SpSopr.prMC ))
+    { 
+      NextVisual;
+      
+      if (Abs(SpSopr.kolFact) < GetPresision_forKol())
+        Result++;
+      else
+        allNull := false;
+    }
+    
+  if (allNull)
+    Result := 0FFFFH;
+    
+  PopPos(#SpSopr);
+  SetBounds(#SpSopr);
+  
+  StopVisual('',0);
+}
+
+
+! Проверка нулевых позиций спецификации при формировании складских ордеров
+! с выдачей сообщения на экран
+function CheckNullPos: boolean;
+var k: word;
+{
+  k := KolNullPos;
+
+  Result := true;
+
+  if (K = 0FFFFH)
+    { 
+      ShowTune('В спецификации документа отсутствуют позиции к списанию.'#13+
+               'Количество каждой позиции меньше, чем указано в настройке',
+               'OPER.MINKOLMC');
+
+      Result := false;
+    }
+  else
+    if (k <> 0)
+      Result :=
+        message('В спецификации документа имеются позиции с нулевым количеством '+
+                '(всего ' +string(k) +')'#13+
+                'Рекомендуется ввести количество, либо удалить эти позиции.'#13#13+
+                'Продолжить без корректировки количества?', Confirmation + YesNo) = cmYes;
+}
+
+#end //_MKORD_VPP

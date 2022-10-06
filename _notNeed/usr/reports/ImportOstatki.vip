@@ -1,0 +1,242 @@
+#component 'droga'
+vipinterface importOstatkiFromExcel licensed(free);
+
+interface importOstatkiFromExcel 'Импорт остатков. Предварительный просмотр. ENTER - начать импорт. ESC - отмена.' EscClose, DoAccept;
+CONST
+#include DrogaConst.inc;
+  LogPath ='C:\TEMP\ImportSloveniaLog.txt';
+END;
+
+table struct tOstatki (
+nrec    : comp,
+Found   : char,
+Artikel : string,
+NameSAP : string,
+NameGal : string,
+Kolvo   : double
+)
+with index
+(
+ tOstatki00 = Artikel,
+ tOstatki01 = Found
+);
+
+var
+  SourcePath: string;
+  OneRec: record
+    artikel, name: string;
+    kolvo: double;
+  end;//record
+
+  nRow, recCount: integer;
+  sTmp: string;
+  chTmp: char;
+  cTmp: comp;
+  podrNrec, EdIzmNrec, AttrnamNrec: comp;
+
+CREATE VIEW AS SELECT *
+FROM tOstatki,katsopr,soprhoz,spsopr,katmc,attrnam,attrval,lastnumd,katpodr,kated;
+
+BROWSE b1;
+  Table tOstatki;
+  Fields
+tOstatki.Found   'OK'                        : [2] , protect;
+tOstatki.Artikel 'Артикул', 'SAP'            : [10], protect;
+tOstatki.NameSAP 'Наименование', 'SAP'       : [20], protect;
+tOstatki.NameGal 'Наименование', 'Галактика' : [20], protect;
+tOstatki.Kolvo   'Количество'                : [10], protect;
+END;//browse
+
+HANDLEEVENT
+cmInit:
+{
+ SourcePath := '';
+ SourcePath := GetFileName('*.xls', 'Выберите файл-источник для импорта остатков');
+IF SourcePath = '' THEN
+{
+ CloseInterface(cmCancel);
+}
+ELSE //Если файл выбран
+{
+ If Not xlIsExcelValid xlCreateExcelWithTemplate(SourcePath, False);
+ xlSetActiveWorkBookByName('Data');
+ xlSetActiveSheetByName('Data');
+ StartNewVisual(vtRotateVisual, vfTimer, 'Выполняется чтение файла-источника', 0);
+ //Ищем склад
+ IF GetFirst katpodr where ((SkladSloveniaKod==katpodr.kod)) =tsOK THEN PodrNrec := katpodr.nrec ELSE Message('Не найден склад!');
+ //Ищем единицу измерения
+ IF GetFirst kated where (('шт' == kated.abbr)) = tsOK THEN EdIzmNrec := kated.nrec ELSE Message('Не найдена единица измерения "шт"!');
+ //Ищем attrnam
+ IF GetFirst attrnam where ((word(1411)==attrnam.wtable and AttrMCSAPCode == attrnam.name)) = tsOK THEN AttrnamNrec := attrnam.nrec ELSE Message('Не найден внешний атрибут "'+AttrMCSAPCode+'"!');
+
+ NRow := 0;
+ DO  //Ищем начало списка МЦ
+ {
+  NRow := Nrow + 1;
+  xlGetCellValue(NRow, 1, OneRec.Artikel);
+ }
+ WHILE OneRec.Artikel<>'Artikel' and NRow <= 20;
+
+ IF OneRec.Artikel <> 'Artikel' THEN
+ {
+  Message('В файле-источнике среди первых 20 строк не найдено поле "Artikel". Операция отменена');
+  xlKillExcel;
+  StopVisual('',0);
+  CloseInterface(cmCancel);
+ }
+ ELSE //Если "Artikel" найден
+ {
+  RecCount := 0;
+  DO
+  {
+   NRow:=NRow+1;
+   xlGetCellValue(NRow, 1, OneRec.Artikel);
+   IF OneRec.Artikel<>'' THEN
+   {
+    xlGetCellValue(NRow, 2, OneRec.Name);
+    xlGetCellValue(NRow, 7, OneRec.Kolvo);
+    //Если такой артикул уже был, увеличиваем количество
+    UPDATE tOstatki where ((OneRec.Artikel == tOstatki.Artikel)) SET tOstatki.Kolvo := tOstatki.Kolvo + OneRec.Kolvo;
+    //Если еще не было - вставляем
+	 IF RowCount = 0 THEN
+    {
+     chTmp:= ''; sTmp:=''; cTmp:=0;
+     IF GetFirst attrval where ((AttrnamNrec==attrval.cattrnam and OneRec.Artikel==attrval.vstring (noindex))) = tsOK
+     {
+      IF GetFirst katmc where ((attrval.crec==katmc.nrec)) = tsOK
+      {
+       chTmp:='V';
+       sTmp:=katmc.name;
+       cTmp:=katmc.nrec;
+      }//katmc
+     }//attrval
+     INSERT tOstatki
+     SET tOstatki.nrec      :=cTmp,
+	 	   tOstatki.Found     :=chTmp,
+	 	   tOstatki.Artikel   :=OneRec.Artikel,
+	 	   tOstatki.NameSAP   :=OneRec.Name,
+	 	   tOstatki.NameGal   :=sTmp,
+ 	 	   tOstatki.Kolvo     :=OneRec.Kolvo
+     ;//insert
+     RecCount:=RecCount+RowCount;
+    }//поиск katmc и вставка записи во временную таблицу
+   }//Непустой Артикул
+  }
+  WHILE OneRec.Artikel<>'';
+  xlKillExcel;
+  Rereadrecord(#tOstatki);
+
+  StopVisual('',0);
+ }//в источнике найден "Artikel"
+}//Если файл выбран
+}//cmInit
+
+cmDefault: {
+  if getFirst tOstatki where (('V' == tOstatki.found)) <> tsOk {
+    message('Внимание! Ни одна МЦ не найдена в каталоге.'+Chr(13)+'Импорт производиться не будет!', information);
+    exit;
+  }
+  sTmp := '1';
+  if getFirst lastnumd where ((word(611)==lastnumd.lndtype)) = tsOK THEN sTmp := NextNumStr(lastnumd.lndnum);
+  insert katsopr set
+    dsopr    = cur_Date,
+    yearsopr = year(cur_date),
+    nsopr    = sTmp,
+    vidsopr  = word(611),
+    cpodrto  = PodrNrec,
+    status   = word(1),
+    cnote    = comp(281474976710656002),//ссылка на "исполняемый"
+    descr    = sgettune('USER.DESCR'),
+    desgr    = sgettune('USER.DESGR'),
+    name     = 'Импорт складских остатков в Словении';
+  if rowCount = 0 {
+    message('Ошибка создания Акта об излишках (katsopr). Импорт не осуществлен!', error);
+    exit;
+  }
+  cTmp := katsopr.nrec;
+  insert soprhoz set
+    datob    = katsopr.dsopr,
+    csoprdoc = cTmp,
+    tipdoc   = katsopr.vidsopr,
+    tidkgal  = katsopr.vidsopr,
+    nodoc    = katsopr.nsopr;
+  if rowCount = 0 {
+    delete katsopr where ((cTmp==nrec));
+    message('Ошибка создания хозоперации (soprhoz). Импорт не осуществлен!', error);
+    exit;
+  }
+  startNewVisual(vtRotateVisual, vfTimer, 'Выполняется импорт остатков', 0);
+  update lastnumd where ((word(611)==lndtype)) set lndnum = sTmp;
+  DeleteFile(LogPath);
+  LogStrToFile(LogPath, '                  Журнал импорта остатков');
+  LogStrToFile(LogPath, '#'+ sgettune('USER.DESCR')+ '#'+datetostr(cur_date, 'DD.MM.YYYY')+ '#'+ timetostr(cur_time, 'HH:NN:SS')+ '#');
+  LogStrToFile(LogPath, '-----------------------------------------------------------');
+  LogStrToFile(LogPath, 'Создан Акт об излишках № ' + katsopr.nsopr + datetostr(katsopr.dsopr, ' от DD.MM.YYYY'));
+  nRow := 0;
+  _loop tOstatki {
+    if not NextVisual {
+     logStrToFile(LogPath,'Операция прервана пользователем');
+     exit;
+   } //not nextvisual
+
+   if tOstatki.Found='V' {
+     nRow++;
+     insert spsopr set
+       csopr = cTmp,
+       npp = nRow,
+       prmc = word(1),
+       cmcusl = tOstatki.nrec,
+       kol = tOstatki.kolvo,
+       kolopl = tOstatki.kolvo,
+       kolfact = tOstatki.kolvo,
+       cotped = EdIzmNrec,
+       dsopr = katsopr.dsopr,
+       vidsopr = katsopr.vidsopr;
+    }
+    else logStrToFile(LogPath,'Не найдена МЦ №'+tOstatki.Artikel+' "'+tOstatki.NameSAP);
+  } //loop
+  stopVisual('',0);
+  processText(LogPath, vfDefault or vfRunModal, 'Журнал импорта остатков. ESC - закрыть.');
+  runInterfaceNoModal('L_SKLAD::INV_PRIH', 611, cTmp);
+  delete all tOstatki;
+  closeInterface(cmDefault);
+}//cmDefault
+end;//HandleEvent
+end.//interface
+
+//////////////////////////////////////////////
+//
+//  пункт меню в отчетах пользовател
+//
+#component 'F_UserReport'
+#include UserReport.vih
+vipInterface UserReport_DrogaOstatki implements IUserReport licensed(free);
+
+Interface UserReport_DrogaOstatki;
+
+create view;
+procedure Run;
+begin
+RunInterface('droga::importOstatkiFromExcel');
+end;
+function GetReportName: String;
+begin
+  GetReportName := 'Импорт складских остатков в Словении';
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+end;
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'SKLAD';
+  end;
+end;
+!-------------------------------------------------------------------------------
+end.

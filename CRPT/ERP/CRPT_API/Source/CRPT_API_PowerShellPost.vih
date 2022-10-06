@@ -1,0 +1,12 @@
+//#component "ATLANTIC"
+#component "EM"
+objInterface objCRPT_API_PowerShellPost;
+  //Function GetRequestToAPIInfoList : boolean;
+  //Function GetRequestToAPIGetToken : boolean;
+end;
+
+vipInterface CRPT_API_PowerShellPost implements objCRPT_API_PowerShellPost
+  licensed(free)
+  Parameters (_Parameter : string; _par1 : string; _par2 : string; _par3 : string; _par4 : string; _par5 : string);
+
+var iCRPT_API_PowerShellPost : CRPT_API_PowerShellPost;

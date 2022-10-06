@@ -1,0 +1,16 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_CashBank
+
+#ifdef ComponentVersion
+#component "F_CashBank"
+#end
+
+VipInterface CashBank   Licensed(Free) Parameters (OutInt : boolean; myRazdel : word; myGetRec : comp);
+VipInterface CashTest   #Licensed_KBU;
+VipInterface GetCash    Licensed(Free) Parameters (myRazdel : word; myCash, myNastr : comp);
+VipInterface GetCashB   Licensed(Free) Parameters (myRazdel : word; myGetRec : comp);
+VipInterface GetCashD   Licensed(Free) Parameters (myRazdel : word; myGetRec : comp);
+VipInterface SelUsTip   Licensed(Free) Parameters (myTipGal, myTipUsers : word; myNastr : comp);
+VipInterface UsersDoc   Licensed(Free) Parameters (myRazdel, myTipDoc, myTipUsers : word; myGetRec : comp);
+VipInterface UsersRigth Licensed(Free) Parameters (myRazdel : word);
+

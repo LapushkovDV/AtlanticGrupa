@@ -1,0 +1,58 @@
+.begin
+ if tSpec.getFirst tblT12Tmp where ((КодМЦ == tCodeMC and gtdNumber == tGTDNumber)) = tsOk { 
+   tSpec.update current tblT12Tmp set
+     tKolGrM = tblT12Tmp.tKolGrM + double(KolGrM),
+     tCountU4 = tblT12Tmp.tCountU4 + КолУч,
+     tCol9 = tblT12Tmp.tCol9+ if(wFillCol10 = 0, (МассаМЦ + МассаТарыМЦ) * КолУч, 0),
+     tCol10 = tblT12Tmp.tCol10+ if(wFillCol10 = 0, МассаМЦ * КолУч, КолУч),
+     tPriceNoNDS = (tblT12Tmp.tSumNoNDS + double(СтНацБН))/ (TblT12Tmp. tCountU4),
+     //tPriceNoNDS = (tblT12Tmp.tSumNoNDS + double(СтНацБН))/ (TblT12Tmp.tKolGrM),
+     tPriceValNoNDS  = (TblT12Tmp.tSumValNoNDS + double(СтВалБН))/ (TblT12Tmp. tCountU4),
+     tSumNoNDS = tblT12Tmp.tSumNoNDS + СтНацБН,
+     tSumValNoNDS = TblT12Tmp.tSumValNoNDS + СтВалБН,
+     tSumTotal = tblT12Tmp.tSumTotal + СтНацСН,
+     tSumValTotal = TblT12Tmp.tSumValTotal + СтВалСН,
+     tSumNal = tblT12Tmp.tSumNal + СтНДСНац,
+     tSumValNal = TblT12Tmp.tSumValNal + СтНДСВал,
+     tgrMCount = tblT12Tmp.tgrMCount + КОЛ_ГРУЗОВЫХ_МЕСТ,
+     tCountF = TblT12Tmp.tCountF + КолФ;
+ }
+ else {
+   tSpec.insert tblT12Tmp set
+     tNom = Nom,
+     tName = Название,
+     tCodeMC = КодМЦ,
+     tOrder = codeMGB,
+     tUed = УчЕд,
+     tCodeEd = CodeEd,
+     tCodeOtpEd = CodeOtpEd,
+     tOtpEd = if(ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ <> '', ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ, ОтпЕд),
+     tKolOneGrM = KolOneGrM,
+     tKolGrM = double(KolGrM),
+     tCol9 = if(wFillCol10 = 0, (МассаМЦ + МассаТарыМЦ) * КолУч, 0),
+     tCol10 = if(wFillCol10 = 0, МассаМЦ * КолУч, КолУч),
+#ifdef _IN_VAL_DOC_
+     tPriceNoNDS = ЦНакБНУч,
+     tPriceValNoNDS = ЦВалБУч,
+#else
+     tPriceNoNDS = ЦНацБНУч,
+     tPriceValNoNDS = ЦВалБНуч,
+#end
+     tSumNoNDS = СтНацБН,
+     tSumValNoNDS =  СтВалБН,
+     tStNal = ставка_первого_налога,
+     tSumNal = СтНДСНац,
+     tSumValNal = СтНДСВал,
+     tSumTotal = СтНацСН,
+     tSumValTotal = СтВалСН,
+     tMassMC = МассаМЦ,
+     tMassTara = МассаТарыМЦ,
+     tCountU4 = КолУч,
+     tgrMBEI = ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ,
+     tgrMCount = КОЛ_ГРУЗОВЫХ_МЕСТ,
+     tCountF = КолФ,
+     tSrcCountry = srcCountry,
+     tGTDNumber = gtdNumber;
+   inc(количество_SpSopr); //-- Считаем только Вставки в таблицу!
+ }
+end.

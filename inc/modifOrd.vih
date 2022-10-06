@@ -1,0 +1,181 @@
+#ifndef _ModifOrd_VIH
+#define _ModifOrd_VIH
+
+#ifdef ComponentVersion
+#component "L_Sklad"
+#end
+
+#doc
+структуры записи таблицы SpOrder
+#end
+type TypeSpOrder = record as table SpOrder;
+
+#doc
+Для реализации public-функций триггеров складских ордеров
+#end
+ObjInterface ModifOrdsObj;
+
+#doc
+Вставка позиции спецификации ордера
+#end
+  Function AnySpOrder_insert(var spOrd_: TypeSpOrder): word;   // tsOk - если всё ок
+
+//******************************************************************************
+#doc
+Модификация позиции спецификации ордера
+#end
+  Function AnySpOrder_update(var spOrd_: TypeSpOrder): word;   // tsOk - если всё ок
+
+//******************************************************************************
+#doc
+Удаление позиции спецификации ордера
+#end
+  Function AnySpOrder_Delete(spOrd_    : TypeSpOrder): word;   // tsOk - если всё ок
+
+//******************************************************************************
+#doc
+Установка семафора
+#end
+  Function SetSemaphoreSklad(semStr_: string[40]; cRec_: comp): boolean;
+
+//******************************************************************************
+#doc
+Установка семафора
+#end
+ Function SetSemaphoreSklad2(semStr_: string[40]; cRec_: comp): boolean;
+
+//******************************************************************************
+#doc
+Снятие семафора
+#end
+ Procedure ClearSemaphoreSklad(semStr_: string[40]; cRec_: comp);
+
+//******************************************************************************
+#doc
+Подсчет суммы по ордеру - инициализация
+#end
+ Procedure InitCountSumSpOrder(var sumOrder, vSumOrder : double; var cValOrder, cOrd : comp);
+
+//******************************************************************************
+#doc
+Подсчет суммы по ордеру - завершение
+#end
+ Procedure DoneCountSumSpOrder;
+
+//******************************************************************************
+#doc
+Подсчет суммы по ордеру
+#end
+ Procedure CountSumSpOrder(_cSpOrder : comp; var sumOrder, vSumOrder : double; var cValOrder, cOrd : comp);
+
+//******************************************************************************
+#doc
+  Установка следующего номера складского ордера
+#end
+//******************************************************************************
+Function GetNextNOrder(Prih : boolean; cPodrOrd : comp; _SkPr : word) : string;
+
+//******************************************************************************
+#doc
+  Удаление созданного номера ордера
+#end
+//******************************************************************************
+Procedure AbortOrdNom(_cSklOrder : comp);
+
+//******************************************************************************
+#doc
+  Определение средних цен по разрезу
+#end
+//******************************************************************************
+Procedure GetLastPrice_Run( _wSp : word; _MC: comp; _Podr: comp; _Mol: comp; _Party: comp;
+                            _dInv : Date; var _Val: comp; var _Price, _VPrice: TSumma);
+
+//******************************************************************************
+#doc
+  Запрет редактирования ордеров в закрытом периоде склада/оперконтура
+#end
+Function IsOstOnMSPrPer(boSklOrder : boolean; _SkPr : word; _cNrec, _cSklPodr: comp; In_Date: Date): boolean;
+
+//******************************************************************************
+#doc
+  Сохранение текущего пользователя при установке семафора
+#end
+Function CurDescrIns(_wType : word; _Branch : comp; _SemaphName : string) : boolean;
+
+//******************************************************************************
+#doc
+  Считывание пользователя, который установил семафор
+#end
+Function CurDescrRead(_wType : word; _Branch : comp; _SemaphName : string) : String;
+
+//******************************************************************************
+
+#doc
+  Корректировка номера сопроводительного документа при изменение года в накладной
+#end
+Function GetNextNKatSopr(_cKatSopr : comp; _VidSopr : word; _nSopr : string; _dSopr, _OldDate : date) : string;
+//******************************************************************************
+
+#doc
+Проверка блокировки Подразделения на период проведения инвентаризации
+#end
+Function CheckBlockPodrInventar(_cKatSopr, _cSklOrdPodr : comp; _wFromTo : word; _boSklOrder, _boSoprOrdB, _boMess : boolean): boolean;
+
+//******************************************************************************
+#doc
+ Установка следующего номера складского ордера с учетом даты в ордере
+#end
+Function GetNextNOrderTekDate(Prih : boolean; cPodrOrd : comp; _SkPr : word; _DateOrd : Date) : string;
+
+end;
+
+ObjInterface ModifOrdsObj1(ModifOrdsObj);
+//******************************************************************************
+#doc
+  Определение средних цен по разрезу сразу по всем Подразделениям, МОЛ или Партиям
+#end
+//******************************************************************************
+Procedure GetLastPrice_RunAll( _wSp : word; _MC: comp; _Podr: comp; _Mol: comp; _Party: comp;
+                               _dInv : Date; var _Val: comp; var _Price, _VPrice: TSumma);
+
+//******************************************************************************
+#doc
+ Контроль уникальности номера ордера в пределах календарного года по настройке
+#end
+Function CheckUniqNoOrd(cRecSklOrder : comp; wSP, wVidOrder, wYearOrd : word; sNOrder : string; bChDate : boolean) : boolean;
+
+end;
+
+ObjInterface ModifOrdsObj2(ModifOrdsObj1);
+//******************************************************************************
+#doc
+ Контроль списания МЦ
+#end
+Function Check_wasSpisOrder(_cMC, _cParty, _cPodr, _cMOL, _cKatSopr: comp;  _SP : word; _dOpr : date; wModeSpis : word): boolean;
+
+end;
+
+ObjInterface ModifOrdsObj3(ModifOrdsObj2);
+//******************************************************************************
+#doc
+ Получение наименования подразделения по настройке
+#end
+Function GetPodrName(cPodrRec : comp) : string;
+
+end;
+
+ObjInterface ModifOrdsObj4(ModifOrdsObj3);
+//******************************************************************************
+#doc
+Корректировка последних ордеров дооценки
+#end
+Function CorrectOld (_dDate : date; _SkPr : word) : boolean;
+
+end;
+
+VipInterface ModifOrds implements ModifOrdsObj4
+licensed (FREE)
+//Parameters (SPTypeSopr: word; pNRec: comp)
+;
+
+#end //_ModifOrd_VIH

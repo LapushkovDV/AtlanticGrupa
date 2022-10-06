@@ -1,0 +1,232 @@
+#statusline "statgal"
+//#include PreDefs.inc;
+#include galnet.inc end;
+
+const
+#include GloConst.inc;
+#include Galnet.csc;
+#include Galnet.ccm;
+#include Money.ccm
+#include Money.csc //без Galnet.inc надо
+#include fldcolor.inc
+#include TUNES.INC
+
+end;
+type TPtr = longint;
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include DicTypes.def
+#include GloDefs.inc
+#include StatDefs.inc
+
+#define ComponentVersion  
+#include ExtAttr.vih
+#include DocProtector.vih
+
+#include ExtClass.vih
+#include ExtClass.var  // piExtClass
+#include countsal.vih
+#include NalogFun.vih
+#include DOfuns.vih
+#include DOfuns.var
+#include SpNext.vih
+#include SpNext.var
+#include GetKau.vih
+#include GetKau.var
+#include CreateTune.vih
+#include marker.vih
+#include UKSfuns.VIH
+#include SDfuns.VIH
+#include MSview.VIH
+#include AdrFunc.vih         // Функции работы с адресами
+
+#include DiadocFuncsExt.vih
+#include DiadocFuncsExt.var
+
+
+//кнопка для API ветиса
+const
+ coVETIS_PackageLevelType = 10031; // VETIS.PackageLevelType
+ coVETIS_ProductType      = 10032; // VETIS.ProductType
+ coVETIS_PackingCodeType  = 10033; // VETIS.PackingCodeType
+ coVETIS_EdIzm            = 10034; // VETIS.Единицы измерения
+ coVETIS_VidPRoduct       = 10035; // VETIS.Виды продукции
+ coVETIS_Status           = 10036; // VETIS.Виды продукции
+ coAttrNam_ExternalCode   = 'ExternalCode' ;
+ coAttrNam_GUID           = 'GUID';
+ coAttrNam_BusinessEntity = 'VETIS_BusinessEntity';
+ coATLANTIC_DIADOCAUTO_LOGNAME = 'ATLANTIC_DIADOCAUTO_LOGNAME';
+
+
+end;
+
+table struct tBuffer
+(
+  TextBuffer : string
+)
+with index
+(
+  iBuffer01 = TextBuffer
+);
+
+#include CRPT_API_PowerShell.vih
+#include Source\MercuryPRJ\PickingReport_Import.vih
+
+#Include "vih\ObjiexpImpScript_droga.vih"
+#include "vih\MTRFuncs.vih"
+#include "vih\MTRFuncs.var"
+#include "Source\EMAIL\ATL_EmailRun.Vih"
+#include "Source\MercuryPRJ\PickingReport_CopyBetweenDocs.vih"
+
+#include "Source\MercuryPRJ\MercuryPRJ_View.vih"
+#include "Source\MercuryPRJ\PickingReport_View.vih"
+#include "Source\MercuryPRJ\PickingReport_CopyBetweenDocs.vip"
+
+#define price_class 35
+
+var     extAttr: iExtAttr;
+
+#make "SOURCE\EMAIL\ATL_EmailRun.Vip"
+
+#make "SOURCE\Mailing_PaymentTerm_tune.vip"
+#make "SOURCE\Mailing_PaymentTerm.vip"
+// Назначение: Добавление колонок в список ДО на продажу,
+//             Изменение поведения при выборе статуса ДО на продажу
+//             Добавление полей в карточку редактирования ДО на продажу
+
+//#make "helpers\GLOB_AtlanticShowMaravt.vip"
+//#make "helpers\GLOB_AtlanticShowSkidki.vip"
+//#make "helpers\register_global_interfaces.vip"
+
+#make "alter\Alter_GoNewMon.vip"
+
+#make "alter\alter_L_SKLAD_SOPINMOV.vip"
+
+#make "alter\ALTER_DiadocExportDoc.vip"
+#make "alter\ALTER_DiadocExportDoc_tune.vip"
+
+#make "alter\Alter_iDiaDocSend.vip"
+#make "alter\ALTER_iDiadocSend_tune.vip"
+
+#make "alter\alter_DolgOpl.vip"
+#make "alter\Alter_BookPrZkPrint.vip"
+
+#make "alter\alter_l_basedoc_vschet.vip"
+#make "alter\alter_l_basedoc_vschetB.vip"
+#make "cnf\L_BASEDOC_VSCHET.cnf"
+#make "cnf\L_BASEDOC_VSCHETB.cnf"
+
+
+#make "alter\ALTER_AKTUSLB_111.vip"
+#make "alter\Alter_l_dogovor.vip"
+
+// создание настройки - запрет редактирования внешних атрибутов
+#make "alter\alter_Attribute.vip"
+#make "alter\alter_Attribute_tune.vip"
+
+// расчет задолженности по договору
+#make "alter\Alter_CalcDolgDG.vip"
+#make "alter\Alter_CalcDolgDG_tune.vip"
+
+//не печатаем пустые позиции
+#make "alter\Alter_PrnDocs.vip"
+
+// добавление полей при печати накладных fastreport
+#make "alter\Alter_PrnTovnForFastRep.vip"
+
+//по умолчанию дату проставляем при формировании
+#make "alter\Alter_RasprDo.vip"
+
+//пункты меню в накладные
+#make "alter\alter_SoprDoc.vip"
+#make "CNF\L_SOPRDOC_SOPRDOC.cnf"
+
+//подменяем ссылки
+#make "alter\Alter_TTNDOC.vip"
+
+#include VetisAPI_PowerShell_VarsTypes.vpp
+var      _VetisDiscrepancy : VetisDiscrepancy ;
+#include VetisAPI_PowerShell.vih
+#make "alter\Alter_KATORG.vip"
+
+
+#make "source\My_iDiadocSend.vip"
+
+//отчет по дебиторской задолженности
+#make "source\debitor\debitor.vip"
+#make "source\debitor\Debitor2.frm"
+var  AF: AddressFunc;
+
+#component "ATLANTIC"
+#make "source\Report_Org_VetisGUIDS.vip"
+#make "source\Export_SKIF-KARGO.vip"
+#make "source\ExportReestrCertifPDF.vip"
+#make "source\loadorder\LoadOrder.vip"
+#make "source\loadorder\LoadOrder_CRPT.vip"
+#make "source\loadorder\LoadOrder_tune.vip"
+#make "source\marshruts.vip"
+#make "Source\Atlantic_MenuDynamic.vip"
+
+ const
+ coAttr_NeedDesadv = 'EDI-Desadv';
+ coAttr_NeedDESMER = 'EDI-DESMER';
+ coAttr_NeedDesscc = 'EDI-Desscc';
+ coAttr_NeedInvoic = 'EDI-Invoic';
+ coAttr_EDI_AUTO   = 'EDI-auto';
+ coAttr_EDIInvoicLen  = 'EDI-Invoic-Len';
+ coAttr_EDOUTDAUTO    = 'EDO-UTD-auto';
+end;
+#make "Source\MercuryPRJ\MercuryPRJ_Import.vip"
+#make "Source\MercuryPRJ\MercuryPRJ_tune.vip"
+#make "Source\MercuryPRJ\MercuryPRJ_View.vip"
+#make "Source\MercuryPRJ\PickingReport_tune.vip"
+#make "Source\MercuryPRJ\PickingReport_Import.vip"
+#make "Source\MercuryPRJ\PickingReport_View.vip"
+
+
+#make "Source\ReportMassa_DO_NAKL.vip"
+#make "Source\ReportSumDeclarationToDO.vip"
+#make "Source\ReportSaleByMC.vip"
+#make "Source\CountSalMC_LAPUS.vip"
+
+#component "droga"
+// Управление сбытом - Отчеты - Реализация товаров и оказание услуг
+// ( Подробные отчеты, Итоги || Налоги, Наценки,массу и Объем)
+#make "Source\real.vip"
+#make "frm\real.frm"
+#make "frm\price_barcode.slk"
+#make "frm\price_SapCode.slk"
+
+
+#Include "source\sale_sale.tbl"
+#make "source\sale_sale.vip"
+#make "source\sale_check.vip"
+#make "source\sale_user.vip"
+#make "frm\sale_check.frm"
+
+
+
+#make "cnf\L_SKLAD_GETPRICE.cnf"
+#make "cnf\L_MCU_GTSPARTY2KATSOPR.cnf"
+#make "cnf\L_SKLAD_SOPINMOV.cnf"
+#make "cnf\L_SOPRDOC_SOPRDOCB.cnf"
+#make "cnf\L_PRICES_PRICELS.cnf"
+#make "cnf\L_SKLAD_PRIHORD.cnf"
+#make "cnf\L_SKLAD_RASHORD.cnf"
+
+/* пока уберем.. шняга при компиляции какая то
+
+#make "cnf\l_dogovor_dogovor.cnf"
+#make "cnf\F_PLPOR_BRPLPORPLAT2.cnf"
+
+
+
+#make "cnf\M_TRANSP_GET_DOR.cnf"
+#make "cnf\L_SKLAD_KARTSTORAGE.cnf"
+
+#make "cnf\F_GETAN_GTCGKAU_KATMC.cnf"
+#make "cnf\l_katorg.cnf"
+*/

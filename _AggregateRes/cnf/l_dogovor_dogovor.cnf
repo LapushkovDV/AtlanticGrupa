@@ -1,0 +1,49 @@
+object 'L_DOGOVOR::DOGOVOR' : InterfaceWindow {
+  object WISPDOG : InterfaceWindow {
+    object BRSPDOGRUB : Browser {
+      object 'c_BRSPDOGRUB_SPDOGBARCODE_Номенклатурный_номер' : Column {
+        Hidden = True;
+        StatusCtx = 6919;
+        DefaultPickButton = False;
+      } // c_BRSPDOGRUB_SPDOGBARCODE_Номенклатурный_номер : Column
+      object 'c_BRSPDOGRUB_Остаток' : Column {
+        Hidden = True;
+      } // c_BRSPDOGRUB_SPDOGBARCODE_Номенклатурный_номер : Column
+      object 'c_BRSPDOGRUB_SPDOCS.WMCPROP_С/Н' : Column {
+        Hidden = True;
+      } // c_BRSPDOGRUB_SPDOGBARCODE_Номенклатурный_номер : Column
+      object 'ExtAttr: KATMC,281474976710672960' : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        Skip = False;
+        StatusCtx = 150;
+        Title = 'BRAND';
+        HelpLine = 'BRAND';
+        FieldName = 'ExtAttr: KATMC,281474976710672960,5,8512,10023,1,goods 1 Brand';
+        DefaultValue = '';
+        Index = 6;
+        DefaultWidth = 8;
+        TextAlign = 0;
+        ButtonType = 0;
+        DefaultPickButton = False;
+      } // ExtAttr: KATMC,281474976710672960 : Column
+
+      // Информация: объект "'KATMC.BARKOD2'" типа Column не найден в базовой конфигурации!
+      object 'KATMC.BARKOD2' : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        StatusCtx = 16;
+        Title = 'SAP code';
+        HelpLine = 'SAP code';
+        FieldName = 'KATMC.BARKOD2';
+        Index = 8;
+        DefaultWidth = 8;
+      } // KATMC.BARKOD2 : Column
+     } // BRSPDOGRUB : Browser
+     } //object WISPDOG : InterfaceWindow {
+  } // L_DOGOVOR::DOGOVOR : InterfaceWindow
+//-----------------------------------------------------------------------------

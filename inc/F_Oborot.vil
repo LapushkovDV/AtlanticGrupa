@@ -1,0 +1,12 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_Oborot
+
+#ifdef ComponentVersion
+#component "F_Oborot"
+#end
+
+VipInterface GMD_Oborot #Licensed_Free Parameters (Marker : longint; cDocSourceOborot : comp);
+VipInterface OborotNM   #Licensed_Free;
+VipInterface OborStat   #Licensed_Free;
+VipInterface GetProv    #Licensed_Free Parameters(wIntMode : word; myS : string);
+

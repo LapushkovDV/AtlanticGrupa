@@ -1,0 +1,12 @@
+Alter table ::ATL_PickingRep_HEAD
+Add
+(
+  wStatus : word "Status doc if isoK"
+)
+;
+Alter table ::ATL_PickingRep_SPEC
+Add
+(
+  wStatus : word "Status doc if isoK"
+)
+;

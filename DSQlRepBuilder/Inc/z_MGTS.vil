@@ -1,0 +1,12 @@
+#ifdef ComponentVersion
+#component "z_MGTS"
+#end
+
+vipinterface CompName;
+vipinterface Init_Kat;
+vipinterface Ref_Kat;
+vipinterface Kat_Otd licensed(free) parameters (KAT: byte; Stat: byte; MarkerSTAT: longint)
+vipinterface Otch_Inf licensed(free) parameters (PR: byte);
+vipinterface MGTS_Im licensed(free) parameters (REP_REC: comp);
+vipinterface MGTS_Form licensed(free) parameters (Ot: byte; N_FRM: byte);
+vipinterface CREAT_SHAB;

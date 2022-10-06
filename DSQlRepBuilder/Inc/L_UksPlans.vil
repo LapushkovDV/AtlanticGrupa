@@ -1,0 +1,47 @@
+// Галактика 8.00   2004 г.
+// Описание экспортируемых интерфейсов компоненты L_UksPlans
+
+#ifdef ComponentVersion
+#component "L_UksPlans"
+#end
+
+#include TValue.inc // Декларация типа TValue, описывающего значение показателя плана
+
+VipInterface BuildPlan    licensed (stroy);
+VipInterface BuildPlanJob licensed(FREE);
+VipInterface GanttShow    licensed( STROY_GANT ) Parameters( objOleView: longint; title: string );
+VipInterface GetVarPl     licensed(FREE) Parameters(piMode : integer; pcNode, pcNrec : comp);
+VipInterface ImportPlan   licensed(FREE);
+VipInterface RUksArea     licensed(FREE) Parameters(piMode : integer; pcNrec : comp);
+VipInterface PrintPlanKS  licensed(FREE) Parameters(piMode : integer);
+VipInterface GetJobForMTO licensed(FREE) Parameters(pcSpPlan : comp; pcJob : comp);
+VipInterface GetSpPlanForMTO licensed(FREE) Parameters(pcSpPlan : comp);
+VipInterface IAttrPlan licensed (FREE);
+VipInterface GetVarForPlan licensed(FREE) Parameters(piMode : integer; pcPlan, pcCO, pcPer, pcVar : comp);
+VipInterface IPlanEdit licensed(FREE) Parameters(piMode : integer; pcPlanHier, pcPlanVar : comp);
+VipInterface PrnPlanStroy licensed(FREE) Parameters(pcPlanVar, pcPresent : comp; piPrice, piScale : integer);
+VipInterface RepUKS_Balans_Year licensed(FREE) Parameters(pcTPP, pcPeriod, pcPlanVar, pcCO, pcPresent : comp; pcStroyObjMode, pcScale : integer);
+VipInterface RepUKS_Balans_Kvart licensed(FREE) Parameters(pcTPP, pcPeriod, pcPlanVar, pcCO, pcPresent : comp; pcStroyObjMode, pcScale : integer);
+VipInterface RepUKS_PlanYearInvest licensed(FREE) Parameters(pcTPP, pcPeriod, pcPlanVar, pcCO, pcPresent : comp; pcStroyObjMode, pcScale : integer);
+VipInterface RepPlInvestProg licensed(FREE) Parameters(pcObj, pcPeriod, pcPlanVar, pcCO, pcPresent : comp; piScale : integer);
+VipInterface RepPlAnnual licensed(FREE) Parameters(pcTPP, pcPeriod, pcCO, pcPresent : comp; piRegister, piPrice, piScale : integer);
+VipInterface RepPlByCO licensed(FREE) Parameters(pcPeriod, pcCO : comp; piRegister, piPrice, piScale : integer);
+VipInterface RepPlExecut licensed(FREE) Parameters(pcPlanVar, pcPresent : comp; piPrice, piScale : integer);
+VipInterface RepPlReestr licensed(FREE) Parameters(pcCO, pcPerBeg, pcPerEnd : comp; piPrice, piScale : integer);
+VipInterface IDecompByPeriod licensed(FREE) Parameters(pcCo, pcPer, pcVar : comp);
+VipInterface CopyPlanJob licensed(FREE) Parameters(cRecSrc : comp; cRecDst : comp; piMode : integer);
+VipInterface ExportPlanToXML licensed(FREE) Parameters(pcPlanVar : comp);
+VipInterface PrnPlanCO licensed(FREE);
+VipInterface PrnPlanSMR licensed(FREE);
+VipInterface PrnPlanType licensed(FREE);
+VipInterface PrnPlanVid licensed(FREE);
+VipInterface PrnPlanCOSvod licensed(FREE);
+VipInterface PrnReestrVnesh licensed(FREE);
+VipInterface PrnReestrVidStr licensed(FREE);
+VipInterface PrnPFZatr licensed(FREE) Parameters(pwMode : word);
+VipInterface PrnRepSMR licensed(FREE);
+VipInterface PrnRepIsp licensed(FREE);
+VipInterface PrnRepVyp licensed(FREE);
+VipInterface PrnGraphs licensed(FREE);
+VipInterface RemoveStruct licensed(FREE) Parameters(cur_PlanJob : comp; pwCurTable : word);
+VipInterface ValueAttrib  licensed(FREE) Parameters(prValue: TValue; psTask: string);

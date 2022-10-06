@@ -1,0 +1,231 @@
+function PutData(nR,nP:word;nRo,nCo:longint;sV:string;dV:double;tV:string;Clr:longint):boolean;
+{
+  result := (INSERT tData SET
+	nRep = nR,
+	nPart = nP,
+	nRow = nRo,
+	nCol = nCo,
+	sValue = sV,
+	fValue = sV,
+	dValue = dV,
+	tipVal = tV,
+	color = Clr) = tsOk;
+  if(p.cauntCol[1]<nCo){p.cauntCol[1]:=nCo;}
+ //message('p.cauntRows[1]='+p.cauntRows[1]+'   p.cauntCol[1]='+p.cauntCol[1]+'  sV='+sV);
+}
+
+function PutHeder(nR:word;nRo,nCo:longint;sV,tV:string;Clr:longint):boolean;
+{
+  result := (INSERT tHeder SET
+	nRep = nR,
+	nRow = nRo,
+	nCol = nCo,
+	sValue = sV,
+	fValue = sV,
+	dValue = double(sV),
+	tipVal = tV) = tsOk;
+
+}
+function outHeder(namber:word;name:string;xRow,yCol:longint):boolean; 
+{
+ VAR s,f:string;
+ VAR nR,kR,nC,kC: longint;
+ VAR d:double;
+  
+// xlAddSheet;
+// xlSetSheetName(1,name);
+ xlSetActiveSheetByName(name);
+ _loop tHeder where((namber==nRep)) ordered  by nomEl
+  {
+
+
+
+    CASE tHeder.tipVal OF
+	'string':xlSetCellStringValue(tHeder.sValue,tHeder.nRow,tHeder.nCol,tHeder.nRow,tHeder.nCol);
+	'double':xlSetCellNumberValue(tHeder.dValue,tHeder.nRow,tHeder.nCol,tHeder.nRow,tHeder.nCol);
+	'formula':xlSetCellFormula(tHeder.fValue,tHeder.nRow,tHeder.nCol,tHeder.nRow,tHeder.nCol);
+	'variant':xlSetCellStringValue(tHeder.sValue,tHeder.nRow,tHeder.nCol,tHeder.nRow,tHeder.nCol);
+    end; 
+  } 
+
+
+ outHeder:=true;
+}
+// Вывод тела отчета (namber-номер отчета;part-номер части отчета;name-наименование листа;
+// xRow,yCol-смещение от верхнего левого угла)
+function outData(namber,part:word;name:string;xRow,yCol,stepR,stepC:longint):boolean; 
+{
+ VAR s,f:string;
+ VAR nR,kR,nC,kC,kstrok,j,j1: longint;
+ VAR d:double;
+ VAR res:boolean;
+  StartNewVisual(vtRotateVisual, vfTimer+vfBreak+vfConfirm,''#3'Выгрузка отчета в Excel'#13#3, 1);
+  
+ xlSetActiveSheetByName(name);
+ XLCREATEMATRIX(stepR,stepC);
+ xlClearMatrix;
+ // xlDoWriteToMatrix(1,1,1);
+ kstrok:=0;
+ _loop tData where((namber==tData.nRep and part==tData.nPart)) ordered  by nomEl
+  {
+
+    kstrok:=kstrok+1;
+ // message('tData.nPart='+tData.nPart+'  tData.nRow='+tData.nRow+'  tData.nCol='+tData.nCol+'  tData.sValue='+tData.sValue);
+    CASE tData.tipVal OF
+	'string': xlStWriteToMatrix(tData.nRow,tData.nCol,tData.sValue);
+	'double': xlDoWriteToMatrix(tData.nRow,tData.nCol,tData.dValue);
+      //'formula': xlStWriteToMatrix(tData.nRow,tData.nCol,tData.fValue);
+//	'variant': xlStWriteToMatrix(tData.nRow,tData.nCol,tData.vValue);
+    end; 
+  }
+ // xlSetNumberFormat('@',xRow,1,stepR+xRow,stepC); 
+  xlWriteMatrixToExcel(xRow,yCol);
+  xlFreeMatrix;
+ if NOT(iNextVisual ('Форматирование отчета в Excel')){}
+ _loop tData where((namber==nRep and part==nPart and 'formula'==tipVal))
+  {                                                   
+    xlSetCellFormula(tData.fValue,tData.nRow+xRow-1,tData.nCol+yCol,tData.nRow+xRow-1,tData.nCol+yCol+1);
+  }
+
+ //Установка обрамления ячеек
+    xlFrameCells(63,2,7,0,xRow,yCol,stepR+xRow,stepC+yCol-1);
+
+ _loop tData where((namber==nRep and part==nPart and 1==nCol and ' '==sValue))
+  {                                                   
+  xlSetFontStyle(1,tData.nRow+xRow-1,yCol,tData.nRow+xRow-1,yCol+stepC+1);
+  xlSetBackColor(tData.Color, tData.nRow+xRow-1, yCol+1, tData.nRow+xRow-1,yCol+stepC-1+1+1); 
+  }
+
+ //Установка цвета фона ячеек
+ _loop tData where((namber==nRep and part==nPart and 'color'==tipVal))
+  {
+  xlSetBackColor(tData.Color, tData.nRow+xRow, tData.nCol+yCol+1, tData.nRow+xRow+tData.stepRow,tData.nCol+yCol+tData.stepCol+1); 
+  }
+ // Форматирование листа
+ // xlFreeze(17,6);                                            
+  StopVisual('',0);
+ outData:=true;
+}
+function getOrgAttr(recOrg:comp;VAR nameOrg,kodOrg,inn,kpp,okpo,postADDR,jurADDR,agentFIO,bankAttr:string):boolean; 
+{
+ // message('recOrg='+recOrg);
+  // recOrg:=0h;
+  nameOrg:='';
+  kodOrg:='';
+  inn:='';
+  kpp:='';
+  okpo:='';
+  postADDR:='';
+  jurADDR:='';
+  agentFIO:='';
+  bankAttr:='';
+
+  getOrgAttr:=false;
+  if(getfirst KATORG WHERE((recOrg==KATORG.NREC)))=tsOk
+   {
+    nameOrg:=KATORG.NAME;
+    kodOrg:=KATORG.CODE;
+    inn:=KATORG.UNN;
+    okpo:=KATORG.OKPO;
+    postADDR:=KATORG.ADDR;
+    
+   }
+ // message('nameOrg='+nameOrg);
+  getOrgAttr:=true;
+}
+function PutTune(vid:word;NameTune,ValTune:string;rec:comp) :comp; // return ATTRVAL.NREC
+var
+  recNam: comp;
+  kolRec: longint;
+{
+
+ PutTune:=0h;
+
+ if(getfirst ATTRNAM WHERE((1006==ATTRNAM.WTABLE 
+			and (ATTRNAM.NAME=NameTune) )) )=tsOk
+  {
+   recNam:=ATTRNAM.NREC
+  }
+  else
+   {
+    INSERT ATTRNAM SET WTABLE:=1006,NAME:=NameTune;
+    if(getfirst ATTRNAM WHERE((1006==ATTRNAM.WTABLE 
+			and (ATTRNAM.NAME=NameTune) )) )=tsOk
+     {
+      recNam:=ATTRNAM.NREC
+     }
+   }                       
+
+
+ if(getfirst ATTRVAL WHERE((1006==ATTRVAL.WTABLE and rec==ATTRVAL.CREC and recNam==ATTRVAL.CATTRNAM 
+			and (rec<>0h))))=tsOk
+  {
+   UPDATE current ATTRVAL SET   VSTRING:=if(vid=1,ValTune,ATTRVAL.VSTRING),
+				VDOUBLE:=if(vid=2,double(ValTune),ATTRVAL.VDOUBLE),	
+				VCOMP:=if(vid=3,comp(ValTune),ATTRVAL.VCOMP);
+   PutTune:=ATTRVAL.NREC;	
+  }
+ else
+ {
+ if(getfirst ATTRVAL WHERE((1006==ATTRVAL.WTABLE and 0h==ATTRVAL.CREC and recNam==ATTRVAL.CATTRNAM 
+			and (ATTRVAL.VSTRING = 'kolRec') )) )=tsOk
+  {
+   kolRec:=ATTRVAL.VCOMP+1; UPDATE current ATTRVAL SET VCOMP:=ATTRVAL.VCOMP+1;
+   INSERT ATTRVAL SET WTABLE:=1006,CREC:=kolRec,CATTRNAM:=recNam,
+				VSTRING:=if(vid=1,ValTune,''),
+				VDOUBLE:=if(vid=2,double(ValTune),0),	
+				VCOMP:=if(vid=3,comp(ValTune),0h);
+   if(getfirst ATTRVAL Where((1006==ATTRVAL.WTABLE and kolRec==ATTRVAL.CREC 
+		and recNam==ATTRVAL.CATTRNAM and (ATTRVAL.VSTRING = ValTune) )) )=tsOk
+    {PutTune:=ATTRVAL.NREC;}	
+  }
+  else
+   {
+    INSERT ATTRVAL SET WTABLE:=1006,CREC:=0,CATTRNAM:=recNam,VSTRING:='kolRec',VCOMP:=1;
+    INSERT ATTRVAL SET WTABLE:=1006,CREC:=1,CATTRNAM:=recNam,
+				VSTRING:=if(vid=1,ValTune,''),
+				VDOUBLE:=if(vid=2,double(ValTune),0),	
+				VCOMP:=if(vid=3,comp(ValTune),0h);	
+   if(getfirst ATTRVAL Where((1006==ATTRVAL.WTABLE and 1==ATTRVAL.CREC 
+		and recNam==ATTRVAL.CATTRNAM and (ATTRVAL.VSTRING = ValTune) )) )=tsOk
+    {PutTune:=ATTRVAL.NREC;}	
+   }
+ }
+ rereadrecord;
+}
+procedure PutMes(vid:word;mes:string);
+var
+  recNam:comp;
+  kolRec:longint;
+{
+ if(getfirst ATTRNAM WHERE((1006==ATTRNAM.WTABLE 
+			and if(vid=1,'iMarket.SystemMessage','iMarket.InputMessage')==ATTRNAM.NAME)))=tsOk
+  {
+   recNam:=ATTRNAM.NREC
+  }
+  else
+   {
+    INSERT ATTRNAM SET WTABLE:=1006,NAME:=if(vid=1,'iMarket.SystemMessage','iMarket.InputMessage');
+    if(getfirst ATTRNAM WHERE((1006==ATTRNAM.WTABLE 
+			and (ATTRNAM.NAME = if(vid=1,'iMarket.SystemMessage','iMarket.InputMessage') ) )) )=tsOk
+     {
+      recNam:=ATTRNAM.NREC
+     }
+   }                       
+
+ if(getfirst ATTRVAL WHERE((1006==ATTRVAL.WTABLE and 0h==ATTRVAL.CREC and recNam==ATTRVAL.CATTRNAM 
+			and (ATTRVAL.VSTRING = 'kolRec') )) )=tsOk
+  {
+   kolRec:=ATTRVAL.VCOMP+1; UPDATE current ATTRVAL SET VCOMP:=ATTRVAL.VCOMP+1;
+   INSERT ATTRVAL SET WTABLE:=1006,CREC:=kolRec+1,CATTRNAM:=recNam,VSTRING:=mes,VDATE:=Cur_Date,VTIME:=Cur_Time;
+   INSERT tGalMes SET nrec:=kolRec+1, comment:=mes,DataMes:=Cur_Date,TimeMes:=Cur_Time;
+  }
+  else
+   {
+    INSERT ATTRVAL SET WTABLE:=1006,CREC:=0,CATTRNAM:=recNam,VSTRING:='kolRec',VCOMP:=1;
+    INSERT ATTRVAL SET WTABLE:=1006,CREC:=1,CATTRNAM:=recNam,VSTRING:=mes,VDATE:=Cur_Date,VTIME:=Cur_Time;
+    INSERT tGalMes SET nrec:=1, comment:=mes,DataMes:=Cur_Date,TimeMes:=Cur_Time;
+   }
+
+ rereadrecord;
+}

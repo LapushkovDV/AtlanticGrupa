@@ -1,0 +1,11 @@
+#ifndef __MCORIGINCOUNTRY_VIH
+#define __MCORIGINCOUNTRY_VIH
+
+ObjInterface IMCOriginCountry;
+function getCountryName(cMC: comp; cParty: comp): string;
+function getGTDNumber(cParty: comp): string;
+end;
+
+VipInterface MCOriginCountry implements IMCOriginCountry;
+
+#end

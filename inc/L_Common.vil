@@ -1,0 +1,12 @@
+#ifdef ComponentVersion
+#component "L_COMMON"
+#end
+
+vipinterface GetVozv   licensed (FREE) Parameters (p1, p2 : comp; KolV : double);
+vipinterface GetBDName licensed (FREE) Parameters (w1 : word; s1 : string[80]);
+vipinterface MoveAttrToLS licensed (FREE);
+vipinterface MoveAttrToLS2 licensed (FREE);
+VipInterface PickKolExt licensed (FREE) Parameters (pMc, pOtpEd: comp; pKol, pNetto, pTara, pBrutto: double);
+VipInterface ShowSrPr licensed (FREE) Parameters (d1 :date; SkPr :word; c1, c2, c3 :comp);
+VipInterface GetIcon  licensed (FREE) Parameters (IconName : string);
+VipInterface iSetNoEditCena licensed (FREE) Parameters (sOtherDocs : string);

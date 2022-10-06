@@ -1,0 +1,41 @@
+#component 'F_UserReport'
+INTERFACE Droga_GetDogForRaznos 'Выбор договора/ДС для распределения' DoAccept, EscClose;
+CREATE VIEW
+VAR vcPerevoz, vcDogovor : comp;
+AS SELECT * FROM dogovor
+WHERE
+((
+    word(1)   == dogovor.status
+and word(2)   == dogovor.direct (noindex)
+and vcPerevoz == dogovor.corg   (noindex)
+));
+PARAMETERS vcPerevoz, vcDogovor;
+
+BROWSE br1;
+  TABLE dogovor;
+  FIELDS
+    Dogovor.nodoc    'Номер'    : [10], protect;
+    Dogovor.DDoc     'Дата'     : [10], protect;
+    Dogovor.Summa    'Сумма'    : [15,'\2p[|-]366`666`666`666`666.88'], protect;
+END;
+
+HANDLEEVENT
+cmInit:
+{
+ SET vcPerevoz := vcPerevoz;
+ vcDogovor:=0;
+ ReScanPanel(tnDogovor);
+}//cminit
+
+cmDefault:
+{
+ vcDogovor:=dogovor.nrec;
+ CloseInterface(cmDefault);
+}//cmdefault
+
+cmCancel:
+{
+ CloseInterface(cmCancel)
+}//cmcancel
+END;//handleevent
+END.

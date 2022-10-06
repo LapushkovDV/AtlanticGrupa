@@ -1,0 +1,13 @@
+Create table CRPT_Errors
+With table_Code = 31648
+with Replace
+(
+  NRec      : comp   "Номер записи",
+  RqstGuid  : string "Request GUID",
+  message   : string "Error message",
+  sender    : string "circuitserviceID"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);

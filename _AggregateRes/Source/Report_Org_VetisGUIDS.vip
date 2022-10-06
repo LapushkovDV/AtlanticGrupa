@@ -1,0 +1,187 @@
+#Component "ATLANTIC"
+interface Report_Org_VetisGUIDS 'Список контрагентов c vetis_GUIDs', EscClose;
+table struct tReport
+(
+   OrgName      : string
+ , OrgAltername : string
+ , Nrec          : comp
+ , VETIS_BusinessEntity : string
+ , VETIS_Enterprise : string
+ , cadrr_Pocht : comp
+ , cadrr_Jurid : comp
+)
+with index
+(
+ ind0 = Nrec
+)
+;
+create view
+as select
+nrec
+ from
+tReport
+;
+
+procedure PrintReport;
+{
+  StartNewVisual(vtRotateVisual, vfTimer,'Запрос в СУБД', 0);
+
+   delete all treport;
+  _try
+  {
+    sql
+      select
+      Org.name as OrgName
+      ,Org.ShortName as OrgAltername
+      ,org.NREC as Nrec
+      ,av_BG.vString as VETIS_BusinessEntity
+      ,av_eg.vString as VETIS_Enterprise
+      , Org.cPostAddr as cadrr_Pocht
+      , Org.cJuridicalAddr as cadrr_Jurid
+      from Katorg org
+       join attrnam an_BG on an_BG.wtable = 1418 and an_BG.name = 'VETIS_BusinessEntity'
+       join attrnam an_EG on an_EG.wtable = 1418 and an_EG.name = 'VETIS_Enterprise'
+       join attrval av_BG on av_BG.cAttrnam = an_BG.nrec and av_BG.cRec = Org.Nrec and AV_BG.wtable = an_BG.wtable
+       left join attrval av_EG on av_EG.cAttrnam = an_EG.nrec and av_EG.cRec = Org.Nrec and AV_EG.wtable = an_EG.wtable
+       into tReport
+       ;
+  }
+  _except
+  else {
+    var _empty : boolean;  _empty := true;
+  }
+  if getfirst tReport <> tsOK
+  {
+    message('Нет данных для формирования отчета', error);
+    stop; abort; exit;
+  }
+  SetViSualHeader( 'Инициализация EXCEL');
+  var ExcelResult : boolean;
+   ExcelResult := True;
+  var sfile : string;
+   sfile:=GetStringParameter('Files','OutputFilesDirectory',0) + 'Report_Org_VetisGUIDS_'+USERNAME+'.xls';
+   deleteFile(sfile);
+   ExcelResult := xlCreateExcel(sfile, True);
+   ExcelResult := xlIsExcelValid;
+   if not ExcelResult then
+    {
+     StopVisual('The End',vfTimer);
+     Message('Ошибка инициализации Excel');
+     exit
+    }
+    xlAddSheet;
+   var ListName : string ;
+   var column : word = 0;
+    ListName:='VetisGUIDS_' + USERNAME;
+    xlSetSheetName(1, ListName);
+    var KolVoStrok : longint = recordsintable(tnTreport);
+    xlSetActiveSheetByName( ListName);
+    XlCreateMatrix(KolVoStrok+5,15);
+  var nrow: longint = 1;
+  column :=1;
+          XlStWriteToMatrix(Nrow, 1,'Список организаций с кодами VETIS');
+          xlMergeCells(nrow,1,nrow,6);
+  nrow++;
+          XlSetColumnWidth(20,nrow,column,nrow,column) ;
+          XlStWriteToMatrix(Nrow, Column,'Наименование'); column++;
+          XlSetColumnWidth(20,nrow,column,nrow,column) ;
+          XlStWriteToMatrix(Nrow, Column,'Альтернативное наименование'); column++;
+          XlSetColumnWidth(30,nrow,column,nrow,column) ;
+          XlStWriteToMatrix(Nrow, Column,'NREC'); column++;
+          XlSetColumnWidth(40,nrow,column,nrow,column) ;
+          XlStWriteToMatrix(Nrow, Column,'VETIS_BusinessEntity'); column++;
+          XlSetColumnWidth(40,nrow,column,nrow,column) ;
+          XlStWriteToMatrix(Nrow, Column,'VETIS_Enterprise'); column++;
+          XlSetColumnWidth(40,nrow,column,nrow,column) ;
+          XlStWriteToMatrix(Nrow, Column,'почтовый адрес'); column++;
+          XlSetColumnWidth(40,nrow,column,nrow,column) ;
+          XlStWriteToMatrix(Nrow, Column,'юридический адрес'); column++;
+          xlSetFontstyle(1,nrow,1,nrow,13) ;
+
+   _loop tReport
+   {
+     nrow++ ;
+     column := 1;
+     XlStWriteToMatrix(Nrow,column, tReport.OrgName); column++;
+     XlStWriteToMatrix(Nrow,column, tReport.OrgAltername ); column++;
+     XlStWriteToMatrix(Nrow,column, chr(39)+tReport.Nrec          ); column++;
+     XlStWriteToMatrix(Nrow,column, tReport.VETIS_BusinessEntity ); column++;
+     XlStWriteToMatrix(Nrow,column, tReport.VETIS_Enterprise ); column++;
+     XlStWriteToMatrix(Nrow,column, AF.GetFullAddressInd(tReport.cadrr_Pocht )); column++;
+     XlStWriteToMatrix(Nrow,column, AF.GetFullAddressInd(tReport.cadrr_Jurid ));
+
+   }
+//         nrow++
+  xlwraptext(1,1,nrow,13)  ;
+  xlFrameCells(63, 2, 1, 1, 1, 1, nrow,column);
+  xlWritematrixToExcel(1,1);
+ xlKillexcel;
+ StopVisual('', 0);
+
+}
+
+Handleevent
+cmInit:
+{
+ PrintReport;
+}
+end;
+end.
+//------------------------------------------------------------------------------
+// Отчеты пользователя
+//------------------------------------------------------------------------------
+
+#Component "F_UserReport"
+
+ObjInterface IUserReport;
+  // Запуск отчета на вvполнение при выборе его из списка отчетов
+  procedure Run;
+  // Наименование отчета в списке
+  function GetReportName : String;
+  // Наименования групп, в которvе входит отчет
+  // +Группа n+1 делается подчиненной группе n
+  function GetGroupName (Level : Word) : String;
+  // Приоритет отчета - сортировка внутри группv вvполняется сначала
+  // по приоритету, а затем по наименовани_
+  function GetPriority : Integer;
+  // ModuleID модулей, в которvх будет виден отчет
+  // '*' - отчет будет виден в любом модуле
+  function VisibleInModule (Ind : Byte) : String;
+end;
+
+VipInterface UserReport_Report_Org_VetisGUIDS Implements IUserReport;
+
+Interface UserReport_Report_Org_VetisGUIDS
+
+create view;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'SELL';
+    2 : VisibleInModule := 'BUY';
+  end;
+end;
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+  case Level of
+    1 : GetGroupName := '';
+  end;
+end;
+
+function GetReportName: String;
+begin
+  GetReportName := 'Список контрагентов c vetis_GUIDs'
+end;
+!-------------------------------------------------------------------------------
+procedure Run;
+begin
+  runinterface(ATLANTIC::Report_Org_VetisGUIDS);
+end;
+!-------------------------------------------------------------------------------
+end.

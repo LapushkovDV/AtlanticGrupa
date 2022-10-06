@@ -1,0 +1,1164 @@
+const
+  StrDateFormat   = 'DD/MM/YYYY';
+  coKauChanel     = 10022 ;
+  coListName      = 'Бланк заказа';
+  cokolDn3        = 3;
+end;
+Interface LoadOrders 'Загрузка ДО';
+  show at (,, 91, 23);
+
+#include VarsTypes.vip
+
+table Struct tPriceToOrgAndMc
+(
+  CPRICELS : comp
+ ,cOrg     : comp
+ ,cMc      : comp
+ ,cDogUs   : comp
+ ,cDog     : comp
+)
+with index
+(
+   Index1 = cOrg + cMc + cDog
+  ,Index2 = cDog + cDogUs
+  ,Index3 = cOrg + cDog + cDogUs + cMc
+)
+;
+table Struct tOrgDogDogUs
+(
+  cOrg     : comp
+ ,cDogUs   : comp
+ ,cDog     : comp
+ ,isdel    : byte
+)
+with index
+(
+   Index1 = cOrg + cDog + cDogUs
+  ,Index2 = cDog + cDogUs
+)
+;
+Table Struct tInsertBaseDoc
+(
+    nrec        : comp
+  , cOrg         : comp
+  , cDogovor     : comp
+  , CAPPDOGOVOR  : comp
+  , DataDoc      : date
+  , cPodr        : comp
+  , TipDoc       : word
+  , cFile        : string
+  , cFileTo      : string
+  , Descr        : string
+  , FlagErr      : byte
+  , kolDog       : String
+)
+with index
+(
+  Index1 = nrec (surrogate, unique)
+  ,Index2 = cFile
+)
+;
+Table struct tInsertBaseDocSP
+(
+   ctInsertBaseDoc : comp
+ , cMC       : comp
+ , cEdUchOtp : comp
+ , cGrNal    : comp
+ , Kol       : double
+ , Price     : double
+ , PriceVal  : double
+ , FileRow   : longInt
+ , Descr     : string
+ , FlagErr   : byte
+ , cPriceList : comp
+)
+with index
+(
+ index0 = ctInsertBaseDoc
+)
+;
+
+create view
+var
+  pMarker: IMarker(marker) new;
+      File_input
+  , Folder_input
+  , Folder_To
+  , _FileOrgCode  :string;
+  _logFile: string;
+  _cAttrOrgCode
+  , _cStatus  : comp;
+  _wStatus : word;
+    _globalErr
+  , _isError : boolean;
+  _cChanel : comp;
+   typeTable : word;
+  _Inserted,mid : longint;
+  _DateDO : date;
+  _cPriceLIstDef  : comp;
+
+  MyMarkerDocs, IndexMC   : longInt;
+  NameMarkerMC : string;
+
+
+as select katmc.nrec
+, KlPrice.NAME (FieldName = PriceList)
+, KlPrice_br.NAME (FieldName = PriceListBR)
+, SpKau.name  (FieldName = Chanel)
+, (Dogovor_br.NoDoc + ' от '+Dogovor_br.DDoc) (FieldName = DogovorStr)
+, (AppDogovor_br.NoDoc + ' от '+AppDogovor_br.DDoc) (FieldName = AppDogovorStr)
+,   if(isValid(tnAppDogovor_ins), AppDogovor_ins.cBankPlat
+    ,if(isValid(tnDogovor_ins), Dogovor_ins.cBankPlat
+     ,if(isvalid(tnKatBank_Def) ,KatBank_Def.nrec,
+       if(isvalid(tnKatBank_Any) ,KatBank_Any.nrec,0h)))) (FieldName = cViewBank)
+
+from
+    KatMC
+  , Basedoc
+  , SpStep
+  , KatOtpEd
+  , StepDoc
+  , SoprHoz
+  , KatOrg
+  , KlPrice
+  , PRICES
+  , SpKau
+  , katnotes
+  , KatOrg KatOrg_br
+  , Dogovor Dogovor_br
+  , Dogovor AppDogovor_br
+  , Dogovor Dogovor_brSP
+  , Dogovor AppDogovor_brSP
+  , Katpodr Katpodr_br
+  , Katmc Katmc_br
+  , KatOtpEd KatOtpEd_br
+  , GRNAL GRNAL_br
+  , KlPrice KlPrice_br
+  , Dogovor Dogovor_Ins
+  , Dogovor AppDogovor_Ins
+  , KatBank KatBank_Def
+  , KatBank KatBank_Any
+  , tInsertBaseDoc
+  , tInsertBaseDocSP
+  , tInsertBaseDoc    tInsertBaseDoc_BR
+  , tInsertBaseDocSP  tInsertBaseDocSP_BR
+  , tPriceToOrgAndMc
+  , tPriceToOrgAndMc tPriceToOrgAndMc_BR
+  , tOrgDogDogUs
+  , tOrgDogDogUs tOrgDogDogUs1
+  , tOrgDogDogUs tOrgDogDogUs_BR
+  , KatOrg KatOrg_brWin
+  , Dogovor Dogovor_brWin
+  , Dogovor AppDogovor_brWin
+  where ((
+                                root == tInsertBaseDoc_BR.nrec
+  and tInsertBaseDoc_BR.nrec         == tInsertBaseDocSP_br.ctInsertBaseDoc
+  and tInsertBaseDoc_BR.cOrg         == KatOrg_br.Nrec
+  and tInsertBaseDoc_BR.cDogovor     == Dogovor_br.Nrec
+  and tInsertBaseDoc_BR.CAPPDOGOVOR  == AppDogovor_br.Nrec
+  and tInsertBaseDocSP_br.cMC        == Katmc_br.Nrec
+  and tInsertBaseDocSP_br.cEdUchOtp  == KatOtpEd_br.Nrec
+  and tInsertBaseDocSP_br.cGrNal     == GRNAL_br.NREC
+  and tInsertBaseDocSP_br.cPriceList == KlPrice_br.nrec
+
+  and tInsertBaseDoc_BR.cOrg         == tPriceToOrgAndMc_BR.cOrg
+  and tInsertBaseDocSP_br.cMC        == tPriceToOrgAndMc_BR.cMc
+  and tInsertBaseDoc_BR.cDogovor     == tPriceToOrgAndMc_BR.cDog
+//  and tPriceToOrgAndMc_BR.cPriceList == KlPrice_br.nrec
+  and tPriceToOrgAndMc_BR.cDogUs == AppDogovor_brSP.nrec
+  and tPriceToOrgAndMc_BR.cDog   == Dogovor_brSP.Nrec
+
+  and tInsertBaseDoc_BR.cOrg         == tOrgDogDogUs_BR.cOrg
+  and tOrgDogDogUs_BR.cOrg           == KatOrg_brWin.nrec
+  and tOrgDogDogUs_BR.cDogUs         == AppDogovor_brWin.Nrec
+  and tOrgDogDogUs_BR.cDog           == Dogovor_brWin.Nrec
+
+
+  and tInsertBaseDoc.cDogovor == Dogovor_ins.nrec
+  and tInsertBaseDoc.cAppDogovor == AppDogovor_ins.nrec
+
+  and  tInsertBaseDoc.cOrg == KatBank_Def.cOrg
+                    and (KatBank_Def.AKTIV = 1 )
+  and  tInsertBaseDoc.cOrg == KatBank_any.cOrg
+
+
+  and _cPriceLIstDef == KlPrice.nrec
+  and _cChanel == SpKau.Nrec
+  and coGetTune('EI.Ecod.Warehouse') == Katpodr_br.nrec
+  ))
+;
+
+PROCEdURE ClearAll;
+{
+ delete all tInsertBaseDoc;
+ delete all tInsertBaseDocSP;
+ delete all tPriceToOrgAndMc;
+ delete all tOrgDogDogUs;
+
+ clearmarker(MyMarkerDocs);
+
+
+} // PROCEdURE ClearAll;
+Function GetPrice2(_cMc,_cOtped, _cPriceLIst : comp; var _priceVal : double) : double;
+{
+var _result : double = 0;
+          if getfirst fastfirstrow Prices where ((_cMc == Prices.cThing
+                                       AND _cPriceLIst == Prices.cKlPrice
+                                           and _cOtped == Prices.cOtpEd(noindex) )) = tsOK
+            {
+              _result   := Prices.PRICE;
+              _priceVal := PRICES.SUMVAL;
+            }
+ result := _result
+}
+
+!--------------------------------------------------------------------------
+! Добавление операции движения в сальдовые остатки
+!--------------------------------------------------------------------------
+Window wnSelectDogovorbyOrg  'Выбор договора и УС по контрагенту' Cyan, DoAccept;
+ browse rbtOrgDogDogUs;
+  table tOrgDogDogUs_BR;
+ fields
+  KatOrg_brWin.Name                                        'Организация' ('Организация',,):[10], Protect;
+  Dogovor_brWin.NoDoc + ' от '+Dogovor_brWin.DDoc          'Договор' ('Договор',,):[10], Protect;
+  AppDogovor_brWin.NoDoc + ' от '+AppDogovor_brWin.DDoc    'УС' ('Уточняющее соглашение',,):[10], Protect;
+ end;
+  handleEvent
+   cmDefault:
+   {
+    tInsertBaseDoc_BR.CDOGOVOR    := Dogovor_brWin.nrec;
+    tInsertBaseDoc_BR.CAPPDOGOVOR := AppDogovor_brWin.nrec;
+    update current tInsertBaseDoc_BR;
+    var _cPriceList : comp;
+     _loop tInsertBaseDocSP_br
+     {
+       if getfirst tPriceToOrgAndMc_BR = tsOK
+        {
+          _cPriceList := tPriceToOrgAndMc_BR.cPriceLS;
+        }
+        else
+        {
+          _cPriceLIst := _cPriceListDef;
+        }
+         var _Price,_priceVal : double = 0;
+          _Price := GetPrice2(tInsertBaseDocSP_br.cMc,tInsertBaseDocSP_br.cEdUchOtp, _cPriceLIst, _priceVal);
+
+        update current tInsertBaseDocSP_br set
+           tInsertBaseDocSP_br.cPriceList := _cPriceLIst
+         , tInsertBaseDocSP_br.Price      := _Price
+         , tInsertBaseDocSP_br.PriceVal   := _priceVal
+        ;
+     }
+    CloseWINDOW(wnSelectDogovorbyOrg);
+   }
+  end;
+end;
+
+Function getColor(_FlagErr: byte) : word;
+{
+  case _FlagErr of
+   0 : Result := 0
+   1 : Result := ColorNeed
+   2 : Result := ColorError
+  else
+  {
+   Result := 0;
+  }
+  end;
+}
+PROCEdURE fillrecArrayByTypeTable(_type: byte; _log: string);
+{
+    var _npp: byte;
+        _npp := 1;
+    SetLimit(_recArray, 0);
+    SetLimit(_recArray, 1);
+   if _type = 0
+     {
+      _recArray[_npp].def := 'Код'       ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+      _recArray[_npp].def := 'кол-во шт' ;
+     }
+}
+#include vip\OpenFileExcelSearchCells.vip
+
+Function GetMC  ( _code, _log: string; _nrow: longint) : comp;
+{
+  var _errstr : string;  _errstr := 'ОШИБКА! Номер строки' +_Nrow + '. Не найдена услуга  "' + _code+'"';
+  #GetfirstTableByField(KatMC,BARKOD2,Name)
+}
+
+Procedure CheckErrors;
+{
+    setvisualheader('определение ошибок -_- ');
+
+update tInsertBaseDoc set tInsertBaseDoc.FlagErr :=0, tInsertBaseDoc.Descr := '';
+update tInsertBaseDocSP set tInsertBaseDocSP.FlagErr :=0, tInsertBaseDocSP.Descr := '';
+    _loop tInsertBaseDoc_BR
+     {
+      if tInsertBaseDoc_br.cOrg = 0h
+       {
+        tInsertBaseDoc_br.FlagErr := 2 ;
+        tInsertBaseDoc_br.Descr   := 'Не определили организацию';
+        update current tInsertBaseDoc_BR;
+       }
+       var isExistsSpec : boolean;
+        isExistsSpec := false;
+        var _kolDogovor: word =0;
+//        var  _ctmpDog, _ctmpDogApp: comp = 0h;
+       _Loop tInsertBaseDocSP_br
+        {
+
+
+          isExistsSpec := true;
+          if tInsertBaseDocSP_br.cMC  = 0h  then
+             {
+               tInsertBaseDocSP_br.Descr   := 'Не определили МЦ|';
+               tInsertBaseDocSP_br.FlagErr := 2;
+               update current tInsertBaseDocSP_BR
+             }
+          if tInsertBaseDocSP_br.cEdUchOtp  = 0h  then
+             {
+               tInsertBaseDocSP_br.Descr   := 'Не определили учетную единицу среди отпускных|';
+               tInsertBaseDocSP_br.FlagErr := 2;
+               update current tInsertBaseDocSP_BR
+             }
+          if tInsertBaseDocSP_br.cGrNal  = 0h  then
+             {
+               tInsertBaseDocSP_br.Descr   := 'Нет группы налогов у МЦ|';
+               tInsertBaseDocSP_br.FlagErr := 2;
+               update current tInsertBaseDocSP_BR
+             }
+          if tInsertBaseDocSP_br.Price = 0  then
+             {
+               tInsertBaseDocSP_br.Descr   := 'Не определили цену по прайсу|';
+               tInsertBaseDocSP_br.FlagErr := 1;
+               update current tInsertBaseDocSP_BR
+             }
+
+          if tInsertBaseDoc_BR.flagErr < tInsertBaseDocSP_br.flagErr
+          update current tInsertBaseDoc_BR
+            set tInsertBaseDoc_BR.flagErr := tInsertBaseDocSP_br.flagErr
+               ,tInsertBaseDoc_BR.Descr :=  tInsertBaseDoc_BR.Descr + '|Предупреждение/ошибка в спецификации';
+        }
+
+
+         _loop tOrgDogDogUs1 where ((tInsertBaseDoc_BR.cOrg == tOrgDogDogUs1.cOrg))
+          {
+            logstrtofile('log.log',KatOrg_br.name + ' ' + tOrgDogDogUs1.cDog + ' '  + tOrgDogDogUs1.cDogUs);
+            if(getfirst tPriceToOrgAndMc where ((tOrgDogDogUs1.cOrg   == tPriceToOrgAndMc.cOrg
+                                             and tOrgDogDogUs1.cDog   == tPriceToOrgAndMc.cDog
+                                             and tOrgDogDogUs1.cDogUs == tPriceToOrgAndMc.cDogUs
+                                               ))
+              ) = tsOK
+              then
+              {
+                update current tInsertBaseDoc_BR set
+                   tInsertBaseDoc_BR.cDogovor    := tPriceToOrgAndMc.cDog
+                  ,tInsertBaseDoc_BR.CAPPDOGOVOR := tPriceToOrgAndMc.cDogUs
+                 ;
+                _kolDogovor++;
+              }
+             else
+              {
+               logstrtofile('log.log','del');
+                update current tOrgDogDogUs1 set isDel := 1;
+              }
+          }
+          delete tOrgDogDogUs1 where tOrgDogDogUs1.isDel = 1;
+
+        if _kolDogovor = 1
+         {
+           tInsertBaseDoc_BR.kolDog      := '1';
+         }
+         else
+          {
+            tInsertBaseDoc_BR.kolDog      := '!!Больше 1!!';
+          }
+           Update current tInsertBaseDoc_BR;
+       if not isExistsSpec  then update current tInsertBaseDoc_BR set tInsertBaseDoc_BR.flagErr := 2, tInsertBaseDoc_BR.Descr := 'НЕТ СПЕЦИФИКАЦИИ';
+       if tInsertBaseDoc_BR.flagErr = 0 update current tInsertBaseDoc_BR set tInsertBaseDoc_BR.Descr := 'OK';
+     }
+}
+Function getKatOrg ( _code, _log: string; _nrow: longint) : comp;
+{
+  var _result : comp;
+  _result := 0h;
+  var _errstr : string;   _errstr:= '!!ОШИБКА!! Номер строки  "'+_nrow+'". Не найдена организация ' + _code;
+  if getfirst fastfirstrow KatOrg Where (( _code == KatOrg.code (NOINDEX))) <> tsOK
+   then { if getfirst fastfirstrow KatOrg Where (( _code == KatOrg.Unn (NOINDEX))) <> tsOK
+           then { if getfirst fastfirstrow KatOrg Where (( _code == KatOrg.name (NOINDEX))) <> tsOK
+                    then {
+                          _globalErr := true;
+                          LogStrToFile(_log,_errstr);
+                         }
+                    else {
+                          _result := KatOrg.nrec
+                         }
+                }
+           else {
+                 _result := KatOrg.nrec
+                }
+        }
+   else {
+         _result := KatOrg.nrec
+        }
+  result := _result
+}
+Function GetUchEdOtp(_cMc : comp; _Log : string; _nrow: longint) : comp; Cacheable;
+{
+var _result : comp;
+  _result := 0h;
+  if getfirst fastfirstrow KatMC where ((_cMc == katMc.Nrec))  = tsOK
+  if(getfirst fastfirstrow KatOtpEd Where ((      1 == KatOtpEd.prmc
+                                     and katMc.Nrec == katOtpEd.cMcUsl
+                                     and katMc.CED  == katOtpEd.CKATED))
+    ) = tsOk
+     then {_result := KatOtpEd.nrec;}
+     else {
+           _globalErr := true;
+           LogStrToFile(_Log,'!!ОШИБКА!! Номер строки  "'+_nrow+'". Учетная единица не найдена среди отпускных для данной МЦ!! ');
+          }
+
+ result:= _result;
+}
+
+Function GetPrice(_cMc,_cOtped, _cPriceLIst : comp; _log : string; _nRow : longInt; var _priceVal : double) : double;
+{
+var _result : double = 0;
+var wCount : word = 0;
+          _loop Prices where ((       _cMc == Prices.cThing
+                           AND _cPriceLIst == Prices.cKlPrice
+                               and _cOtped == Prices.cOtpEd(noindex) ))
+            {
+              _result := Prices.PRICE;
+              _priceVal := PRICES.SUMVAL;
+              wCount++;
+            }
+  if   wCount <> 1
+  {
+    LogStrToFile(_Log,'!!Предупреждение!! Номер строки  "'+_nrow+'". МЦ в прайсе встречается ' + wCount+ ' раз. Цена установлена в ' + _result );
+  }
+result := _result
+}
+procedure GetDogAndUsForOrg(_cOrg: comp);
+{
+if getfirst tOrgDogDogUs where ((_cOrg == tOrgDogDogUs.cOrg)) <> tsOK
+  _Try
+        {
+       sql
+          select Distinct
+             org.nrec as cOrg
+           , DogUs.nrec as cDogUs
+           , Dog.nrec  as cDog
+           , 0 as isDel
+          from KatOrg org
+          join dogovor Dog on dog.corg = Org.nrec
+                 and dog.cdogovor  = 0
+          left join Dogovor DogUs on  DogUs.cDogovor = dog.nrec
+                            and DogUs.STATUS = 1
+                            and
+                           (DogUs.dbeg <= :(_DateDO)
+                             and (  DogUs.dend >= :(_DateDO)
+                                 or DogUs.dend = :(date(0,0,0))
+                                 )
+                           )
+          where       org.nrec = :(_cOrg)
+                  and Dog.STATUS   = 1
+                  and
+                   (    dog.dbeg <= :(_DateDO)
+                    and (  dog.dend >= :(_DateDO)
+                        or dog.dend = :(date(0,0,0))
+                        )
+                   )
+           INTO tOrgDogDogUs;
+        }
+         _Except
+        else
+          {
+          }
+          _finally
+           {
+           }
+
+}
+
+Function getpriceToOrgAndMc(_cOrg, _cMc : comp) : comp;
+{
+ var _result : Comp = 0h;
+ if getfirst tPriceToOrgAndMc where ((_cOrg == tPriceToOrgAndMc.cOrg
+                                   and _cMc == tPriceToOrgAndMc.cMc
+                                    )) = tsOK
+  {
+   _result := tPriceToOrgAndMc.CPRICELS
+  }
+  else
+   {
+     _try
+      {
+          sql select distinct
+             sp.CPRICELS  as CPRICELS
+            ,org.nrec     as cOrg
+            ,sp.cMcUsl    as cMc
+            ,DogUs.nrec   as cDogUs
+            ,Dog.nrec     as cDog
+            from katorg org
+          join dogovor Dog on dog.corg = Org.nrec
+                 and dog.cdogovor  = 0
+          join Dogovor DogUs on  DogUs.cDogovor = dog.nrec
+          join spdocs Sp on sp.cdoc   = DogUs.nrec
+                        and sp.tidk   = 401
+          where       org.nrec = :(_cOrg)
+                  and sp.cMcUsl = :(_cMc)
+                  and DogUs.STATUS = 1
+                  and Dog.STATUS   = 1
+                  and
+                   (    dog.dbeg <= :(_DateDO)
+                    and (  dog.dend >= :(_DateDO)
+                        or dog.dend = :(date(0,0,0))
+                        )
+                   )
+                    and
+                   (DogUs.dbeg <= :(_DateDO)
+                     and (  DogUs.dend >= :(_DateDO)
+                         or DogUs.dend = :(date(0,0,0))
+                         )
+                   )
+           INTO tPriceToOrgAndMc
+           ;
+        }
+         _Except
+        else
+          {
+          }
+
+       if getfirst tPriceToOrgAndMc where ((_cOrg == tPriceToOrgAndMc.cOrg
+                                         and _cMc == tPriceToOrgAndMc.cMc
+                                          )) = tsOK
+        {
+         _result := tPriceToOrgAndMc.CPRICELS
+        }
+   }
+ result := _result
+}
+
+Procedure PrtInsertBaseDocSP(_log: string; _nrow : longint);
+{
+  var _i: byte;
+  clearBuffer(tntInsertBaseDocSP);
+  tInsertBaseDocSP.ctInsertBaseDoc := tInsertBaseDoc.nrec;
+  tInsertBaseDocSP.FileRow         := _nrow;
+  for(_i := 1; _I <= getLimit(_recArray); _i++)
+  {
+    case upcase(_recArray[_i].def) of
+      Upcase('Код'       ) : tInsertBaseDocSP.cMc := GetMC( Trim(_recArray[_i].value), _log, _nrow);
+      Upcase('кол-во шт' ) : tInsertBaseDocSP.kol := Double(replace(replace(Trim(_recArray[_i].value),',','.'),' ',''));
+    end;
+  }
+//   if tInsertBaseDocSP.cMc <> 0h
+   if tInsertBaseDocSP.kol <> 0
+    then
+     {
+       tInsertBaseDocSP.cEdUchOtp := GetUchEdOtp(tInsertBaseDocSP.cMc,_log,_nrow);
+
+       if getfirst fastfirstrow KatMc where ((tInsertBaseDocSP.cMc == KatMc.Nrec )) = tsOK
+        {
+          tInsertBaseDocSP.cGrNal := KatMc.CGRNAL;
+          var _cPriceLIst : comp;
+          _cPriceLIst := 0h;
+          // берем прайс по действующему соглашению и только
+/*   20180902 не будем выбирать только один прайс т.к. возможно их будет два....
+          sql select top 1
+            sp.CPRICELS
+          join dogovor Dog on dog.corg = Org.nrec
+                 and dog.cdogovor  = 0
+          join Dogovor DogUs on  DogUs.cDogovor = dog.nrec
+          join spdocs Sp on sp.cdoc   = DogUs.nrec
+                        and sp.tidk   = 401
+          where       org.nrec = :(tInsertBaseDoc.cOrg)
+                  and sp.cMcUsl = :(tInsertBaseDocSP.cMc)
+                  and DogUs.STATUS = 1
+                  and Dog.STATUS   = 1
+                  and
+                   (    dog.dbeg <= :(_DateDO)
+                    and (  dog.dend >= :(_DateDO)
+                        or dog.dend = :(date(0,0,0))
+                        )
+                   )
+                    and
+                   (DogUs.dbeg <= :(_DateDO)
+                     and (  DogUs.dend >= :(_DateDO)
+                         or DogUs.dend = :(date(0,0,0))
+                         )
+                   )
+           INTO (_cPriceList)
+           ;
+*/
+          _cPriceLIst := getpriceToOrgAndMc(tInsertBaseDoc.cOrg, tInsertBaseDocSP.cMc);
+
+          var _priceVal : double = 0;
+          tInsertBaseDocSp.cPriceList := if(_cPriceLIst = 0h, _cPriceListDef, _cPriceList);
+          tInsertBaseDocSP.Price  := GetPrice(tInsertBaseDocSP.cMc,tInsertBaseDocSP.cEdUchOtp, tInsertBaseDocSp.cPriceList, _log, _nRow, _priceVal);
+          tInsertBaseDocSP.PriceVal  := _priceVal
+        }
+       Insert Current tInsertBaseDocSP;
+     }
+}  // tInsertSaldoMC
+Procedure PrtInsertBaseDoc(_log: string; _nrow: longint; _file : string)  ;
+{
+  clearBuffer(tntInsertBaseDoc);
+
+  if getfirst tInsertBaseDoc where ((_file ==  tInsertBaseDoc.cFile)) <> tsOK
+  {
+//    message(_file)
+    tInsertBaseDoc.cFile   := _file ;
+    tInsertBaseDoc.cFileTo := AddSlashToPath(Folder_To) + datetostr(cur_date,'YYYY.MM.DD_') + Timetostr(cur_time,'HH.MM.SS.SSS') +'_'+USERNAME+'_'+File_input;
+    tInsertBaseDoc.cOrg   := getKatOrg ( _FileOrgCode, _log,_nrow);
+    tInsertBaseDoc.TipDoc := 201;
+
+      GetDogAndUsForOrg(tInsertBaseDoc.cOrg);
+
+      if getfirst tOrgDogDogUs where ((tInsertBaseDoc.cOrg == tOrgDogDogUs.cOrg)) = tsOK
+       {
+        tInsertBaseDoc.cDogovor    := tOrgDogDogUs.cDog;
+        tInsertBaseDoc.CAPPDOGOVOR := tOrgDogDogUs.cDogUs;
+       }
+
+//    tInsertBaseDoc.nrec   := recordsInTable(tntInsertBaseDoc) + 1;
+//    if tInsertBaseDoc.cOrg <> 0h
+//     {
+      tInsertBaseDoc.DataDoc := _DateDO;
+      Insert current tInsertBaseDoc;
+//   message(_file + ' ' + tInsertBaseDoc.cFile)
+//     }
+  }
+  PrtInsertBaseDocSP(_log,_nrow);
+}
+PROCEdURE FillInsertTables(_log: string; _nrow : longint; _file : string);
+{
+  Case typeTable of
+   0: PrtInsertBaseDoc(_log,_nrow, _file)
+  end;
+} // PROCEdURE FillInsertTableeNaklSFO(_log: string);
+Function GetKauName(_kodKau : word; _cKau : comp): string;
+{
+ result := if(getanykau(1,_kodKau,_cKau),GivenAnName(1),'') ;
+} // Function GetKauNpp(_npp: byte): string;
+
+Function GetTidkfromviddoc(_viddoc : word) : word;
+{
+  var _result : word; _result :=0;
+  case _viddoc of
+   101 : _result := 41
+   201 : _result := 51
+  end;
+result := _result;
+}
+Function GetDirectFromviddoc(_viddoc: word) : word;
+{
+  var _result : word; _result :=0;
+  case _viddoc of
+   101 : _result := 2
+   201 : _result := 1
+  end;
+result := _result;
+}
+
+
+Procedure CalcSum;
+{
+Var oNalogFun: NalogFun;
+ if (BaseDoc.VhodNal = 1) // налоги входят
+  {
+    if oNalogFun.CountBasePrice_(BaseDoc.NRec
+                               , SpStep.NRec
+                               , BASEDOC.viddoc + 1000
+                               , SpStep.cGrNal
+                               , BaseDoc.cOrg
+                               , if(SpStep.PrMC > 2, 0, SpStep.Kol)
+                               , if(SpStep.PrMC > 2, 0, SpStep.cOtpEd)
+                               , BaseDoc.dDoc
+                               , BaseDoc.cVal
+                               , 0
+                               , if(BaseDoc.cVal = 0, SpStep.SUMMA,    0)
+                               , if(BaseDoc.cVal = 0,    0, SpStep.SUMMA)
+                               , BaseDoc.cPayment
+                                )
+      SpStep.Nds := SpStep.SUMMA - if(BaseDoc.cVal = 0, oNalogFun.GetBasePrice_, oNalogFun.GetBaseValPrice_)
+  }
+  else
+  {
+    if oNalogFun.CountNalogPrice_(BaseDoc.NRec
+                                , SpStep.NRec
+                                , BASEDOC.viddoc + 1000
+                                , SpStep.cGrNal
+                                , BaseDoc.cOrg
+                                , if(SpStep.PrMC > 2, 0, SpStep.Kol)
+                                , if(SpStep.PrMC > 2, 0, SpStep.cOtpEd)
+                                , BaseDoc.dDoc
+                                , BaseDoc.cVal
+                                , 0
+                                , if(BaseDoc.cVal = 0, SpStep.SUMMA,    0)
+                                , if(BaseDoc.cVal = 0,    0, SpStep.SUMMA)
+                                , BaseDoc.cPayment
+                                 )
+      SpStep.Nds := if(BaseDoc.cVal = 0, oNalogFun.GetNaLogPrice_, oNalogFun.GetNaLogValPrice_) - SpStep.SUMMA;
+  }
+
+  update current SpStep;
+}
+function getcursOnDate(_date: date; _cVal : comp): double; cacheable;
+{
+  var _result : double = 0;
+    _Try
+        {
+          sql
+          select
+            cv.SUMRUBL
+          from CURSVAL cv
+          where cv.KODVALUT = :(_cVal)
+            and cv.datval = :(_date)
+            into (_result)
+            ;
+        }
+         _Except
+        else
+          {
+          }
+          _finally
+           {
+           }
+ result := _result;
+}
+
+Procedure InsertUpdateBaseDoc(_viddoc  : word; _log: string);
+{
+  deletefile(_log);
+   SetvisualHeader('Создание ДО и пересчет налогов');
+_loop tInsertBaseDoc where tInsertBaseDoc.TipDoc = _viddoc
+ if SearchMarker(MyMarkerDocs, tInsertBaseDoc.nrec, mid)
+ {
+   nextvisual;
+  var _TIPDOC : word;
+  _TIPDOC := GetTidkfromviddoc(tInsertBaseDoc.TipDoc);
+
+        ClearBuffer(tnbasedoc);
+        basedoc.NAME    := ''; // 'Загружено автоматически';
+        basedoc.DESCR   := Sgettune('USER.DESCR');
+        basedoc.DESGR   := Sgettune('User.DESGR');
+        basedoc.CORG    := tInsertBaseDoc.cOrg;
+        basedoc.SUMMA   := 0;
+        BASEDOC.KOLDN   := cokolDn3;
+        basedoc.DFORM   := tInsertBaseDoc.DataDoc;
+        basedoc.DDOC    := tInsertBaseDoc.DataDoc;
+        basedoc.DEND    := add_day(tInsertBaseDoc.DataDoc,cokolDn3) ;
+        basedoc.VHODNAL := if(isvalid(tnDogovor_ins),Dogovor_ins.VHODNAL,KlPrice.vhodNal);
+        basedoc.DIRECT  := GetDirectFromviddoc(_viddoc);
+        basedoc.STATUS  := _wStatus; //katnotes.status;
+        basedoc.CNOTE   := _cStatus; //40003089DD24DC9Ah;
+        basedoc.VIDDOC  := _viddoc;
+        basedoc.NODOC   := oDOfuns.GetNextNumberBaseDoc(BaseDoc.buffer);
+        basedoc.YEARDOC := Year(tInsertBaseDoc.DataDoc);
+        basedoc.CBANK   := cViewBank;
+        basedoc.TOTAL   := 0;
+        basedoc.TOTALNDE := 0;
+        basedoc.TIPMONEY := 1;
+        basedoc.PRIOR    := 99;
+        basedoc.VHSKID   := 1;
+        basedoc.TARAVOZ  := 2;
+        basedoc.cParty   := Katpodr_br.nrec;
+        basedoc.CDOGOVOR := tInsertBaseDoc.cDogovor;
+        basedoc.cAppDOGOVOR := tInsertBaseDoc.cAppDogovor;
+        basedoc.CGRPOL   := if(GetDirectFromviddoc(_viddoc) = 2,coGetTune('MYORG'), tInsertBaseDoc.cOrg);
+        basedoc.CMYBANK  := coGetTune('MYBANK');
+        basedoc.CGROTPR  := if(GetDirectFromviddoc(_viddoc) = 1,coGetTune('MYORG'), tInsertBaseDoc.cOrg);
+        if isvalid(tnDogovor_ins)
+         {
+          basedoc.tipmoney := Dogovor_ins.tipmoney;
+          basedoc.cVal     := Dogovor_ins.CVAL;
+         }
+       Insert current basedoc;
+var _curs : double = 0;
+       _curs := getcursOnDate(basedoc.dDoc, basedoc.cVal);
+
+       PiextAttr.coSetAttr(1102,basedoc.nrec, 'Канал сбыта', _cChanel, GetKauName(coKauChanel, _cChanel)); // Ретэйл
+
+       Insert STEPDOC
+        set
+          STEPDOC.NSTEP    := 1
+         ,STEPDOC.CBASEDOC := BaseDoc.nrec
+         ,STEPDOC.STATUS   := 2
+        ;
+       Insert SOPRHOZ
+        set
+          SOPRHOZ.CSTEPDOC := StepDoc.nrec
+         ,SOPRHOZ.CSOPRDOC := Basedoc.Nrec
+         ,SOPRHOZ.TIPDOC   := _TIPDOC
+         ,SOPRHOZ.TIDKGAL  := _TIPDOC
+         ,SOPRHOZ.NODOC    := BaseDoc.Nodoc
+         ,SOPRHOZ.DESCR    := BaseDoc.Descr
+         ,SOPRHOZ.DESGR    := BaseDoc.Desgr
+         ,SOPRHOZ.DIRECT   := BaseDoc.direct
+         ,SOPRHOZ.CORG     := basedoc.corg
+         ,SoprHoz.datob    := basedoc.ddoc
+         ,SOPRHOZ.CDOGOVOR := basedoc.cdogovor
+         ,SOPRHOZ.CappDOGOVOR := basedoc.cappdogovor
+         ,SOPRHOZ.VHSUMHOZ := '+'
+        ;
+  If Getfirst StepDoc where ((BaseDoc.nrec == STEPDOC.CBASEDOC))= tsOK{}
+  if Getfirst SoprHoz where (( _TIPDOC == SOPRHOZ.TIPDOC and Basedoc.Nrec == SOPRHOZ.CSOPRDOC )) = tsOK {}
+
+  var kolSp :word = 0;
+  _loop tInsertBaseDocSP where ((tInsertBaseDoc.nrec == tInsertBaseDocSp.ctInsertBaseDoc ))
+    if getfirst tPriceToOrgAndMc where (( tInsertBaseDoc.cOrg  == tPriceToOrgAndMc.cOrg
+                                       and tInsertBaseDocSP.cMC == tPriceToOrgAndMc.cMc
+                                       and tInsertBaseDoc.CDOGOVOR == tPriceToOrgAndMc.cDog
+                                       )) = tsOK
+   //if tInsertBaseDoc.CDOGOVOR = tPriceToOrgAndMc.cDog
+   {
+      kolSp++;
+      Insert SpStep set
+        SpStep.npp      := if(kolSp = 1, 1 , oSpNext.GetSpNppNext(SpStep.cStepDoc, coSpStep))
+       ,SpStep.PRMC     := 1
+       ,SpStep.CMCUSL   := tInsertBaseDocSP.cMC
+       ,SpStep.COTPED   := tInsertBaseDocSP.cEdUchOtp
+       ,SpStep.KOL      := tInsertBaseDocSP.kol
+       ,SpStep.KOLSKL   := tInsertBaseDocSP.kol
+       ,SpStep.PRICE    := if(basedoc.cVal <> 0h,tInsertBaseDocSP.PriceVal,tInsertBaseDocSP.Price) // взяьб из прайса
+       ,SpStep.CGRNAL   := tInsertBaseDocSP.cGrNal
+       ,SpStep.cPriceList := tInsertBaseDocSP.cPriceList
+       ,SpStep.DDOC     := basedoc.ddoc
+       ,SpStep.CSTEPDOC := stepdoc.nrec
+       ,SpStep.SUMMA    := if(basedoc.cVal <> 0h,tInsertBaseDocSP.PriceVal,tInsertBaseDocSP.Price)*tInsertBaseDocSP.kol // Рассчитать сумму
+       ,SpStep.PRSKID   := 1
+       ,SpStep.KOLDOP   := if(basedoc.cVal <> 0h,tInsertBaseDocSP.PriceVal,tInsertBaseDocSP.Price)*tInsertBaseDocSP.kol  // Рассчитать сумму
+       ,SpStep.NDS      := 0 // НАЛОГИ?
+      ;
+       var ExtAttr : IExtAttr;
+       ExtAttr.doSetAttr(coSpStep,SpStep.nrec,'SL. Начальное количество в заказе', SpStep.KOLSKL);
+
+       calcSum;
+
+       Update Current BASEDOC set
+        BASEDOC.SUMMA := BASEDOC.SUMMA + SpStep.SUMMA
+       ,BASEDOC.NDS   := BASEDOC.NDS + SpStep.NDS;
+   }
+       Update Current BASEDOC set
+          BASEDOC.Total    := BASEDOC.SUMMA + if(basedoc.VHODNAL = 1,0,BASEDOC.NDS)
+        , baseDoc.TotalNde := Round(if(BASEDOC.cVal <> 0h, _curs,1)*(BASEDOC.SUMMA + if(basedoc.VHODNAL = 1,0,BASEDOC.NDS)),2)
+
+        ;
+       update Current SoprHoz set SoprHoz.SUMMA := BASEDOC.TotalNde;
+       update Current STEPDOC set
+            STEPDOC.SUMMA  := if(BASEDOC.cVal <> 0h, 0,BASEDOC.TotalNde)
+          , STEPDOC.SUMVAL := if(BASEDOC.cVal <> 0h, BASEDOC.Total, 0)
+          ;
+
+   logstrtofile(_log,'Создан ДО ' +BaseDoc.Nodoc + ' от ' +BaseDoc.DDoc+ ', в ДО создано позиций спецификации: ' + kolSp + ' на сумму ' + BASEDOC.TotalNde);
+
+   CopyMoveFile(tInsertBaseDoc.cFile,tInsertBaseDoc.cfileto, true, ecmfClientFrom  + ecmfClientTo )
+ }
+
+_loop tInsertBaseDoc where tInsertBaseDoc.TipDoc = _viddoc
+  if SearchMarker(MyMarkerDocs, tInsertBaseDoc.nrec, mid)
+   {
+     delete tInsertBaseDocSP where ((tInsertBaseDoc.nrec == tInsertBaseDocSp.ctInsertBaseDoc ));
+     delete current tInsertBaseDoc;
+   }
+
+}
+
+
+Procedure CreateDocs(_log: string);
+{
+  _loop tInsertBaseDoc
+   if getfirst tInsertBaseDocSP where ((tInsertBaseDoc.nrec == tInsertBaseDocSp.ctInsertBaseDoc )) <> tsOK
+   {
+     LogStrToFile(_log,'ПРОПУЩЕН ФАЙЛ!! ' + tInsertBaseDoc.cFile + '. Т.к. не нашли спецификацию.' );
+   }
+   if getfirst tInsertBaseDoc <> tsOK
+    {
+     _globalErr := true;
+     LogStrToFile(_log,'Все файлы пропущены или не найдены. См. лог' );
+      exit;
+    }
+   StartNewVisual(vtIndicatorVisual,vfTimer,'Формирование документов',getmarkercount(MyMarkerDocs));
+    var _Time : time;
+    var _TimeStr : string;
+    _TimeStr :='';
+   _Time := cur_time;
+        InsertUpdateBaseDoc(201, _log);
+
+  StopVisual('The End',vfTimer);
+} // Procedure InsertAktIzlishki(_log: string);
+
+Screen scrImportMC ;
+  show at (,, 90, 4);
+  Fields
+    Folder_input  : Skip, Protect;
+    PriceList : Skip, Protect;
+    Katpodr_br.Name  : Skip, Protect;
+    _DateDO : Noprotect;
+    Chanel : PickButton, Protect;
+  buttons
+    cmOK,,,;
+    cmCreateDocs,,,;
+    cmCancel,,,;
+<<'Импорт заказов от покупателей'
+Папка с файлами данных .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Прайс-лист .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Склад отгрузки .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Дата формирования ДО.@@@@@@@@@@@  Канал сбыта .@@@@@@@@@@@@@@@@@@@@@@@@
+  <.Получить файлы.>                          <.Сформировать документы.>                              <. Отмена .>
+>>
+end;
+
+browse brow1('',,sci1EscIns);
+show at(,5, 90,14);
+table tInsertBaseDoc_BR;
+ recMarker=pMarker{tInsertBaseDoc_BR.nrec}; // по умолчанию итак nrec юзается...
+fields
+ {Font = {
+          backcolor = getColor(tInsertBaseDoc_BR.FlagErr);
+         }
+ };
+
+  KatOrg_br.name             'Контрагент' headerAlign = centered:protect,[15];
+  tInsertBaseDoc_BR.kolDog   'Найдено договоров' headerAlign = centered:protect,[15],  {Font = {backcolor = if(tInsertBaseDoc_BR.kolDog <> '1',ColorNeed,0)}};
+  DogovorStr                 'Договор' headerAlign = centered:pickButton,protect,[10];
+  AppDogovorStr              'Уточняющее соглашение' headerAlign = centered:pickButton,protect,[10];
+  tInsertBaseDoc_BR.cFile    'Файл' headerAlign = centered:protect,[15];
+  tInsertBaseDoc_BR.Descr    'Описание' headerAlign = centered:protect,[15];
+end;
+
+browse brow2('',,sci1Esc);
+show at(,15,90,);
+table tInsertBaseDocSP_br;
+fields
+ {Font = {
+          backcolor = if(tInsertBaseDocSp_br.FlagErr = 2 ,getColor(tInsertBaseDocSP_BR.FlagErr), if(if(isvalidall(tnDogovor_brSP),Dogovor_brSP.Nrec,0h) <> Dogovor_br.nrec,colorNeed,0));
+         }
+ };
+  tInsertBaseDocSP_br.FileRow   'Строка','в файле' headerAlign = centered:protect,[4];
+  PriceListBR                   'Прайс-лист' headerAlign = centered:protect,[4];
+  Dogovor_brSP.NoDoc + ' от '+Dogovor_brSP.DDoc                'Договор по строке' headerAlign = centered:protect,[4];
+  AppDogovor_brSP.NoDoc + ' от '+AppDogovor_brSP.DDoc          'Доп соглашение по строке' headerAlign = centered:protect,[4];
+  Katmc_br.name                 'МЦ' headerAlign = centered:protect,[20];
+  KatOtpEd_br.name              'Ед.изм' headerAlign = centered:protect,[8];
+  GRNAL_br.name                 'Группа налогов' headerAlign = centered:protect,[13];
+  tInsertBaseDocSP_br.Kol       'Кол-во' headerAlign = centered:protect,[10];
+  tInsertBaseDocSP_br.Price     'Цена' headerAlign = centered:protect,[10,'\2p[|-]3666`666`666`666`666.88'];
+  tInsertBaseDocSP_br.Descr     'Описание' headerAlign = centered :protect,[15];
+end;
+
+
+
+HandleEvent
+  cmPick:
+  {
+    Case curfield of
+/*      #PriceList:
+       {
+         RunInterface('L_PRICES::GETKLPR',_cPriceLIstDef,1,1,0);
+         set _cPriceLIstDef := _cPriceLIstDef;
+       }
+*/
+       #Chanel:
+        {
+          if iGetKau.GetCodeKau(cgiPick, coKauChanel, _cChanel) > 0
+          then set _cChanel := _cChanel;
+        }
+       #AppDogovorStr, #DogovorStr:
+        {
+          if tInsertBaseDoc_BR.kolDog = 1 then
+           {
+             Message('Найден только один договор, выбор запрещен', warning)
+           }
+           else
+           {
+            RunWindowModal(wnSelectDogovorbyOrg);
+           }
+        }
+    end;
+    rereadrecord;
+  }
+  cmInit:
+  {
+    _cChanel := 03E80000000000B6h; // Дистрибьютор
+   typeTable := 0;
+   _DateDO := cur_date;
+   Folder_input := Folder_To := '';
+   _cPriceLIstDef := _cAttrOrgCode := _cStatus := 0h;
+
+   Folder_input   :=  sgettune('USERTUNE.impzakaz.pathfrom');
+   Folder_To      :=  sgettune('USERTUNE.impzakaz.pathto');
+   _cAttrOrgCode  := coGettune('USERTUNE.impzakaz.OrgAttrCode');
+   _cPriceLIstDef := coGettune('USERTUNE.impzakaz.defpricelist');
+   _cStatus       := coGettune('USERTUNE.impzakaz.defstatus');
+   _wStatus       := if(getfirst katnotes where ((_cStatus == katnotes.nrec )) = tsOK ,katnotes.status,0);
+
+
+
+    if NameMarkerMC = '' then NameMarkerMC := 'ImarkerNameMarkerMC_SelectDoc'; // если по какой то причине передали пустое наименование.. зададим по умолчанию
+       MyMarkerDocs := InitMarker(NameMarkerMC, 8, 10, 100, true);
+       pMarker.Caption   := ('Отмечено [%d] записей.'); // для заголовка
+       pMarker.ImportFrom(MyMarkerDocs);
+
+
+   if Folder_input = ''
+   {
+     message('не указана настройка "директории с файлами"',error);
+    stop; abort; exit;
+   }
+   if Folder_To = ''
+   {
+     message('не указана настройка "директории с отработанными файлами"',error);
+    stop; abort; exit;
+   }
+   if _cAttrOrgCode = 0h
+   {
+     message('не указана настройка "атрибут - код организации для импорта заказов"',error);
+    stop; abort; exit;
+   }
+   if _cStatus = 0h
+   {
+     message('не указана настройка "статус ДО при импорте"',error);
+    stop; abort; exit;
+   }
+
+   if _cPriceLIstDef = 0h
+   {
+     message('не указана настройка "прайс-лист по умолчанию"',error);
+    stop; abort; exit;
+   }
+
+  } // cmINIt
+  cmOK:
+  {
+    if _cChanel = 0h
+     {
+      message('Выберите канал сбыта',error) ;
+      Stop; abort; exit
+     }
+
+    ClearAll;
+    _globalErr := false;
+    _logFile := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'ImportBaseDoc_typeTable_'+typeTable+'_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+    deletefile(_logFile);
+    fillrecArrayByTypeTable(typeTable, _logFile);
+    Folder_input := AddSlashToPath(Folder_input);
+    startnewvisual(vtRotateVisual,vftimer+vfbreak+vfconfirm,'Поиск файлов...',0);
+    if FindFirstFile(Folder_input+'*.*', File_input)
+     do{
+//        Message('0_0 ' + File_input);
+       File_input:=upcase(File_input);
+        if(MatchesMask(File_input,'*|.;..') )
+        if(MatchesMask(File_input,'*.xls*') )
+         if not IsDirectory(Folder_input+File_input)
+         {
+          _isError := _isError and (not CheckFileFillValues(Folder_input+File_input, _logFile));
+//          Message(recordsIntable(tntInsertBaseDoc) + '  ' + tInsertBaseDoc.cFile);
+         }
+       } while FindNextFile(File_input);
+
+    CheckErrors;
+    StopVisual('', 0);
+    rereadrecord(tntInsertBaseDoc_BR);
+    rereadrecord(tntInsertBaseDocSP_BR);
+// не будем выводить лог    ProcessText(_logFile, vfEscable or vfNewTitle or vfMacroSize, 'Протокол обработки файлов и загрузки данных');
+//     Message('Обнаружены ошибки. Файл не импортирован',error) ;
+  } // cmOK
+ cmCreateDocs:
+ {
+   ClearMarker(MyMarkerDocs);
+  pMarker.ExportTo(MyMarkerDocs);
+  if getMarkercount(MyMarkerDocs) = 0
+  {
+    Message('Не выбран ни один документ',error);
+    stop; abort; exit;
+  }
+//  DoneMarker(MyMarkerDocs,NameMarkerMC);
+deletefile(_logFile);
+    _isError := false;
+var _isWarning :boolean = false;
+var _isWarningDogApp :boolean = false;
+
+ _loop tInsertBaseDoc
+   if SearchMarker(MyMarkerDocs, tInsertBaseDoc.nrec, mid)
+   {
+       if tInsertBaseDoc.FlagErr <>0
+       {
+         if tInsertBaseDoc.FlagErr = 2
+          {
+            LogStrtoFile(_logFile,'Документ на основе файла ' +tInsertBaseDoc.cFile + ' содержит ошибки. Работа прекращена');
+           _isError := true;
+          }
+         if tInsertBaseDoc.FlagErr = 1
+          {
+            LogStrtoFile(_logFile,'Документ на основе файла ' + tInsertBaseDoc.cFile+ ' содержит предупреждения.');
+           _isWarning := true;
+          }
+       }
+        else
+          {
+           _loop tInsertBaseDocSP where ((tInsertBaseDoc.nrec == tInsertBaseDocSp.ctInsertBaseDoc ))
+           if getfirst tPriceToOrgAndMc where (( tInsertBaseDoc.cOrg  == tPriceToOrgAndMc.cOrg
+                                             and tInsertBaseDocSP.cMC == tPriceToOrgAndMc.cMc
+                                              and tInsertBaseDoc.CDOGOVOR == tPriceToOrgAndMc.cDog
+                                              )) <> tsOK
+            {
+//              if tInsertBaseDoc.CDOGOVOR <> tPriceToOrgAndMc.cDog
+//               {
+                LogStrtoFile(_logFile,'Документ на основе файла ' + tInsertBaseDoc.cFile+ '.');
+                LogStrtoFile(_logFile,'  Строка '+tInsertBaseDocSP.FileRow + ' Допсоглашение иное чем выбрано в шапке документа. ' );
+                 _isWarningDogApp := true;
+//               }
+            }
+          }
+   }
+
+
+  if  _isWarning and not _isError
+  {
+       _isError := true;
+   if Message('Внимание! Обнаружены предупреждения в помеченных документах'#13#13
+                    + 'Создать документы?', warning+ Confirmation + YesNo) = cmYes
+    then _isError := false;
+  }
+  if not _isError and not _isWarning
+   {
+    if _isWarningDogApp
+    {
+     if Message('Обнаружены позиции в спецификации с УС отличным от выбранного в шапке.'+
+        +''#13''+'Данные позиции НЕ будут загружены в ДО'+
+        +''#13''+'Продолжить?', warning+ Confirmation + YesNo) <> cmYes
+     then {
+            stop; abort; exit;
+          }
+
+    }
+
+    if Message('Создать счета на основе выделенных документов?', warning+ Confirmation + YesNo) <> cmYes
+     then {
+            stop; abort; exit;
+          }
+   }
+  if _isError
+   then
+    {
+     message('Обнаружены ошибки',error);
+     LogStrtoFile(_logFile,'******************************');
+     LogStrtoFile(_logFile,'');
+    }
+    else
+    {
+      CASE typeTable of
+       0 : CreateDocs(_logFile)
+       //  CopyMoveFile(_fileFrom,_fileto, true,ecmfClientFrom  + ecmfClientTo )
+      end;
+    } ;
+    ProcessText(_logFile, vfEscable or vfNewTitle or vfMacroSize, 'Протокол обработки файлов и загрузки данных');
+    rereadrecord(tntInsertBaseDoc_BR);
+    rereadrecord(tntInsertBaseDocSp_br);
+ }
+
+
+End;//HandleEvent
+End.//Interface

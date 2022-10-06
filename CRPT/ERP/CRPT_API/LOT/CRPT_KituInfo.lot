@@ -1,0 +1,26 @@
+Create table CRPT_KituInfo_temp "CRPT_KituInfo_temp"
+With table_Code = 31636
+with Replace
+with tableoptions Branched
+(
+  NRec                         : comp                           "Номер записи",
+  cis                              : string                           "SSCC-код паллеты",
+  cparent                       : string                           "Ссылка на вышестоящую позицию",
+  emissionDate              : datetime                       "Дата эмиссии КИ",
+  producedDate             : datetime                       "Дата ввода товара с КИ в оборот",
+  lastDocType               : string                            "Тип последнего документа",
+  emissionType             : string                            "Тип эмиссии",
+  status                         : string                            "Статус КИ",
+  packType                   : string                            "Тип упаковки",
+  lastStatusChangeDate : string                             "Дата последнего изменения статуса",
+  productGroup              : string                          "Товарная группа"
+
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+)
+
+;
+
+

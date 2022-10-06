@@ -1,0 +1,97 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Общие функции
+// Объект с функциями модификации текущих остатков
+//******************************************************************************
+
+// для использования необходимо
+// 1) описать переменную fModifSal при помощи #include ModifSal.var
+// 2) запускать методы объектного интерфейса через переменную: fModifSal.ModifyDoRes(...
+
+#ifNdef __ModifSal_VIH__
+#define __ModifSal_VIH__
+
+//******************************************************************************
+
+#ifdef ComponentVersion
+#component "L_Ostatki"
+#end
+
+//******************************************************************************
+#doc
+Модификация сальдовых остатков
+#end
+ObjInterface ObjModifSalV1;
+
+//******************************************************************************
+// public-функции
+//
+#doc
+Расчет средней цены для налогового учета РФ
+#end
+Function CountSrPriceN(
+                        kolSal_    : double;
+                        priceSal_  : double;
+                        kolOrd_    : double;
+                        priceOrd_  : double;
+                        v          : word;
+                        t          : word
+                      ): double;
+
+#doc
+Расчет средней цены от двух чисел
+#end
+Function CntSrAdd(
+                   kol1_    : double;
+                   price1_  : double;
+                   kol2_    : double;
+                   price2_  : double;
+                   v        : word;
+                   t        : word
+                 ): double;
+
+#doc
+Модификация сальдовых остатков по входящим параметрам
+#end
+Function AddSaldoMC(
+                     SP_       : word;
+                     cMC_      : comp;
+                     cPodr_    : comp;
+                     cMOL_     : comp;
+                     cParty_   : comp;
+                     kol_      : double;
+                     price_    : double;
+                     vPrice_   : double;
+                     cVal_     : comp;
+                     priceN_   : double;
+                     vPriceN   : double;
+                     Date_     : date;
+                     minKol_   : double;
+                     del_      : boolean;
+                     wVidOrder : word;
+                     wTipOrd   : word
+                   ): boolean;
+
+#doc
+Модификация сальдовых остатков по ордеру
+#end
+Function AddSaldoMC_Upd(cSpOrder_: comp; del_: boolean; upd_: boolean): boolean;
+
+//******************************************************************************
+
+end;
+
+//******************************************************************************
+//******************************************************************************
+
+VipInterface ModifSalV1 implements ObjModifSalV1
+#ifdef ATL51
+  licensed (FREE)
+#end
+;
+
+//******************************************************************************
+
+#end
+
+//******************************************************************************

@@ -1,0 +1,10 @@
+#ifdef ComponentVersion
+#component "Z_StaffPensioner"
+#end
+
+vipinterface CreatePenStaj licensed(staffmainmenu, staffmainmenu2, menuzarp, menuzarp2);
+vipinterface CreatePenStajRB licensed(staffmainmenu, staffmainmenu2, menuzarp, menuzarp2);
+vipinterface Old_st licensed(free);
+vipinterface NastrPnStaj licensed (free);
+vipinterface DopAttributesForAdvises licensed (free) parameters(Advises_Nrec: comp);
+vipinterface Rela_PP licensed(free);

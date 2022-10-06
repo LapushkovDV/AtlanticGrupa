@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>Alter_BookPrZkPrint</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.38.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\inc\*
+					..\..\SourceGal\*
+					..\..\..\FRM\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_SF.res
+					$[GalExe]\C_EXTCLASS.res
+					$[GalExe]\L_COMMON.res
+				</ResourceList>
+				<OutputResource>..\..\Alter_bookprzkprint_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm_STEND</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
+					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
+					<LicFileName>..\..\..\..\Sup910\exe\License.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="Alter_BookPrZkPrint.prj" PosX="32" PosY="14" OpenEditor="True"/>
+			<File Name="Source\Alter_BookPrZkPrint.vip" PosX="42" PosY="136" OpenEditor="True" Active="True"/>
+			<File Name="Source\BookPrZkPrint_etalon.vip" PosX="16" PosY="4356" OpenEditor="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="Alter_BookPrZkPrint.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\Alter_BookPrZkPrint\Alter_BookPrZkPrint.prj" DateTimeStart="44226,7649571875" DateTimeCompile="0" StateHistory="False"/>
+		</CompileMessengerList>
+		<MarkerList>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
+			<Marker FileName="alter\Alter_CalcDolgDG.vip" Caption="Нумерованная закладка 2" Line="123" NumIndex="2" MarkerType="mtNumBookmark" Comment="and PlP_Sopr.TiDkGal in (10,21,22)"/>
+			<Marker FileName="alter\Alter_CalcDolgDG.vip" Caption="Нумерованная закладка 1" Line="196" NumIndex="1" MarkerType="mtNumBookmark" Comment="var _MAXDEBTSAGE : double = tDolgDog.MAXDEBTSAGE;"/>
+		</MarkerList>
+		<Watches>
+			<Watch Expression="totalNDE"/>
+		</Watches>
+	</ProjectManager>
+</Viper>

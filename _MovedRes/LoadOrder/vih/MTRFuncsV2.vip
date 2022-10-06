@@ -1,0 +1,38 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 8.1
+// Функции для целевого учета
+//******************************************************************************
+
+#include MTRFuncs.vih
+
+#doc
+Реализация методов для целевого учета в позициях спецификации документов.
+#end
+
+Interface MTRFuncsV2;
+
+Function SetObjSmeta(SrcTab : word; SrcSpec, cSmeta : comp) : boolean;
+{
+  SetObjSmeta := false;
+
+  var wplace : word;
+ 
+  if (MTRIsUKS(SrcTab, SrcSpec))
+    {
+      wplace := GetPlaceKau(1, cgKau_SmetaStroy) - 1;
+
+      if wplace < 1 or wplace > 9
+        exit;
+
+      SpecMTR.cKau[wplace] := cSmeta;
+
+      update current SpecMTR;
+
+      SetObjSmeta := true;
+    }
+}
+
+//******************************************************************************
+
+end.

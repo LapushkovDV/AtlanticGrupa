@@ -1,0 +1,225 @@
+#declare GetfirstTableByField (Table, field, fieldname)
+var _result : comp;
+_result :=  0h;
+   if _code <> ''
+   {
+   if getfirst fastfirstrow #Table Where (( _code == #Table.#field (NOINDEX))) <> tsOK
+    then {
+
+           if getfirst fastfirstrow #Table Where (( _code == #Table.#fieldname (NOINDEX))) <> tsOK
+            then {
+               var _empty: boolean;  _empty := false;
+//                  _globalErr := true;
+//                  LogStrToFile(_Log,_errstr);
+                 }
+            else {
+                  _result := #Table.nrec
+                 }
+         }
+    else {
+          _result := #Table.nrec
+         }
+    if _result = 0h
+     {
+      _globalErr := true;
+      LogStrToFile(_Log,_errstr);
+     }
+   }
+
+   result := _result
+#end
+#declare GetfirstTableByFieldAddField (Table, field, fieldname, field2, value)
+var _result : comp;
+_result :=  0h;
+  if _code <> ''
+   if(getfirst fastfirstrow #Table Where (( _code == #Table.#field (NOINDEX)))
+                               and #Table.#field2 = #value
+     ) <> tsOK
+    then {
+            if(getfirst fastfirstrow #Table Where (( _code == #Table.#fieldname (NOINDEX)))
+                                        and #Table.#field2 = #value
+              ) <> tsOK
+             then
+               {
+                 _globalErr := true;
+                 LogStrToFile(_log,_errstr);
+               }
+            else {
+                  _result := #Table.nrec
+                 }
+         }
+    else {
+          _result := #Table.nrec
+         }
+   result := _result
+#end
+
+
+PROCEdURE FillInsertTables(_log: string; _nrow : longint; _file : string); forward;
+
+Function SearchCellsByName(_name, _log: string; _nrow: word): word;
+{
+  var
+    _result: word;
+  var
+    _iCol: word;
+  _result := 0;
+  for (_iCol := 1; _iCol <= 512; _iCol++)
+  {
+    var
+      _iCellStr: string;
+      _iCellStr :='';
+    xlGetCellValue(_nrow, _iCol, _iCellStr);
+    _iCellStr := trim(_iCellStr);
+
+    if UpCase(_iCellStr) = UpCase(_name)
+    {
+      _result := _iCol;
+      LogStrTofile(_log, 'OK. Найдена ячейка ' + _name);
+      break;
+    }
+  }
+ LogStrTofile(_log, '***********************************************************************');
+  result := _result
+} // Functio SearchCellsByName(_name, _log : string) : byte;
+
+Function OpenFile(_file, _listName, _log: string; var _bookname: string): boolean;
+{
+
+  result := false;
+  LogStrTofile(_log, 'Файл:  ' + _file);
+  xlOpenNewExcel(false);
+  xlDisplayAlerts(false);
+
+//  if not xlcreateExcelWithTemplate(_file, false)
+  if not(xlSetActiveWorkBookByName(_file))
+     if not(xlOpenWorkBook(_file))
+  {
+    StopVisual('', 0);
+    LogStrTofile(_log, 'Ошибка открытия файла ' + _file);
+    Message('Ошибка открытия файла ' + _file, error);
+
+    xlCloseWorkBook(1);
+    xlKillExcel;
+    Stop;     abort;    exit;
+  }
+  If not xlIsExcelValid
+  {
+    StopVisual('', 0);
+    LogStrTofile(_log, 'Ошибка запуска EXCEL ');
+    Message('Ошибка запуска EXCEL ', error);
+    xlCloseWorkBook(1);
+    xlKillExcel;
+    Stop;    abort;    exit;
+  }
+
+  xlGetActiveWorkBookName(_bookname);
+    XLDISPLAYALERTS(false);
+  if not xlSetActiveSheetByName(_listName)
+  {
+    StopVisual('', 0);
+    LogStrTofile(_log, 'Ошибка не найден лист ' + _listName);
+    Message('Ошибка не найден лист ' + _listName, error);
+    xlCloseWorkBookByName(_bookname);
+    xlKillExcel;
+    Stop;    abort;    exit;
+  }
+  result := true;
+} // Functio OpenFile(_file, _listName : string) : boolean;
+Function CheckFileFillValues(_file: string; _log: string): boolean;
+{
+  result := false;
+//  ClearAll;
+//  StartNewVisual(vtRotateVisual, vfTimer, 'Файл: ', 1);
+// LogStrTofile(_log,'Файл:  ' + _file);
+  SetVisualHeader('Файл:  ' + _file
+  + ''#13'' + 'Инициализация EXCEL'
++ ''#13'' + ''
+  );
+ // открываем файл соответствия
+  var _bookname: string;
+
+  if not OpenFile(_file, coListName, _log, _bookname) then  {    Stop;    abort;    exit;  }
+
+  xlSetActiveWorkBookByName(_bookname);
+  xlSetActiveSheetByName(coListName);
+
+//  var    _iCellStr: string;
+  var
+    Nrow: word;
+  var
+    isErrorFile: boolean;
+  var
+    _i: byte;
+
+  isErrorFile := false;
+
+  xlGetCellValue(10, 3, _FileOrgCode);
+
+  Nrow := 19; // Считаем, что все находится на первой строке
+
+  for(_i := 1; _I <= getLimit(_recArray); _i++)
+  {
+    setvisualHeader('Файл:  ' + _file + ''#13'' +
+    'Просмотр заголовка файла, лист ' + coListName
+    + ''#13'' + _I);
+    _recArray[_i].column := SearchCellsByName(_recArray[_i].def, _log, nrow);
+    if _recArray[_i].column = 0 then
+    {
+      LogStrTofile(_log, 'ОШИБКА. НЕ найдена ячейка ' + _recArray[_i].def);
+      isErrorFile := true;
+    }
+  }
+  if isErrorFile
+  {
+    xlCloseWorkBookByName(_bookname);
+    xlKillExcel;
+    Stop;       abort;    exit;
+  }
+
+  Nrow := 20;
+  if not isErrorFile
+  {
+   setvisualHeader('Файл:  ' + _file + ''#13'' +
+   'Просмотр данных файла, лист ' + coListName
+   + ''#13'' + ''
+   );
+    do
+    {
+//      setvisualHeader('Просмотр файла, строка ' + nrow);
+      for(_i := 1; _I <= getLimit(_recArray); _i++)
+      {
+//        LogStrTofile(_log, 'Строка ' + nrow + ' колонка' + _recArray[_i].column);
+       setvisualHeader('Файл:  ' + _file + ''#13'' +
+       'Просмотр данных файла, лист ' + coListName
+            + ''#13'' + Nrow);
+        xlGetCellValue(nrow, _recArray[_i].column, _recArray[_i].value);
+        if _recArray[1].value <> '' and _recArray[1].value <> 'Итого по заказу:' then
+        _recArray[_i].value := trim(_recArray[_i].value)
+      } // for(_i:=1; _I<= getLimit(_recArray);_i++)
+      if _recArray[1].value <> '' and _recArray[1].value <> 'Итого по заказу:'
+      {
+        FillInsertTables  (_log, nrow, _file);
+      } // if _recArray[1].Value <> ''
+      Nrow++
+    }
+    while _recArray[1].value <> 'Итого по заказу:' and _recArray[1].value <> ''
+   setvisualHeader('Файл:  ' + _file + ''#13'' +
+   'закрываем EXCEL'
+      + ''#13'' + ''
+   );
+   LogStrTofile(_log, 'Обработано строк в файле: ' + (Nrow-1));
+   LogStrTofile(_log, '*************************************************************************************');
+  } //  if not isErrorFile
+
+  xlCloseWorkBookByName(_bookname);
+  xlKillExcel;
+  setvisualHeader('Файл:  ' + _file + ''#13'' +
+  'Сбор данных из файла завершен'
+      + ''#13'' + ''
+  );
+
+//  StopVisual('', 0);
+  result := (not isErrorFile) and (not _globalErr);
+
+} // Functio CheckFileFillValues();

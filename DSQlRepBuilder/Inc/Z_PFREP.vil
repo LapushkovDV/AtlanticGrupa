@@ -1,0 +1,40 @@
+#ifdef ComponentVersion
+#component "z_pfrep"
+#end
+
+vipinterface CFONDS licensed(free);
+vipinterface DopPens licensed(free);
+vipinterface PU2 licensed(free);
+vipinterface PU3 licensed(free) parameters(Markers, NACHMARKERS: longint);
+vipinterface PU6 licensed(free);
+vipinterface RBPF
+  licensed (menuzarp,menuzarp2);
+vipinterface SFond
+  licensed (menuzarp,menuzarp2) Parameters(OthetName: string);
+
+vipinterface SZV_41 licensed (free);
+vipinterface SZV licensed(free) parameters(OthetName: string; Markers: longint);
+vipinterface Szv_sopr licensed(free) parameters(OthetName: string);
+vipinterface CONVVO_D licensed (free);
+vipinterface DFONDS licensed(free);
+vipinterface PensUkr
+  licensed (menuzarp,menuzarp2);
+vipinterface PensUkr_2 licensed(free);
+vipinterface PensUkr_3 licensed(free);
+vipinterface PensVznos licensed(free);
+vipinterface PensVznos_2 licensed(free) parameters(NameNalog: string);
+vipinterface StajDog licensed (free);
+vipinterface StajDog_2 licensed (free) parameters(My: word);
+vipinterface StajDog_3 licensed (free) parameters(My: word);
+vipinterface PF_SList licensed(free);
+vipinterface form4plat licensed(free);
+vipinterface form4platP licensed(free);
+
+vipinterface STRACH
+  licensed (staffmainmenu,staffmainmenu2,menuzarp,menuzarp2);
+vipinterface DSV_1 licensed(free);
+vipinterface FondRep licensed(free);
+vipinterface ConvertStaz licensed(free);
+
+
+

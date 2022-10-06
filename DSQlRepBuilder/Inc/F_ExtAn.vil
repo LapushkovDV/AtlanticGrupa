@@ -1,0 +1,9 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_ExtAn
+
+#ifdef ComponentVersion
+#component "F_ExtAn"
+#end
+
+VipInterface CheckKauReff Licensed(Free);
+

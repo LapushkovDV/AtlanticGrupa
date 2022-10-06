@@ -1,0 +1,326 @@
+const
+CoDoStr     = 'ДО';
+coDoNaklStr = 'накладных к ДО';
+coNaklStr   = 'Накладная';
+end;
+Interface ReportSaleByMC
+table struct tMc
+(
+   cOrg       : comp
+ , OrgName    : string
+ , SoprMonth  : string
+ , Manager    : string
+ , Channel    : String
+ , Brand      : string
+ , mcName     : string
+ , BCP        : string
+ , barkod     : string
+ , sapcode    : string
+ , MassNetto  : double
+ , MassTara   : double
+ , MassBrutto : double
+ , Volume     : double
+ , Kol        : double
+ , SumWithNDS : double
+ , SumNds     : double
+)
+with index
+(
+ ind0 = OrgName
+)
+;
+
+create view
+var   _dateB
+    , _dateE : date;
+from
+  tMc
+;
+
+function CreateExcel (FExcelName : string) : boolean;
+{
+  StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Инициализация EXCEL', 1);
+    result := true;
+
+    DeleteFile(FExcelName);
+
+    if (not xlCreateExcel(FExcelName, true))
+    {
+      message('ОШИБКА! Не удалось инициализировать сессию Excel', Error);
+      xlKillExcel;
+      result := false;
+      exit;
+    }
+
+    if (not xlIsExcelValid)
+    {
+      message('ОШИБКА! Не удалось инициализировать сессию Excel', Error);
+      xlKillExcel;
+      result := false;
+      exit
+    }
+  var xlCount : word;
+  xlCount := 0;
+   Do
+   {
+    xlGetSheetsCount(xlCount);
+    xlDeleteSheet(xlCount);
+   } while xlCount > 1
+
+    xlSetActiveSheet(1);
+    xlSetSheetName(1, 'ReportMassa_saleMC_'+UserName);
+
+   StopVisual('',0);
+}
+Procedure MyPrintMatrixToExcel(var nrow, nrowReal : longint);
+{
+ if nrow = 100 then
+  {
+   xlWritematrixToExcel(nrowReal,1);
+   xlclearMatrix;
+   nrowReal := nrowReal + nrow-1;
+   nrow := 1;
+  }
+}
+
+
+Procedure PrintReport_Matrix;
+{
+  if not CreateExcel(GetStringParameter('Files','TmpFilesDirectory',0)+'ReportMassa_saleMC_'+UserName + '_'+datetostr(_dateB, 'YYYYMMDD') + '-'+datetostr(_dateE, 'YYYYMMDD')+'_'+TimeToStr(Cur_Time,'HHMMSS')+'.xlsx')
+    then {Stop; Abort; exit;}
+
+
+ // StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Формирование отчета', 1);
+ StartNewVisual(vtIndicatorVisual, vfTimer,
+                 'Формируется отчет', recordsintable(tntMC));
+  xlCreateMatrix(100,20);
+
+  var Nrow0,nrow0FrameBold, Nrow, column, nrowreal : longint;
+ nrowreal := 1;
+ Nrow := column := 1;
+
+
+/*
+  Добавьте вывод фильтров в отчет
+*/
+
+// xlMergeCells(nrow,column,nrow,column+5);
+ xlSetFontStyle(1,nrow,1,nrow,6);
+ Nrow++;
+
+ xlSetColumnWidth(18,1,1,1,1);
+ xlSetColumnWidth(20,1,2,1,2);
+ xlSetColumnWidth(15,1,3,1,3);
+ xlSetColumnWidth(12,1,4,1,4);
+
+ xlSetColumnWidth(20,1,2+2+2,1,2+2+2);
+ xlSetColumnWidth(15,1,3+2+2,1,3+2+2);
+ xlSetColumnWidth(26,1,4+2+2,1,4+2+2);
+ MyPrintMatrixToExcel(Nrow,NrowReal);
+   nrow0FrameBold :=  nrow+nrowreal-1;
+    xlStWriteToMatrix(nrow, 1,'отчет по продажам МЦ за период ' + datetostr(_dateB, 'YYYYMMDD') + '-'+datetostr(_dateE, 'YYYYMMDD'));
+    xlMergeCells(nrow,1,nrow,13);
+     Nrow++;
+     xlsetcolumnwidth(20,nrow, 2,nrow, 2);
+     xlsetcolumnwidth(12,nrow, 3,nrow, 3);
+     xlsetcolumnwidth(18,nrow, 4,nrow, 4);
+     xlsetcolumnwidth(18,nrow, 5,nrow, 5);
+     xlsetcolumnwidth(35,nrow, 6,nrow, 6);
+     xlsetcolumnwidth(15,nrow, 7,nrow, 7);
+     xlsetcolumnwidth(15,nrow, 8,nrow, 8);
+     xlsetcolumnwidth(15,nrow, 9,nrow, 9);
+     xlsetcolumnwidth(15,nrow,10,nrow,10);
+     xlsetcolumnwidth(15,nrow,11,nrow,11);
+     xlsetcolumnwidth(15,nrow,12,nrow,12);
+     xlsetcolumnwidth(15,nrow,13,nrow,13);
+     xlsetcolumnwidth(15,nrow,14,nrow,14);
+
+      xlStWriteToMatrix(nrow, 1, 'Месяц.Год');
+      xlStWriteToMatrix(nrow, 2, 'Контрагент');
+      xlStWriteToMatrix(nrow, 3, 'Менеджер');
+      xlStWriteToMatrix(nrow, 4, 'Канал сбыта');
+      xlStWriteToMatrix(nrow, 5, 'Brand');
+      xlStWriteToMatrix(nrow, 6, 'МЦ');
+      xlStWriteToMatrix(nrow, 7, 'BCP code');
+//      xlStWriteToMatrix(nrow, 5, 'баркод');
+      xlStWriteToMatrix(nrow, 8, 'SAP-code');
+      xlStWriteToMatrix(nrow, 9, 'Масса нетто');
+//      xlStWriteToMatrix(nrow, 8, 'Масса тары');
+//      xlStWriteToMatrix(nrow, 9, 'Масса брутто');
+//      xlStWriteToMatrix(nrow,10, 'Объем');
+      xlStWriteToMatrix(nrow,10, 'кол-во');
+      xlStWriteToMatrix(nrow,11, 'Сумма без НДС');
+//      xlStWriteToMatrix(nrow,13, 'НДС');
+      xlSetFontStyle(1,1,1,nrow,11);
+   Nrow++;
+   MyPrintMatrixToExcel(Nrow,NrowReal);
+ _Loop tMC
+  {
+    nextvisual;
+    setvisualheader('Формирование отчета'+
+     + ''#13'' + tMC.mcname);
+      xlStWriteToMatrix(nrow, 1, chr(39)+tMC.soprMonth);
+      xlStWriteToMatrix(nrow, 2, tMC.OrgName);
+      xlStWriteToMatrix(nrow, 3, tMC.Manager);
+      xlStWriteToMatrix(nrow, 4, tMC.Channel     );
+      xlStWriteToMatrix(nrow, 5, tMC.brand);
+      xlStWriteToMatrix(nrow, 6, tMC.mcName      );
+      xlStWriteToMatrix(nrow, 7, chr(39)+tMC.BCP         );
+     // xlStWriteToMatrix(nrow, 5, chr(39)+tMC.barkod      );
+      xlStWriteToMatrix(nrow, 8, chr(39)+tMC.sapcode     );
+      xlStWriteToMatrix(nrow, 9, tMC.MassNetto   );
+     // xlStWriteToMatrix(nrow, 8, tMC.MassTara    );
+     // xlStWriteToMatrix(nrow, 9, tMC.MassBrutto  );
+     // xlStWriteToMatrix(nrow,10, tMC.Volume      );
+      xlStWriteToMatrix(nrow,10, tMC.Kol         );
+      xlStWriteToMatrix(nrow,11, tMC.SumWithNDS -tMC.SumNds );
+    //  xlStWriteToMatrix(nrow,13, tMC.SumNds      );
+
+   Nrow++;
+   MyPrintMatrixToExcel(Nrow,NrowReal);
+//   nrow0FrameBold := nrow + NrowReal - 1;
+  }
+  xlwraptext(1, 1, nrow+nrowreal-2, 13);
+  setvisualheader('"Разлиновка" отчета');
+ xlFrameCells(63, 2, 1, 1, 2, 1, nrow+nrowreal-2, 11);
+
+  xlSetNumberFormat('# ##0,00',3,7,nrow+nrowreal-2, 10);
+
+ xlWriteMatrixToExcel(NrowReal,1);
+ xlKillExcel;
+ StopVisual('',0);
+}
+procedure Filltable;
+{    StartNewVisual(vtRotateVisual, vfBreak+vfTimer, '', 1);
+  _try
+  {
+    setvisualheader('Выборка данных из БД');
+    delete all tMc;
+sql
+        select
+          Org.nrec      as cOrg ,
+          org.name      as OrgName,
+          date2str('%MM.%YYYY',KS.Dopr) as SoprMonth,
+          AVManager.vString as Manager,
+          channel.name  as Channel,
+          Brand.name as Brand,
+          MC.Name       as mcName,
+          avBCP.vString as BCP,
+          mc.barkod     as barkod,
+          mc.barkod2    as sapcode,
+         Sum(Mc.MASSA*Sp.Kolfact*coalesce(OtpEd.KOEF,1)) as MassNetto
+        ,Sum(Mc.mtara*Sp.Kolfact*coalesce(OtpEd.KOEF,1)) as MassTara
+        ,Sum((Mc.MASSA + Mc.mtara)*Sp.Kolfact*coalesce(OtpEd.KOEF,1)) as MassBrutto
+        ,Sum(Mc.VOLUME * sp.KOLFACT*coalesce(OtpEd.KOEF,1))as Volume
+        ,Sum(Sp.Kolfact*coalesce(OtpEd.KOEF,1))  as Kol
+        ,Sum(Sp.Kolfact*Sp.Price + case when KS.vhodnal = 2 then Sp.SumNds else 0 end ) as SumWithNDS
+        ,Sum(Sp.SumNds ) as SumNds
+        from KatSopr KS
+        join spsopr SP on SP.cSopr = KS.Nrec and SP.PrMC = 1
+        join KatMC MC on Mc.Nrec = Sp.cmcusl
+        join KatOrg org on org.nrec = KS.cOrg
+        left join AttrNam ANManager on AnManager.Wtable = 1418
+                            and anManager.name = 'Менеджер'
+        left join AttrVal AVManager on aVManager.wtable = ANManager.wTable
+                                  and AVManager.cAttrnam = ANManager.nrec
+                                  and avManager.crec = org.Nrec
+
+
+        left join KATOTPED OtpEd  on OtpEd.NREC = sp.COTPED
+        left join StepDoc StDoc on Stdoc.nrec = KS.cStepDOc
+        left join BaseDoc BD on BD.Nrec = StDoc.cBaseDoc
+        left join AttrNam ANchannel on Anchannel.Wtable = 1102
+                            and anchannel.name = 'Канал сбыта'
+        left join AttrVal AVchannel on aVchannel.wtable = ANchannel.wTable
+                                  and AVchannel.cAttrnam = ANchannel.nrec
+                                  and avchannel.crec = BD.Nrec
+        Left join SpKau channel on channel.nrec = AVchannel.vComp
+        left join AttrNam ANBCP on AnBCP.Wtable = 1411
+                            and anBCP.name = 'BCP (Base commercial product)'
+        left join AttrVal AVBCP on aVBCP.wtable = ANBCP.wTable
+                                  and AVBCP.cAttrnam = ANBCP.nrec
+                                  and avBCP.crec = MC.Nrec
+        left join AttrNam ANBrand on AnBrand.Wtable = 1411
+                            and anBrand.name = 'goods 1 Brand'
+        left join AttrVal AVBrand on aVBrand.wtable = ANBrand.wTable
+                                  and AVBrand.cAttrnam = ANBrand.nrec
+                                  and avBrand.crec = MC.Nrec
+        Left join SpKau Brand on Brand.nrec = AVBrand.vComp
+      where KS.Dopr >= :(_dateB)
+          and KS.Dopr <= :(_dateE)
+          and KS.vidsopr = 201
+        //  and MC.Barkod = '4101040002'
+          and ks.wadoc =0
+        //and org.name = '"Альп Гулi"'
+        group by date2str('%MM.%YYYY',KS.Dopr),Org.nrec ,mc.name,mc.barkod2,MC.barkod,org.name , channel.name, avBCP.vString ,  AVManager.vString , Brand.name
+        into tMc;
+  }
+  _Except
+  else {}
+  _finally {}
+   StopVisual('',0);
+}
+Screen scrReportSaleMC
+  Fields
+    _dateB  : NoProtect;
+    _dateE  : NoProtect;
+  buttons
+    cmOK,,,;
+    cmCancel,,,;
+<<'Отчет по продажам МЦ за период'
+
+Период с .@@@@@@@@@@ по .@@@@@@@@@@
+
+  <.Сформировать.>        <. закрыть отчет .>
+>>
+end;
+
+handleevent
+cminit:
+{
+  _dateB := date(01,month(cur_date), year(cur_date));
+  _dateE := date(last_day(cur_date),month(cur_date), year(cur_date));
+}
+cmOK:
+{
+  Filltable;
+  PrintReport_Matrix;
+}
+end;
+end.
+
+//////////////////////////////////////////////
+//  пункт меню в отчетах пользовател
+//
+#component 'F_UserReport'
+#include UserReport.vih
+VipInterface UserReport_ReportSaleByMC Implements IUserReport;
+Interface UserReport_ReportSaleByMC;
+create view;
+procedure Run;
+begin
+  RunInterface('Atlantic::ReportSaleByMC')
+end;
+function GetReportName: String;
+begin
+  GetReportName := 'Отчет по продажам МЦ за период';
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+end;
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'BUY';
+    2 : VisibleInModule := 'SELL';
+    3 : VisibleInModule := 'DOGOVOR';
+  end;
+end;
+!-------------------------------------------------------------------------------
+end.

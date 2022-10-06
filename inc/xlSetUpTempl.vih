@@ -1,0 +1,15 @@
+#ifndef _XLSETUPTEMPL_VIH
+#define _XLSETUPTEMPL_VIH
+
+#include xlSetUp.Vih
+
+#ifdef ComponentVersion
+#component "F_XLSREP"
+#end
+
+VipInterface xlRepSetupTempl(xlRepSetup) licensed (free);
+//public:
+
+
+#end
+#undef _XLSETUPTEMPL_VIH

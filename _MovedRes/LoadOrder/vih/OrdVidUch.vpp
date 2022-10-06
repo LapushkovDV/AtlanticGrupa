@@ -1,0 +1,90 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 8.10 - Складской учет
+// Вид учета ордера, формируемого по сопроводительному документу заданного вида
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// [PUBLIC] Вид учета ордера, формируемого по сопроводительному документу заданного вида
+Function GetVidUch(awVidSopr, awDirect: word): word;
+{
+  result := cgVidUchO_Sklad; // по умолчанию - складской учет
+
+  case awVidSopr of
+  //---------------------
+    cgDoc_0229,
+    cgDoc_0210:
+      case awDirect of
+        cgVidOrder_Discharge: result := cgVidUchO_Sklad; // расходный - складской
+        cgVidOrder_Receipt:   result := cgVidUchO_UKS;   // приходный - УКС
+      end;
+  //---------------------
+    cgDoc_0501:
+      case awDirect of
+        cgVidOrder_Discharge: result := cgVidUchO_Sklad; // расходный - складской
+        cgVidOrder_Receipt:   result := cgVidUchO_UPL;   // приходный - УПЛ
+      end;
+  //---------------------
+    cgDoc_0503:
+      case awDirect of
+        cgVidOrder_Discharge: result := cgVidUchO_UPL;   // расходный - УПЛ
+        cgVidOrder_Receipt:   result := cgVidUchO_Sklad; // приходный - складской
+      end;
+  //---------------------
+    cgDoc_0504:
+      case awDirect of
+        cgVidOrder_Discharge: result := cgVidUchO_UPL;   // расходный - УПЛ
+      end;                                               // приходный не формируется
+  //---------------------
+    cgDoc_0506:
+      case awDirect of
+        cgVidOrder_Discharge: result := cgVidUchO_UPL;   // расходный - УПЛ
+        cgVidOrder_Receipt:   result := cgVidUchO_UPL;   // приходный - УПЛ
+      end;
+  //---------------------
+    cgDoc_0551:  //RM_
+      case awDirect of
+        cgVidOrder_Discharge: result := cgVidUchO_Sklad; // расходный - складской
+        cgVidOrder_Receipt:   result := cgVidUchO_TORO;  // приходный - ТОРО
+      end;
+  //---------------------
+    cgDoc_0552:  //RM_
+      case awDirect of
+        cgVidOrder_Discharge: result := cgVidUchO_TORO;  // расходный - ТОРО
+        cgVidOrder_Receipt:   result := cgVidUchO_Sklad; // приходный - складской
+      end;
+  //---------------------
+    cgDoc_0600:  //RM_
+      case awDirect of
+        cgVidOrder_Discharge: result := cgVidUchO_Sklad;  // расходный - складской
+        cgVidOrder_Receipt:   result := cgVidUchO_Sklad;  // приходный - складской
+      end;
+  //---------------------
+    cgDoc_0601, cgDoc_0602, cgDoc_0603, cgDoc_0605, cgDoc_0606:  //RM_
+      case awDirect of
+        cgVidOrder_Discharge: result := cgVidUchO_Sklad;  // расходный - складской
+      end;
+  //---------------------
+    cgDoc_0607:  //RM_
+      case awDirect of
+        cgVidOrder_Discharge: result := cgVidUchO_TORO;  // расходный - ТОРО
+        cgVidOrder_Receipt:   result := cgVidUchO_TORO;  // приходный - ТОРО
+      end;
+  //---------------------
+    cgDoc_0629,
+    cgDoc_0610,
+    cgDoc_1610:
+      case awDirect of
+        cgVidOrder_Discharge: result := cgVidUchO_UKS; // расходный - УКС
+      end;                                             // приходный не формируется
+  //---------------------
+    cgDoc_0632: // акт на перемещение между объектами
+    { // Обработку лучше сделать в вызывающем интерфейсе:
+       case awDirect of
+         cgVidOrder_Discharge: result := KatSopr.TypeDoc;  // расходный
+         cgVidOrder_Receipt:   result := KatSopr.Transp;   // приходный
+       end;
+    }
+  //---------------------
+  end;
+}

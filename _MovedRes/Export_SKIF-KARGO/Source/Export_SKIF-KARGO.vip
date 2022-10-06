@@ -1,0 +1,196 @@
+
+Interface Export_SKIF_KARGO
+
+table struct tSkifKargo
+(
+   DoNum     : string
+ , KSNum     : string
+ , NotractNum   : string
+ , StoreName    : string
+ , StoreAddres  : string
+ , McArtikul    : string
+ , McName       : string
+ , kol          : double
+ , KolUpakovok  : double
+ , Volume       : double
+ , massaBrutto  : double
+)
+with index
+(
+ ind0 = DoNum + KSNum
+)
+;
+
+create view
+var _markerDocs : longint;
+_npp : word;
+_LOG : string;
+from
+   tSkifKargo
+;
+parameters
+  _markerDocs
+;
+
+procedure FillteableReport(_cRec: comp);
+{
+ _try
+  {
+       sql
+        select
+           BDo.NoDoc as DoNum
+         , Ks.Nsopr as KSNum
+         , StDo.NKONT as NotractNum
+         , ToOrg.name as StoreName
+         , ToOrg.ADDR as StoreAddres
+         , Mc.BarKod2 as McArtikul
+         , Mc.name as McName
+         , KSSP.KOLFACT as kol
+         , case when Coalesce(KatOtpUpak.koef,0) = 0 then 0 else KSSP.KOLFACT*Coalesce(Otped.Koef,'')/KatOtpUpak.koef end as KolUpakovok
+         , Mc.Volume*KSSP.KOLFACT  as Volume
+         , (Mc.MASSA + Mc.mtara)*KSSP.KOLFACT  as massaBrutto
+        from katsopr KS
+        join stepdoc StDo on StDo.nrec = Ks.cStepDoc
+        join BaseDoc BDo on BDo.nrec = StDo.cBaseDoc
+        left join KatOrg ToOrg on ToOrg.nRec = Bdo.cGrPol
+        join SpSopr KsSp on KsSp.cSopr = ks.nrec
+        join KatMc Mc On Mc.Nrec = KsSp.cMcUsl
+        join KatOtpEd OtpEd on Otped.nrec = KsSp.cOtped
+        left Join (Select  KatOtpUpak.cmcUsl as cMC
+                          ,KatOtpUpak.Koef as Koef
+                  from KatotpEd KatOtpUpak
+                  join KatEd on KatEd.Nrec = KatOtpUpak.cKatEd
+                    where KatOtpUpak.PrMc = 1
+                    and KatEd.Name = 'упаковка'
+             ) KatOtpUpak on KatOtpUpak.cMc = Mc.Nrec
+
+         where KS.nrec = :(_crec)
+        into tSkifKargo;
+  }
+ _Except
+  else {}
+  _finally {}
+}
+function CreateExcel (FExcelName : string) : boolean;
+{
+  StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Инициализация EXCEL', 1);
+    result := true;
+
+    DeleteFile(FExcelName);
+
+    if (not xlCreateExcel(FExcelName, true))
+    {
+      message('ОШИБКА! Не удалось инициализировать сессию Excel', Error);
+      xlKillExcel;
+      result := false;
+      exit;
+    }
+
+    if (not xlIsExcelValid)
+    {
+      message('ОШИБКА! Не удалось инициализировать сессию Excel', Error);
+      xlKillExcel;
+      result := false;
+      exit
+    }
+  var xlCount : word;
+  xlCount := 0;
+   Do
+   {
+    xlGetSheetsCount(xlCount);
+    xlDeleteSheet(xlCount);
+   } while xlCount > 1
+
+    xlSetActiveSheet(1);
+    xlSetSheetName(1, 'SKIF-KARGO_'+UserName);
+
+   StopVisual('',0);
+}
+Procedure MyPrintMatrixToExcel(var nrow, nrowReal : longint);
+{
+ if nrow = 100 then
+  {
+   xlWritematrixToExcel(nrowReal,1);
+   xlclearMatrix;
+   nrowReal := nrowReal + nrow-1;
+   nrow := 1;
+  }
+}
+
+Procedure PrintReport_Matrix;
+{
+  if not CreateExcel(GetStringParameter('Files','TmpFilesDirectory',0)+'SKIFKARGO_'+UserName+'_'+DateToStr(Cur_Date,'YYYYMMDD')+'_'+TimeToStr(Cur_Time,'HHMMSS')+'.xlsx')
+    then {Stop; Abort; exit;}
+
+
+  StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Формирование отчета', 1);
+  xlCreateMatrix(recordsIntable(tntSkifKargo)+5,11);
+
+  var Nrow0,nrow0FrameBold, Nrow, column, nrowreal : longint;
+ nrowreal := 1;
+ Nrow := column := 1;
+
+ xlSetFontStyle(1,nrow,1,nrow,11);
+ xlsetcolumnWidth(14,1,1,1,3);
+ xlsetcolumnWidth(30,1,4,1,5);
+ xlsetcolumnWidth(14,1,6,1,6);
+ xlsetcolumnWidth(30,1,7,1,7);
+ xlsetcolumnWidth(14,1,8,1,11);
+
+ XlStWriteToMatrix(Nrow, 1,'Номер ДО');
+ XlStWriteToMatrix(Nrow, 2,'Номер Накладной');
+ XlStWriteToMatrix(Nrow, 3,'Номер заказа клиента');
+ XlStWriteToMatrix(Nrow, 4,'Название Магазина');
+ XlStWriteToMatrix(Nrow, 5,'Маршрут (адрес)');
+ XlStWriteToMatrix(Nrow, 6,'Артикул');
+ XlStWriteToMatrix(Nrow, 7,'Наименование позиции');
+ XlStWriteToMatrix(Nrow, 8,'Кол-во шт');
+ XlStWriteToMatrix(Nrow, 9,'Кол-во коробов');
+ XlStWriteToMatrix(Nrow,10,'Объем м3');
+ XlStWriteToMatrix(Nrow,11,'Кг');
+ Nrow++;
+ _Loop tSkifKargo
+ {
+  XlStWriteToMatrix(Nrow, 1,chr(39)+tSkifKargo.DoNum);
+  XlStWriteToMatrix(Nrow, 2,chr(39)+tSkifKargo.KSNum        );
+  XlStWriteToMatrix(Nrow, 3,chr(39)+tSkifKargo.NotractNum   );
+  XlStWriteToMatrix(Nrow, 4,tSkifKargo.StoreName    );
+  XlStWriteToMatrix(Nrow, 5,tSkifKargo.StoreAddres  );
+  XlStWriteToMatrix(Nrow, 6,chr(39)+tSkifKargo.McArtikul    );
+  XlStWriteToMatrix(Nrow, 7,tSkifKargo.McName       );
+  XlDoWriteToMatrix(Nrow, 8,tSkifKargo.kol          );
+  XlDoWriteToMatrix(Nrow, 9,tSkifKargo.KolUpakovok  );
+  XlDoWriteToMatrix(Nrow,10,tSkifKargo.Volume       );
+  XlDoWriteToMatrix(Nrow,11,tSkifKargo.massaBrutto  );
+  //MyPrintMatrixToExcel(Nrow,NrowReal);
+  Nrow++;
+ }
+ xlWriteMatrixToExcel(NrowReal,1);
+ xlKillExcel;
+ StopVisual('',0);
+}
+
+handleevent
+cminit:
+{
+//  Message(if(_TypeDO = 0,'ПО ДО','ПО НАКЛАДНЫМ')+getMarKerCount(_markerDocs));
+if getMarKerCount(_markerDocs) = 0
+ {
+  message('Пометьте документы',error);
+  stop; abort; exit;
+ }
+StartNewVisual (vtIndicatorVisual, vfTimer, 'Формирование файлов', 1);
+
+  var i: longint;
+  var _crec : comp;
+    delete all tSkifKargo;
+   for(i := 0; i < GetMarkerCount(_markerDocs); i++)
+    if GetMarker(_markerDocs, i, _cRec)
+    {
+     FillteableReport(_cRec);
+    }
+   PrintReport_Matrix;
+ StopVisual ('', 0);
+}
+end;
+end.

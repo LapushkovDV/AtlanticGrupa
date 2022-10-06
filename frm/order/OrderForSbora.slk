@@ -1,0 +1,1218 @@
+ID;PWXL;N;E
+P;PGeneral
+P;P0
+P;P0.00
+P;P#,##0
+P;P#,##0.00
+P;P#,##0\ _?;;\-#,##0\ _?
+P;P#,##0\ _?;;[Red]\-#,##0\ _?
+P;P#,##0.00\ _?;;\-#,##0.00\ _?
+P;P#,##0.00\ _?;;[Red]\-#,##0.00\ _?
+P;P#,##0\ "$";;\-#,##0\ "$"
+P;P#,##0\ "$";;[Red]\-#,##0\ "$"
+P;P#,##0.00\ "$";;\-#,##0.00\ "$"
+P;P#,##0.00\ "$";;[Red]\-#,##0.00\ "$"
+P;P0%
+P;P0.00%
+P;P0.00E+00
+P;P##0.0E+0
+P;P#" "?/?
+P;P#" "??/??
+P;Pdd/mm/yyyy
+P;Pdd/mmm/yy
+P;Pdd/mmm
+P;Pmmm/yy
+P;Ph:mm\ AM/PM
+P;Ph:mm:ss\ AM/PM
+P;Ph:mm
+P;Ph:mm:ss
+P;Pdd/mm/yyyy\ h:mm
+P;Pmm:ss
+P;Pmm:ss.0
+P;P@
+P;P[h]:mm:ss
+P;P_-* #,##0\ "$"_-;;\-* #,##0\ "$"_-;;_-* "-"\ "$"_-;;_-@_-
+P;P_-* #,##0\ _?_-;;\-* #,##0\ _?_-;;_-* "-"\ _?_-;;_-@_-
+P;P_-* #,##0.00\ "$"_-;;\-* #,##0.00\ "$"_-;;_-* "-"??\ "$"_-;;_-@_-
+P;P_-* #,##0.00\ _?_-;;\-* #,##0.00\ _?_-;;_-* "-"??\ _?_-;;_-@_-
+P;P#,##0\ _?;;\-#,##0\ _?
+P;P#,##0\ _?;;[Red]\-#,##0\ _?
+P;P#,##0.00\ _?;;\-#,##0.00\ _?
+P;P#,##0.00\ _?;;[Red]\-#,##0.00\ _?
+P;P_-* #,##0\ _?_-;;\-* #,##0\ _?_-;;_-* "-"\ _?_-;;_-@_-
+P;P_-* #,##0.00\ _?_-;;\-* #,##0.00\ _?_-;;_-* "-"??\ _?_-;;_-@_-
+P;P#,##0_Ns_.;;\-#,##0_Ns_.
+P;P#,##0_Ns_.;;[Red]\-#,##0_Ns_.
+P;P#,##0.00_Ns_.;;\-#,##0.00_Ns_.
+P;P#,##0.00_Ns_.;;[Red]\-#,##0.00_Ns_.
+P;P#,##0"$";;\-#,##0"$"
+P;P#,##0"$";;[Red]\-#,##0"$"
+P;P#,##0.00"$";;\-#,##0.00"$"
+P;P#,##0.00"$";;[Red]\-#,##0.00"$"
+P;P_-* #,##0"$"_-;;\-* #,##0"$"_-;;_-* "-""$"_-;;_-@_-
+P;P_-* #,##0_Ns_._-;;\-* #,##0_Ns_._-;;_-* "-"_Ns_._-;;_-@_-
+P;P_-* #,##0.00"$"_-;;\-* #,##0.00"$"_-;;_-* "-"??"$"_-;;_-@_-
+P;P_-* #,##0.00_Ns_._-;;\-* #,##0.00_Ns_._-;;_-* "-"??_Ns_._-;;_-@_-
+P;P#,##0.000
+P;FCalibri;M220;L9
+P;FCalibri;M220;L9
+P;FCalibri;M220;L9
+P;FCalibri;M220;L9
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M200;L9
+P;ECalibri Light;M360;L55
+P;ECalibri;M300;SB;L55
+P;ECalibri;M260;SB;L55
+P;ECalibri;M220;SB;L55
+P;ECalibri;M200;L18
+P;ECalibri;M200;L21
+P;ECalibri;M200;L61
+P;ECalibri;M200;L63
+P;ECalibri;M200;SB;L64
+P;ECalibri;M200;SB;L53
+P;ECalibri;M200;L53
+P;ECalibri;M200;SB;L10
+P;ECalibri;M200;L11
+P;ECalibri;M200;SI;L24
+P;ECalibri;M200;SB;L9
+P;ECalibri;M200;L10
+P;ECalibri;M220;L9
+P;ECambria;M360;SB;L57
+P;ECalibri;M300;SB;L57
+P;ECalibri;M260;SB;L57
+P;ECalibri;M220;SB;L57
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECambria;M360;SB;L57
+P;ECalibri;M300;SB;L57
+P;ECalibri;M260;SB;L57
+P;ECalibri;M220;SB;L57
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECambria;M360;SB;L57
+P;ECalibri;M300;SB;L57
+P;ECalibri;M260;SB;L57
+P;ECalibri;M220;SB;L57
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;ECalibri;M220;L9
+P;ECambria;M360;SB;L57
+P;ECalibri;M300;SB;L57
+P;ECalibri;M260;SB;L57
+P;ECalibri;M220;SB;L57
+P;ECalibri;M220;L18
+P;ECalibri;M220;L21
+P;ECalibri;M220;L61
+P;ECalibri;M220;L63
+P;ECalibri;M220;SB;L64
+P;ECalibri;M220;SB;L53
+P;ECalibri;M220;L53
+P;ECalibri;M220;SB;L10
+P;ECalibri;M220;L11
+P;ECalibri;M220;SI;L24
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L10
+P;EArial;M200;L18
+P;EArial Cyr;M200;SB
+P;EArial Cyr;M200
+P;ETimes New Roman;M200
+P;EArial Cyr;M240;SB
+P;EArial Cyr;M240
+P;ECalibri;M220;L9
+P;ECalibri;M220;SB;L9
+P;ECalibri;M220;L9
+P;ECalibri;M220;L9
+P;ECalibri;M220;L9
+F;P0;DG0G8;M300
+B;Y144;X16;D0 0 143 15
+O;L;D;V0;K47;G100 0.001
+F;W4 4 48
+F;W6 6 5
+F;M290;R1
+F;M290;R2
+F;M290;R3
+F;M290;R4
+F;M290;R5
+F;M290;R6
+F;M290;R7
+F;M290;R8
+F;M290;R9
+F;M290;R10
+F;M290;R11
+F;M290;R12
+F;M290;R13
+F;M290;R14
+F;M290;R15
+F;M290;R16
+F;M290;R17
+F;M290;R18
+F;M290;R19
+F;M290;R20
+F;M290;R21
+F;M290;R22
+F;M290;R23
+F;M290;R24
+F;M290;R25
+F;M290;R26
+F;M290;R27
+F;M290;R28
+F;M290;R29
+F;M290;R30
+F;M290;R31
+F;M290;R32
+F;M290;R33
+F;M290;R34
+F;M290;R35
+F;M290;R36
+F;M290;R37
+F;M290;R38
+F;M290;R39
+F;M290;R40
+F;M290;R41
+F;M290;R42
+F;M290;R43
+F;M290;R44
+F;M290;R45
+F;M290;R46
+F;M290;R47
+F;M290;R48
+F;M290;R49
+F;M290;R50
+F;M290;R51
+F;M290;R52
+F;M290;R53
+F;M290;R54
+F;M290;R55
+F;M290;R56
+F;M290;R57
+F;M290;R58
+F;M290;R59
+F;M290;R60
+F;M290;R61
+F;M290;R63
+F;M290;R64
+F;M290;R65
+F;M290;R66
+F;M290;R67
+F;M290;R68
+F;M290;R69
+F;M290;R70
+F;M290;R71
+F;M290;R72
+F;M290;R73
+F;M290;R74
+F;M290;R75
+F;M290;R76
+F;M290;R77
+F;M290;R78
+F;M290;R79
+F;M290;R80
+F;M290;R81
+F;M290;R82
+F;M290;R83
+F;M290;R84
+F;M290;R85
+F;M290;R86
+F;M290;R87
+F;M290;R88
+F;M290;R89
+F;M290;R90
+F;M290;R91
+F;M290;R92
+F;M290;R93
+F;M290;R94
+F;M290;R95
+F;M290;R96
+F;M290;R97
+F;M315;R98
+F;M290;R99
+F;M290;R100
+F;M290;R101
+F;M290;R102
+F;M290;R103
+F;M315;R104
+F;M290;R105
+F;M290;R106
+F;M290;R107
+F;M290;R108
+F;M290;R109
+F;M290;R110
+F;M315;R111
+F;M290;R113
+F;M290;R114
+F;M290;R115
+F;M290;R116
+F;M290;R117
+F;M290;R118
+F;M290;R119
+F;M290;R120
+F;M290;R121
+F;M290;R122
+F;M290;R123
+F;M290;R124
+F;M290;R125
+F;M290;R126
+F;M290;R127
+F;M315;R128
+F;M315;R129
+F;M315;R130
+F;M290;R131
+F;M290;R132
+F;M315;R133
+F;M290;R134
+F;M290;R135
+F;M290;R136
+F;M315;R137
+F;M290;R138
+F;M290;R139
+F;M290;R140
+F;M290;R141
+F;M290;R142
+F;M290;R143
+F;M290;R144
+F;Y1;X1
+C;K".LinkForm 'ZayavkaNAaForSbora' Prototype is 'prbdoc'"
+F;Y2
+C;K".NameInList 'NKCNAaNHyNCaNCeNAa NHaNHeNHy NDnNBaNCiNsNAa'"
+F;Y3
+C;K".SLKNumber"
+F;Y4
+C;K".defo Landscape"
+F;Y5
+C;K".group 'NHINsNCiNHaNAaNqNAa'"
+F;Y6
+C;K".var"
+F;Y7
+C;K"ItogoKolvo, PosNetto, ItogoNetto, PosBrutto, ItogoBrutto, PosVol, ItogoVol, ItogoSumBez, ItogoNDS, ItogoSum, ItogoNDS10, ItogoNDS18, SumSkid, TotalSkid, VidSkid, kolG : double"
+F;SSM0;Y8
+C;K"ItogoPogruppe, _npp: double"
+F;Y9
+C;K"korobka,kGrMC,nGrMC,f: string;;"
+F;SM141;Y10
+C;K"RecAttr,cGrMC:comp;;"
+F;Y11
+C;K".endvar"
+F;Y12
+C;K".CREATE VIEW vDogovor AS SELECT * FROM basedoc, dogovor, dogovor appdogovor WHERE ((BaseDocNrec==basedoc.nrec and basedoc.cdogovor==dogovor.nrec and basedoc.cappdogovor==appdogovor.nrec));;"
+F;Y13
+C;K".CREATE VIEW vMC AS SELECT * FROM spstep, katmc WHERE ((PosNrec==spstep.nrec and spstep.cmcusl==katmc.nrec));;"
+F;SM141;Y14
+C;K".Create view tAtr from ATTRNAM;; "
+F;SM141;Y15
+C;K".Create view tSp from"
+F;SM141;Y16
+C;K"SPSTEP, KATMC, ATTRNAM, ATTRVAL"
+F;SM141;Y17
+C;K"where((SPSTEP.CMCUSL==KATMC.NREC "
+F;SM141;Y18
+C;K"and RecAttr==ATTRVAL.CATTRNAM "
+F;SM141;Y19
+C;K"and word(1411)==ATTRVAL.WTABLE  "
+F;SM141;Y20
+C;K"and*0 KATMC.NREC==ATTRVAL.CREC));;"
+F;SM141;Y21
+C;K".Create view tZ from ZKAUVED;;"
+F;SM141;Y22
+C;K".Create view tG from GROUPMC;;"
+F;Y23
+C;K".Fields"
+F;Y24
+C;K"nomer"
+F;Y25
+C;K"DateToStr(StrToDate(ddoc,'DD/MM/YYYY'),'DD.MM.YYYY')"
+F;Y26
+C;K"//NHANAaNAoNAa NHiNCiNDnNAoNAaNCaNCeNAe - NHiNBoNDnNAoNCi"
+F;Y27
+C;K"! post    innpost    bpost      rspost         if(mpost<>'','NBANAENCE '+mpost,'')       rspost2      if(mpost2<>'','NBANAENCE '+mpost2,'')     adpost    telpost"
+F;Y28
+C;K"! grpost inngrpost grotbank  grotschet1   if(grotmfo1<>'','NBANAENCE '+grotmfo1,'')   grotschet2  if(grotmfo2<>'','NBANAENCE '+grotmfo2,'')   gradpost grtelpost"
+F;Y29
+C;K"grpol gradpol .endfields"
+F;Y30
+C;K"! pol      innpol      bpol         rspol           if(mpol<>'','NBANAENCE '+mpol,'')        rspol2         if(mpol2<>'','NBANAENCE '+mpol2,'')      adpol    telpol"
+F;Y31
+C;K"! grpol   inngrpol   grpolbank grpolschet1 if(grpolmfo1<>'','NBANAENCE' +grpolmfo1,'') grpolschet2 if(grpolmfo2<>'','NBANAENCE '+grpolmfo2,'') gradpol grtelpol"
+F;Y32
+C;K"! TTNatp_Name"
+F;Y33
+C;K"! if(vDogovor.basedoc.cappdogovor=0,vDogovor.dogovor.nodoc,vDogovor.appdogovor.nodoc)"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y34;X1
+C;K"! DateToStr(if(vDogovor.basedoc.cappdogovor=0,vDogovor.dogovor.ddoc,vDogovor.appdogovor.ddoc),'DD.MM.YYYY')"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y35;X1
+C;K"! //pname //NHiNsNAeNAiNJa/7NAaNBiNAeNJa"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y36;X1
+C;K"!.EndFields"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y37;X1
+C;K".{"
+F;X2
+F;X3
+F;X4
+F;X5
+F;SDM142;Y38;X1
+C;K"NKCNAaNHyNCaNCeNAa NBiNAa NHiNCiNDnNAoNAaNCaNCeNBo"
+F;X2
+F;X3
+F;X4
+F;X5
+F;SDLTBM142;Y39;X1
+C;K"NBINCiNAiNJaNs NKcNAaNHyNCaNCeNAe"
+F;STBM0;X2
+F;SRTBM0;X3
+F;STBM0;X4
+C;K"^ "
+F;SRTBM0;X5
+F;SDLTBM142;Y40;X1
+C;K"NHANAaNAoNAa NKcNAaNHyNCaNCeNAe"
+F;SDTBM142;X2
+F;SDRTBM142;X3
+F;P19;FG0G;STBM0;X4
+C;K"^"
+F;SRTBM0;X5
+F;SDLTBM142;Y41;X1
+C;K"NDANsNBoNKcNCiNHiNCiNHeNBo/7NAaNAoNJaNHeNHu"
+F;SDTBM142;X2
+F;SDRTBM142;X3
+F;P30;FG0G;SDTBM142;X4
+C;K"^"
+F;SRTBM0;X5
+F;SDTBM142;Y42;X1
+C;K"NAANHaNsNJaNDn"
+F;SDTBM142;X2
+F;SDRTBM142;X3
+F;P30;FG0G;STBM143;X4
+C;K"^"
+F;SRTBM0;X5
+F;Y43;X1
+C;K".begin"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y44;X1
+C;K"ItogoKolvo := 0;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y45;X1
+C;K"ItogoNetto :=0;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y46;X1
+C;K"ItogoBrutto :=0 ;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y47;X1
+C;K"ItogoVol := 0;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y48;X1
+C;K"ItogoSumBez := 0;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y49;X1
+C;K"ItogoNDS :=0;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y50;X1
+C;K"ItogoSum := 0 ;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y51;X1
+C;K"ItogoNDS10 := 0;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y52;X1
+C;K"ItogoNDS18 := 0;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y53;X1
+C;K"end."
+F;X2
+F;X3
+F;X4
+F;X5
+F;SM143;Y54;X1
+C;K".{table 'vDogovor'"
+F;X2
+F;X3
+F;X4
+F;X5
+F;SM143;Y55;X1
+C;K".}// NHoNAeNCeNHe /7NAoNCiNBa NHaNCiNDnNAoNAaNAoNHu NBiNCiNAiNJaNs NHaNCiNDaNCiNCaNCiNsNAa"
+F;X2
+F;X3
+F;X4
+F;X5
+F;SM143;Y56;X1
+C;K".{CheckEnter IsBaseFin"
+F;X2
+F;X3
+F;X4
+F;X5
+F;SM143;Y57;X1
+C;K".}"
+F;X2
+F;X3
+F;X4
+F;X5
+F;SM143;Y58;X1
+C;K".{CheckEnter IsExClass"
+F;X2
+F;X3
+F;X4
+F;X5
+F;SM143;Y59;X1
+C;K".}"
+F;X2
+F;X3
+F;X4
+F;X5
+F;SM143;Y60;X1
+C;K".{CheckEnter IsGroup"
+F;X2
+F;X3
+F;X4
+F;X5
+F;SM143;Y61;X1
+C;K".}"
+F;X2
+F;X3
+F;X4
+F;X5
+F;SDLRTM142;Y63;X1
+C;K"NQ"
+F;P0;FG0C;SDLTM142;X2
+C;K"NQ"
+F;P0;FG0C;SDLTM142;X3
+F;P0;FG0L;SDRTM142;X4
+C;K"NBINAaNAeNAiNJaNBiNCiNCaNAaNBiNAeNJa"
+F;P4;FF2C;SDLRTM142;X5
+C;K"NKCNAaNCeNAaNKc"
+F;SDLRBM142;Y64;X1
+C;K"NHi/NHi"
+F;P0;FG0C;SDLBM142;X2
+C;K"NCeNCiNsNCiNBaNAa"
+F;P0;FG0C;SDLBM142;X3
+F;P0;FG0L;SDRBM142;X4
+F;P4;FF2C;SDLRBM142;X5
+C;K"(NCeNCiNHe-NCaNCi)"
+F;Y65;X1
+C;K".begin DELETE ALL ZKAUVED;;_npp:=1;; end."
+F;P0;FG0C;SM143;X2
+F;P0;FG0C;SM143;X3
+F;P0;FG0L;SM143;X4
+F;P4;FF2C;SM143;X5
+F;SM143;X6
+F;SM143;X7
+F;SM143;X8
+F;SM143;X9
+F;SM143;X10
+F;SM143;X11
+F;SM143;X12
+F;SM143;X13
+F;SM143;X14
+F;SM143;X15
+F;SM143;X16
+F;Y66;X1
+C;K".{//NDNNHiNJaNHoNAeNCoNAeNCeNAaNHoNAeNHy"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;Y67;X1
+C;K".begin"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;Y68;X1
+C;K"kGrMC:='';; cGrMC:=0h;; nGrMC:='';;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;SM143;Y69;X1
+C;K"RunInterface('L_BASEDOC::GetPosMassVolDO', comp(PosNrec), PosNetto, PosBrutto, PosVol,kGrMC,nGrMC,cGrMC);;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;SM143;Y70;X1
+C;K"end."
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;Y71;X1
+C;K".begin"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;SM144;Y72;X1
+C;K"if(tAtr.getfirst ATTRNAM Where((word(1411)==ATTRNAM.WTABLE and 'NBINCiNAiNJaNs NCeNCiNsNCiNBaNAa'==ATTRNAM.NAME)))=tsOk"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;SM144;Y73;X1
+C;K"{RecAttr:=tAtr.ATTRNAM.NREC;;}"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;SM144;Y74;X1
+C;K"if(tSp.getfirst SPSTEP where((POSNREC==SPSTEP.nrec)))=tsOk"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;Y75;X1
+C;K"{korobka:=tSp.ATTRVAL.VSTRING;;} "
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;Y76;X1
+C;K"INSERT ZKAUVED SET ZKAUVED.crec1:=cGrMC,ZKAUVED.PDOUBLE1:=_npp,ZKAUVED.PSTRING1:=korobka,ZKAUVED.KAUNAMED1:=mc,ZKAUVED.PDOUBLE2:=kol,ZKAUVED.PSTRING2:=kGrMC,ZKAUVED.KAUNAMED2:=nGrMC;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;SM144;Y77;X1
+C;K"end."
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;Y78;X1
+C;K".begin vDogovor.getfirst;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;Y79;X1
+C;K"SumSkid:=vDogovor.basedoc.skidka;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;Y80;X1
+C;K"TotalSkid:=vDogovor.basedoc.total;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;X11
+F;X12
+F;X13
+F;X14
+F;X15
+F;X16
+F;Y81;X1
+C;K"VidSkid:=vDogovor.basedoc.vhskid;;"
+F;Y82
+C;K"ItogoKolvo := ItogoKolvo+kol;;"
+F;Y83
+C;K"ItogoNetto := ItogoNetto + PosNetto;;"
+F;Y84
+C;K"ItogoBrutto := ItogoBrutto + PosBrutto;;"
+F;Y85
+C;K"ItogoVol := ItogoVol + PosVol;;"
+F;Y86
+C;K"ItogoSumBez := ItogoSumBez + sBez;;"
+F;Y87
+C;K"ItogoNDS := ItogoNDS + NDS;;"
+F;Y88
+C;K"ItogoSum := ItogoSum + cena*kol+NDS ;;"
+F;Y89
+C;K"IF ProcNDS = 10 THEN ItogoNDS10 := ItogoNDS10 + NDS;;"
+F;Y90
+C;K"IF ProcNDS = 18 THEN ItogoNDS18 := ItogoNDS18 + NDS;;"
+F;Y91
+C;K"end."
+F;Y92
+C;K".}//NCENCiNBiNJaNHo NDnNHiNJaNHoNAeNCoNAeNCeNAaNHoNAeNAe"
+F;Y93
+C;K".fields _npp  tZ.PSTRING1 tZ.KAUNAMED1 tZ.PDOUBLE2  .endfields"
+F;Y94
+C;K".{TABLE tG"
+F;Y95
+C;K".begin kolG:=0;;f:=0;; end."
+F;Y96
+C;K".{TABLE tZ"
+F;Y97
+C;K".{?internal;;tG.nrec=tZ.crec1;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;SLRTBM0;Y98;X1
+C;K"^"
+F;SDLRTBM145;X2
+C;K"^"
+F;SLTBM146;X3
+C;K"^"
+F;SRTBM146;X4
+F;P0;FG0R;SDLRTBM145;X5
+C;K"^"
+F;X6
+F;Y99;X1
+C;K".begin f:=1;; kolG:=kolG+tZ.PDOUBLE2;;_npp:=_npp+1;; end."
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;Y100;X1
+C;K".}"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;Y101;X1
+C;K".}"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;Y102;X1
+C;K".fields tG.name  kolG .endfields"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;Y103;X1
+C;K".{?internal;;f=1;;"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;SLTBM143;Y104;X1
+C;K"NAENAoNCiNDaNCi NHiNCi NDaNsNBoNHiNHiNJa"
+F;SDTBM142;X2
+F;STBM0;X3
+C;K"^"
+F;STBM0;X4
+F;P0;FG0R;SDTBM142;X5
+F;SM146;X6
+C;K"^"
+F;Y105;X1
+C;K".}"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;Y106;X1
+C;K".}"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;SM143;Y107;X1
+C;K".FIELDS"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;Y108;X1
+C;K" ItogoKolvo"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;Y109;X1
+C;K"//ItogoPogruppe"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;Y110;X1
+C;K".ENDFIELDS"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;SDLTBM142;Y111;X1
+C;K"NAENAoNCiNDaNCi"
+F;P30;FG0G;SRTBM0;X2
+F;P30;FG0G;STBM0;X3
+F;P30;FG0G;SRTBM0;X4
+F;P0;FG0R;SDLRTBM145;X5
+C;K"^"
+F;X6
+F;SM143;Y113;X1
+C;K".FIELDS"
+F;X2
+F;X3
+F;X4
+F;SM143;Y114;X1
+C;K"pname"
+F;X2
+F;X3
+F;X4
+F;SM143;Y115;X1
+C;K"DoubleToStr(ItogoNetto,'\d.\3p[|-]3666666666666666667^888')"
+F;X2
+F;X3
+F;X4
+F;SM143;Y116;X1
+C;K"DoubleToStr(ItogoBrutto,'\d.\3p[|-]3666666666666666667^888')"
+F;X2
+F;X3
+F;X4
+F;SM143;Y117;X1
+C;K"DoubleToStr(ItogoVol,'\d.\3p[|-]3666666666666666667^888')"
+F;X2
+F;X3
+F;X4
+F;SM143;Y118;X1
+C;K"DoubleToStr(ItogoSum,'\d.\2p[|-]3666666666666666666^88')"
+F;X2
+F;X3
+F;X4
+F;Y119;X1
+C;K"DoubleToStr(SumSkid,'\d.\2p[|-]3666666666666666666^88')"
+F;X2
+F;X3
+F;X4
+F;Y120;X1
+C;K"DoubleToStr(TotalSkid,'\d.\2p[|-]3666666666666666666^88')"
+F;X2
+F;X3
+F;X4
+F;Y121;X1
+C;K"DoubleToStr(SumSkid,'\d.\2p[|-]3666666666666666666^88')"
+F;X2
+F;X3
+F;X4
+F;Y122;X1
+C;K"DoubleToStr(TotalSkid,'\d.\2p[|-]3666666666666666666^88')"
+F;X2
+F;X3
+F;X4
+F;SM143;Y123;X1
+C;K"DoubleToStr(ItogoNDS18,'\d.\2p[|-]3666666666666666666^88')"
+F;X2
+F;X3
+F;X4
+F;SM143;Y124;X1
+C;K"DoubleToStr(ItogoNDS10,'\d.\2p[|-]3666666666666666666^88')"
+F;X2
+F;X3
+F;X4
+F;Y125;X1
+C;K".ENDFIELDS"
+F;X2
+F;X3
+F;X4
+F;Y126;X1
+F;X2
+C;K"^"
+F;X3
+F;X4
+F;P4;FF2G;SDLRTM142;Y127;X1
+F;P4;FF2L;SDLTBM142;X2
+C;K"NCANJaNDn NBiNJaNAoNAoNCi, NCeNDa"
+F;SDRTBM142;X3
+F;P54;FF3R;SLRTBM0;X4
+C;K"^"
+F;P4;FF2G;SDLRM142;Y128;X1
+C;K"NAENAoNCiNDaNCi"
+F;P4;FF2L;SDLTBM142;X2
+C;K"NCANJaNDn NBaNsNBoNAoNAoNCi, NCeNDa"
+F;SDRTBM142;X3
+F;P54;FF3R;SDLRTBM145;X4
+C;K"^"
+F;P4;FF2G;SDLRM142;Y129;X1
+C;K"NHiNCi "
+F;P4;FF2L;SDLTBM142;X2
+C;K"NCINBaNBuNJaNAi, NCeNBoNBa.NAi"
+F;SDRTBM142;X3
+F;P54;FF3R;SDLRTBM145;X4
+C;K"^"
+F;X5
+F;P4;FF2G;SDLRM142;Y130;X1
+C;K"NKcNAaNHyNCaNCeNJa"
+F;P4;FF2L;SDLTBM142;X2
+C;K"NDNNBoNAiNAiNAa NDn NBINHANDN"
+F;SDRTBM142;X3
+F;P4;FF2R;SDLRTBM145;X4
+C;K"^"
+F;X5
+F;Y131;X1
+C;K".{?internal;;(SumSkid>0 and VidSkid=2)"
+F;P4;FF2G;SDLRM142;X2
+F;P4;FF2L;SDLTBM142;X3
+F;P0;FG0R;SDLRTBM142;X4
+F;P4;FF2G;X5
+F;P4;FF2G;SDLRM142;Y132;X1
+F;P4;FF2L;SDLTBM142;X2
+C;K"NDNNCeNAeNHaNCeNAa"
+F;SDRTBM142;X3
+F;P4;FF2R;SLRTBM0;X4
+C;K"^"
+F;X5
+F;P4;FF2G;SDLRM142;Y133;X1
+F;P4;FF2L;SDLTM142;X2
+C;K"NDNNBoNAiNAiNAa NDn NBo/7.NDnNCeNAeNHaNCeNAe"
+F;SDRTM142;X3
+F;P4;FF2R;SDLRTM145;X4
+C;K"^"
+F;X5
+F;Y134;X1
+C;K".}"
+F;P4;FF2G;SDLTBM142;X2
+F;P4;FF2L;SDTBM142;X3
+F;P0;FG0R;SDLRTBM142;X4
+F;P4;FF2G;X5
+F;Y135;X1
+C;K".{?internal;;(SumSkid>0 and VidSkid=1)"
+F;P4;FF2G;SDLRM142;X2
+F;P4;FF2L;SDLBM142;X3
+F;P0;FG0R;SDLRTBM142;X4
+F;P4;FF2G;X5
+F;P4;FF2G;SDLRM142;Y136;X1
+F;P4;FF2L;SDLTBM142;X2
+C;K"NDNNCeNAeNHaNCeNAa,%"
+F;SDRTBM142;X3
+F;P4;FF2R;SLRTBM0;X4
+C;K"^"
+F;X5
+F;P4;FF2G;SDLRM142;Y137;X1
+F;P4;FF2L;SDLTM142;X2
+C;K"NDNNBoNAiNAiNAa NDn NBo/7.NDnNCeNAeNHaNCeNAe"
+F;SDRTM142;X3
+F;P4;FF2R;SDLRTM145;X4
+C;K"^"
+F;X5
+F;Y138;X1
+C;K".}"
+F;P4;FF2G;SDLTBM142;X2
+F;P4;FF2L;SDTBM142;X3
+F;P0;FG0R;SDLRTBM142;X4
+F;P4;FF2G;X5
+F;P4;FF2G;SDLRM142;Y139;X1
+F;P4;FF2L;SDLBM142;X2
+C;K"NCa NAo./7. NBINHANDN 20%"
+F;SDRBM142;X3
+F;P4;FF2R;SLRBM0;X4
+C;K"^"
+F;X5
+F;P4;FF2G;SDLRBM142;Y140;X1
+F;P4;FF2L;SDLTBM142;X2
+C;K"NCa NAo./7. NBINHANDN 10%"
+F;SDRTBM142;X3
+F;P4;FF2R;SLRTBM0;X4
+C;K"^"
+F;X5
+F;Y141;X1
+C;K".if Delimiter"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y142;X1
+C;K".end"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y143;X1
+C;K".}//NCENCiNBiNJaNHo NAoNJaNHeNAa NCoNCiNsNAiNCu"
+F;X2
+F;X3
+F;X4
+F;X5
+F;Y144;X1
+C;K".EndForm"
+F;X2
+F;X3
+F;X4
+F;X5
+E

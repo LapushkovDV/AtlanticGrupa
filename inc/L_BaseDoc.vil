@@ -1,0 +1,86 @@
+#ifdef ComponentVersion
+#component "L_BASEDOC"
+#end
+
+vipinterface DoResCreator licensed   ( FREE )
+                         parameters ( nRecDO  : comp );
+
+vipinterface RasprDo     licensed   (
+                                      #include RasprDo.lih
+                                    )
+                         parameters ( tdoc : word;
+                                      p1   : comp );
+
+vipinterface ResNalF     licensed   ( FREE )
+                         parameters ( cOtp    : comp;
+                                      KolTreb : double;
+                                      KodT    : comp;
+                                      SpNrec  : comp;
+                                      SklOt   : comp );
+
+vipinterface SeeFin      licensed   ( FREE )
+                         parameters ( p1 : comp );
+
+VipInterface GetKonDo licensed (FREE)
+                      parameters (AllOrg : word;
+                                  TpDO   : word;
+                                  d1     : date;
+                                  d2     : date;
+                                  wParam : word
+                                 );
+
+VipInterface GETSOMEBARTER Licensed (FREE);
+
+VipInterface BDocName Licensed (FREE)
+                      parameters (w1 : word;
+                                  c1 : comp);
+
+VipInterface GetStatD Licensed (FREE)
+                      parameters (c1 : comp);
+
+VipInterface NdsPri   Licensed (FREE)
+                      parameters (page_flag : word);
+
+VipInterface iReserv  Licensed (FREE)
+                      parameters (pBaseDoc : Comp);
+
+VipInterface iReservSetup Licensed (FREE)
+                          parameters (pNRec : Comp);
+
+
+VipInterface Barter   Licensed (FREE)
+                      parameters (p1 : comp);
+
+VipInterface DelSchet Licensed (FREE);
+
+VipInterface NoteDO_DKZ Licensed (FREE)
+                        parameters (pTipDoc : word);
+
+VipInterface change_pr Licensed (FREE)
+                        parameters (cSD : comp);
+
+VipInterface DoSynchronization Licensed (FREE)
+                        parameters (V : word);
+
+VipInterface PriorDoc Licensed (Free);
+
+vipinterface MakeDoRes Licensed   (SELL)
+                       parameters (CodeRes : word);
+
+vipinterface ReplaceGroup Licensed (Free);
+
+VipInterface PrnVariant Licensed (FREE)
+                        parameters ( pBaseDoc : Comp );
+
+VipInterface CalcDiscount Licensed (FREE)
+                        parameters (pSpStep : comp;
+                                    pStepDoc: comp);
+
+DIALOG GetCrossCurse
+(
+  f1 : double
+);
+
+Menu mnuEditReservOnSpStep;
+Menu mnuVSchetSpStep;
+Menu Sell_Rep;

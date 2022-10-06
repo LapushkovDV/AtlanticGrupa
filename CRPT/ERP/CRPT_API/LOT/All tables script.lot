@@ -1,0 +1,227 @@
+Create table CRPT_AggrDocs "ЦРПТ Документы Агрегации"
+With table_Code = 31637
+with Replace
+(
+  NRec                 : comp                      "Номер записи",
+  npp                  : word                                           "Номер по порядку",
+  pack_code            : string                    "Код склада ",
+  operation_date_time  : string                    "Время транзакции",
+  document_number      : string                    "Номер транзакции",
+  docType                           : word                                           "Тип документа",
+  CRPT_Oid                           : string                                    "Oid документа в системе ЦРПТ",
+  docDateTime                   : string                                    "Дата документа в ЦРПТ",
+  status                           : string                                    "Статус документа в ЦРПТ",
+  statusDescr                   : string                                    "Описание статуса в ЦРПТ",
+  sender                           : string                                    "Отправитель документа в ЦРПТ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+Create table CRPT_SpAggrDocs "ЦРПТ Спецификация документов агрегации"
+With table_Code = 31638
+with Replace
+(
+  NRec                 : comp                        "Номер записи",
+  cDoc                                   : ref(CRPT_AggrDocs)                       "Ссылка на документ",
+  kitu                 : string                      "SSCC-код паллеты",
+  cKatMc                           : comp                                                  "Ссылка на кат МЦ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+Create table CRPT_Docs "ЦРПТ Документы"
+With table_Code = 31634
+with Replace
+(
+  NRec                 : comp                      "Номер записи",
+  declaration_date     : date                      "Дата ГТД",
+  declaration_number   : string                    "Номер ГТД",
+  customs_code         : string                    "Номер таможенного органа",
+  decision_code        : string                    "Решение таможни",
+  docType                           : word                                           "Тип документа",
+  CRPT_Oid                           : string                                    "Oid документа в системе ЦРПТ",
+  docDateTime                   : string                                    "Дата документа в ЦРПТ",
+  status                           : string                                    "Статус документа в ЦРПТ",
+  statusDescr                   : string                                    "Описание статуса в ЦРПТ",
+  sender                           : string                                    "Отправитель документа в ЦРПТ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+Create table CRPT_SpDocs "ЦРПТ Спецификация документов"
+With table_Code = 31635
+with Replace
+(
+  NRec               : comp                        "Номер записи",
+  cDoc               : ref(CRPT_Docs)                       "Ссылка на документ",
+  kitu               : string                      "SSCC-код паллеты",
+  cKatMc             : comp                                                  "Ссылка на кат МЦ",
+  production_date    : date                      "Дата производства"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+, CRPT_SPDOCS_CDOC = cDOC
+);
+
+Create table CRPT_Errors
+With table_Code = 31648
+with Replace
+(
+  NRec      : comp   "Номер записи",
+  RqstGuid  : string "Request GUID",
+  message   : string "Error message",
+  sender    : string "circuitserviceID"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+Create table CRPT_InfoList "CRPT_InfoList"
+With table_Code = 31633
+with Replace
+with tableoptions Branched
+(
+  NRec                 : comp                          "Номер записи",
+  cis                  : string                        "SSCC-код паллеты",
+  cparent              : string                        "Ссылка на вышестоящую позицию",
+  emissionDate         : string                        "Дата эмиссии КИ",
+  producedDate         : string                        "Дата ввода товара с КИ в оборот",
+  ownerInn                            : string                                                   "Текущий владелей КИТУ",
+  participantInn            : string                                                   "Текущий владелей КИГУ",
+  lastDocId                    : string                                                   "Последний рег номер док. в ГИС МТ по КИ",
+  lastDocType          : string                        "Тип последнего документа",
+  gtin                 : string                        "Код товара",
+  sgtin                : string                        "Код товара и серийный номер КИ",
+  emissionType         : string                        "Тип эмиссии",
+  status               : string                        "Статус КИ",
+  packType             : string                        "Тип упаковки",
+  uit                  : string                        "КИ",
+  uitu                 : string                        "КИТУ",
+  lastStatusChangeDate : string                        "Дата последнего изменения статуса",
+  productGroup         : string                        "Товарная группа"
+
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+)
+
+;
+
+
+Create table CRPT_KituInfo_temp "CRPT_KituInfo_temp"
+With table_Code = 31636
+with Replace
+with tableoptions Branched
+(
+  NRec                         : comp                           "Номер записи",
+  cis                              : string                           "SSCC-код паллеты",
+  cparent                       : string                           "Ссылка на вышестоящую позицию",
+  emissionDate              : datetime                       "Дата эмиссии КИ",
+  producedDate             : datetime                       "Дата ввода товара с КИ в оборот",
+  lastDocType               : string                            "Тип последнего документа",
+  emissionType             : string                            "Тип эмиссии",
+  status                         : string                            "Статус КИ",
+  packType                   : string                            "Тип упаковки",
+  lastStatusChangeDate : string                             "Дата последнего изменения статуса",
+  productGroup              : string                          "Товарная группа"
+
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+)
+
+;
+
+
+Create table CRPT_ReceiptDocs "ЦРПТ Документы Вывода из оборота"
+With table_Code = 31641
+with Replace
+(
+  NRec                 : comp            "Номер записи",
+  npp                  : word                         "Номер по порядку",
+  withdrawal_type      : word            "Тип списания",
+  withdrawal_date      : date            "Дата списания",
+
+  primary_doc_type     : word            "Тип первичного документа",
+  primary_doc_number   : string          "Номер первичного документа",
+  primary_doc_date     : date            "Дата первичного документа",
+  primary_doc_name     : string          "Имя первичного документа",
+
+  CRPT_Oid                           : string                  "Oid документа в системе ЦРПТ",
+  docDateTime                   : string                  "Дата документа в ЦРПТ",
+  status                           : string                  "Статус документа в ЦРПТ",
+  statusDescr                   : string                  "Описание статуса в ЦРПТ",
+  sender                           : string                  "Отправитель документа в ЦРПТ"
+
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+Create table CRPT_SpReceiptDocs "ЦРПТ Спецификация документов Вывода"
+With table_Code = 31642
+with Replace
+(
+  NRec                 : comp                        "Номер записи",
+  fileName                           : string                  "Имя файла при загрузке из CSV",
+  cDoc                                   : ref(CRPT_ReceiptDocs)       "Ссылка на документ",
+  kitu                 : string                      "SSCC-код паллеты",
+  cKatMc                           : comp                                                  "Ссылка на кат МЦ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+
+Create table CRPT_ShipmentDocs "ЦРПТ Документы Отгрузки"
+With table_Code = 31639
+with Replace
+(
+  NRec                 : comp                      "Номер записи",
+  npp                  : word                                           "Номер по порядку",
+  inn_receiver         : string                    "ИНН получателя",
+  transfer_date        : date                      "Дата накладной",
+  move_document_number : string                    "Номер накладной",
+  move_document_date   : date                                           "Дата накладной",
+  CRPT_Oid                           : string                                    "Oid документа в системе ЦРПТ",
+  docDateTime                   : string                                    "Дата документа в ЦРПТ",
+  status                           : string                                    "Статус документа в ЦРПТ",
+  statusDescr                   : string                                    "Описание статуса в ЦРПТ",
+  sender                           : string                                    "Отправитель документа в ЦРПТ",
+  cancelDoc_CRPT_oid   : string                                    "Oid документа отмены в системе ЦРПТ",
+  cancelDocDateTime           : string                                    "Дата документа отмены в ЦРПТ",
+  cancelStatus                   : string                                    "Статус документа отмены в ЦРПТ",
+  cancelStatusDescr           : string                                    "Описание статуса отмены в ЦРПТ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+Create table CRPT_SpShipmentDocs "ЦРПТ Спецификация документов отгрузки"
+With table_Code = 31640
+with Replace
+(
+  NRec                 : comp                        "Номер записи",
+  cDoc                                   : ref(CRPT_ShipmentDocs)      "Ссылка на документ",
+  kitu                 : string                      "SSCC-код паллеты",
+  cKatMc                           : comp                                                  "Ссылка на кат МЦ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+

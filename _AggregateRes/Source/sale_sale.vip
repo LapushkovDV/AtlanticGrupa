@@ -1,0 +1,986 @@
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  предприятие: Дрога Колинска                                               //
+//  название: Отчет по реализации ТМЦ                                         //
+//  разработка: автор неизвестен, Самусенко А.В.                              //
+//  апрель 2014                                                               //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+#define tender comp(03E80000000000B7h)
+
+vipinterface salesReport licensed(free);
+interface salesReport 'Отчет о реализации (скидки, премии, каналы сбыта) c учетом возвратов' escClose;
+show at (,,65,22);
+
+const
+//defaultShablonPath = '%StartPath%DrogaResources\XLT\Droga_SalesRep_.xlt';
+  defaultShablonPath = '%StartPath%xls\ATL\sale_new.xltm';
+  stNDS = 0.18;
+end; //const
+! ----------------------------------------------------------------------------
+table struct tData  ( //tData  - для первого листа
+  bVidDoc   :byte,    //1 сбыт, 2 акт, 3 бух.спр, 4 возврат
+  sDoc      :string,
+  DoNodocdDoc : string,
+  Region      : string,
+  toOrgName  : string,
+  sDog            :string,
+  sDC1      :string,
+  sDC2      :string,
+  cSbyt     :comp,
+  cOrg      :comp,
+  cMc       :comp,
+  qty       :double,
+  sum       :double,
+  sumWithNDS : double,
+  sumNDS     : double,
+  //sumV      :double,
+  gross     :double,
+  net1      :double,
+  cost      :double,
+  costA     :double
+);
+table struct tSTTL ( // Итоги расчет % бонуса  2-й лист
+  cSbyt     :comp,
+  cOrg      :comp,
+//  cState    :comp,
+  cMc       :comp,
+  kol       :double,
+  kolA      :double,
+  kolTTL    :double,
+  niv       :double,
+  ret       :double,
+  gross     :double,
+  net1      :double,
+  bonus     :double,
+  cost      :double,
+  costA     :double
+)
+with index (
+ tSTTL01 = cOrg + cSbyt + cMC
+);
+table struct tSTTLPr ( // Выручка и Премии по организации
+  cOrg      :comp,
+//  cSbyt   : comp,    // все равно не сможем придется считать в целом по организации премию даже если несколько каналов
+  niv       :double,
+  ret       :double,
+  bonus     :double
+)
+with index (
+  tSTTLPr01 = cOrg
+);
+table struct tSTTLi ( //  итоги по разрезам организация или МЦ
+  wTab      :word, // Закладка Excel  1 -TTL_C, 2-TTL_Item ...    (строк 65536)
+  bOrg      :byte, // 1- Орг, 2-МЦ
+  cRec      :comp,
+  kol       :double,
+  kolA      :double,
+  kolTTL    :double,
+  mKol      :double,
+  mKolA     :double,
+  mKolTTL   :double,
+  niv       :double,
+  ret       :double,
+  gross     :double,
+  net1      :double,
+  bonus     :double,
+  cost      :double,
+  costA     :double
+)
+with index (
+  tSTTLi01 = wTab  + cRec
+);
+table struct tfState (
+  nrec      :comp,
+  state     :string,
+  wTab      :word  //закладка МЦ по государствам
+)
+with index (
+  tfstate1 = nrec
+);
+table struct tfKsb (
+  nrec      :comp,
+  kSbyt     :string,
+  wTabOrg   :word
+//wTabMC     :word
+)
+with index (
+  tfKsb1 = nrec
+);
+table struct tfOrg (
+  nrec      :comp,
+  kodOrg    :string,
+  sOrg      :string,
+  cState    :comp,
+  state     :string
+)
+with index (
+  tfOrg1 = nrec,
+  tfOrg2 = sOrg
+);
+table struct tfMC (
+  nrec      :comp,
+  kodMC     :string,
+  sMC       :string,
+  sGrMC     :string,
+  Massa     :double
+)
+with index (
+  tfMC01 = nrec,
+  tfMC02 = sGrMc + sMc
+);
+! -------------------------------------------------------------------------------
+var
+  lfOrg, lfMc, lfGrMC: longInt; // кол-во в фильтре
+  tmp, dlgState, dlgChannel, dlgCustomer, dlgKatMC, dlgGrMC: string;  //для Scr1
+  sXLTFileName, sXLSFileName, sGrPrice: string;
+  bDetail, bSbytTTL, bStateTTL, bGrossPrice: boolean; // Подробный отчет, Итоги по Каналам сбыта, Итоги по Странам, Искать осн.прайс по каналу сбыта
+  iKol, prGP, prDC, iSum, iSumVozvr, iGross, iNet1, iCost: double;   //врем.  Кол-во , сумма ...
+  iSumWithNDS, iSumNDS : double;
+  r_iStr: array [1..4] of longInt ;  //номер строки в отчете на i стр.
+  i, j: longInt;  //номер страницы и счетчик строки в отчете на i стр.
+  lRepOrg, lRepMC: longInt; //количество в выборке отчета Организаций, МЦ
+  cOrgAttrNam, cMCAttrNam: comp; //внешний атрибут код Sap для организаций, МЦ
+  fExAttr: iExtAttr;
+! -------------------------------------------------------------------------------
+create view v01
+var
+  d1, d2, ship_date: date;
+  repOption: word;
+  channel, // значение канала сбыта по документу
+  cSbAttrNam, cSbAttrNamOrg, cSbAttrNamPr: comp; //внешний атрибут канал сбыта
+  cfState, cfSbyt, // Для фильтров
+  cDog, cDop, cContract: comp;
+as select * from
+  katsopr, spSopr, spOrder, stepdoc, plpor,
+  dogovor, dogovor dogDC, dogovor dogC, spDocs, SpDocs SpDC,
+  klprice, prices, klprice priceKl, prices priceSp, grPrice,
+  katmc, katOtpEd, groupmc, attrval, attrval attrPrice,
+  tData, tSTTL, tSTTLPr, tfOrg, tfKsb, tfMC, tfState, tsTTLi,
+  pick, KatState, SpKau , KatOrg, KatOrg KatOrgP,
+  pick pickOrg, pick pickMC, pick pickGr, exclassval, sporder corr_pos
+  ,KatOrg ToOrg
+  , attrnam AN_region, attrval av_region, spKau spkau_region
+where ((
+     katsopr.nrec == spsopr.csopr
+ and katsopr.cdogovor == dogovor.nRec
+ and ship_date <<= priceKl.dend
+ and ((PriceKL.STATUS = 1 and priceKl.DBEG <= ship_date) //ищем исполняемый с отгрузкой в период действия прайса
+   or (PriceKL.STATUS = 2 and priceKl.DBEG <= ship_date) // а это в архивных ищем, на случай если строим отчет за старый период
+     ) // теперь на статус смотрим, а не на канал сбыта
+ and priceKl.cGrPrice /== grprice.nrec //and (pos('ОСНОВН', grprice.name) = 1)
+                                       and (pos('Gross Prices для ОТЧЕТА', grprice.name) = 1)
+// and word(1113) == attrPrice.wTable
+// and priceKl.nrec /== attrPrice.cRec
+// and cSbAttrNamPr /== attrPrice.cAttrNam
+//  and ( attrPrice.vComp = channel ) на канал более не смотрим, смотрим на статус только
+ and priceKl.nrec == priceSp.cKlPrice
+ and spSopr.cMCUsl == priceSp.cThing
+ and dogovor.cPriceLS == klPrice.nRec
+ and dogovor.cPriceLS == prices.cKLPrice
+ and spSopr.cMCUsl == prices.cThing
+ and 400 == spDocs.tidk
+ and katSopr.cDogovor == spDocs.cDoc
+ and spSopr.cMcUsl == spDocs.cMcUsl (noindex)
+ and cDop == dogDC.nrec
+ and cDog == dogC.cdogovor
+ and ship_date <<= dogC.dend
+ and word(35) == exclassval.classcode
+ and word(1707) == exclassval.wtable
+ and dogC.nrec /== exclassval.crec
+ and 401 == spDC.tidk and  dogC.nrec == spDC.cDoc and spSopr.cMcUsl == spDC.cMcUsl (noindex)
+ and katorg.cState == katstate.nrec
+// and SpSopr.cMcUsl == katmc.nrec
+ and katmc.cgroupmc == groupmc.nrec
+ and katSopr.cStepdoc == stepDoc.nrec
+
+ and stepDoc.cBaseDoc    == baseDoc.nrec
+ and BaseDoc.cGrPol      == ToOrg.nRec
+
+  and 1418 == AN_region.wTable
+ and 'Region' == AN_region.name
+ and  AN_region.wTable == Av_region.wTable
+ and katOrg.nRec == Av_region.crec
+ and AN_region.nrec == Av_region.cAttrnam
+ and av_region.vComp == SpKau_region.nrec
+
+// and word(2)       == pick.wlist  // GroupMC
+ and spSopr.nRec == spOrder.cSpSopr
+ and spsopr.cadocsp == corr_pos.cspsopr
+))
+bounds _mc2price   as prices.cThing == katmc.nrec
+bounds _mc2sopr    as spSopr.cMcUsl == katmc.nrec
+bounds _sopr       as word(201) == katsopr.vidsopr and d1 <<= katsopr.dopr and d2 >>= katsopr.dopr
+bounds _return     as word(106) == katsopr.vidsopr and d1 <<= katsopr.dopr and d2 >>= katsopr.dopr
+bounds _spis       as word(204) == katsopr.vidsopr and d1 <<= katsopr.dopr and d2 >>= katsopr.dopr
+bounds _plat as word(10) == plPor.tidk and d1 <<= plPor.datVip and d2  >>= plPor.datVip and (pos('премия', loCase(plPor.namePl1)) > 0)
+bounds _org2sopr as katSopr.cOrg == katOrg.nrec
+bounds _org2plat as plPor.cPlat == katOrg.nrec
+bounds B_AktP      as katSopr.cPodrFrom /== katPodr.nrec and comp(03E800000000000Fh) /== katPodr.cPodr(noindex)
+Bounds B_AktO      as katPodr.cOrg == KatOrg.nrec
+
+Bounds B_piOrg     as 6 == pickOrg.wList and katSopr.cOrg /== pickOrg.cRec
+Bounds B_piOrgA    as 6 == pickOrg.wList and katPodr.cOrg /== pickOrg.cRec
+Bounds B_piOrgPl   as 6 == pickOrg.wList and plPor.cPlat  /== pickOrg.cRec
+Bounds B_piState   as katSopr.cOrg /== KatOrgP.nrec and ( KatOrgP.cState = cfState )
+Bounds B_piStateA  as katPodr.cOrg /== KatOrgP.nrec and ( KatOrgP.cState = cfState )
+Bounds B_piStatePl as plPor.cPlat  /== KatOrgP.nrec and ( KatOrgP.cState = cfState )
+Bounds B_piMc      as 7 == pickMc.wList and spsopr.cmcusl  /== pickMC.cRec
+Bounds B_piGrMc    as 2 == pickGr.wList and katMc.cgroupmc /== pickGr.cRec
+bounds step2channel as //???
+  word(1102)==attrVal.wTable and stepDoc.cBaseDoc/==attrVal.cRec and cSbAttrNam/==attrVal.cAttrNam and ( attrVal.vComp = cfSbyt )
+bounds _podr2channel as
+  word(1418)==attrVal.wTable and katPodr.cOrg/==attrVal.cRec and cSbAttrNamOrg/==attrVal.cAttrNam and ( attrVal.vComp = cfSbyt)
+bounds _plat2channel as
+  word(1418)==attrVal.wTable and plPor.cPlat/==attrVal.cRec and cSbAttrNamOrg/==attrVal.cAttrNam and ( attrVal.vComp = cfSbyt )
+;
+
+file myFile;
+
+////////////////////////////////////////////////////////////////////////////////
+screen scr01 'Параметры отчета' (,,sci13Esc);
+noTableNavigation;
+bevel b11 {0,  3, 60,  3, bsRaised, bsHorizontal};
+bevel b12 {0, 11, 60, 11, bsRaised, bsHorizontal};
+bevel b12 {0, 17, 60, 17, bsRaised, bsHorizontal};
+fields
+  d1: ['DD.MM.YYYY'], noProtect,{Font = {backColor = if(longint(d1) = 0, colorNeed, 0);
+                                             color = if(d1 > d2, colorError, 0)}};
+  d2: ['DD.MM.YYYY'], noProtect,{Font = {backColor = if(longint(d2) = 0, colorNeed, 0);}};
+
+  dlgState     : protect, pickButton ; //('', hcBKatalFSaldKAU )  QuickChoice,
+  dlgChannel   : protect, pickButton ; //hcBKatalFSaldKAU = 14182//, {Font = {BackColor = GetBackColor(#DlgKauD#Num)}};
+  dlgCustomer  : protect, pickButton ;
+  dlgKatMC     : protect, pickButton ;
+
+  DlgGrMC: protect, pickButton;
+  RepOption: noProtect;  //   bDetail  + bSbytTTL +   bStateTTL
+
+  sXLTFileName: noProtect, pickButton;
+buttons
+  cmOK, default, ,,;
+  cmCancel,,,,;
+<<
+
+  За период: `с `.@@@@@@@@@@ `по`.@@@@@@@@@@
+
+
+  Фильтры:
+  `Страна       `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `Канал сбыта  `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `Покупатель   `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `МЦ           `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `группа МЦ    `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+  `Опции:`        [.] подробная информация по первичным документам `
+                  [.] разбивать итоги по каналам сбыта             `
+                  [.] разбивать итоги по странам                   `
+                  [.] цена GROSS по основному прайс-листу          `
+
+
+  `XLT шаблон:  `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  <.    Ok    .>                                 <.  Cancel  .>
+>>
+end; //screen
+
+#include sale_func.vpp
+
+function initTables: boolean;
+var
+  kOtpEd, kValDog, kValPr, kValDC: double;
+  channelDC: comp;
+  dog_name, dop_name, contract: string;
+  grossPriceFound: boolean;
+{
+  result := false;
+  for (i := 1; i <= 4; i++) r_iStr[i] := 0;
+
+  lRepOrg := lRepMC := 0;
+  cSbAttrNam    := fExAttr.attrID(coBaseDoc, #channel);
+  cSbAttrNamOrg := fExAttr.attrID(coKatOrg,  #channel);
+  cSbAttrNamPr  := fExAttr.attrID(coKlPrice, #channel);
+  cOrgAttrNam   := fExAttr.attrID(coKatOrg,  #sap_code);
+  cMCAttrNam    := fExAttr.attrID(coKatMC,   #sap_code);
+
+  // ---------  установим дату оприходования в корр.документах ---------
+  update katsopr where ((word(201) == vidsopr and d1 <<= dsopr and d2 >>= dsopr and (katsopr.cadoc > 0) ))
+        set dopr = katsopr.dsopr;
+
+
+  // ---------  ищем Gross Price и заполняем tfMC ---------
+  pushBounds(tb_mc2price);
+  if (lfMC = 0) { //нет фильтра по МЦ
+    pushbounds(tb_sopr) ;
+    _loop katSopr {
+      if (getfirst fastfirstrow dogovor = tsOk)
+        if (getFirst fastfirstrow klPrice = tsOk) {
+          sGrPrice := klPrice.name;
+          _loop prices where ((klPrice.nrec == cKLPrice)) {
+            if getFirst fastfirstrow tfMC where ((prices.cThing == nrec)) <> tsOk
+              insTfMC(prices.cThing); //МЦ
+          }
+          //  message('lrepMc:'+ lrepMc+' Нашли GP:' + KlPrice.Name ,Error ); break;
+          break;
+        } //KlPrice
+    }
+  } // lfMC = 0 //нет фильтра по МЦ
+  popBounds(tb_mc2price);
+
+! ------  Накладные на сбыт
+  pushBounds(tb_sopr);   //  ограничения по накладным на сбыт (201)
+  addBounds(tb_org2sopr);//  as  SpSopr.cOrg == katorg.nrec
+  addBounds(tb_mc2sopr); //  as  SpSopr.cMcUsl == katmc.nrec
+  if (lfOrg > 0) addBounds(tbB_piOrg);
+  if (cfState > 0) addBounds(tbB_piState);
+  if (lfMC > 0) addBounds(tbB_piMC);
+  if (lfGrMC > 0) addBounds(tbB_piGrMC);
+  if (cfSbyt > 0) addBounds(tbstep2channel);
+
+  _loop katSopr {
+    if not nextVisual() exit;
+    ship_date := katsopr.dopr;
+    cDog := katSopr.cDogovor;  //Ссылка на основной договор
+    kValDog := kValPr := kValDC := 1;  // курсы валют разные
+    if (getFirst fastfirstrow dogovor = tsOk) {
+      if bDetail dog_name := dogovor.nodoc + dateToStr(dogovor.dDoc, ' от DD.MM.YYYY');
+      if dogovor.cVal > 0 kValDog := vRate(dogovor.cVal, ship_date);
+      if (getFirst fastfirstrow klPrice = tsOk) // Прайс-лист
+        if (klPrice.cVal > 0) kValPr := vRate(klPrice.cVal, ship_date);
+    } //Dogovor
+    else {
+      dog_name := if(cDog = 0, '- без дог.', 'error cDogovor: ' + string(cDog, 0, 0));
+      cDog := 0;
+    }
+
+    dop_name := contract := '';
+    cContract := 0; // ------ Ищем допник с контрактными ценами
+    if (cDog > 0) {
+      _loop dogC {
+        if (exclassval.cclassseg = comp(#contract_price)) and (dogC.dbeg <= ship_date) {
+          cContract := dogC.nrec;
+          if bDetail contract := dogC.noDoc + dateToStr(dogC.dDoc, ' от DD.MM.YYYY');
+          kValDC := 1;  // курс валюты  ДС
+          if dogC.cVal > 0 kValDC := vRate(dogC.cVal, ship_date);
+          break;
+        }
+      }
+    }
+
+    cDop := katSopr.cAppDogovor;  // -------  Ищем ДС1
+    do {
+      if (getFirst fastfirstrow dogDC = tsOk) {
+        if (dogDC.cDogovor = cDog) { //ДС1
+          if bDetail dop_name := dogDC.nodoc + dateToStr(dogDC.dDoc, ' от DD.MM.YYYY');
+        } //ДС1
+        else {
+          //if bDetail contract := dogDC.noDoc + dateToStr(dogDC.dDoc, ' от DD.MM.YYYY');
+          cDop := dogDC.cDogovor;
+        } //ДС2
+      }
+      else {
+        dop_name := if(cDop = 0, '-', 'error cDC: ' + string(cDop, 0, 0));
+        cDop := 0;
+        break;
+      }
+      //if message('cDop:'+cDop + ''#13'DCc:'+ dogDC.cDogovor +''#13'Dog:'+cDog   ) = cmCancel break;
+    } while not (dogDC.cDogovor = cDog or cDop = 0);
+    //if (cContract = 0) cContract = cDop; //если не нашли допник с контрактными ценами - берем ДС1
+
+    channel := channelDC := 0;
+    if (getFirst fastfirstrow stepDoc = tsOk) {
+      channel := fExAttr.coGetAttrID(coBaseDoc, stepDoc.cBaseDoc, cSbAttrNam);
+      tmp := fExAttr.sGetAttrID(coBaseDoc, stepDoc.cBaseDoc, cSbAttrNam);
+    }
+    if (channel = 0) { // если атрибута нет в ДО нет - возьмем из организации
+      channel := fExAttr.coGetAttrID(coKatOrg, katSopr.cOrg, cSbAttrNamOrg);
+      tmp := fExAttr.sGetAttrID(coKatOrg, katSopr.cOrg, cSbAttrNamOrg);
+    }
+    if (cDop > 0) channelDC := fExAttr.coGetAttr(coDogovor, cDop, #channel);
+    if (channelDC = 0) channelDC := channel;
+  // ---------      заполняем таблицы для отчета  по KatSopr ---------
+    insTfOrg(katSopr.cOrg);
+    if (getFirst fastfirstrow tfkSb where ((channel == nrec)) <> tsOk)
+      insert tfKSb set nrec = channel, kSbyt = tmp;
+
+    grossPriceFound := bGrossPrice and (getfirst priceKl = tsOk); //ищем прайс GROSS
+    _loop spSopr {
+      kOtpEd := getKotpEd(spSopr.cOtpEd);  //коэф. пересчета в уч. единицу
+      iKol := spSopr.kolFact* kOtpEd;                                                   // в уч.единицах
+      iSum := round(spSopr.price* spSopr.kolFact- if(katSopr.vhodNal = 1, spSopr.sumNDS, 0), 2);
+      iSumWithNDS := round(spSopr.price* spSopr.kolFact + if(katSopr.vhodNal = 2, spSopr.sumNDS, 0), 2);
+      iSumNDS := spSopr.sumNDS;
+
+      prGP := iSum/ iKol;
+      //определяем цену GROSS
+      if grossPriceFound { //есть прайс GROSS
+                //Семенов: нашел прайс + накладная.
+                //message('grossPriceFound ' + katSopr.nSopr)
+        if (getFirst priceSp = tsOk) {
+          kOtpEd := getKOtpEd(priceSp.cOtpEd);  //коэф. пересчета в уч. единицу
+          if (priceSp.cVal = 0) prGP := (priceSp.price/ kOtpEd)*  if(priceKl.vhodNal = 1, 1/ (1+ stNDS), 1);
+          else prGP := (priceSp.sumVal/ kOtpEd)* kValPr* if(priceKl.vhodNal = 1,  1/ (1+ stNDS), 1);
+        }
+                //Семенов: проверка товар в накладной = товар в прайсе; какой прайс использовался - nrec
+                //else{
+                        //Message(spsopr.cmcusl+'='+pricesp.cthing+chr(13)+pricekl.nrec);
+                //}
+      }
+      else {
+        if (cDog > 0) { // --- есть договор gross
+          if (getFirst spDocs = tsOk) { //из спецификации
+            kOtpEd := getKOtpEd(spDocs.cOtpEd);  //коэф. пересчета в уч. единицу
+            prGP := (spDocs.price/ kOtpEd- if(dogovor.vhodNal = 1, spDocs.sumNDS/ (spDocs.kol* kOtpEd), 0))* kValDog;
+          } //SpDocs
+          else //иначе из прайс-листа
+          if (getFirst prices = tsOk) {
+            kOtpEd := getKOtpEd(prices.cOtpEd);  //коэф. пересчета в уч. единицу
+            if (prices.cVal = 0) prGP := (prices.price/ kOtpEd)*  if(klPrice.vhodNal = 1, 1/ (1+ stNDS), 1);
+            else prGP := (prices.sumVal/ kOtpEd)* kValPr* if(klPrice.vhodNal = 1,  1/ (1+ stNDS), 1);
+          } //иначе из прайс-листа
+        } //есть договор gross
+      }
+      iGross := round(prGP* iKol, 2);
+
+      //prDC := iSum/ iKol;
+      prDC := prGP;
+      if (cContract > 0) // --- есть контрактный допник
+        if (getFirst spDC = tsOk) { //из спецификации
+          kOtpEd := getKOtpEd(spDC.cOtpEd);  //коэф. пересчета в уч. единицу
+          //if not grossPriceFound or (channelDC = channel) { // если нет GROSS PRICE или каналы ДО и ДС совпадают
+            prDC := (spDC.price/ kOtpEd- if(dogDC.vhodNal = 1, spDC.sumNDS/ (kOtpEd* spDC.kol), 0) )* kValDC;
+          //}
+          //else prDc := prGP;
+        } //SpDocs
+
+      iNet1 := round(prDC* iKol, 2);
+      //if iNet1 > iGross iGross := iNet1;  саша сказал убрать
+      iCost := 0;
+      if (getFirst fastfirstrow spOrder = tsOk) {
+        iCost := iKol* spOrder.srPrice;
+      }
+      else
+      if (getFirst fastfirstrow corr_pos = tsOk) { // если это корр.накладная
+        if (spsopr.kol <> 0) // если было изменение количества
+          iCost := iKol* corr_pos.srPrice;
+      }
+   // ---------      заполняем таблицы для отчета  по SpSopr ---------
+      if (getFirst fastfirstrow tfMC where ((SpSopr.cMcUsl == nrec)) <> tsOk)
+        insTfMC(spSopr.cMcUsl); //МЦ
+
+      if getFirst fastfirstrow tSTTL where ((katsopr.cOrg == cOrg and channel == cSbyt and SpSopr.cMcUsl == cMC)) != tsOK {
+        insert tSTTL set cSbyt = channel, cOrg = KatSopr.cOrg, cMC = SpSopr.cMcUsl;
+        r_iStr[2]++;
+      }
+          //Костыль!!! если было только изменения цены
+          if (spsopr.kol = 0){
+                iKol := 0;
+                iGross := 0;
+                iNet1 := 0;
+                iCost := 0;
+          }
+      update current tSTTL set
+        kol = tSTTL.kol+ iKol,
+        kolTTL = tsTTL.kolTTL+ iKol,
+        niv = tSTTL.niv+ iSum,
+        gross = tsTTL.gross+ iGross,
+        //net1 = if(channel=#tender, iSum, iNet1), //чтоб для канала Тендер сумма перешла в скидку по договору,
+        net1 = iNet1,
+        cost = tsTTL.cost+ iCost;
+
+      if (getFirst fastfirstrow tsTTLPr where ((katsopr.cOrg== cOrg)) != tsOk)
+        insert tsTTLPr set cOrg = katsopr.cOrg;
+      update current tsTTLPr set niv = tSTTLPr.niv+ iSum;
+
+      if bDetail {
+        insert tData set
+          tData.bVidDoc := 1,
+          tData.sDoc    := katSopr.nSopr + dateToStr(katSopr.dSopr, ' от DD.MM.YYYY'),
+          tData.DoNodocdDoc := if(isValid(tnbaseDoc), baseDoc.nodoc + ' от ' +baseDoc.ddoc,''),
+          tData.sDog    := dog_name,
+          tData.sDC1    := dop_name,
+          tData.sDC2    := contract,
+          tData.cSbyt   := channel,
+          tData.cOrg    := katSopr.cOrg,
+          tData.ToOrgName := if(IsValid(tnToOrg),ToOrg.Name,''),
+          tData.Region  := if(IsValid(tnToOrg),if( getfirst av_region = tsOK, spkau_region.name,'')
+                           ,'-'),
+          tData.cMC     := spSopr.cMcUsl,
+          tData.qty     := iKol,
+          tData.sum     := iSum,
+
+// begin add 3 column
+          tData.sumWithNDS := iSumWithNDS,
+          tData.sumNDS := iSumNDS,
+// end add 3 column
+          tData.gross   := iGross,
+          //net1 = if(channel=#tender, iSum, iNet1), //чтоб для канала Тендер сумма перешла в скидку по договору,
+          tData.net1    := iNet1,
+          tData.cost    := iCost;
+        r_iStr[1]++;
+      } // bDetail
+    }//Spsopr
+  }//loop Katsopr
+  subBounds(tb_sopr);
+! ------  end по накладным на сбыт
+! ------  Накладные на возврат
+  addBounds(tb_return);   //  ограничения по накладным на возврат
+  _loop katSopr {
+    if not nextVisual() exit;
+    ship_date := katsopr.dopr;
+    cDog := katSopr.cDogovor;  //Ссылка на основной договор
+    if (getFirst fastfirstrow dogovor = tsOk) {
+      if bDetail dog_name := dogovor.nodoc + dateToStr(dogovor.dDoc, ' от DD.MM.YYYY');
+      kValDog := kValPr := kValDC := 1;  // курсы валют разные
+      if dogovor.cVal > 0 kValDog := vRate(dogovor.cVal, ship_date);
+      if (getFirst fastfirstrow klPrice = tsOk) // Dogovor.METHODPRICE = 1 // Прайс-лист
+        if (klPrice.cVal > 0) kValPr := vRate(klPrice.cVal, ship_date);
+    }
+    else {
+      dog_name := if(cDog = 0, '- без дог.', 'error cDogovor: ' + string(cDog, 0, 0));
+      cDog := 0;
+    }
+
+    dop_name := contract := '';
+    cDop := katSopr.cAppDogovor;  // -------  Ищем ДС1
+    do {
+      if (getFirst fastfirstrow dogDC = tsOk) {
+        if (dogDC.cDogovor = cDog) { //ДС1
+          if bDetail dop_name := dogDC.nodoc + dateToStr(dogDC.dDoc, ' от DD.MM.YYYY');
+          kValDC := 1;  // курс валюты  ДС
+          if dogDC.cVal > 0 kValDC := vRate(dogDC.cVal, ship_date);
+        } //ДС1
+        else {
+          if bDetail contract := dogDC.noDoc + dateToStr(dogDC.dDoc, ' от DD.MM.YYYY');
+          cDop := dogDC.cDogovor;
+        }
+      }
+      else {
+        dop_name := if(cDop = 0, '-', 'error cDC: ' + string(cDop, 0, 0));
+        cDop := 0;
+        break;
+      }
+      //if message('cDop:'+cDop + ''#13'DCc:'+ DogDC.cDogovor +''#13'Dog:'+cDog   ) = cmCancel break;
+    } while not (dogDC.cDogovor = cDog or cDop = 0);
+
+    channel := channelDC := 0;
+    if (getFirst fastfirstrow stepDoc = tsOk) {
+      channel := fExAttr.coGetAttrID(coBaseDoc, stepDoc.cBaseDoc, cSbAttrNam);
+      tmp := fExAttr.sGetAttrID(coBaseDoc, stepDoc.cBaseDoc, cSbAttrNam);
+    }
+    if (channel = 0) { // если атрибута нет в ДО нет - возьмем из организации
+      channel := fExAttr.coGetAttrID(coKatOrg, katSopr.cOrg, cSbAttrNamOrg);
+      tmp := fExAttr.sGetAttrID(coKatOrg, katSopr.cOrg, cSbAttrNamOrg);
+    }
+    if (cDop > 0) channelDC := fExAttr.coGetAttr(coDogovor, cDop, #channel);
+    if (channelDC = 0) channelDC := channel;
+    // ---------      заполняем таблицы для отчета  по KatSopr ---------
+    insTfOrg(katSopr.cOrg);
+    if (getFirst fastfirstrow tfkSb where ((channel == nrec)) <> tsOk)
+      insert tfKSb set nrec = channel, kSbyt = tmp;
+    grossPriceFound := bGrossPrice and (getfirst priceKl = tsOk); //ищем прайс GROSS
+    _loop spSopr {
+      kOtpEd := getKotpEd(spSopr.cOtpEd);  //коэф. пересчета в уч. единицу
+      iKol := spSopr.kolFact* kOtpEd;                                                   // в уч.единицах
+      iSum := round(spSopr.price* spSopr.kolFact- if(katSopr.vhodNal = 1, spSopr.sumNDS, 0), 2);
+
+      prGP := iSum/ iKol;
+      //определяем цену GROSS
+      if grossPriceFound { //есть прайс GROSS
+        kOtpEd := getKOtpEd(priceSp.cOtpEd);  //коэф. пересчета в уч. единицу
+        if (priceSp.cVal = 0) prGP := (priceSp.price/ kOtpEd)*  if(priceKl.vhodNal = 1, 1/ (1+ stNDS), 1);
+        else prGP := (priceSp.sumVal/ kOtpEd)* kValPr* if(priceKl.vhodNal = 1,  1/ (1+ stNDS), 1);
+      }
+      else {
+        if (cDog > 0) { // --- есть договор gross
+          if (getFirst spDocs = tsOk) { //из спецификации
+            kOtpEd := getKOtpEd(spDocs.cOtpEd);  //коэф. пересчета в уч. единицу
+            prGP := (spDocs.price/ kOtpEd- if(dogovor.vhodNal = 1, spDocs.sumNDS/ (spDocs.kol* kOtpEd), 0))* kValDog;
+          } //SpDocs
+          else //иначе из прайс-листа
+          if (getFirst prices = tsOk) {
+            kOtpEd := getKOtpEd(prices.cOtpEd);  //коэф. пересчета в уч. единицу
+            if (prices.cVal = 0) prGP := (prices.price/ kOtpEd)*  if(klPrice.vhodNal = 1, 1/ (1+ stNDS), 1);
+            else prGP := (prices.sumVal/ kOtpEd)* kValPr* if(klPrice.vhodNal = 1,  1/ (1+ stNDS), 1);
+          } //иначе из прайс-листа
+        } //есть договор gross
+      }
+      iGross := round(prGP* iKol, 2);
+
+      prDC := iSum/ iKol ;
+      if cDop > 0 { // --- есть ДС1
+        if (getFirst spDC = tsOk) { //из спецификации
+          kOtpEd := getKOtpEd(spDC.cOtpEd);  //коэф. пересчета в уч. единицу
+          if not grossPriceFound or (channelDC = channel) { // если нет GROSS PRICE или каналы ДО и ДС совпадают
+            prDC := (spDC.price/ kOtpEd- if(dogDC.vhodNal = 1, spDC.sumNDS/ (kOtpEd* spDC.kol), 0) )* kValDC;
+          }
+          else prDc := prGP;
+        } //SpDocs
+      } //есть ДС1
+      iNet1 := round(prDC* iKol, 2);
+      //if (iNet1 > iGross) iGross := iNet1;
+      iCost := 0;
+      if (getFirst fastfirstrow spOrder = tsOk) {
+        iCost := iKol* spOrder.srPrice;
+      }
+      else
+      if (getFirst fastfirstrow corr_pos = tsOk) { // если это корр.накладная
+        if (spsopr.kol <> 0) // если было изменение количества
+          iCost := iKol* corr_pos.srPrice;
+      }
+   // ---------      заполняем таблицы для отчета  по SpSopr ---------
+      if (getFirst fastfirstrow tfMC where ((SpSopr.cMcUsl == nrec)) <> tsOk)
+        insTfMC(spSopr.cMcUsl); //МЦ
+
+      if getFirst fastfirstrow tSTTL where ((katsopr.cOrg == cOrg and channel == cSbyt and SpSopr.cMcUsl == cMC)) != tsOK {
+        insert tSTTL set cSbyt = channel, cOrg = KatSopr.cOrg, cMC = SpSopr.cMcUsl;
+        r_iStr[2]++;
+      }
+
+      //Костыль!!! если было только изменения цены
+          if (spsopr.kol = 0){
+                iKol := 0;
+                iGross := 0;
+                iNet1 := 0;
+                iCost := 0;
+          }
+
+      update current tSTTL set
+        kol = tSTTL.kol- iKol,
+        kolTTL = tsTTL.kolTTL- iKol,
+        niv = tSTTL.niv- iSum,
+        ret = tSTTL.ret+ iSum,
+        gross = tsTTL.gross- iGross,
+        //net1 = if(channel=#tender, iSum, iNet1), //чтоб для канала Тендер сумма перешла в скидку по договору,
+        net1 = iNet1,
+        cost = tsTTL.cost- iCost;
+
+      if (getFirst fastfirstrow tsTTLPr where ((katsopr.cOrg == cOrg)) != tsOk)
+        insert tsTTLPr set cOrg = katsopr.cOrg;
+      update current tsTTLPr set niv = tSTTLPr.niv- iSum, ret = tSTTLPr.ret+ iSum;
+
+      if bDetail {
+        insert tData set
+          bVidDoc = 4,
+          sDoc = katSopr.nSopr + dateToStr(katSopr.dSopr, ' от DD.MM.YYYY'),
+          sDog = dog_name,
+          sDC1 = dop_name,
+          sDC2 = contract,
+          cSbyt = channel,
+          cOrg = katSopr.cOrg,
+          cMC = spSopr.cMcUsl,
+          qty = iKol,
+          sum = iSum,
+          gross = iGross,
+          //net1 = if(channel=#tender, iSum, iNet1), //чтоб для канала Тендер сумма перешла в скидку по договору,
+          net1 = iNet1,
+          cost = iCost;
+        r_iStr[1]++;
+      } // bDetail
+    }//Spsopr
+  }//loop Katsopr
+
+  popBounds(tbB_piOrg);
+  popBounds(tbB_piMC);
+  popBounds(tbB_piGrMC);
+  popBounds(tbB_piState);
+  popBounds(tbstep2channel);
+
+  popBounds(tb_org2sopr);
+  popBounds(tb_return);
+! ------  end по накладным на возврат
+! ------  Акты на списание
+  //cSbAttrNam := fExAttr.AttrID(coKatOrg, 'Канал Сбыта');
+  pushBounds(tb_spis); //   ограничения по актам
+  addBounds(tbB_AktP);
+  addBounds(tbB_AktO);
+
+  if (cfSbyt > 0) addBounds(tb_podr2channel);
+  if (lfOrg > 0) addBounds(tbB_piOrgA);
+  if (cfState > 0) addBounds(tbB_piStateA);
+  if (lfMC > 0) addBounds(tbB_piMC);
+  if (lfGrMC > 0) addBounds(tbB_piGrMC);
+
+  _loop katSopr {
+    if not nextVisual() exit;
+
+    channel := 0;
+    if (getFirst fastfirstrow katOrg = tsOk)
+      channel := fExAttr.coGetAttrID(coKatOrg, katOrg.nRec, cSbAttrNamOrg);
+  // ---------      заполняем таблицы для отчета  по KatSopr ---------
+    insTfOrg(KatPodr.cOrg);
+    if (getFirst fastfirstrow tfkSb where ((channel == nrec)) <> tsOk)
+      insert tfKSb set nrec = channel, kSbyt = fExAttr.sGetAttrID(coKatOrg, KatPodr.cOrg, cSbAttrNamOrg);
+
+    _loop spSopr {
+      kOtpEd := getKOtpEd(spSopr.cOtpEd);  //коэф. пересчета в уч. единицу
+      iKol := spSopr.kolFact * kOtpEd;                                             // в уч.единицах
+
+      iCost := 0;
+      if getFirst fastfirstrow spOrder = tsOk
+        iCost := spOrder.kol* spOrder.srPrice;
+
+    // ---------      заполняем таблицы для отчета  по SpSopr ---------
+      if (getFirst fastfirstrow tfMC where ((SpSopr.cMcUsl == nrec)) <> tsOk)
+        insTfMC(SpSopr.cMcUsl); // МЦ
+
+      if getFirst fastfirstrow tSTTL where ((katPodr.cOrg == cOrg and channel == cSbyt and SpSopr.cMcUsl == cMC)) != tsOk {
+        insert tSTTL set cSbyt = channel, cOrg = KatPodr.cOrg, cMC = SpSopr.cMcUsl;
+        r_iStr[2]++;
+      }
+      update current tSTTL set kolA = tSTTL.kolA+ iKol, kolTTL = tsTTL.kolTTL+ iKol, costA = tsTTL.costA+ iCost;
+
+      if bDetail {
+        insert tData set
+          bVidDoc = 2,
+          sDoc = katSopr.nSopr + dateToStr(katSopr.dSopr, ' от DD.MM.YYYY'),
+          cSbyt = channel,
+          cOrg = katPodr.cOrg,
+          cMC = spSopr.cMcUsl,
+          qty = iKol,
+          costA = iCost;
+        r_iStr[1]++;
+      } // bDetail
+    }//Spsopr
+  }//loop Katsopr
+
+  popBounds(tbB_piOrgA);
+  popBounds(tbB_piStateA);
+  popBounds(tb_podr2channel);
+  popBounds(tbB_piMC);
+  popBounds(tbB_piGrMC);
+  popBounds(tbB_AktO);
+  popBounds(tbB_AktP);
+  popBounds(tb_spis);
+
+  popBounds(tb_mc2sopr);  // для актов и накладных один
+! ------  end Акты на списание
+! ------  Бух справки Премии
+  pushBounds(tb_plat); //   ограничения по бухсправкам
+  addBounds(tb_org2plat);
+  if (cfSbyt > 0) addBounds(tb_plat2channel);
+  if (lfOrg > 0) addBounds(tbB_piOrgPl);
+  if (cfState > 0) addBounds(tbB_piStatePl);
+  _loop PlPor {
+    if not nextVisual() exit;
+    if (getFirst fastfirstrow katOrg = tsOk) {
+      channel := fExAttr.coGetAttrID(coKatOrg, katOrg.nRec, cSbAttrNamOrg);
+    }
+    else channel := 0;
+  // ---------      заполняем таблицы для отчета  по KatSopr ---------
+    insTfOrg(PlPor.cPlat) ;
+    if (getFirst fastfirstrow tfkSb where ((channel == nrec)) <> tsOk)
+      insert tfKSb set nrec = channel, kSbyt = fExAttr.sGetAttrID(coKatOrg, PlPor.cPlat, cSbAttrNamOrg);
+  //---
+    if (getFirst fastfirstrow tsTTLPr where ((PlPor.cPlat == cOrg)) != tsOk)
+      insert tsTTLPr set cOrg = plPor.cPlat;
+    update current tsTTLPr set bonus = tsTTLPr.Bonus+ plPor.SumPlat;
+  //---
+    if bDetail {
+      insert tData set
+        bVidDoc = 3,
+        sDoc = plPor.noDok + dateToStr(plPor.datVip, ' от DD.MM.YYYY'),
+        cSbyt = channel,
+        cOrg = PlPor.cPlat,
+        sum = PlPor.sumPlat;
+      r_iStr[1]++;
+    } // bDetail
+  } // loop PlPor
+  // resetbounds();
+  popBounds(tbB_piOrgPl);
+  popBounds(tbB_piStatePl);
+  popBounds(tb_plat2channel);
+  popBounds(tb_org2plat);
+  popBounds(tb_plat);
+! ------ end Бух справки Премии ----------------------------------------------------
+  result := true;
+}
+
+function checkFileExistence(sFileName: string): boolean;
+{
+  result := true;
+  _try myFile.openFile(sFileName, stOpenRead)
+  _except
+          on ExFileNotFound: {
+            result := false;
+           _SkipFinally;
+          }
+ _finally myFile.Close;
+} // checkfileexistence
+
+function allParametersOK: boolean;
+{
+  result := false;
+  if (d2 < d1) {
+    message(''#13'Начальная дата не может быть больше конечной!', mfCancelButton + mfWarning); exit;
+  }
+  else
+  if longint(d1) = 0 {
+    message(''#13'задайте начальную дату!', mfCancelButton + mfWarning);
+    exit;
+  }
+  else {
+    saveMyDsk(d1, 'dStart_GetSome_Any');
+    saveMyDsk(d2, 'dStop_GetSome_Any');
+  }
+  if sXLTFileName = '' {
+    message('Не указан путь к шаблону отчета!');
+    exit;
+  }
+  if not checkFileExistence(sXLTFileName) {
+    message('Не найден шаблон отчета по указанному пути:'+ chr(13)+ sXLTFileName);
+    exit;
+  }
+
+  saveMyDsk(repOption, 'Droga_SalesReport_Options');
+  bDetail    := (repOption and 1) = 1; // Подробный отчет
+  bSbytTTL   := (repOption and 2) = 2; // Итоги по каналам сбыта
+  bStateTTL  := (repOption and 4) = 4; //  Итоги по странам
+  bGrossPrice:= (repOption and 8) = 8; //  Искать базовый прайс для определения GROSS
+  //   Message(''#13'detail:'+bDetail+ ''#13'ksbyt:'+bsbytTTL+''#13'state:'+bstateTTL);
+  result := true;
+} // AllParametersOK
+
+handleevent
+cmInit: {
+  var bTemp: boolean; // var dateChanged если дата записи переменной не равна текущей-true
+  if not readMyDsk(d1, 'dStart_GetSome_Any', bTemp) or d1 = date(0,0,0)
+    d1 := date(1, 1, year(cur_date));
+  if not readMyDsk(d2, 'dStop_GetSome_Any', bTemp) or d2 = date(0,0,0)
+    d2 := cur_date;
+  readMyDsk(repOption, 'Droga_SalesReport_Options', bTemp);
+  cfState := cfSbyt := lfOrg :=  lfMc := lfGrMC := 0;  // Для фильтров
+  dlgState := dlgChannel := dlgCustomer := dlgKatMC := dlgGrMC := #undefined;
+  sXLTFileName := translatePath(DefaultShablonPath);
+  sXlSFileName := '';
+  //RepOption:=0;
+}
+
+cmPick: {
+  var pickedKol: integer;   //для множественного выбора
+  case curField of
+  #d1,
+  #d2: if d2 < d1  { message(''#13'Начальная дата не может быть больше конечной!', mfCancelButton + mfWarning); }
+  #dlgState: {
+    if runInterface('L_KATORG::GetState', cfState) <> cmCancel {
+      if getFirst fastfirstrow katState where ((cfState == nrec)) = tsOK {
+        set dlgState := katState.name;
+      }
+      else set dlgState := '-- Ошибка выбора страны ' + string(cfState);
+    }
+  } // DlgState
+  #dlgChannel: {
+    var tempMarker: longint;  // врем. маркер для выбора пользовательской аналитики
+     // RunInterface('GtKodGroup',wIntMode,wKau_Real,cKau,TempMarker,wKau_Pick) wKAU := word(10022) Код аналитики   wKau_Pick := wKau;
+    tempMarker := initMarker('', 8, 100, 50, false);
+    if runInterface('F_GETAN::GTKODGROUP', word(1), word(10022), cfSbyt, tempMarker, word(10022)) <> cmCancel { //,wKau_Pick
+      //  message( 'cRec:'+string(cfSbyt) + ''#13+'TempMarker:'+string(TempMarker) );
+      if getFirst fastfirstrow spkau where ((cfSbyt == nrec)) = tsOK {
+        set dlgChannel := spkau.name;
+      }
+      else set dlgChannel := '-- Ошибка выбора канала сбыта ' + string(cfSbyt);
+    }
+    doneMarker(tempMarker,'');
+  } // dlgChannel
+  #dlgCustomer: {
+    if runInterface('L_KATORG::GetSomeKontr', true) <> cmCancel { // сохр. выбор Parameters (NotNeedKill : boolean);
+      lfOrg := 0;
+      _loop pick where ((6 == wlist)) lfOrg++;
+      if lfOrg = 1 {
+        if getFirst fastfirstrow katOrg where ((pick.crec == nrec)) = tsOK {
+          set dlgCustomer := Katorg.name;
+        }
+        else set dlgCustomer := '-- Ошибка выбора Покупателя ' + string(pick.cRec);
+      } //Pickedkol=1
+      else set dlgCustomer := 'Множественный выбор (' + string(lfOrg) + ')';
+    } // GetSomeKontr
+  } // dlgCustomer
+  #dlgKatMC: {
+    if runInterface('L_MCU::GetSomeMC', comp(-12345)) <> cmCancel {
+      lfMC := 0;
+      _loop pick where ((7 == wlist)) lfMC++;
+      if lfMC = 1 {
+        if getFirst fastfirstrow KatMC where ((pick.crec == nrec)) = tsOK {
+          set dlgKatMC := katMC.name;
+        }
+        else set dlgKatMC :='-- Ошибка выбора МЦ ' + string(pick.cRec);
+      } // Pickedkol=1
+      else set dlgKatMC := 'Множественный выбор (' + string(lfMC) + ')';
+    } //GetSomeKontr
+  } // dlgKatMC
+  #DlgGrMC: {
+    if runInterface('L_MCU::GETSOMGM') <> CmCancel {
+      lfGrMC := 0;
+      _loop pick where ((2 == wlist)) lfGrMC++;
+      if lfGrMC = 1 {
+        if getFirst fastfirstrow groupMC where ((pick.crec ==  nrec))=tsOK {
+          set DlgGrMC := groupMC.name;
+        }
+        else set DlgGrMC :='-- Ошибка выбора группы МЦ ' + string(pick.cRec);
+      } // Pickedkol=1
+      else set DlgGrMC := 'Множественный выбор (' + string(lfGrMC) + ')';
+    }
+  } // DlgGrMC
+  #sXLTFileName: {
+    set sXLTFileName := getFileName('*.xlt', 'Выберите шаблон отчета');
+  } // sxltfilename
+  end;//case
+} // cmPick
+cmDelOnProtect: {
+  case curField of
+  #DlgState: {
+    set dlgState := #undefined;
+    cfState := 0;
+  }
+  #dlgChannel: {
+    set dlgChannel := #undefined;
+    cfSbyt := 0;
+  }
+  #dlgCustomer: {
+    set dlgCustomer := #undefined;
+    lfOrg := 0;
+  } //DELETE Pick WHERE ((word(6)==pick.wlist)); }
+  #dlgKatMC: {
+    set dlgKatMC := #undefined;
+    lfMc  := 0;
+  } //DELETE Pick WHERE ((word(7)==pick.wlist)); }
+  #DlgGrMC: {
+    set dlgGrMC := #undefined;
+    lfGrMC := 0;
+  } //DELETE Pick WHERE ((word(2)==pick.wlist)); }
+  end;//case
+}
+cmOk: {
+/*  if d2 > date(1,8,2014) {
+    message(#test, mfCancelButton + mfWarning);
+    exit;
+  }
+*/
+  if allParametersOk {
+    startNewVisual(vtNumericVisual, vfTimer + vfBreak + vfConfirm, 'Шаг 1 из 3: Выборка значений из БД', 100);
+    if initTables {
+      if calcSalesRepTTL {
+        restartVisual('Шаг 3 из 3: Выгрузка в шаблон Excel', 100);
+        if not runRep
+          message('Выгрузка данных в шаблон Excel прервана пользователем!');
+      }
+    } //Если нормально выборка из БД
+
+    delete all tData;
+    delete all tSTTL;
+    delete all tSTTLPr;
+    delete all tfOrg;
+    delete all tfMC;
+    delete all tfState;
+    delete all tSTTLi;
+    stopVisual('', 0);
+    closeInterface(cmDefault);
+  } //Если параметры нормально заданы
+} //cmOK
+
+cmCancel: {
+  closeInterface(cmCancel);
+} //cmCancel
+end; //handleEvent
+end.//interface

@@ -1,0 +1,65 @@
+// проверка необходимости модификации текущей записи
+function OkNewAndNotMod : boolean;
+{
+  if ( (isNew) and (not isModified) )
+    OkNewAndNotMod := true
+  else
+    OkNewAndNotMod := false;
+}
+
+// если запись модифицирована, то сохранить.
+// если запись НОВАЯ и НЕМОДИФИЦИРОВАНА, то плохо и выдаем сообщение 
+function OkUpDateTecRec : boolean;
+{
+  OkUpDateTecRec := false;
+  if (OkNewAndNotMod)
+    { message(''#3'Перед сменой режима заполните текущую запись.',CancelButton);
+      Exit;
+    }
+  else if (not isModified)
+    { OkUpDateTecRec := true;
+      Exit;
+    }
+  else if (not UpdateTable)
+    { message(''#3'Перед сменой режима корректно заполните текущую запись.',CancelButton);
+      Exit;
+    }
+  OkUpDateTecRec := true;
+}
+
+// если запись модифицирована, то сохранить.
+// если запись НОВАЯ и НЕМОДИФИЦИРОВАНА:
+//   not isRec, то true
+//       isRec, то false и выдаем сообщение 
+function OkModUpDateTecRecWithMessage(isRec: boolean; Mes : string) : boolean;
+{
+  OkModUpDateTecRecWithMessage := true;
+  PackFields;
+  if (OkNewAndNotMod)         //новая и не модифицирована
+    { if (isRec)
+      { message(Mes,CancelButton);
+        OkModUpDateTecRecWithMessage := false;
+      }
+      Exit;
+    }
+  else if (not isModified)    //не модифицирована
+    Exit
+  else if (not UpdateTable)   //что-то не прошло
+    { OkModUpDateTecRecWithMessage := false;
+      message(Mes,CancelButton);
+      Exit;
+    }
+}
+
+// если запись модифицирована, то сохранить.
+// если запись НОВАЯ и НЕМОДИФИЦИРОВАНА:
+//   not isRec, то true
+//       isRec, то false и выдаем сообщение 
+function OkModUpDateTecRec(isRec: boolean) : boolean;
+var 
+  tmpS : string[100];
+{
+  tmpS := ''#3'Перед сменой режима корректно заполните текущую запись.';
+  OkModUpDateTecRec := OkModUpDateTecRecWithMessage(isRec,tmpS);
+}
+

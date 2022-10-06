@@ -1,0 +1,98 @@
+// ------ Фнукции предобработки файла выписки
+
+table struct bnkInSS (
+ nDoc: string[20],
+ dDoc: date,
+ dPay: date,
+ note: string,
+ acc1: string[25],   //наш счет
+ org2: string,         //контрагент
+ acc2: string[25],   // его счет
+ inn2: string[14], // ИНН
+ bik2: string[9],  // БИК
+ kpp2: string[9],  //  КПП
+ sumD: double,     // приход денег
+ sumK: double,     // расход денег
+
+// PAYERKPP: string[9],
+// RCVRKPP:  string[9],
+ TAX: string
+);
+
+create view v01
+var
+  lPlatIn, // счетчик количества входящих платежей
+  lPlatOut: longint; // ... исходящих платежей
+as select * from  bnkInSS, KatOrg
+where ((coGetTune('MyOrg') == KatOrg.Nrec));
+
+// загрузка  из dbf-файла
+function loadFromDBF(_sFile: string): boolean;
+var
+  _handle: longint;
+  _str: string;
+{
+  result := false;
+  if (getFirst KatOrg != tsOk) {
+    message('В настройках не указана собственная организация!', error);
+    exit;
+  }
+  _handle := dbfOpen(_sFile, stOpenRead);
+  if (_handle = 0) {
+    message(''#3'Ошибка при открытии файла '''+ _sFile+ ''''#13#3'(HandleOut = 0)');
+    exit;
+  }
+  //---------------------------------------------
+  startNewVisual(vtIndicatorVisual, vfTimer+vfBreak+vfConfirm,
+                 ''#3'Чтение dbf ... ', dbfRecordsInTable(_handle) );
+
+  if (delete all bnkInSS != tsOk) {} //чистим временную таблицу
+
+  // читаем все документы из выписки
+  if (dbfGetFirst(_handle) = tsOk) do {
+    if not nextVisual break;
+    if word(dbfGetFieldValue(_handle,'TYP_DOC')) <> 0 continue; //только обороты
+    clearbuffer(#bnkInSS);
+    set bnkInSS.nDoc = dbfGetFieldValue(_handle,'NUM_DOC');
+    set bnkInSS.dDoc = strToDate(dbfGetFieldValue(_handle, 'DATE_DOC'), 'YYYYMMDD');
+    set bnkInSS.dPay = strToDate(dbfGetFieldValue(_handle, 'DATE_PAY'), 'YYYYMMDD');
+    set bnkInSS.note = dbfGetFieldValue(_handle, 'NOTE');
+    _str := dbfGetFieldValue(_handle,'STAT1256');
+    if _str <> ''  // статус
+      set bnkInSS.tax = _str
+        + ';'+ dbfGetFieldValue(_handle, 'CBCCODE')
+        + ';'+ dbfGetFieldValue(_handle, 'OKATOCODE')
+        + ';'+ dbfGetFieldValue(_Handle, 'PAYGRNDPRM')
+        + ';'+ dbfGetFieldValue(_Handle, 'TAXPERIOD1')
+        + ';'+ dbfGetFieldValue(_Handle, 'TAXPERIOD2')
+        + ';'+ dbfGetFieldValue(_Handle, 'TAXPERIOD3')
+        + ';'+ dbfGetFieldValue(_Handle, 'DOCNUMPRM')
+        + ';'+ dbfGetFieldValue(_Handle, 'DOCDATEPRM')
+        + ';'+ dbfGetFieldValue(_Handle, 'PAYTYPEPRM');
+    if dbfGetFieldValue(_handle, 'ORG_FI') = katOrg.unn { //'7709191580' //исходящие платежи
+      set bnkInSS.acc1 = dbfGetFieldValue(_handle,'ORG_FS');
+      set bnkInSS.org2 = dbfGetFieldValue(_handle,'ORG_TN');
+      set bnkInSS.acc2 = dbfGetFieldValue(_handle, 'ORG_TS');
+      set bnkInSS.inn2 = dbfGetFieldValue(_handle, 'ORG_TI');
+      set bnkInSS.bik2 = dbfGetFieldValue(_handle, 'ORG_TB');
+      set bnkInSS.kpp2 = dbfGetFieldValue(_handle, 'PAYERKPP');
+      set bnkInSS.sumD = double(dbfGetFieldValue(_handle, 'SUMMA_DOC'));
+      if insert current bnkInSS = tsOk lPlatOUT++; 
+    } //исходящие платежи
+    else 
+    if dbfGetFieldValue(_handle, 'ORG_TI') = katOrg.unn { //'7709191580' //вх. платежи
+      set bnkInSS.acc1 = dbfGetFieldValue(_handle, 'ORG_TS');
+      set bnkInSS.org2 = dbfGetFieldValue(_handle, 'ORG_FN');
+      set bnkInSS.acc2 = dbfGetFieldValue(_handle, 'ORG_FS');
+      set bnkInSS.inn2 = dbfGetFieldValue(_handle, 'ORG_FI');
+      set bnkInSS.bik2 = dbfGetFieldValue(_handle, 'ORG_FB');
+      set bnkInSS.kpp2 = dbfGetFieldValue(_handle, 'PAYERKPP');
+      set bnkInSS.sumK = double(dbfGetFieldValue(_handle, 'SUMMA_DOC'));
+      if insert current bnkInSS = tsOk lPlatIN++;
+    } //вх. платежи
+  } while (dbfGetNext(_handle) = tsOk);
+
+  stopVisual('', 0);
+  dbfClose(_handle);
+  result := (getfirst bnkInSS = tsOk);
+} //loadFromDBF

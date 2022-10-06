@@ -1,0 +1,14 @@
+<shipment action_id="10" version="5">
+<trade_participant_inn_sender>7709191580</trade_participant_inn_sender>
+<trade_participant_inn_receiver>2310031475</trade_participant_inn_receiver>
+<transfer_date>17.12.2020</transfer_date>
+<move_document_number>202222</move_document_number>
+<move_document_date>17.12.2020</move_document_date>
+<turnover_type>SELLING</turnover_type>
+<to_not_participant>false</to_not_participant>
+<products_list>
+<product>
+<kitu><![CDATA[6576576556465411112]]></kitu>
+</product>
+</products_list>
+</shipment>

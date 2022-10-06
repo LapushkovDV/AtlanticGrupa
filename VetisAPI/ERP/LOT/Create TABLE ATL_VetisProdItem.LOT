@@ -1,0 +1,37 @@
+Create table ATL_VetisProdItem "Каталог продукции"
+with table_Code = 31625
+with replace
+with tableoptions Branched
+(
+   NREC          :comp       "Идентификатор",
+   requestNrec   :comp       "nrec запроса",
+   description   :string     "Описание",
+
+   guid          :string "Глобальный идентификатор номенклатуры",
+   active        :string "Является ли запись активной",
+   globalID      :string "Trade Identification Number",
+
+   name               :string "Наименование продукции",
+   code               :string "Артикул (код)",
+   productType        :string "Тип продукции",
+   productionGuid     :string "Глобальный идентификатор продукции",
+   productionTypeGuid :string "Глобальный идентификатор вида продукции",
+   packageGuid        :string " Глобальный идентификатор упаковки",
+   quantity           :string "Количество единиц упаковки",
+   volume             :string "Объём единицы упаковки товара",
+   measureGuid        :string "Глобальный идентификатор ед измерения",
+   katmcnrec          :comp   "nrec KATMC",
+
+   addString     :array[1..4] of string   "Дополнительное поле string",
+   addComp       :array[1..4] of comp      "Дополнительное поле comp",
+   addDate       :array[1..4] of date     "Дополнительное поле date",
+   addDouble     :array[1..4] of double   "Дополнительное поле double",
+   addWord       :array[1..4] of word     "Дополнительное поле word",
+   addLongint    :array[1..4] of longint   "Дополнительное поле longint"
+   ,KatOtpEdNrec  : comp "nrec KatOtpEd"
+)
+with index
+(
+   i_NREC = NREC(Unique, Surrogate, Journal)
+)
+;

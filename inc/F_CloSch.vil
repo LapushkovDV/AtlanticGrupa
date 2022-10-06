@@ -1,0 +1,10 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_CloSch
+
+#ifdef ComponentVersion
+#component "F_CloSch"
+#end
+
+VipInterface CloseSchFlt Licensed (Free) Parameters (DateCloseSch : date);
+
+

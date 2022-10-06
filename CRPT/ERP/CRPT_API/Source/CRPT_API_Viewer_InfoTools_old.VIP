@@ -1,0 +1,156 @@
+#doc
+ Просмотр каталога CRPT_API_InfoTools
+#end
+Interface CRPT_API_Viewer_InfoTools  'Просмотр списка КИ CRPT_API'  Gray;
+  Show at (, , 87, 27);
+
+var
+  _cis: string = '76887639829082323333';
+  cRootNode
+ ,_cNode : string = '';
+
+Create view
+from
+   CRPT_InfoList
+//where ((
+//))
+bounds ByTreeNode = _cNode == CRPT_InfoList.cParent (noindex)
+;
+
+Screen scrCRPT_InfoList;
+show at (,,,5);
+  fields
+    _cis :[10], noPickButton, noProtect ;
+  buttons
+    cmGetInformation ,,,'Запрос списка КИ',,;
+    cmGetToken ,,,'Получить Токен',,;
+    cmCreatedoc ,,,'CreateDOC',,;  // DELETE!
+<<
+  cis   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  <.Запрос списка КИ.>     <.Получить Токен.>   <.CreateDoc.>
+
+>>
+end;
+
+
+Tree trCRPT_InfoList (,,sci1Esc);
+  Show at (,6,,);
+Table CRPT_InfoList;
+ Fields
+  CRPT_InfoList.cis                  'SSCC-код паллеты'                     ('',,): [6], Protect;
+  CRPT_InfoList.cparent              'Ссылка на вышестоящую позицию'        ('',,): [6], Protect;
+  CRPT_InfoList.emissionDate         'Дата эмиссии КИ'                      ('',,): [6], Protect;
+  CRPT_InfoList.producedDate         'Дата ввода товара с КИ в оборот'      ('',,): [6], Protect;
+  CRPT_InfoList.lastDocType          'Тип последнего документа'             ('',,): [6], Protect;
+  CRPT_InfoList.emissionType         'Тип эмиссии'                          ('',,): [6], Protect;
+  CRPT_InfoList.status               'Статус КИ'                            ('',,): [6], Protect;
+  CRPT_InfoList.packType             'Тип упаковки'                         ('',,): [6], Protect;
+  CRPT_InfoList.uit                  'КИ'                                   ('',,): [6], Protect;
+  CRPT_InfoList.lastStatusChangeDate 'Дата последнего изменения статуса'    ('',,): [6], Protect;
+  CRPT_InfoList.productGroup         'Товарная группа'                      ('',,): [6], Protect;
+  CRPT_InfoList.uitu                 'КИТУ'                                 ('',,): [6], Protect;
+ end;
+HandleEvent
+  cmGetToken: {
+    RunInterface('ATLANTIC::CRPT_API_PowerShell', 'GetToken', '');
+
+  }
+  cmGetInformation:{
+    RunInterface('ATLANTIC::CRPT_API_PowerShell', 'GetInformation', _cis);
+  }
+  cmCreatedoc:{
+    RunInterface('ATLANTIC::CRPT_API_PowerShellPost', 'CreateDoc', 'XML','testBody.xml','LP_GOODS_IMPORT_XML');
+  }
+
+end;
+
+Browse brCRPT_InfoList (,,sci1Esc);
+  Show at (,6,,);
+Table CRPT_InfoList;
+ Fields
+  CRPT_InfoList.cis                  'SSCC-код паллеты'                     ('',,): [6], Protect;
+  CRPT_InfoList.cparent              'Ссылка на вышестоящую позицию'        ('',,): [6], Protect;
+  CRPT_InfoList.emissionDate         'Дата эмиссии КИ'                      ('',,): [6], Protect;
+  CRPT_InfoList.producedDate         'Дата ввода товара с КИ в оборот'      ('',,): [6], Protect;
+  CRPT_InfoList.lastDocType          'Тип последнего документа'             ('',,): [6], Protect;
+  CRPT_InfoList.emissionType         'Тип эмиссии'                          ('',,): [6], Protect;
+  CRPT_InfoList.status               'Статус КИ'                            ('',,): [6], Protect;
+  CRPT_InfoList.packType             'Тип упаковки'                         ('',,): [6], Protect;
+  CRPT_InfoList.uit                  'КИ'                                   ('',,): [6], Protect;
+  CRPT_InfoList.lastStatusChangeDate 'Дата последнего изменения статуса'    ('',,): [6], Protect;
+  CRPT_InfoList.productGroup         'Товарная группа'                      ('',,): [6], Protect;
+  CRPT_InfoList.uitu                 'КИТУ'                                 ('',,): [6], Protect;
+ end;
+/*HandleEvent
+  cmGetToken: {
+    message('but2')
+    RunInterface('ATLANTIC::CRPT_API_PowerShell', 'GetToken', '');
+  }
+  cmGetInformation:{
+    RunInterface('ATLANTIC::CRPT_API_PowerShell', 'GetInformation', _cis);
+  }
+end;  */
+
+TableEvent table CRPT_InfoList;
+cmTreeNodeType:{
+  if (TreeIsTerminal(trCRPT_InfoList)) {
+    TreeSetNodeType(trCRPT_InfoList, ntfText);
+  }
+}
+cmTreeTop:{
+  _cNode:=cRootNode;
+}
+cmTreeUp:{
+  _cNode:=CRPT_InfoList.cParent;
+}
+cmTreeDown:{
+  _cNode:=CRPT_InfoList.cis;
+}
+cmTreeNeedOwner:{
+  if (CRPT_InfoList.cParent <> cRootNode) {
+    TreeJumpToRecord(trCRPT_InfoList,CRPT_InfoList.cParent)
+  } else {
+    TreeJumpToRecord(trCRPT_InfoList,0);
+  }
+}
+end;
+
+handleevent
+cminit:{
+ cRootNode := '';
+ putcommand(cmAccording);
+ /*if _SelectedItem <> 0h {
+   TreeJumpToRecord(trCRPT_InfoList,_SelectedItem);
+ } */
+}
+
+cmHotKeys:{
+  PutContextMenuCommand('ATL_VETISCATALOG_MANUAL_HotKeys');
+  rescanPanel(tnCRPT_InfoList);
+}
+cmAccording:{ //переключение режима табл/дерево Alt-S
+  if (BoundActive(tbByTreeNode)) {
+    SubBounds(tbByTreeNode);
+    setformat(brCRPT_InfoList);
+    ReReadRecord(tnCRPT_InfoList);
+  } else {
+    var CurRec:comp;
+    //CurRec:=CRPT_InfoList.NRec;
+    AddBounds(tbByTreeNode);
+    setformat(trCRPT_InfoList);
+    ReReadRecord(tnCRPT_InfoList);
+    //TreeJumpToRecord(trCRPT_InfoList,CurRec);
+  }
+}
+/*CmDefault: {
+
+}  */
+end;
+End. // Interface
+
+
+ATL_CRPT_InfoTools_HotKeys Menu
+{
+- '~Р~ежим просмотра дерево/список', cmAccording, 'Переключение режима просмотра между таблицей и деревом', , 'Alt+S', kbAltS, sci1Esc,,,,bmpTree_brows;
+}

@@ -1,0 +1,19 @@
+//------------------------------------------------------------------------------
+//                                                      (c) Корпорация ГАЛАКТИКА
+//------------------------------------------------------------------------------
+// Галактика 8.1 - Ядро
+// Обработка атрибутов с вызовом интерфейсов
+//------------------------------------------------------------------------------
+
+#ifndef __AttrTablePick__vih__
+#define __AttrTablePick__vih__
+
+#ifdef ComponentVersion
+#Component "C_ExtClass"
+#end
+
+#include IExtAttrReference.vih  // Обьектный интерфес для работы с атрибутом ССЫЛКА
+
+VipInterface AttrTablePick implements IExtAttrReference #Licensed_Free;
+
+#end // __AttrTablePick__vih__

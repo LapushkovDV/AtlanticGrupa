@@ -1,0 +1,15 @@
+#param /linc:autoexec.vpp
+
+#include galnet.inc end;
+#include glovars.inc
+
+#define ComponentVersion // для vih
+#include ExtAttr.vih
+#include ExtClass.vih
+
+
+
+#component 'ATLANTIC'
+
+
+#make "ReportMassa_DO_NAKL.vip"

@@ -1,0 +1,35 @@
+Create table CRPT_Docs "ЦРПТ Документы"
+With table_Code = 31634
+with Replace
+(
+  NRec                 : comp                      "Номер записи",
+  declaration_date     : date                      "Дата ГТД",
+  declaration_number   : string                    "Номер ГТД",
+  customs_code         : string                    "Номер таможенного органа",
+  decision_code        : string                    "Решение таможни",
+  docType			   : word					   "Тип документа",
+  CRPT_Oid			   : string 				   "Oid документа в системе ЦРПТ",
+  docDateTime		   : string 				   "Дата документа в ЦРПТ",
+  status			   : string 				   "Статус документа в ЦРПТ",
+  statusDescr		   : string 				   "Описание статуса в ЦРПТ",
+  sender			   : string 				   "Отправитель документа в ЦРПТ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+Create table CRPT_SpDocs "ЦРПТ Спецификация документов"
+With table_Code = 31635
+with Replace
+(
+  NRec                 : comp                        "Номер записи",
+  cDoc				   : ref(CRPT_Docs)      		 "Ссылка на документ",
+  kitu                 : string                      "SSCC-код паллеты",
+  cKatMc			   : comp 						 "Ссылка на кат МЦ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+

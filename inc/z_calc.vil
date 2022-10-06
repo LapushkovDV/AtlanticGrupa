@@ -1,0 +1,19 @@
+#ifdef ComponentVersion
+#component "z_calc"
+#end
+
+vipinterface Zklvidopl licensed(free);
+vipinterface filtrvidopl licensed(free);
+vipinterface klvidopl licensed(free) parameters(p1: comp; p2: double);
+vipinterface ZKlVidUd licensed(free);
+vipinterface klvidud licensed(free) parameters(p1: comp; p2: double);
+vipinterface ENTERINGKINDLIST licensed(free);
+vipinterface LISTALG46 licensed(free);
+vipinterface KlAlg licensed(free) parameters(p1: word; Options: word; avtSal: word);
+vipinterface zarfunc licensed(free) parameters(NFun: string);
+vipinterface LoadSpecialAlgorithmList licensed(free);
+vipinterface StrProcUd licensed(free);
+
+menu CaseLSChN;
+menu CaseLSChV;
+

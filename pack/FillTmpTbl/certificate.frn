@@ -1,0 +1,14 @@
+  recSpec.McKod := drogaFunc.getBuyerItemCode(спецификацияМЦ_нрек);
+//if (recSpec.McKod = '') recSpec.McKod := 'Отсутствует код покупателя';
+  if v_cert.getfirst spsopr = tsOk
+    if v_cert.getfirst sertific = tsOk {
+      recSpec.CertNomer := v_cert.sertific.name+ ' '
+        + if(extAttr.sGetAttr(4901,v_cert.sertific.nrec,'Номер')='',v_cert.sertific.nreg,extAttr.sGetAttr(4901,v_cert.sertific.nrec,'Номер'));
+      recSpec.CertDate := if(v_cert.sertific.ddoc=date(0,0,0),'',datetostr(v_cert.sertific.ddoc,'DD.MM.YYYY'));
+    //recSpec.CertDate2
+      recSpec.PartyDateAnaliz := if(v_cert.sertific.dend=date(0,0,0),'', if(v_cert.sertific.dend>=date(31,12,2100),'бессрочно',dateToStr(v_cert.sertific.dend,'DD.MM.YYYY')));
+    //recSpec.CertNomer2
+      recSpec.PartyNumAnaliz := if(v_cert.sertific.tu='','-',v_cert.sertific.tu);
+      if v_cert.getfirst KatOrg = tsOk
+        recSpec.CertWho := v_cert.katorg.name;
+    }

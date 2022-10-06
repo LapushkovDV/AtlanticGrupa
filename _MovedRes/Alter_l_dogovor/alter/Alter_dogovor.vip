@@ -1,0 +1,125 @@
+#component "L_DOGOVOR"
+alter interface dogovor ( '');
+
+var piExClass: iExtClass;
+
+overload
+procedure setDefaultSpDog;
+end;
+
+create view as select
+piExClass.getSegName(#price_class, dogovor.nrec) (fieldname=price_type);
+
+overloadFormats scDogovorAttachHead;
+overloadFormats scSpDog;
+//extendformats
+
+procedure setDefaultSpDog;
+{
+  set spdocs.kol := 999999999;
+  set spdocs.ostatok := 999999999;
+  inherited::setDefaultSpDog;
+}
+
+window wiDogovorAttachMain;
+screen scDogovorAttachHead (,,sci13Esc)
+//show at (,,,7);
+table dogovor;
+fields
+  OwnerDogInfo + if((OwnerDogInfo <> '') AND (DogZamenaInfo <> ''), '. ', '') + DogZamenaInfo : skip, {font = {bold = true}};
+  katNotes.name      ('Статус соглашения',,sci134Esc) : PickButton, protect, EditButton;
+  dogovor.desGr      ('Код группы пользователей') : protect;
+  dogovor.descr      ('Дескриптор(идентификатор)пользователя') : protect;
+  dogovor.NoDoc_Ext  ('Входящий номер соглашения',,sci1Esc) : noprotect;
+  dogovor.dInput     ('Дата создания соглашения') : [10,'DD.MM.YYYY'], noprotect;
+  katVidD.Name       ('Вид соглашения') : PickButton, protect ;
+  dogovor.NoDoc      ('Номер соглашения',,sci1Esc) : noprotect;
+  dogovor.dDoc       ('Дата заключения соглашения') : [10,'DD.MM.YYYY'], noprotect ;
+  dogovor.tipMoney   ('Тип соглашения') : [LIST 1 'в НДЕ', 'вал-НДЕ', 'валютный'], protect ;
+  valDogovor         ('Валюта соглашения') : protect;
+  dogovor.dBeg       ('Дата начала соглашения') : [10,'DD.MM.YYYY'], noprotect;
+  dogovor.dEnd       ('Дата окончания соглашения') : [10,'DD.MM.YYYY'], noprotect;
+  if(dogovor.vhodNal = 1, 'входят в цену', 'не входят в цену'): skip;
+  price_type         ('Тип цен') : protect, pickbutton;
+  //dogovor.summa      ('Общая (планируемая) сумма по соглашению',,sci1Esc) : [19.2,'\2p[|-]3666`666`666`666`666`666.88'] noprotect;
+  //dogovor.sumNDS     ('Сумма налогов по соглашению',,sci14Esc): [19.2, '\2p[|-]3666`666`666`666`666`666.88'], noprotect, EditButton;
+  //#AddFieldArchiveToScreenMore_(sci134Esc)
+<<
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  &`Группа` &`Дескр.`   &`Номер`              &`Дата`                &Статус.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+   .@@@@@@@  .@@@@@@@@@  .@@@@@@@@@@@@@@@@@@    .@@@@@@@@@@@ `Вид договора` .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+           `Внутренний №`.@@@@@@@@@@@@@@@@@@`от`.@@@@@@@@@@@ `Тип по валюте`.@@@@@@@@@@    `валюта`.@@@@@@@@@@@@@@@@@@@
+                    На период`с`.@@@@@@@@@@@`по`.@@@@@@@@@@@ `Налоги`       .@@@@@@@@@@@@    `цены`.@@@@@@@@@@@@@@@@@@@
+>>
+end;
+handleevent
+cmInit: {
+  inherited::handleevent(cmInit);
+  oExClassifier.reDrawEx(coDogovor, dogovor.nrec, false);
+  clearFieldOption(#spdocs.price, ofSelectable);
+  clearFieldState(#spdocs.kol, sfVisible);
+  clearFieldState(#spdocs.summa, sfVisible);
+  clearFieldState(#spdocs.sumnds, sfVisible);
+  clearFieldState(#smetaMy, sfVisible);
+  clearFieldState(#smetaSpMy, sfVisible);
+  clearFieldState(#plJobName, sfVisible);
+  //clearFieldState(#dogovor.summa, sfVisible);
+  //hideLabel4Field(#dogovor.summa);
+  clearFieldState(#dogovor.sumnds, sfVisible);
+  hideLabel4Field(#dogovor.sumnds);
+}
+cmPick: {
+  if curfield = #price_type {
+    if oExClassifier.runModal(coDogovor, dogovor.nrec, true) = cmCancel
+    //oExClassifier.reDrawEx(coDogovor, dogovor.nrec, false);
+      rescanpanel(#dogovor);
+  }
+  else inherited::handleevent(cmPick);
+}
+end;
+end;
+
+window wiSpDog;
+//show at (, , 105, 32);
+panel pnSpDocs1;
+table spDocs;
+screen scSpDog (, , sci13Esc);
+//Show at (, 12, , 19) Fixed_Y;
+fields
+//doubleToStr(SpDocs.Ostatok / fEdIzm.GetKoefOtpEd(SpDocs.cOtpEd), '\3p[|-]3666`666`666`666.888') + ' ' + if(IsValid(#KatOtpEd), OtpEd, '')     : skip;
+  upPosGrName    ('Товарная позиция, к которой относится услуга'): protect,
+                   { Font = { BackColor = ColorSkip } };
+  upPosName      ('Товарная позиция, к которой относится услуга'): protect,
+                   { Font = { BackColor = ColorSkip } };
+  spKlPrice.Name ('Цена по прайс-листу', , sci1Esc): [, '\2p[|-]3666`666`666`666.88'], protect;
+  grNal.Name     ('Налоговая группа', , ): protect;
+  spVhodNal      ('Входимость налогов в цену МЦ/услуги'): skip;
+<<
+
+ `Относится к позиции`  .@@@@@@@@@@@@@@@@@@@@@@@@@@@.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ `Цена по прайс-листу`  .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ `Налоговая группа`     .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.@@@@@@@@@@@@@@@@@@@@@@@@@@@
+>>
+end;
+end;
+end;
+
+/*
+   wClassCode := ExClassFun.GetCode( coKatParty, 'Страна происхождения' );
+   sRet := ExClassFun.GetSegName( coKatParty, wClassCode, vSpStep.KatParty.nRec );
+*/
+
+tableevent table dogovor
+cmPositionChanged: {
+  inherited::handleevent(cmPositionChanged);
+  oExClassifier.reDrawEx(coDogovor, dogovor.nrec, false);
+}
+end;
+
+handleevent
+cmInit: {
+  inherited::handleevent(cmInit);
+  clearFieldState(#dogovor1.summa, sfVisible);
+}
+end;
+end.

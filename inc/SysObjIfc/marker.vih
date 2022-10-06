@@ -1,0 +1,130 @@
+#ifndef _OBJMARKER_
+#define _OBJMARKER_
+
+#include IModify.vih
+
+#Component ""
+
+ObjInterface IMarker;
+// #docl Управляет пометкой записей в браузере. </brief>
+  procedure MarkUnMarkRec   // #docl Помечает, если не помечена, и сбрасывает, если помечена, запись. Валидность не проверяется.
+                            (Nrec // #docl Номер записи. </brief>
+                                  : comp);
+  procedure MarkUnMark  // #docl Помечает, если не помечена, и сбрасывает, если помечена, текущую запись. </brief>
+                     ;
+  procedure MarkUnMarkMouse // #docl Помечает запись под указателем мыши. </brief>
+                          ;
+  procedure Mark // #docl Помечает текущую запись. </brief>
+               ;
+  procedure UnMark // #docl Снимает пометку с текущей записи. </brief>
+                 ;
+  procedure UnselectAll // #docl Снимает все пометки. </brief>
+                      ;
+  procedure SelectAll // #docl Помечает все записи. </brief>
+                    ;
+  procedure InvertSel // #docl Инвертирует пометку всех записей. </brief>
+                    ;
+  procedure ImportFrom // #docl Импортирует (загружает) помеченные записи из маркера. </brief> Информация о ранее помеченных записях теряется.
+                        (StdMarker  // #docl Маркер, из которого производится загрузка пометок. </brief>
+                                    : LongInt);
+  procedure ExportTo // #docl Выгружает помеченные записи в маркер. Содержимое маркера перед операцией очищается. </brief>
+                        (StdMarker // #docl Маркер, в который производится выгрузка пометок. </brief> 
+                                   : LongInt);
+  procedure ImportFromName  // #docl Импортирует (загружает) помеченные записи из маркера. </brief> Информация о ранее помеченных записях теряется.
+                            (StdMarker // #docl Маркер, из которого производится загрузка пометок. </brief>
+                                       : String);
+  procedure ExportToName    // #docl Выгружает помеченные записи в маркер. Содержимое маркера перед операцией очищается. </brief>
+                            (StdMarker  // #docl Маркер, в который производится выгрузка пометок. </brief> 
+                                        : String);
+  procedure StoreToDsk  // #docl Сохраняет помеченные записи в dsk-файл. </brief>
+                     ;
+  procedure LoadFromDsk  // #docl Загружает помеченные записи из dsk-файла. </brief>
+                      ;
+  procedure DeleteRec // #docl Удаляет помеченные записи. </brief>
+                    ;
+  procedure DeleteRecWoMessage // #docl Удаляет помеченные записи без предупреждения. </brief>
+                             ;
+  property  pNRec   // #docl Чтение /Запись <br> NRec записи в таблице маркера. </brief>
+                    : comp Read Write;
+  index     iByNRec // #docl Индекс по pNRec </brief>
+                    = pNRec (Unique);
+  protected  property  Owner    // #docl Защищено <br> и недокументировано. </brief>
+                                : LongInt;
+  property  ImageName   // #docl Чтение /Запись <br> Имя картинки для помечаемой записи. Значение по умолчанию 'bmMarkBitmap'. </brief>
+                        : string  Read Write;
+  property  StoreName   // #docl Чтение /Запись <br> Имя, под которым будет сохраняться информация о помеченных записях в dsk-файле. </brief>
+                        : string  Read Write;
+  property  AutoSave    // #docl Чтение /Запись <br> Если свойство установлено, то информация о помеченных записях автоматически сохраняется в dsk-файле по закрытии интерфейса. Значение по умолчанию false. </brief>
+                        : Boolean Read Write;
+  property  LoadAuto    // #docl Чтение /Запись <br> Если свойство установлено, то информация о помеченных записях автоматически загружается из dsk-файла в момент создания интерфейса, где описан браузер с автоматизированной пометкой. </brief> 
+                        : Boolean Read Write;
+  property  Count       // #docl Чтение <br> Свойство содержит количество отмеченных записей. </brief>
+                        : LongInt Read;
+  property  IsCaption   // #docl Чтение /Запись <br> Если свойство установлено, то к заголовку интерфейса прибавляется информация о количестве отмеченных записей. </brief>
+                        : Boolean Read Write;
+  property  Caption     // #docl Чтение /Запись <br> Строка, добавляемая к заголовку интерфейса с информацией о количестве отмеченных записей. Формат строки '... %d .....'. Вместо %d подставится количество записей. </brief>
+                        : String  Read Write;
+  property  ShowCaptIsZero  // #docl Чтение /Запись <br> Показывать /скрывать заголовок, если количество отмеченных записей равно 0. Значение по умолчанию false. </brief>
+                            : Boolean  Read Write;
+  property  Disable         // #docl Чтение /Запись <br> Запретить /разрешить автоматизированную пометку. Значение по умолчанию false. </brief>
+                        : Boolean  Read Write;
+  property  SendPosChangedWhithGroupDelete  // #docl Чтение /Запись <br> Посылать /не посылать сообщение cmPositionChanged, если при удалении помеченных записей была удалена текущая запись. Значение по умолчанию false. </brief>
+                                            : Boolean  Read Write;
+  property  IsMarkNestedTreeNode    // #docl Чтение /Запись <br> Если свойство установлено, то включается режим пометки вложенных элементов при пометке узла дерева. Значение по умолчанию true. </brief>
+                                    : Boolean  Read Write;
+  property  IsMarkTreeNodeUp        // #docl Чтение /Запись <br> Если свойство установлено, то включается проверка необходимости автоматической пометки /снятия узла при изменении пометки его подчленов. </brief>
+                                    : Boolean  Read Write;
+  property  IsNeedCheckDelete       // #docl Чтение /Запись <br> При значении данного свойства false никакая автоматическая обработка не ведется, и сообщение cmDelete обрабатывается стандартно. Значение по умолчанию true. </brief>
+                                    : Boolean  Read Write;
+End;
+
+ObjInterface IMarkerEx;
+  // #docl Системный интерфейс: расширяет возможности IMarker. </brief>
+  procedure RefreshCaption  // #docl Обновить заголовок. </brief>
+                         ;
+End;
+
+ObjInterface IMarkerExA; 
+  procedure ExportToAll // #docl Выгружает все помеченные записи в маркер без учета ограничений. Содержимое маркера перед операцией очищается. </brief>
+                        (StdMarker // #docl Маркер, в который производится выгрузка пометок. </brief> 
+                                   : LongInt);
+End;
+
+ObjInterface IMarkerAggregate;
+  // #docl Системный интерфейс: Агрегатные возможности IMarker. </brief>
+  function _BrowseMarkedCount  // #docl Возвращает количество помеченных строк броузера (аналог Count). </brief>
+                              : Longint;
+  function _BrowseMarkedMax  // #docl Возвращает наибольшее значение поля из помеченных строк броузера. </brief>
+                              (aField // #docl Номер поля с которым работаем. </brief>
+                                       : Longint) : Double;
+  function _BrowseMarkedMin  // #docl Возвращает наименьшее значение поля из помеченных строк броузера. </brief>
+                              (aField // #docl Номер поля с которым работаем. </brief>
+                                       : Longint) : Double;
+  function _BrowseMarkedSum  // #docl Возвращает сумму значений поля из помеченных строк броузера. </brief>
+                              (aField // #docl Номер поля с которым работаем. </brief>
+                                       : Longint) : Double;
+  function _BrowseMarkedAvg  // #docl Возвращает среднее из значений поля из помеченных строк броузера. </brief>
+                              (aField // #docl Номер поля с которым работаем. </brief>
+                                       : Longint) : Double;
+End;
+
+ObjInterface IMarkerSorting; 
+  // #docl Системный интерфейс: Сортировки в IMarker. </brief>
+  procedure ExportToByBrowserSort  // #docl Выгружает все помеченные записи в маркер. Содержимое маркера перед операцией очищается. </brief>
+                        (StdMarker // #docl Маркер, в который производится выгрузка пометок. </brief> 
+                                   : LongInt);
+  procedure ExportToNameByBrowserSort   // #docl Выгружает помеченные записи в маркер. Содержимое маркера перед операцией очищается. </brief>
+                        (StdMarker      // #docl Маркер, в который производится выгрузка пометок. </brief> 
+                                   : String);
+End;
+
+VipInterface Marker implements IMarker,IMarkerEx,IMarkerExA,IMarkerAggregate,IMarkerSorting,IModify;
+// #docl Интерфейс, реализующий возможности IMarker. </brief>
+public :  
+  constructor Init // #docl Инициализирует экземпляр интерфейса. </brief>
+                 ;
+  destructor Done // #docl Выполняет работу по завершению работы интерфейса. </brief>
+                ;
+end;
+
+#endif

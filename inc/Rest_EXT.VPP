@@ -1,0 +1,158 @@
+function ReCalc_ExterOrder(_nRecSklOrd: comp): boolean;
+{
+ReCalc_ExterOrder := FALSE;
+
+#ifndef _NalUch_
+SetVisualHeader('Пересчет цен, удаление ордеров дооценки');
+if (not DeleteDoo)
+  EXIT; // удаление всех дооценок из списка Pick
+
+if (wSkip=1)
+  if (not DeleteNotLink)
+    EXIT; // удаление отвязанных спецификаций
+#end
+
+var meth_: word;
+meth_:= wGetTune('Oper.L_F');
+
+var i_: word;  i_:= 0;
+SetVisualHeader('Подготовка ордеров к пересчету');
+_LOOP Pick where ((7 == Pick.wList))
+{
+  i_:= i_ +1;
+  if not iNextVisual('Подготовка ордеров к пересчету'#13#3+string(i_*100/kolPickMC,3,0)+'%')  EXIT;
+
+  _LOOP SpOrder where (( SkPr       == SpOrder.SP and
+                         Pick.cRec  == SpOrder.cMC
+                         #ifdef _NalUch_
+                         and   begDate <<= SpOrder.dOrd
+                         #end
+                      )) ordered by index SpOrder08
+  { if not NextVisual  EXIT;
+    if (_nRecSklOrd <> 0 )
+      if (SpOrder.cSklOrder <> nRecSklOrd)
+        Continue;
+
+    if abs(SpOrder.kol) < presision   Continue;
+
+    SpOrder.empty:= oSaldo_K.LoSetSpOrder_Empty(SpOrder.tipOrd, SpOrder.vidOrder, SpOrder.ostatok, SpOrder.cSpSopr, SpOrder.ccPodr);
+    if SpOrder.vidOrder=1 and SpOrder.tipOrd<>3
+      SpOrder.empty:= 100;
+    #ifndef _NalUch_
+    if SpOrder.vidOrder=1 and wMethod > 0 //установить в расходных ордерах один метод списания
+      SpOrder.method := meth_;
+    #end
+    update current SpOrder;
+  } //_LOOP
+}// LOOP Pick
+
+
+
+//==============ПЕРЕСЧЕТ ЦЕН ВО ВНЕШНИХ ОРДЕРАХ==================
+var thisFirstMC, bNURealiz : boolean;
+i_:= 0;
+_LOOP Pick where ((7 == Pick.wList))
+{
+  curMC := Pick.cRec;
+  if (GetFirst KatMC where((curMC==KatMC.nRec))<>tsOk)
+    KatMC.Name := 'NRec = '+string(curMC)+' (МЦ удалена)';
+  i_:= i_ +1;
+  if not iNextVisual('Пересчет цен в ордерах'#13#3+string(i_*100/kolPickMC,3,0)+'%')  EXIT;
+
+  //цикл по всем расходным ордерам с данной МЦ
+  WHILE GetFirst rSpOrder where ((
+                              SkPr         == rSpOrder.SP and
+                              1            == rSpOrder.vidOrder and
+                              Pick.cRec    == rSpOrder.cMC      and
+                              100          == rSpOrder.empty    and
+                              #ifndef _NalUch_
+                              ZeroDate     << rSpOrder.dOrd
+                              #else
+                              begDate     <<= rSpOrder.dOrd
+                              #end
+                                ))  = tsOk
+  {
+    if (not NextVisual)
+      EXIT;
+
+    if (rSpOrder.kol < presision)
+      Continue;
+
+    if (_nRecSklOrd <> 0 )
+      if (rSpOrder.cSklOrder <> nRecSklOrd)
+        Continue;
+
+    rSpOrder.Empty   := 0;
+    upDate current rSpOrder;
+
+    bNURealiz := False;
+    if GetFirst SklOrder where ((rSpOrder.cSklOrder == SklOrder.nrec)) = tsOk
+      if GetFirst KatSopr where ((SklOrder.cSopr == KatSopr.nRec)) = tsOk
+        if (KatSopr.vidSopr = 201) or (KatSopr.Vidsopr = 601)
+          bNURealiz := True;
+
+    if (bNURealiz) and (wGetTune('OPER.NALUCH.MSRP') = 2)
+      Continue;
+
+    if (not bNURealiz) and (wGetTune('OPER.NALUCH.MSSN') = 2)
+      Continue;
+
+    if GetFirst SpOrder where ((rSpOrder.cSpOrderN == SpOrder.nRec)) = tsOk
+    {
+      rSpOrder.PriceN  := SpOrder.priceN;
+      rSpOrder.vPriceN := SpOrder.vpriceN;
+      rSpOrder.SummN   := rSpOrder.priceN * rSpOrder.Kol;
+      rSpOrder.SummN   := oSaldo_K.RoundRubOrd(rSpOrder.PriceN, rSpOrder.Kol)*rSpOrder.Kol;
+      rSpOrder.vSummN  := rSpOrder.vpriceN * rSpOrder.Kol;
+      rSpOrder.vSummN  := oSaldo_K.RoundValOrd(rSpOrder.vPriceN, rSpOrder.Kol)*rSpOrder.Kol;
+       rSpOrder.Empty   := 0;
+      upDate current rSpOrder;
+    }
+  }//WHILE по расходным
+
+}//_LOOP Pick
+//КОНЕЦ БОЛЬШОГО ЦИКЛА ПО ВСЕМ МАТЦЕННОСТЯМ ВЫБРАННЫМ ДЛЯ ПЕРЕСЧЕТА
+
+
+//обнуляем цены во всех непересчитанных спецификациях
+SetVisualHeader('Завершение пересчета');
+While GetFirst SpOrder where (( SkPr     == SpOrder.SP       and
+                              1          == SpOrder.vidOrder and
+                              KatMC.nRec == SpOrder.cMC      and
+                              100        == SpOrder.empty
+                              #ifdef _NalUch_
+                              and  begDate <<= SpOrder.dOrd
+                              #end
+                              ))  = tsOk
+ Do
+  { if (not NextVisual) EXIT;
+
+    SpOrder.empty    := 0;    SpOrder.cSpOrder := 0;
+    #ifndef _NalUch_
+    SpOrder.srPrice  := 0;    SpOrder.vPrice   := 0;
+    SpOrder.rSrPrice := 0;    SpOrder.rVPrice  := 0;
+    #end
+    SpOrder.priceN   := 0;
+    SpOrder.SummN    := 0;
+    #ifndef _NalUch_
+    if update current SpOrder <> tsOk //OneSpOrder_Update <> tsOk
+    #else
+    if update current SpOrder <> tsOk
+    #end
+     { frmErr.Write('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+       frmErr.Write('! Остались спецификации с временным видом - возможна потеря данных!');
+       frmErr.Write('! необходимо либо повторить пересчет цен, либо восстановить данные!');
+       frmErr.Write('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+       EXIT;
+     }
+    else
+     { frmErr.Write('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+       frmErr.Write('! Остались спецификации с временным видом - возможна потеря данных!');
+       frmErr.Write('! все исправлено, но методика списания нарушена !                 !');
+       frmErr.Write('! необходимо либо повторить пересчет цен, либо восстановить данные!');
+       frmErr.Write('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+       EXIT;
+     }
+  }//While
+ReCalc_ExterOrder := TRUE;
+} // ReCalc_ExterOrder: boolean;

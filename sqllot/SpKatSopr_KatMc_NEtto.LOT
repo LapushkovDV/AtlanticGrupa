@@ -1,0 +1,31 @@
+sql
+select t.barkod, t.name, Sum(t.notOk) as notOK, Sum(t.Ok) as OK, t.netto, t.massa, t.dsopr, t.nsopr
+from
+(
+select MC.barkod as barkod,  MC.Name as name , sum(0) as notOK, sum(1) as ok,SP.NETTO, MC.MASSA, KS.dSopr, KS.Nsopr
+
+from katsopr KS
+join spsopr SP on sp.csopr = ks.nrec and sp.prmc = 1
+join KatMc MC on MC.Nrec = Sp.cmcUsl
+where
+ KS.vidsopr = 201
+  and KS.dSopr >= #date(01,05,2018)
+ and KS.wAdoc = 0
+ and SP.NETTO = MC.MASSA
+group by MC.barkod,  MC.Name, SP.NETTO, MC.MASSA, KS.dSopr, KS.Nsopr
+
+ union all
+
+ select MC.barkod as barkod , MC.Name as name, sum(1) as notOK, sum(0) as ok ,SP.NETTO, MC.MASSA , KS.dSopr, KS.Nsopr
+
+from katsopr KS
+join spsopr SP on sp.csopr = ks.nrec and sp.prmc = 1
+join KatMc MC on MC.Nrec = Sp.cmcUsl
+where
+ KS.vidsopr = 201
+  and KS.dSopr >= #date(01,05,2018)
+ and KS.wAdoc = 0
+ and SP.NETTO <> MC.MASSA
+  group by MC.barkod,  MC.Name, SP.NETTO, MC.MASSA, KS.dSopr, KS.Nsopr
+) t
+group by t.barkod, t.name, t.netto, t.massa, t.dsopr, t.nsopr

@@ -1,0 +1,14 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 8.1 - Логистика.Управление лесным хозяйством
+//
+//******************************************************************************
+
+
+#ifdef ComponentVersion
+#component "L_WOOD"
+#end
+
+VipInterface GetWoodFond        licensed (FREE) Parameters (wIntMode : comp; cTopRec : comp; cNodeTop : comp; var cGetRec : comp);
+VipInterface GALAXY_to_IPAQ     licensed (FREE);
+VipInterface IPAQ_to_GALAXY     licensed (FREE);

@@ -1,0 +1,574 @@
+#doc
+ Документы Вывода из оборота ЦРПТ
+#end
+
+Interface CRPT_API_ReceiptDocList  'Документы Вывода из оборота ЦРПТ'  Gray;
+  Show at (, , 100, 27);
+
+
+table struct tPickType(
+  wType :word,
+  sType : string
+)
+with index (
+  i_wType = wType
+);
+
+table struct tCodesFromCsv(
+  sKituFromCsv : string
+ ,scsvFilePath : string
+)
+with index (
+  i_wType = sKituFromCsv
+);
+
+File gfFile;
+var
+  xmlDoc : longint;
+  kituForSt, Folder_input, File_input, Folder_output: string;
+Create view as
+select
+  kituInfo.cis      (fieldname = kituCis)
+ ,kituInfo.status   (fieldname = kituStatus)
+ ,kituInfo.packType (fieldname = kituPackType)
+from
+   CRPT_ReceiptDocs ReceiptDoc
+ , CRPT_SpReceiptDocs spReceiptDoc
+ , CRPT_KituInfo_temp kituInfo
+ , tCodesFromCsv tmpCode
+ , tPickType
+ , tCodesFromCsv
+where ((
+  root == ReceiptDoc.nrec
+  and ReceiptDoc.nrec == spReceiptDoc.cDoc (noindex)
+  and kituForSt == kituInfo.cis (noindex)
+  and spReceiptDoc.kitu == tmpCode.sKituFromCsv
+));
+
+File gfFile;
+Procedure FillWithdrawalType; forward;
+#include source\CRPT_API_KituInfoInterface.Vpp
+function curdatetimestr: string;
+{
+  result := datetostr(Cur_date,'YYYY-MM-DD') + ' ' + timeToStr(Cur_time,'HH:MM:SS') + ' ';
+}
+Procedure MyLog(_str : string);
+{
+  logstrtofile('_MylogFile_Receipt.txt',curdatetimestr + _str)
+}  // delete уже есть
+
+Procedure SetDefaultReceiptDoc; {
+  clearBuffer(tnReceiptDoc);
+  set ReceiptDoc.withdrawal_type := 0;
+  set ReceiptDoc.primary_doc_type := 0;
+}
+Procedure SetDefaultSpReceiptDoc; {
+  clearBuffer(tnSpReceiptDoc);
+  set SpReceiptDoc.cDoc := ReceiptDoc.nrec;
+}
+Procedure SetEditMode(flag: boolean); {
+
+ flag := flag;
+}
+
+
+Procedure GetKituFromFile; {
+
+  /*var fileName: string;
+  filename := GetFileName('ord_ATL_*VP_*.csv','pickfle');
+
+  if ( xlOpenExcel(false) or xlOpenWorkBook(fileName)) {
+      var i: integer = 2;
+      var cellValue: string = 'begin';
+
+     while (cellValue <> '') {
+       xlGetCellValue (i,9, cellValue);
+       message(cellValue) ;
+       i:= i+1;
+     }
+
+     xlKillExcel();
+  } */
+   delete all tCodesFromCsv;
+
+
+   startnewvisual(vtRotateVisual,vftimer+vfbreak+vfconfirm,'Поиск файлов...',0);
+   if FindFirstFile(Folder_input+'*.*', File_input) {
+      do {
+         File_input:=upcase(File_input);
+
+           if(MatchesMask(File_input,'ord_ATL_*VP_*.csv') ) {
+             if not IsDirectory(Folder_input+File_input) {
+                //_isError := _isError and (not CheckFileFillValues(Folder_input+File_input, _logFile));
+                //Message(recordsIntable(tntInsertBaseDoc) + '  ' + tInsertBaseDoc.cFile);
+
+                //message(Folder_input+File_input);
+              /*  if ( xlOpenExcel(false) or xlOpenWorkBook(Folder_input+File_input)) {
+                   var wRow: integer = 2;
+                   var cellValue: string = '';
+
+                   xlGetCellValue (wRow,9, cellValue);
+                   message(xlGetCellSubStringValue(wRow,9,1,255));
+
+                   while (cellValue <> '') {
+
+                       if (getfirst tCodesFromCsv where (( cellValue == tCodesFromCsv.sKituFromCsv)) != tsOk) {
+                          set tCodesFromCsv.sKituFromCsv := cellValue;
+                          set tCodesFromCsv.scsvFilePath := Folder_input+File_input;
+                          insert current tCodesFromCsv;
+
+                       }
+
+                       wRow:= wRow+1;
+                       xlGetCellValue (wRow,9, cellValue);
+                   }
+                   xlCloseWorkBookByName(Folder_input+File_input);
+                   xlKillExcel();
+                }  */
+                if (gfFile.OpenFile(Folder_input+File_input,stOpenRead ) ) {
+                    var s: string = '';
+                    var kitu: string ='';
+                    while (not gfFile.EOF) do {
+                      gfFile.ReadLn(s);
+                      if s <> '' {
+                        //message(s);
+                        kitu := ExtractDelimitedWord(s,8,';');
+
+                        if (kitu <> '' and getfirst tCodesFromCsv where (( kitu == tCodesFromCsv.sKituFromCsv)) != tsOk) {
+                          set tCodesFromCsv.sKituFromCsv := kitu;
+                          set tCodesFromCsv.scsvFilePath := File_input;
+                          insert current tCodesFromCsv;
+                        }
+                      }
+                    }
+                    gfFile.Close;
+                    CopyMoveFile(Folder_input+File_input,Folder_output+File_input, true, ecmfClientFrom  + ecmfClientTo )
+                } else {
+                        message('Не удалось открыть файл '+Folder_input+File_input );
+
+                };
+            }
+         }
+
+
+
+      } while FindNextFile(File_input);
+    }
+    //CheckErrors;
+    StopVisual('', 0);
+
+    updatetable #ReceiptDoc;
+    SetDefaultReceiptDoc();
+    insert current ReceiptDoc;
+    set ReceiptDoc.withdrawal_type = 7;
+
+    updatetable #ReceiptDoc;
+    _loop tCodesFromCsv {
+       //message(tCodesFromCsv.sKituFromCsv +' |'+ tCodesFromCsv.scsvFilePath);
+       //message(String(cellValue)) ;
+       //var _newSpNrec : comp = GetNextNrec(#spReceiptDoc,0);
+       set spReceiptDoc.cDoc := ReceiptDoc.Nrec;
+       set spReceiptDoc.kitu := tCodesFromCsv.sKituFromCsv;
+       set spReceiptDoc.fileName := tCodesFromCsv.scsvFilePath;
+       insert current spReceiptDoc;
+    }
+    delete spReceiptDoc where (('' == spReceiptDoc.kitu (noindex))) ;
+
+    rereadRecord;
+}
+
+
+Function GetStrWithdrawalType(_wordType: word): string; {
+var r:string = '';
+case _wordType of
+  0: { r:= 'NOT PICKED'}         // 'Не выбран'
+  1: { r:= 'BEYOND_EEC_EXPORT'}  // 'Экспорт за пределы стран ЕАЭС'
+  2: { r:= 'EEC_EXPORT'}         // 'Экспорт в страны ЕАЭС'
+  3: { r:= 'DAMAGE_LOSS' }       // 'Утрата или повреждение'
+  4: { r:= 'DESTRUCTION'}        // 'Уничтожение'
+  5: { r:= 'CONFISCATION'}       // 'Конфискация'
+  6: { r:= 'LIQUIDATION'}        // 'Ликвидация предприятия'
+  7: { r:= 'ENTERPRISE_USE'}     // 'Использование для собственных нужд предприятия'
+end;
+result := r;
+}
+
+Function GetStrPrimaryDocType(_wordType: word): string; {
+var r:string = '';
+case _wordType of
+  0: { r:= 'NOT PICKED'}            // 'Не выбран'
+  1: { r:= 'CUSTOMS_DECLARATION'}   // 'Таможенная декларация на товары'
+  2: { r:= 'CONSIGNMENT_NOTE'}      // 'Товарная накладная'
+  3: { r:= 'UTD' }                  // 'Универсальный передаточный документ'
+  4: { r:= 'OTHER'}                 // 'Прочее'
+  5: { r:= 'DESTRUCTION_ACT'}       // 'Акт уничтожения (утраты/утилизации)'
+ // 5: { r:= 'DESTRUCTION'}           // 'Акт уничтожения (утраты/утилизации)'
+end;
+result := r;
+}
+Function GetRuStrWithdrawalType(_wordType: word): string; {
+var r:string = '';
+case _wordType of
+  0: { r:= 'Не выбран'}
+  1: { r:= 'Экспорт за пределы стран ЕАЭС'}
+  2: { r:= 'Экспорт в страны ЕАЭС'}
+  3: { r:= 'Утрата или повреждение'}
+  4: { r:= 'Уничтожение'}
+  5: { r:= 'Конфискация'}
+  6: { r:= 'Ликвидация предприятия'}
+  7: { r:= 'Использование для собственных нужд предприятия'}
+end;
+result := r;
+}
+
+Function GetRuStrPrimaryDocType(_wordType: word): string; {
+var r:string = '';
+case _wordType of
+  0: { r:= 'Не выбран'}
+  1: { r:= 'Таможенная декларация на товары'}
+  2: { r:= 'Товарная накладная'}
+  3: { r:= 'Универсальный передаточный документ'}
+  4: { r:= 'Прочее'}
+  5: { r:= 'Акт уничтожения (утраты/утилизации)'}
+end;
+result := r;
+}
+
+Function GetRuStrPrimaryDocName(_wordType: word): string; {
+var r:string = '';
+case _wordType of
+   0: { r:= ''}
+   1: { r:= 'Таможенная декларация'}
+   2: { r:= 'Товарная накладная'}
+   3: { r:= 'УПД' }
+   4: { r:= 'Введите тип документа'}
+   5: { r:= 'Акт уничтожения (утраты/утилизации)'}
+end;
+result := r;
+}
+
+Procedure FillTmpPickType(_withdrawalType: word);{
+  delete all tPickType;
+
+  case _withdrawalType of
+    1: {  //BEYOND_EEC_EXPORT
+      set tPickType.wType = 0;
+      set tPickType.sType = GetRuStrPrimaryDocType(0);
+      insert current tPickType;
+      set tPickType.wType = 1;
+      set tPickType.sType = GetRuStrPrimaryDocType(1);
+      insert current tPickType;
+    }
+    2,5,6: {  //EEC_EXPORT, CONFISCATION, LIQUIDATION
+      set tPickType.wType = 0;
+      set tPickType.sType = GetRuStrPrimaryDocType(0);
+      insert current tPickType;
+      set tPickType.wType = 2;
+      set tPickType.sType = GetRuStrPrimaryDocType(2);
+      insert current tPickType;
+      set tPickType.wType = 3;
+      set tPickType.sType = GetRuStrPrimaryDocType(3);
+      insert current tPickType;
+      set tPickType.wType = 4;
+      set tPickType.sType = GetRuStrPrimaryDocType(4);
+      insert current tPickType;
+    }
+    3,4,7: {  //DAMAGE_LOSS, DESTRUCTION, ENTERPRISE_USE
+      set tPickType.wType = 0;
+      set tPickType.sType = GetRuStrPrimaryDocType(0);
+      insert current tPickType;
+      set tPickType.wType = 4;
+      set tPickType.sType = GetRuStrPrimaryDocType(4);
+      insert current tPickType;
+      set tPickType.wType = 5;
+      set tPickType.sType = GetRuStrPrimaryDocType(5);
+      insert current tPickType;
+    }
+  end;
+}
+
+procedure createEcodCell(parent: longInt; nodeId, value: string);
+var node, textNode, nodeCell: longint;
+{
+  node     := XMLDOMDoc_CreateElement(xmlDoc, NodeId);
+  nodeCell := XMLDOMNode_AppendChild(Parent, Node);
+  XMLDOMNode_Release(Node);
+
+  textNode :=  XMLDOMDoc_CreateTextNode(xmlDoc, Value);
+  XMLDOMNode_AppendChild(NodeCell, textNode);
+
+  XMLDOMNode_Release(textNode);
+  XMLDOMNode_Release(nodeCell);
+}
+
+procedure MakeReceiptDoc; {
+var rootXMLElement, rootNode,    products_list, product:longint;
+
+   rootXMLElement:= XMLDOMDoc_CreateElement(xmlDoc, 'withdrawal');
+   rootNode      := XMLDOMNode_AppendChild(xmlDoc , rootXMLElement);
+   XMLDOMElement_SetAttribute(rootXMLElement, 'action_id', '15');
+   XMLDOMElement_SetAttribute(rootXMLElement, 'version', '4');
+
+
+
+   createEcodCell(rootXMLElement, 'trade_participant_inn',       7709191580 );
+   createEcodCell(rootXMLElement, 'withdrawal_type',             GetStrWithdrawalType(ReceiptDoc.withdrawal_type) );
+   createEcodCell(rootXMLElement, 'withdrawal_date',             DateToStr(ReceiptDoc.withdrawal_date,'DD.MM.YYYY') );
+   createEcodCell(rootXMLElement, 'primary_document_type',       GetStrPrimaryDocType(ReceiptDoc.primary_doc_type) );
+   createEcodCell(rootXMLElement, 'primary_document_number',     ReceiptDoc.primary_doc_number);
+   createEcodCell(rootXMLElement, 'primary_document_date',       DateToStr(ReceiptDoc.primary_doc_date,'DD.MM.YYYY') );
+   createEcodCell(rootXMLElement, 'primary_document_custom_name',ReceiptDoc.primary_doc_name );
+
+   products_list := XMLDOMDoc_CreateElement(xmlDoc, 'products_list');
+   rootNode    := XMLDOMNode_AppendChild(rootXMLElement, products_list);
+
+   _loop spReceiptDoc {
+       product := XMLDOMDoc_CreateElement(xmlDoc, 'product');
+       rootNode := XMLDOMNode_AppendChild(products_list, product);
+       createEcodCell(product, 'ki',                          SpReceiptDoc.kitu );
+       createEcodCell(product, 'primary_document_type',       GetStrPrimaryDocType(ReceiptDoc.primary_doc_type) );
+       createEcodCell(product, 'primary_document_number',     ReceiptDoc.primary_doc_number);
+       createEcodCell(product, 'primary_document_date',       DateToStr(ReceiptDoc.primary_doc_date,'DD.MM.YYYY') );
+       createEcodCell(product, 'primary_document_custom_name',ReceiptDoc.primary_doc_name );
+       XMLDOMNode_Release(product);
+   }
+
+   XMLDOMNode_Release(products_list);
+   XMLDOMNode_Release(rootXMLElement);//закрываем документ
+}
+
+function CreateXMLdocument(cDoc: comp; docType:word): string;
+var
+  _fileName, sFileExp,  docTypeName: string;
+{
+   case docType of
+   1: {
+       docTypeName := 'Receipt';
+       sFileExp := 'CRPT_API_XML_'+docTypeName+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.xml'; // Задаем путь для сохранения файла
+       _fileName:= GetStringParameter('Files','OutputFilesDirectory',0)+ 'CRPT_API_XML_'+docTypeName+'_'+string(cDoc,0,0)+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.xml';
+       sFileExp := GetStringParameter('Files','OutputFilesDirectory',0) + sFileExp ;
+       xmlDoc := XMLDOMDoc_New;
+
+       case docType of
+          1: {
+            MakeReceiptDoc();
+          }
+//          2: { }
+       end;
+
+       if not xmlDOMdoc_save(xmlDoc, sFileExp) {
+          MyLog(' --- ERROR: error file save '''+ _fileName+ '''!');
+          result := 'err';
+       } else {
+          result := sFileExp;
+       }
+       XMLDOMDoc_Done(xmlDoc);
+
+   }
+//   2: {   }
+   end;
+}
+
+Window winPickDocType 'Выбор типа первичного документа',DoAccept, cyan;
+  show at (,,60,12);
+  browse brPickDocType;
+    table tPickType;
+    fields
+      tPickType.sType 'Тип первичного документа' : [10], protect, nodel, noPickButton;
+  end;
+end;
+
+Screen scrCRPT_DocList;
+show at (,,,5);
+  fields
+    Folder_input  : Skip, Protect;
+  buttons
+    cmCreateAndSaveDoc ,,,'Сохранить документ в XML',,;
+    cmSendDoc ,,,'Отправить документ',,;
+    cmGetDocumentStatus ,,,'Получить статус документа',,;
+    cmCheckKituStatus ,,,'Проверить статус КИ/КИТУ',,;
+    cmGetSpecFromCsv ,,,'Заполнить документ из CSV',,;
+<<
+   Папка с файлами данных .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+   <.Сохранить документ в XML.>   <.Отправить документ.>   <.Получить статус документа.>   <.Проверить статус КИ/КИТУ.>
+
+                                                            <.Создать документ из CSV.>
+>>
+end;
+
+Browse brCRPT_ReceiptList (,,scil478Esc);
+  Show at (,6,,10);
+Table ReceiptDoc;
+ Fields
+
+  ReceiptDoc.withdrawal_type     'Тип списания',                  ('',,): [6], noProtect;
+  ReceiptDoc.withdrawal_date     'Дата списания',                 ('',,): [6], noProtect;
+  [pickDocType] GetRuStrPrimaryDocType(ReceiptDoc.primary_doc_type)    'Тип первичного документа',      ('',,): [6], noProtect, PickButton;
+  ReceiptDoc.primary_doc_number  'Номер первичного документа',    ('',,): [6], noProtect;
+  ReceiptDoc.primary_doc_date    'Дата первичного документа',     ('',,): [6], noProtect;
+  ReceiptDoc.primary_doc_name    'Имя первичного документа',      ('',,): [6], noProtect, {Font ={BackColor = if(ReceiptDoc.primary_doc_name = 'Введите тип документа', ColorNeed, 0)}};
+  ReceiptDoc.CRPT_Oid			  	   'Oid документа в системе ЦРПТ',  ('',,): [6], Protect;
+  ReceiptDoc.docDateTime		 	   'Дата документа в ЦРПТ',         ('',,): [6], Protect;
+  ReceiptDoc.status			   	     'Статус документа в ЦРПТ',       ('',,): [6], Protect;
+  ReceiptDoc.statusDescr		 	   'Описание статуса в ЦРПТ',       ('',,): [6], Protect;
+  ReceiptDoc.sender			   	     'Отправитель документа в ЦРПТ'   ('',,): [6], Protect;
+
+ end;
+
+
+Browse brCRPT_SpReceiptDocList (,,scil478Esc);
+  Show at (,11,,);
+Table spReceiptDoc;
+ Fields
+  spReceiptDoc.kitu                  'SSCC-код паллеты'        ('',,): [6], noProtect;
+  spReceiptDoc.fileName              'Имя файла'              ('',,): [6], noProtect;
+  spReceiptDoc.cKatMc                'Ссылка на кат МЦ'        ('',,): [6], noProtect;
+ end;
+
+
+HandleEvent
+  cmInit: {
+    FillWithdrawalType();
+
+    Folder_input   := 'C:\Galaktika_stend\FTP\Admiral\from_Admiral\'; //sgettune('USERTUNE.imp.pathfrom');
+    Folder_output  := 'C:\Galaktika_stend\FTP\Admiral\from_Admiral\Arch\'+Year(Cur_Date)+'\'+DateToStr(Cur_Date, 'MM')+'\'+DateToStr(Cur_Date, 'DD-MM-YYYY')+'\' ; //sgettune('USERTUNE.imp.pathto');
+  }
+  cmCreateAndSaveDoc: {
+    CreateXMLdocument(ReceiptDoc.nrec, 1);
+  }
+  cmSendDoc:{
+    var docCreatedPath : string = CreateXMLdocument(ReceiptDoc.nrec, 1);
+    if (docCreatedPath != 'err') {
+      RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+      RunInterface('ATLANTIC::CRPT_API_PowerShellPost', 'CreateDoc', 'XML',docCreatedPath,'LK_RECEIPT_XML', string(cDoc));
+    }
+  }
+  cmGetDocumentStatus:{
+      RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+      RunInterface('ATLANTIC::CRPT_API_PowerShellPost','GetDocumentStatus', ReceiptDoc.CRPT_Oid, string(cDoc), 'LK_RECEIPT_XML');
+  }
+  cmCheckKituStatus:{
+      set kituForSt := spReceiptDoc.kitu;
+      RunWindowModal(winKituInfo) ;
+  }
+  cmGetSpecFromCsv:{
+    GetKituFromFile();
+  }
+  cmCheckField: {
+    case curfield of
+      #ReceiptDoc.withdrawal_type:{
+        set ReceiptDoc.primary_doc_type := 0;
+        set ReceiptDoc.primary_doc_name := '';
+      }
+      #ReceiptDoc.withdrawal_date:{
+        set ReceiptDoc.primary_doc_date := ReceiptDoc.withdrawal_date
+      }
+      #ReceiptDoc.primary_doc_date:{
+        set ReceiptDoc.withdrawal_date := ReceiptDoc.primary_doc_date
+      }
+      #spReceiptDoc.kitu:{
+        set spReceiptDoc.fileName := '';
+      }
+    end;
+  }
+//  cmIdle: {     //rereadRecord();  }
+  cmPick: {
+    case curfield of
+      #pickDocType:{
+        FillTmpPickType(ReceiptDoc.withdrawal_type);
+        RunWindowModal(winPickDocType);
+        set ReceiptDoc.primary_doc_type := tPickType.wType;
+        set ReceiptDoc.primary_doc_name := GetRuStrPrimaryDocName(tPickType.wType);
+      }
+    end;
+  }
+end;
+Procedure FillWithdrawalType;{
+  var lValues: array [1..8] of integer;
+      lValues[1] := 0;
+      lValues[2] := 1;
+      lValues[3] := 2;
+      lValues[4] := 3;
+      lValues[5] := 4;
+      lValues[6] := 5;
+      lValues[7] := 6;
+      lValues[8] := 7;
+
+      var sValues: array [1..8] of string;
+      sValues[1] := GetRuStrWithdrawalType(lValues[1]);
+      sValues[2] := GetRuStrWithdrawalType(lValues[2]);
+      sValues[3] := GetRuStrWithdrawalType(lValues[3]);
+      sValues[4] := GetRuStrWithdrawalType(lValues[4]);
+      sValues[5] := GetRuStrWithdrawalType(lValues[5]);
+      sValues[6] := GetRuStrWithdrawalType(lValues[6]);
+      sValues[7] := GetRuStrWithdrawalType(lValues[7]);
+      sValues[8] := GetRuStrWithdrawalType(lValues[8]);
+      SetEnumList(brCRPT_ReceiptList, #ReceiptDoc.withdrawal_type, sValues, lValues);
+}
+
+TableEvent table ReceiptDoc;
+  cmSetDefault:{
+    SetDefaultReceiptDoc;
+    SetEditMode(true);
+    PutCommand(cmEdit);
+  }
+  cmUpdateRecord:{
+    update current ReceiptDoc;
+  }
+  cmDeleteRecord:{
+    if(message('Удалить документ?', Confirmation + YesNo) = cmYes) {
+      delete current ReceiptDoc;
+    }
+  }
+
+  cmPositionChanged: {
+    RedrawPanel(#SpReceiptDoc);
+  }
+  cmInsertRecord: {
+    Insert current ReceiptDoc;
+  }
+
+end;
+TableEvent table spReceiptDoc;
+  cmSetDefault:{
+    SetDefaultSpReceiptDoc;
+    SetEditMode(true);
+   // insert current SpDoc;
+    PutCommand(cmEdit);
+  }
+  cmUpdateRecord:{
+    update current SpReceiptDoc;
+  }
+  cmDeleteRecord:{
+    if(message('Удалить документ?', Confirmation + YesNo) = cmYes) {
+      delete current SpReceiptDoc;
+    }
+  }
+  cmInsertRecord: {
+    insert current SpReceiptDoc;
+  }
+
+end;
+
+handleevent
+/*
+cminit:{
+}
+cmEdit: {
+}
+
+cmHotKeys:{
+}
+CmDefault: {
+  //PutCommand(cmEdit);
+}
+cmUpdateRecord:{
+  //updatetable;
+}
+*/
+cmPositionChanged: {
+  RedrawPanel(#ReceiptDoc);
+  RedrawPanel(#SpReceiptDoc);
+}
+end;
+End. // Interface

@@ -1,0 +1,100 @@
+function getStrDocTypeStatus(_status : string) : string; {
+  var _result: string = '';
+
+  case _status of
+'AGGREGATION_DOCUMENT ' :  _result  := 'Агрегация';
+'AGGREGATION_DOCUMENT_CSV ' :  _result  := 'Агрегация';
+'AGGREGATION_DOCUMENT_XML ' :  _result  := 'Агрегация';
+'SETS_AGGREGATION' :  _result  :='Формирование наборов';
+'SETS_AGGREGATION_CSV' :  _result  :='Формирование наборов';
+'SETS_AGGREGATION_XML' :  _result  :='Формирование наборов';
+'DISAGGREGATION_DOCUMENT' :  _result  :='Расформирование агрегата';
+'DISAGGREGATION_DOCUMENT_CSV' :  _result  :='Расформирование агрегата';
+'DISAGGREGATION_DOCUMENT_XML' :  _result  :='Расформирование агрегата';
+'REAGGREGATION_DOCUMENT' :  _result  :='Трансформация агрегата';
+'REAGGREGATION_DOCUMENT_XML' :  _result  :='Трансформация агрегата';
+'REAGGREGATION_DOCUMENT_CSV' :  _result  :='Трансформация агрегата';
+'LP_INTRODUCE_GOODS' :  _result  :='Ввод в оборот. Производство РФ';
+'LP_INTRODUCE_GOODS_CSV' :  _result  :='Ввод в оборот. Производство РФ';
+'LP_INTRODUCE_GOODS_XML' :  _result  :='Ввод в оборот. Производство РФ';
+'LP_SHIP_GOODS' :  _result  :='Отгрузка';
+'LP_SHIP_GOODS_CSV' :  _result  :='Отгрузка';
+'LP_SHIP_GOODS_XML' :  _result  :='Отгрузка';
+'LP_SHIP_RECEIPT' :  _result  :='Отгрузка с выводом из оборота';
+'LP_SHIP_RECEIPT_CSV' :  _result  :='Отгрузка с выводом из оборота';
+'LP_SHIP_RECEIPT_XML' :  _result  :='Отгрузка с выводом из оборота';
+'LP_SHIP_GOODS_CROSSBORDER' :  _result  :='Отгрузка при трансграничной  торговле';
+'LP_ACCEPT_GOODS' :  _result  :='Приемка';
+'LP_ACCEPT_GOODS_XML' :  _result  :='Приемка';
+'LK_REMARK' :  _result  :='Перемаркировка';
+'LK_REMARK_CSV' :  _result  :='Перемаркировка';
+'LK_REMARK_XML' :  _result  :='Перемаркировка';
+'LP_GOODS_IMPORT' :  _result  :='Ввод в оборот. Импорт';
+'LP_GOODS_IMPORT_CSV' :  _result  :='Ввод в оборот. Импорт';
+'LP_GOODS_IMPORT_XML' :  _result  :='Ввод в оборот. Импорт';
+'LP_CANCEL_SHIPMENT' :  _result  :='Отмена отгрузки';
+'LP_CANCEL_SHIPMENT_CROSSBORDER' :  _result  :='Отмена отгрузки при  трансграничной торговле';
+'LK_KM_CANCELLATION' :  _result  :='Списание не нанесённых КИ';
+'LK_KM_CANCELLATION_XML' :  _result  :='Списание не нанесённых КИ';
+'LK_KM_CANCELLATION_CSV' :  _result  :='Списание не нанесённых КИ';
+'LK_APPLIED_KM_CANCELLATION' :  _result  :='Списание нанесённых КИ';
+'LK_APPLIED_KM_CANCELLATION_XML' :  _result  :='Списание нанесённых КИ';
+'LK_APPLIED_KM_CANCELLATION_CSV' :  _result  :='Списание нанесённых КИ';
+'LK_CONTRACT_COMMISSIONING' :  _result  :='Ввод в оборот товара. Контрактное   производство РФ';
+'LK_CONTRACT_COMMISSIONING_CSV' :  _result  :='Ввод в оборот товара. Контрактное  производство РФ';
+'LK_CONTRACT_COMMISSIONING_XML' :  _result  :='Ввод в оборот товара. Контрактное   производство РФ';
+'LK_INDI_COMMISSIONING' :  _result  :='Ввод в оборот товара. Полученных   от физических лиц';
+'LK_INDI_COMMISSIONING_CSV' :  _result  :='Ввод в оборот товара. Полученных';
+'LK_INDI_COMMISSIONING_XML' :  _result  :='Ввод в оборот товара. Полученных  от физических лиц';
+'LP_RETURN' :  _result  :='Возврат в оборот';
+'LP_RETURN_CSV' :  _result  :='Возврат в оборот';
+'LP_RETURN_XML' :  _result  :='Возврат в оборот';
+'OST_DESCRIPTION' :  _result  :='Описание остатков товара';
+'OST_DESCRIPTION_CSV' :  _result  :='Описание остатков товара';
+'OST_DESCRIPTION_XML' :  _result  :='Описание остатков товара';
+'LP_INTRODUCE_OST' :  _result  :='Ввод в оборот. Маркировка   остатков';
+'LP_INTRODUCE_OST_CSV' :  _result  :='Ввод в оборот. Маркировка остатков';
+'LP_INTRODUCE_OST_XML' :  _result  :='Ввод в оборот. Маркировка  остатков';
+'CROSSBORDER' :  _result  :='Ввод в оборот. Трансграничная    торговля';
+'CROSSBORDER_CSV' :  _result  :='Ввод в оборот. Трансграничная торговля';
+'CROSSBORDER_XML' :  _result  :='Ввод в оборот. Трансграничная торговля';
+'LK_RECEIPT' :  _result  :='Вывод из оборота';
+'LK_RECEIPT_CSV' :  _result  :='Вывод из оборота';
+'LK_RECEIPT_XML' :  _result  :='Вывод из оборота';
+'LP_INTRODUCE_GOODS_CROSSBORDER_CSD_JSON' :  _result  :='Ввод в оборот. На территории стран  ЕАЭС';
+'LP_INTRODUCE_GOODS_CROSSBORDER_CSD_XML' :  _result  :='Ввод в оборот. На территории стран ЕАЭС';
+'LP_INTRODUCE_GOODS_CROSSBORDER_CSD_CSV' :  _result  :='Ввод в оборот. На территории стран ЕАЭС';
+'LP_FTS_INTRODUCE_JSON' :  _result  :='Ввод в оборот. Импорт с ФТС';
+'LP_FTS_INTRODUCE_XML' :  _result  :='Ввод в оборот. Импорт с ФТС';
+'LP_FTS_INTRODUCE_CSV' :  _result  :='Ввод в оборот. Импорт с ФТС';
+'LP_FTS_INTRODUCE_RESPONSE' :  _result  :='Декларация на товары';
+'ATK_AGGREGATION' :  _result  :='Формирование АТК';
+'ATK_AGGREGATION_CSV' :  _result  :='Формирование АТК';
+'ATK_AGGREGATION_XML' :  _result  :='Формирование АТК';
+'ATK_TRANSFORMATION' :  _result  :='Трансформация АТК';
+'ATK_TRANSFORMATION_CSV' :  _result  :='Трансформация АТК';
+'ATK_TRANSFORMATION_XML' :  _result  :='Трансформация АТК';
+'ATK_DISAGGREGATION' :  _result  :='Расформирование АТК';
+'ATK_DISAGGREGATION_CSV' :  _result  :='Расформирование АТК';
+'ATK_DISAGGREGATION_XML' :  _result  :='Расформирование АТК';
+'RECEIPT' :  _result  :='Чек';
+'RECEIPT_RETURN' :  _result  :='Чек возврата';
+//'AGGREGATION_DOCUMENT' :  _result  :='Документ агрегации';
+//'AGGREGATION_DOCUMENT' :  _result  :='Документ агрегации';
+'WRITE_OFF' :  _result  :='Документ списания';
+//'WRITE_OFF' :  _result  :='Документ списания';
+
+  else _result := _status;
+  end;
+
+  result := _result;
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,12 @@
+#ifndef _included_PickingReport_CopyBetweenDocs_
+#define _included_PickingReport_CopyBetweenDocs_
+
+#component "ATLANTIC"
+objInterface ObjPickingReport_CopyBetweenDocs;
+ Procedure copyTo(_pcBaseDoc, _cpSopr : comp) ;
+end;
+
+vipInterface PickingReport_CopyBetweenDocs implements ObjPickingReport_CopyBetweenDocs licensed(free);
+
+var _iPickingReport_CopyBetweenDocs : PickingReport_CopyBetweenDocs;
+#end

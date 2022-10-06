@@ -1,0 +1,10 @@
+#ifdef ComponentVersion
+#component "L_PHONECARD"
+#end
+
+vipinterface GetNominal            licensed (FREE) Parameters (lNominal : string);
+vipinterface PhoneCardSeries       licensed (FREE) ;
+vipinterface PhoneCardMotion       licensed (FREE) Parameters (wReport : word);
+vipinterface PhoneCardRealization  licensed (FREE) ;
+vipinterface PhoneCardExistence    licensed (FREE) ;
+vipinterface PhoneCardManager      licensed (FREE) Parameters (pKatSopr : comp);

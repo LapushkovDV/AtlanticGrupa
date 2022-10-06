@@ -1,0 +1,51 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - настройки
+// Создание/модификация настроек в компонентах
+//********************************************************************************
+
+#include CreateTune.vih
+
+//------------------------------------------------------------------------------
+Handler with replace VetisAPI_DateModifyTune on ExtensionPoint
+  epDateModifyTune (TS : ObjStartCreateTune)
+Action
+{
+  TS.SetLastDateModTune(01,07,2018);
+  Result := true;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+Handler with replace VetisAPI_CreateTuneComponent on extensionPoint
+  epCreateTuneComponent (TR: ObjCreateTuneEx)
+  // Внимание, приоритеты вызова обработчиков см. в CreateTune.vih
+Action
+{
+  Result := true;
+  //----------------------------------------------------------------------------
+  // Обязательно установить  имя компонента
+  TR.SetComponent('ATLANTIC');
+  //----------------------------------------------------------------------------
+
+  TR.AddPart(   ttSysUserTune
+             , 'USERTUNE'
+             , 'Tune'
+             , 'Настройки пользовательских доработок'
+             , 0);
+
+     TR.AddPart (ttSysUserTune,'USERTUNE.VetisAPI','USERTUNE','Vetis API',0);
+
+        TR.AddTune (ttSysTune,'USERTUNE.VetisAPI.serviceID'         ,'USERTUNE.VetisAPI','serviceID',ftString,'','',0);
+        TR.AddTune (ttSysTune,'USERTUNE.VetisAPI.login'             ,'USERTUNE.VetisAPI','login',ftString,'','',0);
+        TR.AddTune (ttSysTune,'USERTUNE.VetisAPI.password'          ,'USERTUNE.VetisAPI','password',ftString,'1','',0);
+        TR.AddTune (ttSysTune,'USERTUNE.VetisAPI.apiKey'            ,'USERTUNE.VetisAPI','apiKey',ftString,'','',0);
+        TR.AddTune (ttSysTune,'USERTUNE.VetisAPI.issureId'          ,'USERTUNE.VetisAPI','issureId',ftString,'','',0);
+        TR.AddTune (ttSysTune,'USERTUNE.VetisAPI.enterpriseGuid'    ,'USERTUNE.VetisAPI','enterpriseGuid',ftString,'1','',0);
+        TR.AddTune (ttSysTune,'USERTUNE.VetisAPI.businessEntityGuid','USERTUNE.VetisAPI','businessEntityGuid',ftString,'1','',0);
+
+        // MatchesMask('ord_ATL_900201VP_20190617.csv','ord_atl*.csv|*vp*') = false
+        // MatchesMask('ord_ATL_900201_20190617.csv','ord_atl*.csv|*vp*') = true
+
+}
+//------------------------------------------------------------------------------

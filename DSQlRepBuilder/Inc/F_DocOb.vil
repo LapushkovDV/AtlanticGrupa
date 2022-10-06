@@ -1,0 +1,70 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_DocOb
+
+#ifdef ComponentVersion
+#component "F_DocOb"
+#end
+
+VipInterface GetIerarchiPoint               Licensed (DocBas) Parameters (PointChooseNRec : comp);
+VipInterface GetUserNRec                    Licensed (DocBas) Parameters (NRec : comp);
+VipInterface iDocumUsers                    Licensed (DocBas);
+VipInterface iDocumUsersPick                Licensed (DocBas) Parameters (NRec : comp);
+VipInterface InterCheckInbound              Licensed (DocBas);
+VipInterface InterCheckOutBound             Licensed (DocBas);
+VipInterface InterCheckOutBoundPnkt         Licensed (DocBas);
+VipInterface InterClearDocumenrs            Licensed (DocBas);
+VipInterface InterDoc2Doc                   Licensed (DocBas) Parameters (NRecGalakt : comp; RezCode : word);
+VipInterface InterDoc2DocDebugOnly          Licensed (DocBas);
+VipInterface InterDocBasInternetGener       Licensed (DocBas);
+VipInterface InterDocBasInternetWedenie     Licensed (DocBas);
+VipInterface InterDocBasInternetWedeniePick Licensed (DocBas) Parameters (TuneHTML_NRec : comp);
+VipInterface InterDocCopies                 Licensed (DocBas) Parameters (DocNRec4Report : comp);
+VipInterface InterDocCopiesAsk              Licensed (DocBas);
+VipInterface InterDocFromIerachi            Licensed (DocBas) Parameters (ChooseNRec : comp);
+VipInterface InterDocPrintMarch             Licensed (DocBas) Parameters (MarNRec : comp);
+VipInterface InterDocReports                Licensed (DocBas);
+VipInterface InterDocResulted               Licensed (DocBas) Parameters (DocNRec4Report : comp);
+VipInterface InterDocResultedAsk            Licensed (DocBas);
+VipInterface InterDocSendOznak              Licensed (DocBas) Parameters (DocNRec4Report : comp);
+VipInterface InterDocType                   Licensed (DocBas);
+VipInterface InterDocTypePick               Licensed (DocBas) Parameters (NRec : comp);
+VipInterface InterDocVersio                 Licensed (DocBas) Parameters (DocNRec4Report : comp);
+VipInterface InterDocVersioAsk              Licensed (DocBas);
+VipInterface InterFilteredList              Licensed (DocBas);
+VipInterface InterfObrabot                  Licensed (DocBas) Parameters (DocInNRec : comp);
+VipInterface InterGrifSrochn                Licensed (DocBas);
+VipInterface InterGrifSrochnPick            Licensed (DocBas) Parameters (ValueGrifSroch : integer);
+VipInterface InterIerarchi                  Licensed (DocBas);
+VipInterface InterIshod                     Licensed (DocBas);
+VipInterface InterJumpOnCode                Licensed (DocBas);
+VipInterface InterMakeDocFromReport         Licensed (DocBas);
+VipInterface InterMarchr                    Licensed (DocBas);
+VipInterface InterMarchRights               Licensed (DocBas);
+VipInterface InterMarchrPick                Licensed (DocBas) Parameters (NRec : comp);
+VipInterface InterMarchrPickRight           Licensed (DocBas) Parameters (cTableMar, UserNRec : comp);
+VipInterface InterOrganizacii               Licensed (DocBas);
+VipInterface InterOrganizaciiPick           Licensed (DocBas) Parameters (NRec : comp);
+VipInterface InterOtvetstvennyePick         Licensed (DocBas) Parameters (NRec : comp);
+VipInterface InterPapkaChoose               Licensed (DocBas);
+VipInterface InterPapkaDocFromIerachi       Licensed (DocBas) Parameters (ChooseNRec : comp; OType : integer);
+VipInterface InterPapkaFromIerachi          Licensed (DocBas) Parameters (PapkaChooseNRec : comp);
+VipInterface InterPersonalReports           Licensed (DocBas);
+VipInterface InterPersPapTune               Licensed (DocBas);
+VipInterface InterPersRepTune               Licensed (DocBas);
+VipInterface InterPnkPickRight              Licensed (DocBas) Parameters (cTblPnkOb, UserNRec : comp);
+VipInterface InterPnkPickRightOzn           Licensed (DocBas) Parameters (cTblPnkOb, UserNRec : comp);
+VipInterface InterPunkt                     Licensed (DocBas);
+VipInterface InterPunktsFastDoc             Licensed (DocBas);
+VipInterface InterPunktsMarPick             Licensed (DocBas) Parameters (MarNRec : comp; TblPnkOb__NRec : comp);
+VipInterface InterPunktsPick                Licensed (DocBas) Parameters (NRec : comp);
+VipInterface InterPunktsPickMar             Licensed (DocBas) Parameters (PunktNRec : comp; MarNRec : comp);
+VipInterface InterPunktsRights              Licensed (DocBas);
+VipInterface InterReportFromList            Licensed (DocBas) Parameters (NRec : comp);
+VipInterface InterSetRight                  Licensed (DocBas);
+VipInterface InterSostDoc                   Licensed (DocBas);
+VipInterface InterSostDocPick               Licensed (DocBas) Parameters (IntCodeSost : integer);
+VipInterface InterUsersWithRightsDc         Licensed (DocBas) Parameters (PlaceNRec, ObjectNRec : comp; Name1 : string[40]; UserNRecRight : comp);
+VipInterface InterUsersWithRightsEl         Licensed (DocBas) Parameters (PlaceNRec, ObjectNRec : comp; Name1 : string[40]; UserNRecRight : comp);
+VipInterface InterVhod                      Licensed (DocBas);
+VipInterface InterWorkWithPapka             Licensed (DocBas) Parameters (PapkaNRec : comp; PapkaName : string[40]);
+

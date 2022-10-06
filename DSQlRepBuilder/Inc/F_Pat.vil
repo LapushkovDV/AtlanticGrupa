@@ -1,0 +1,20 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_PAT
+
+#ifdef ComponentVersion
+#component "F_PAT"
+#end
+
+VipInterface BalansRunAndEdit Licensed (B_Balans) Parameters (RunMode : word);
+VipInterface Buh_Calc         Licensed (Free)     Parameters (ResNDE, ResBV, ResKol : double);
+VipInterface ConvPat          Licensed (B_Balans);
+VipInterface GetGroupPatDefs  Licensed (Free)     Parameters (CurNrec : comp; cGroup : comp);
+VipInterface MasterAllIdent   Licensed (Free)     Parameters (wTabbed, myTiDk, mySysOper : word; myHozOper : comp; myPickModePAT, myPickModeTypical : word; myIdent : string);
+VipInterface NastrParamPat    Licensed (Free);
+VipInterface PickField        Licensed (Free)     Parameters (coTable, FieldCode : word);
+VipInterface QbMain           Licensed (B_Balans, B_Konsol, NalogReg) Parameters (TipSys : longint);
+VipInterface ReplacePat       Licensed (Free)     Parameters (myPlansNo, NrecPick : comp);
+VipInterface eTaxLibrary      Licensed (B_Balans, NalogReg);
+
+// Нужен только для F_PlPor
+Dialog GetNamePole (MyS : string[76]);

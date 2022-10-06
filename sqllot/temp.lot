@@ -1,0 +1,38 @@
+/*
+update STEPDOC
+where nrec = 281474976710803240
+  set
+  NKONT   = '4506246264'
+, KONTPRI = '5005898573'
+;
+*/
+
+//select * from spsopr
+/*
+select dogovor.nodoc, Agreement.nodoc
+from dogovor, dogovor Agreement
+where
+((
+   0 == dogovor.cdogovor and
+       281474976710656145 == dogovor.corg and
+         (cur_date >= dogovor.dbeg
+          and (  cur_date <= dogovor.dend
+              or dogovor.dend = date(0,0,0)
+              )
+         ) and
+      dogovor.nrec == agreement.cdogovor and
+         (      cur_date >= agreement.dbeg
+           and (  cur_date <= agreement.dend
+               or agreement.dend = date(0,0,0)
+               )
+         )
+         ))
+         ;
+*/
+
+update STEPDOC
+where nrec = 281474976710803261
+  set
+  NKONT   = '4506246285'
+ ,KONTPRI = '5005899290'
+;

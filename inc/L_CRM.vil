@@ -1,0 +1,630 @@
+#ifdef ComponentVersion
+#component "L_CRM"
+#end
+
+// CRM
+// Интерфейсы, которые запускаются с главного меню
+vipinterface Passport
+  licensed (crm);
+
+vipinterface ClientCard
+  licensed (crm);
+
+vipinterface IKatPersons
+  licensed (crm);
+
+vipinterface intContact
+  licensed (crm);
+
+vipinterface PassportGoods
+  licensed (crm);
+
+vipinterface intEstBarg
+  licensed (crm);
+
+vipinterface intBargain
+  licensed (crm);
+
+vipinterface GoodsAbonent
+  licensed (crm);
+
+vipinterface MyPipeline
+  licensed (crm);
+
+vipinterface intChanels
+  licensed (crm)
+  Parameters
+  (
+    ModeSelect : Byte;
+    aChanel, aDiler, aClient : Comp
+  );
+
+vipinterface Dogov2EstB
+  licensed (crm);
+
+vipinterface DO2EstB
+  licensed (crm);
+
+vipinterface NA2Barg
+  licensed (crm);
+
+vipinterface P2KatOrg
+  licensed (crm);
+
+vipinterface P2KatMC
+  licensed (crm);
+
+vipinterface P2KatUsl
+  licensed (crm);
+
+vipinterface P2Persons
+  licensed (crm);
+
+vipinterface intReportSetup
+  licensed (crm);
+
+vipinterface intSalesTree
+  licensed (crm)
+  Parameters
+  (
+    isMakePeport : Boolean;
+    aRetValue : Comp;
+    wValType, chOplBox, chBox : Word;
+    dFromMain, dToMain, dFrom, dTo, dPayFrom, dPayTo : Date;
+    mrkGoods, mrkDiler, mrkClient, mrkPaymentForm, mrkPaymentWay, mrkDirection, mrkAdverAction, mrkAdverVid, mrkAdverDir : LongInt
+  );
+
+vipinterface ContSetup
+  licensed (crm);
+
+vipinterface ContTree
+  licensed (crm)
+  Parameters
+  (
+    isMakePeport : Boolean;
+    aRetValue : Comp;
+    wValType, chBox : Word;
+    dFrom, dTo, dFromPlan, dToPlan : Date;
+    mrkClient, mrkManager, mrkMethod, mrkCategory, mrkResult, mrkAdverVid, mrkAdverDir, mrkDiler : LongInt;
+    dFromReg, dToReg : Date;
+    wStatus : Word
+  );
+
+vipinterface AbSetup
+  licensed (crm);
+
+vipinterface AbTree
+  licensed (crm)
+  Parameters
+  (
+    isMakePeport : Boolean;
+    aRetValue : Comp;
+    wValType, chLicType, chBox : Word;
+    dBegFrom, dBegTo, dEndFrom, dEndTo : Date;
+    mrkClient, mrkDiler, mrkManager, mrkGood : LongInt;
+    dFrom, dTo : Date
+  );
+
+vipinterface EstSetup
+  licensed (crm);
+
+vipinterface EstTree
+  licensed (crm)
+  Parameters
+  (
+    isMakePeport : Boolean;
+    aRetValue : Comp;
+    wValType, chBox : Word;
+    dFromMain, dToMain, dFrom, dTo : Date;
+    mrkGoods, mrkDiler, mrkClient, mrkManager, mrkPaymentWay, mrkDirection, mrkAdverAction : LongInt
+  );
+
+vipinterface PersonsBirthDays
+  licensed (crm);
+
+vipinterface ABC_Analysis
+  licensed (crm);
+
+vipinterface IKatClients
+  licensed (crm);
+
+#ifdef ATL51
+vipinterface HierDiler
+  licensed (crm);
+
+vipinterface HierConcur
+  licensed (crm);
+
+vipinterface HierAdver
+  licensed (crm);
+
+vipinterface HierPartner
+  licensed (crm);
+
+vipinterface HierOrg
+  licensed (crm);
+
+vipinterface HierGoods
+  licensed (crm);
+
+vipinterface HierManagers
+  licensed (crm);
+
+#end
+vipinterface intAnalit
+  licensed (crm);
+
+vipinterface intAttr
+  licensed (crm);
+
+vipinterface intGroup
+  licensed (crm);
+
+vipinterface InitAnalitCat
+  licensed (crm);
+
+vipinterface ConfigRecalc
+  licensed (crm);
+
+vipinterface ExportVDEData
+  licensed (crm);
+
+vipinterface ImportVDEData
+  licensed (crm);
+
+vipinterface UnionOrg
+  licensed (crm);
+
+vipinterface CheckCRM
+  licensed (crm);
+
+vipinterface CheckVDE
+  licensed (crm);
+
+
+// Интерфейсы, которые используются только в модуле Клиент. Лицензирование.
+vipinterface CRMFieldsTune
+  licensed (FREE);
+
+vipinterface EditGalNotHier
+  licensed (FREE);
+
+vipinterface PickGalPerson
+  licensed (FREE);
+
+vipinterface OutHier
+  licensed (FREE)
+  Parameters
+  (
+    EntityCod : Word;
+    OutName : String
+  );
+
+vipinterface IGal
+  licensed (FREE);
+
+vipinterface AdverRep
+  licensed (FREE);
+
+vipinterface ConcurRep
+  licensed (FREE);
+
+vipinterface DilerRep
+  licensed (FREE);
+
+vipinterface intGoodsRep
+  licensed (FREE);
+
+vipinterface intManagersRep
+  licensed (FREE);
+
+vipinterface OrgRep
+  licensed (FREE);
+
+vipinterface PartnerRep
+  licensed (FREE);
+
+vipinterface EditAdver
+  licensed (FREE);
+
+vipinterface EditClient
+  licensed (FREE);
+
+vipinterface vGetEntityFieldName
+  licensed (FREE);
+
+vipinterface vClSpec
+  licensed (FREE);
+
+vipinterface EditConcur
+  licensed (FREE);
+
+vipinterface EditDiler
+  licensed (FREE);
+
+vipinterface EditGal
+  licensed (FREE);
+
+vipinterface EditGoods
+  licensed (FREE);
+
+vipinterface EditManager
+  licensed (FREE);
+
+vipinterface EditOrg
+  licensed (FREE);
+
+vipinterface EditPartner
+  licensed (FREE);
+
+vipinterface EditPers
+  licensed (FREE);
+
+vipinterface intSalesDop
+  licensed (FREE)
+  Parameters
+  (
+    cWho : Comp;
+    prSale : Word;
+    SrvGd, cCl, cDiler, cBarg, cChan, cMan : Comp;
+    dMan1, dMan2 : Date;
+    RegMode : Word
+  );
+
+vipinterface intSubjectDop
+  licensed (FREE);
+
+vipinterface intEstSalesDop
+  licensed (FREE);
+
+vipinterface intBargainDop
+  licensed (FREE)
+  Parameters
+  (
+    cWho, cCl, cMan : Comp;
+    dMan1, dMan2 : Date;
+    RegMode : Word
+  );
+
+vipinterface intEstBargDop
+  licensed (FREE)
+  Parameters
+  (
+    cWho, cCl, cMan : Comp;
+    dMan1, dMan2 : Date;
+    RegMode : Word
+  );
+
+vipinterface intClPers
+  licensed (FREE)
+  Parameters
+  (
+    cClOrg, cWho : Comp
+  );
+
+vipinterface intContactDop
+  licensed (FREE)
+  Parameters
+  (
+    cWho, cCl, cMan : Comp;
+    dMan1, dMan2 : Date;
+    RegMode : Word
+  );
+
+vipinterface intContIntDop
+  licensed (FREE)
+  Parameters
+  (
+    cWho : Comp; aSource : Word;
+    aContact, aClient : Comp
+  );
+
+vipinterface intPersons
+  licensed (FREE);
+
+vipinterface intPersonsDop
+  licensed (FREE)
+  Parameters
+  (
+    cWho, cPOrg : Comp
+  );
+
+vipinterface PickSubject
+  licensed (FREE)
+  Parameters
+  (
+    aServTret : Comp
+  );
+
+vipinterface intSTSubjDop
+  licensed (FREE)
+  Parameters
+  (
+    cWho, cServTret : Comp
+  );
+
+vipinterface intSTSubjSale
+  licensed (FREE)
+  Parameters
+  (
+    cSales : Comp
+  );
+
+vipinterface intWarrantyDop
+  licensed (FREE)
+  Parameters
+  (
+    cWho, cCl, cMan : Comp;
+    dMan1, dMan2 : Date;
+    RegMode : Word
+  );
+
+vipinterface intGroupSet
+  licensed (FREE)
+  Parameters
+  (
+    aTable : Word;
+    aRetValue : Comp
+  );
+
+vipinterface PickMarkPayInCRM
+  licensed (FREE)
+  Parameters
+  (
+    lRecNo : Comp
+  );
+
+vipinterface crmPickBaseDoc
+  licensed (FREE)
+  Parameters
+  (
+    aBaseDoc, aClient : Comp;
+    IsForAO : Boolean
+  );
+
+vipinterface crmPickDogovor
+  licensed (FREE)
+  Parameters
+  (
+    aDogovor, aClient : Comp
+  );
+
+vipinterface crmPickKatSopr
+  licensed (FREE)
+  Parameters
+  (
+    WhatForming : Word;
+    aKatSopr, aClient  : Comp;
+    aWhere : Word
+  );
+
+vipinterface ClientCardDop
+  licensed (FREE);
+
+vipinterface ContactDopSimple
+  licensed (FREE)
+  Parameters
+  (
+    cWho : Comp
+  );
+
+vipinterface ConvAO_STSubj
+  licensed (FREE);
+
+vipinterface PickChanels
+  licensed (crm)
+  Parameters
+  (
+    ModeSelect : Byte
+  );
+
+// VEngine
+// Интерфейсы, которые запускаются с главного меню
+vipinterface ifcEntitySelecter
+  licensed (crm)
+  Parameters
+  (
+    PickMode : Word;
+    RetValue : Comp
+  );
+
+vipinterface ifcClassCreate
+  licensed (FREE);
+
+vipinterface ifcCompile
+  licensed (FREE);
+
+// Интерфейсы, которые используются только в модуле Клиент. Лицензирование.
+vipinterface ifcMakeAtlTable
+  licensed (FREE)
+  Parameters
+  (
+    EntityName : String;
+    aCode : Word
+  );
+
+vipinterface ifcSelectField
+  licensed (FREE)
+  Parameters
+  (
+    aEntity : Comp; aFieldName : String;
+    aFieldID : Comp
+  );
+
+vipinterface ifcFilterEdit
+  licensed (FREE);
+
+vipinterface ifcUserSetValue
+  licensed (FREE);
+
+vipinterface ifSelectFilter
+  licensed (FREE);
+
+vipinterface ifcUserFilters
+  licensed (FREE)
+  Parameters
+  (
+    aIdFilter, aIdEntity : Comp
+  );
+
+vipinterface ifcUserTreeFilters
+  licensed (FREE);
+
+vipinterface ifcEntityEdit
+  licensed (FREE);
+
+vipinterface ifcEntitySelect
+  licensed (FREE)
+  Parameters
+  (
+    aSelfID : Comp
+  );
+
+vipinterface ifcEventEdit
+  licensed (FREE)
+  Parameters
+  (
+    aEntityID, aSelfID : Comp
+  );
+
+vipinterface ifcFieldEdit
+  licensed (FREE);
+
+vipinterface ifcFieldSelected
+  licensed (FREE);
+
+vipinterface ifcFieldLinkEdit
+  licensed (FREE)
+  Parameters
+  (
+    aEntityID, aSelfID : Comp
+  );
+
+vipinterface ifcIndexEdit
+  licensed (FREE);
+
+vipinterface ifcMethodEdit
+  licensed (FREE)
+  Parameters
+  (
+    aEntity, aSelfID : Comp
+  );
+
+vipinterface ifcBrowse
+  licensed (FREE);
+
+vipinterface ifcSelectPhisicalTable
+  licensed (FREE);
+
+vipinterface ifcSegmentEdit
+  licensed (FREE)
+  Parameters
+  (
+    aSelfID : Comp;
+    isDeleting : Boolean
+  );
+
+vipinterface ifcSelectSegmentIndex
+  licensed (FREE)
+  Parameters
+  (
+    aSegID, aSelfID : Comp
+  );
+
+vipinterface ifcSegmentLinkEdit
+  licensed (FREE)
+  Parameters
+  (
+    aEntityID, aSelfID : Comp
+  );
+
+vipinterface idcSelgmentLikList
+  licensed (FREE)
+  Parameters
+  (
+    aEntity, aSelfID : Comp
+  );
+
+vipinterface ifcGroupEdit
+  licensed (FREE)
+  Parameters
+  (
+    aEntityID, aSelfID : Comp
+  );
+
+vipinterface ifcGroupList
+  licensed (FREE)
+  Parameters
+  (
+    aEntityID, aSelfID : Comp
+  );
+
+vipinterface ifcLevelEdit
+  licensed (FREE)
+  Parameters
+  (
+    aGroupID, aSelfID : Comp
+  );
+
+vipinterface ifcEditConstant
+  licensed (FREE);
+
+vipinterface ifcDemoMenu
+  licensed (FREE);
+
+vipinterface TuneHierarchyDescriptors
+  licensed (FREE)
+  Parameters
+  (
+    E, aSelfNRec : Comp
+  );
+
+vipinterface ifcDescrSelect
+  licensed (FREE)
+  Parameters
+  (
+    aEntity, aSelfID : Comp
+  );
+
+vipinterface Hierarchy
+  licensed (FREE);
+
+vipinterface EditHierarchy
+  licensed (FREE);
+
+vipinterface ifcFieldsTune
+  licensed (FREE);
+
+vipinterface ifcEditTuneField
+  licensed (FREE);
+
+vipinterface ifcTuneHierarchy
+  licensed (FREE);
+
+vipinterface ifcSelectJoin
+  licensed (FREE)
+  Parameters
+  (
+    aEntity, mEntity : Comp;
+    aFieldName, mFieldName : String
+  );
+
+vipinterface ifcedtMethodSelect
+  licensed (FREE)
+  Parameters
+  (
+    aEntity, aIfc : Comp
+  );
+
+vipinterface ifcUserMenu
+  licensed (FREE);
+
+vipinterface ifcUserEdit
+  licensed (FREE);
+
+//VEngine Menu
+Menu HierarchyHotKeys;
+
+//CRM Menu
+Menu DOFilter_HotKeys;
+Menu DOAll_HotKeys;

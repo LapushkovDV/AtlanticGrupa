@@ -1,0 +1,415 @@
+#component "ATLANTIC"
+const
+  coFileSp_col_DateSborka = 1; // 1 поле - дата и время сборки
+  coFileSp_col_Nsopr      = 2; // 2 поле - номер нашей накладной
+  coFileSp_col_SapCode    = 3; // 3 поле - код продукта
+  coFileSp_col_SSCCWMS    = 4; // 4 поле - SSCC код из WMS
+  coFileSp_col_DataMatrix = 5; // 5 поле - Data Matrix код либо FULL
+  coFileSp_col_SSCCManuf  = 6; // 6 поле - заводской код SSCC, отсканированный при приёмке
+end;
+Interface CRPT_PickingReport_import 'Загрузка файлов от Честный знак PickingReport';
+  show at (,, 91, 23);
+
+//#include VarsTypes.vip
+table Struct tmpPickingRep_Head = ATL_PickingRep_HEAD
+;
+table Struct tmpPickingRep_SP = ATL_PickingRep_Spec
+;
+create view
+var
+ _file : string;
+  Folder_input
+ ,Folder_To
+ ,_MaskFileName
+ , _logFile
+ ,_curLineType : string;
+  email_num_row : longint = 0;
+   pATL_EmailRun : ATL_EmailRun new;
+as select katmc.nrec
+
+from
+   KatMC
+// , SpSopr
+ , katsopr
+ , Stepdoc
+ , tmpPickingRep_Head
+ , tmpPickingRep_SP
+ , ATL_PickingRep_HEAD
+ , ATL_PickingRep_Spec
+ , ATL_PickingRep_HEAD ATL_PickingRep_HEAD_chk
+ , ATL_PickingRep_Spec ATL_PickingRep_Spec_chk
+ , katsopr katsopr_Chk
+// , ATL_PickingRep_Spec ATL_PickingRep_Spec_1
+ , ATL_PickingRep_LOG
+;
+file fSrc;
+
+PROCEdURE ClearAll;
+{
+ delete all tmpPickingRep_Head;
+ delete all tmpPickingRep_SP;
+} // PROCEdURE ClearAll;
+
+procedure MyLog(_log : string);
+{
+  logstrtofile(_logFile,_log);
+}
+Function GetMCBySapCode( _code: string) : comp; Cacheable;
+{
+  var _result : comp = 0h;
+  if _code <> ''
+  _try
+   { sql
+     select top 1 katmc.nrec
+      from katmc
+      where katmc.barkod2 = :(_Code)
+      into (_result);
+   }
+   _except else {var _empty : boolean = false;} //чтобы компилятор ничего не говорил
+   result := _result;
+}
+
+
+function getKatSoprByDocNumber(_NoDoc : string): comp;
+{
+  var _result : comp = 0h;
+  if _NoDoc <> ''
+  _try
+   { sql
+     select top 1 ks.nrec
+      from KatSopr KS
+      Where ks.nsopr = :(_NoDoc)
+      and ks.vidsopr in (201,600)
+      into (_result);
+   }
+   _except else {var _empty : boolean = false;} //чтобы компилятор ничего не говорил
+   result := _result;
+}
+Function getBaseDocByKatSopr(_cSopr : comp ) : comp;
+{
+ result := 0h;
+ if _cSopr = 0h then exit;
+
+ if getfirst KatSopr where ((_cSopr == katsopr.nrec)) = tsok {
+    if getfirst Stepdoc where ((KatSopr.cStepDoc == STepDoc.nrec)) = tsOK {
+       result := Stepdoc.cBaseDoc
+     }
+  }
+}
+
+function getValueByNumberCol(_line: string; _col : word): string;
+{
+  Result := ExtractDelimitedWord(_line,_col,';');
+}
+procedure InsertTmpHead(_line,_filename: string);
+{
+ clearbuffer(tntmpPickingRep_Head);
+  tmpPickingRep_Head.cSopr    := getKatSoprByDocNumber(getValueByNumberCol(_line,coFileSp_col_Nsopr));
+  tmpPickingRep_Head.filename := _filename;
+  tmpPickingRep_Head.Nakl_Num := getValueByNumberCol(_line,coFileSp_col_Nsopr);
+  tmpPickingRep_Head.isOK     := true;
+  tmpPickingRep_Head.cBaseDoc := getBaseDocByKatSopr(getKatSoprByDocNumber(getValueByNumberCol(_line,coFileSp_col_Nsopr)));
+ insert current tmpPickingRep_Head;
+ if tmpPickingRep_Head.cSopr = 0h and tmpPickingRep_Head.Nakl_Num <> '' then
+  {
+      set tmpPickingRep_Head.isOK     := false;
+      set tmpPickingRep_Head.ErrDescr := tmpPickingRep_Head.ErrDescr + '|'+ ' ERROR!! не нашли накладную к ДО "' +tmpPickingRep_Head.Nakl_Num+ '"' ;
+     update current tmpPickingRep_Head;
+  }
+}
+function ClearSecurityTrash(_string : string): string;
+{
+  result := _string;
+  // substr('01038386000411952111FX0I3I4AKRF93k2VO',length('01038386000411952111FX0I3I4AKRF93k2VO')-5,2)
+  if substr(_string,length(_string)-5,2) = 93 // коды из 5 поля необходимо срезать обрезать с конца - 93 и четыре символа за ними надо удалять. Это <криптохвост>. 0103838600041164217API2E4VDI5G793ep6U
+  {
+   // substr('01038386000411952111FX0I3I4AKRF93k2VO',1, length('01038386000411952111FX0I3I4AKRF93k2VO')-6)
+   result := substr(_string,1, length(_string)-6);
+  }
+}
+
+procedure InsertTmpSpec(_line : string);
+{
+  if not isvalidAll(tntmpPickingRep_Head) {
+    mylog(' ERROR!! нет шапки в файле, обработка невозможна') ;
+    exit;
+  }
+  clearbuffer(tntmpPickingRep_SP);
+  if tmpPickingRep_Head.Nakl_Num  <> getValueByNumberCol(_line,coFileSp_col_Nsopr){
+
+    set tmpPickingRep_SP.ErrDescr := '|'+ 'встретился иной номер накладной ' + getValueByNumberCol(_line,coFileSp_col_Nsopr) + ' и ' + tmpPickingRep_Head.Nakl_Num;
+    mylog(' ERROR!! встретился иной номер накладной ' + getValueByNumberCol(_line,coFileSp_col_Nsopr) + ' и ' + tmpPickingRep_Head.Nakl_Num);
+    update current tmpPickingRep_Head set tmpPickingRep_Head.isOK := false;
+    exit;
+  }
+
+   tmpPickingRep_SP.cHead      := tmpPickingRep_Head.nrec ;
+
+   tmpPickingRep_SP.SapCode    := getValueByNumberCol(_line, coFileSp_col_SapCode );
+   tmpPickingRep_SP.cMC        := GetMCBySapCode(getValueByNumberCol(_line, coFileSp_col_SapCode ));
+   tmpPickingRep_SP.DateSborka := getValueByNumberCol(_line, coFileSp_col_DateSborka);
+   tmpPickingRep_SP.Nsopr      := getValueByNumberCol(_line, coFileSp_col_Nsopr);
+   tmpPickingRep_SP.SSCCWMS    := getValueByNumberCol(_line, coFileSp_col_SSCCWMS);
+   tmpPickingRep_SP.DataMatrix := ClearSecurityTrash(getValueByNumberCol(_line, coFileSp_col_DataMatrix));
+   tmpPickingRep_SP.SSCCManuf  := getValueByNumberCol(_line, coFileSp_col_SSCCManuf);
+  insert current tmpPickingRep_SP;
+
+   if tmpPickingRep_SP.SapCode = '' { mylog(' ERROR!! пустой SapCode ');
+      set tmpPickingRep_Head.isOK := false;
+      set tmpPickingRep_SP.ErrDescr := tmpPickingRep_SP.ErrDescr + '|'+ ' ERROR!! пустой SapCode ' ;
+      }
+   if tmpPickingRep_SP.cMC = 0h and tmpPickingRep_SP.SAPCODE  <> ''  {
+       mylog(' ERROR!! не найдена МЦ по SapCode = "'+tmpPickingRep_SP.SapCode+'"');
+       set tmpPickingRep_Head.isOK := false;
+       set tmpPickingRep_SP.ErrDescr := tmpPickingRep_SP.ErrDescr + '|'+ ' ERROR!! не найдена МЦ по SapCode = "'+tmpPickingRep_SP.SapCode+'"';
+     }
+    update current tmpPickingRep_Head;
+    update current tmpPickingRep_SP;
+}
+
+
+procedure CheckFileFillValues(_FilePath, _filename : string);
+{
+  var _fileLine : string;
+ if existFile(_FilePath+_filename) { //try discover file
+        _try {
+          fSrc.openFile(_FilePath + _filename, stOpenRead);
+          var _cntLine : longint = 0;
+          while not fSrc.eof() do {
+            _cntLine++;
+            fSrc.readLn(_fileLine);
+            _fileLine := replace( replace(_fileLine,';;','; ;'),';;','; ;'); //крутит крушу у функции extractdelimitedword иначе 0_0
+            if _cntLine = 1 then InsertTmpHead(_fileLine,_filename);
+            InsertTmpSpec(_fileLine);
+           }
+        }
+        _finally {
+          fSrc.close;
+        }
+    }
+}
+
+
+function CheckCisInCRPT(_cis : string) : string; cacheable;
+{
+  var _nmbTryMax : byte = 10;  // если на той стороне лежит апи... сделам несколько попыток
+  var _nmbTry : byte = 0;
+ for(_nmbTry := 0; _nmbTry <= _nmbTryMax; _nmbTry++)
+  {
+   result := iCRPT_API_PowerShell.GetRequestToAPIisExistCis(_cis);
+   if result <> '' then break;
+  }
+}
+Procedure Write_Mess(w:string);
+{
+  email_num_row++;
+  pATL_EmailRun.Write_Text(email_num_row,w);
+} //Procedure Write_Mess(w:string);
+
+
+procedure SendMailErrorCodes(_cATL_PickingRep_HEAD : comp);
+{
+   var _Email     : string = sgettune('USERTUNE.CRPT.E-MAILS');
+   var _EmailCopy : string = sgettune('USERTUNE.CRPT.copyE-MAILS');
+  if _Email = '' then exit;
+
+  if getfirst ATL_PickingRep_HEAD_chk where ((_cATL_PickingRep_HEAD == ATL_PickingRep_HEAD_chk.nrec)) <> tsOK then exit;
+  if getfirst katsopr_Chk where ((ATL_PickingRep_HEAD_chk.cSopr == katsopr_Chk.nrec)) <> tsok then exit;
+  if(getfirst ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead))
+                              and ATL_PickingRep_Spec_chk.wStatus = 2
+    ) <> tsOK then exit
+
+  _loop ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead))
+                                         and ATL_PickingRep_Spec_chk.wStatus = 2
+   {
+    Write_Mess('Код маркировки '+if(upcase(ATL_PickingRep_Spec_chk.DataMatrix) = 'FULL',ATL_PickingRep_Spec_chk.SSCCManuf,ATL_PickingRep_Spec_chk.DataMatrix) +
+     +'| API ' + ATL_PickingRep_Spec_chk.ErrDescr);
+   }
+
+
+      pATL_EmailRun.EmailSend(
+                                 _Email // _email_addr :string ;
+                                ,'! Ошибка при обработке данных ГИС МТ по документу ' +katsopr_Chk.nSopr
+                                ,'' //_email_attach1 :string ;
+                                ,'' //_email_attach2 :string ;
+                                ,'' //_email_attach3 :string ;
+                                ,'' //_email_attach4 :string ;
+                                ,''
+                                ,_EmailCopy //_email_addr_copy :string='';
+                                ,'' //_email_addr_from :string=''
+                             );
+}
+
+procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
+{
+ iCRPT_API_PowerShell.GetRequestToAPIGetToken ;
+  if getfirst ATL_PickingRep_HEAD_chk where ((_cATL_PickingRep_HEAD == ATL_PickingRep_HEAD_chk.nrec)) <> tsOK then exit;
+
+  update current ATL_PickingRep_HEAD_chk set ATL_PickingRep_HEAD_chk.wStatus := 1;
+
+ _loop ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead))
+  {
+        update current ATL_PickingRep_Spec_chk set
+           ATL_PickingRep_Spec_chk.ErrDescr := ''
+         , ATL_PickingRep_Spec_chk.wStatus  := 1
+        ;
+
+    var _errcode : string = CheckCisInCRPT(if(upcase(ATL_PickingRep_Spec_chk.DataMatrix) = 'FULL'
+                                           ,ATL_PickingRep_Spec_chk.SSCCManuf
+                                           ,if(trim(ATL_PickingRep_Spec_chk.DataMatrix) <> ''
+                                             ,ATL_PickingRep_Spec_chk.DataMatrix
+                                             ,ATL_PickingRep_Spec_chk.SSCCManuf
+                                              )
+                                           )
+                                          );
+    if _errcode <> '0'
+     then {
+        update current ATL_PickingRep_Spec_chk set
+           ATL_PickingRep_Spec_chk.ErrDescr := 'Ошибка '+ _errcode
+         , ATL_PickingRep_Spec_chk.wStatus  := 2
+        ;
+       update current ATL_PickingRep_HEAD_chk set ATL_PickingRep_HEAD_chk.wStatus := 2;
+     }
+  }
+  SendMailErrorCodes(_cATL_PickingRep_HEAD);
+}
+
+
+procedure RasprPalletesBySpSopr;
+{
+ // MyLog('Файлы загружены, начинаем распределение паллет по спецификация');
+  _loop tmpPickingRep_Head where tmpPickingRep_Head.cSopr <> 0h
+  if getfirst fastfirstrow katsopr where  (( tmpPickingRep_Head.cSopr == katsopr.nrec)) = tsOK
+  {
+    if getfirst ATL_PickingRep_HEAD where ((tmpPickingRep_Head.cSopr == ATL_PickingRep_HEAD.cSopr)) = tsOK then {
+// 20220128 - Николай сказал, что надо удалять загруженное ранее и заново загружать
+/*
+        MyLog(' Файл '+tmpPickingRep_Head.filename+' пропускается: уже закачан ранее');
+        CopyMoveFile(Folder_input+ ATL_PickingRep_head.Filename,Folder_To + datetostr(cur_date,'\YYYY\MM\DD-MM-YYYY\')+ATL_PickingRep_head.Filename, true, ecmfClientFrom  + ecmfClientTo );
+        Continue;
+*/
+        MyLog(' Файл '+tmpPickingRep_Head.filename+' уже закачан ранее. Заново перегружаем по нему данные');
+      _loop ATL_PickingRep_Spec where ((ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec.cHead))
+       delete current ATL_PickingRep_Spec;
+       delete current ATL_PickingRep_HEAD;
+     }
+     MyLog('Обрабатываем Файл '+tmpPickingRep_Head.filename);
+      ATL_PickingRep_HEAD.buffer := type$ATL_PickingRep_HEAD(tmpPickingRep_Head.buffer);
+      ATL_PickingRep_HEAD.nrec   := 0h;
+      ATL_PickingRep_HEAD.cPickingRepLog := ATL_PickingRep_LOG.nrec;
+     Insert Current ATL_PickingRep_HEAD;
+      _loop tmpPickingRep_sp where ((tmpPickingRep_Head.nrec == tmpPickingRep_sp.cHead))
+       {
+         ATL_PickingRep_Spec.buffer  := type$ATL_PickingRep_Spec(tmpPickingRep_sp.buffer);
+         ATL_PickingRep_Spec.nrec    := 0h;
+         ATL_PickingRep_Spec.cHead   := ATL_PickingRep_HEAD.nrec;
+        Insert Current ATL_PickingRep_Spec;
+       } // _loop tmpPickingRep_sp where ((tmpPickingRep_Head.nrec == tmpPickingRep_sp.cHead))
+    CopyMoveFile(Folder_input+ ATL_PickingRep_head.Filename,Folder_To + datetostr(cur_date,'\YYYY\MM\DD-MM-YYYY\')+ATL_PickingRep_head.Filename, true, ecmfClientFrom  + ecmfClientTo );
+    CheckCisInCRPTbyATL_PickingRep_HEAD(ATL_PickingRep_HEAD.nrec);
+
+    MyLog('Обработка файла завершена');
+    MyLog('***');
+  } // _loop tmpPickingRep_Head where tmpPickingRep_Head.cSopr <> 0h
+}
+
+HandleEvent
+  cmInit:
+  {
+    var _globalErr : boolean;
+   _globalErr := false;
+   Folder_input := Folder_To := _MaskFileName := '';
+    _logFile := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'Import_PickingRep_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+   deletefile(_logFile);
+      Insert ATL_PickingRep_LOG set
+         ATL_PickingRep_LOG.LogDate  := _curDateTime //"Дата-время запуска задания"
+       , ATL_PickingRep_LOG.State    := 0 // "0draft,1readyToSend,2send,3NotNeedToSen"
+       , ATL_PickingRep_LOG.Email    := sGetTune('USERTUNE.MERCURYPRJ.E-MAILS') //String "E-Mails"
+       , ATL_PickingRep_LOG.cEmail   := sGetTune('USERTUNE.MERCURYPRJ.COPYE-MAILS') //String "Copy Emails"
+      ;
+
+   Folder_input   := sgettune('USERTUNE.CRPT.PickingReport_pathfrom');
+   Folder_To      := sgettune('USERTUNE.CRPT.PickingReport_pathto');
+   _MaskFileName  := sgettune('USERTUNE.CRPT.PickingReport_MaskFileInclude');
+
+
+   if Folder_input = ''
+   {
+     _globalErr := true;
+     MyLog('ERROR!! не указана настройка "директории с файлами"');
+   }
+   else
+    {
+          MyLog('Folder_input         ='+Folder_input);
+    }
+   if Folder_To = ''
+   {
+     _globalErr := true;
+     MyLog('ERROR!! не указана настройка "директории с отработанными файлами"');
+   }
+   else
+    {
+          MyLog('Folder_To            ='+Folder_To   );
+    }
+  if _MaskFileName = ''
+   {
+     _globalErr := true;
+     MyLog('ERROR!! не указана настройка "Маска файлов для поиска"');
+   }
+   else
+   {
+          MyLog('MaskFileName         ='+_MaskFileName);
+   }
+
+  if sgettune('USERTUNE.CRPT.PickingReport_MaskFileExclude') <> ''
+    {
+     _MaskFileName := _MaskFileName + '|' + sgettune('USERTUNE.CRPT.PickingReport_MaskFileExclude');
+    }
+          MyLog('EXCLUDE MaskFileName ='+sgettune('USERTUNE.CRPT.PickingReport_MaskFileExclude'));
+          MyLog('***');
+    if _globalErr
+     then {
+           ImportFileToMemo(ATL_PickingRep_LOG.Log, _logFile, false);
+           ATL_PickingRep_LOG.State    := 1; // "0draft,1readyToSend,2send,3NotNeedToSen"
+           Update current ATL_PickingRep_LOG;
+           stop; abort; exit;
+          }
+
+    ClearAll;
+    Folder_input := AddSlashToPath(Folder_input);
+    Folder_To := AddSlashToPath(Folder_To);
+    startnewvisual(vtRotateVisual,vftimer+vfbreak+vfconfirm,'Поиск файлов...',0);
+    var File_input : string = '';
+    var _foundFileCount : longint = 0;
+    if FindFirstFile(Folder_input+'*.*', File_input)
+    {
+     do{
+//        Message('0_0 ' + File_input);
+        File_input:=upcase(File_input);
+        if(MatchesMask(File_input,_MaskFileName))
+         if not IsDirectory(Folder_input+File_input)
+         {
+           MyLog('Файл ' + Folder_input+File_input);
+           CheckFileFillValues(Folder_input, File_input);
+           _foundFileCount++;
+//          Message(recordsIntable(tntInsertBaseDoc) + '  ' + tInsertBaseDoc.cFile);
+         }
+       } while FindNextFile(File_input);
+    }
+    if _foundFileCount = 0 then
+     {
+       MyLog('Файлов не найдено');
+     }
+    RasprPalletesBySpSopr;
+
+     ImportFileToMemo(ATL_PickingRep_LOG.Log, _logFile, false);
+    update current ATL_PickingRep_LOG;
+      ATL_PickingRep_LOG.State := if(Getfirst fastfirstrow ATL_PickingRep_HEAD where ((ATL_PickingRep_LOG.nrec == ATL_PickingRep_HEAD.cPickingRepLog)) = tsOK,1,3); // // "0draft,1readyToSend,2send,3NotNeedToSen"
+    update current ATL_PickingRep_LOG;
+
+    StopVisual('', 0);
+  } // cmOK
+
+
+End;//HandleEvent
+End.//Interface

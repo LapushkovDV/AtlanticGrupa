@@ -1,0 +1,39 @@
+Create table CRPT_ShipmentDocs "ЦРПТ Документы Отгрузки"
+With table_Code = 31639
+with Replace
+(
+  NRec                 : comp                      "Номер записи",
+  npp                  : word					   "Номер по порядку",
+  inn_receiver         : string                    "ИНН получателя",
+  transfer_date        : date                      "Дата накладной",
+  move_document_number : string                    "Номер накладной",
+  move_document_date   : date					   "Дата накладной",
+  CRPT_Oid			   : string 				   "Oid документа в системе ЦРПТ",
+  docDateTime		   : string 				   "Дата документа в ЦРПТ",
+  status			   : string 				   "Статус документа в ЦРПТ",
+  statusDescr		   : string 				   "Описание статуса в ЦРПТ",
+  sender			   : string 				   "Отправитель документа в ЦРПТ",
+  cancelDoc_CRPT_oid   : string 				   "Oid документа отмены в системе ЦРПТ",
+  cancelDocDateTime	   : string 				   "Дата документа отмены в ЦРПТ",
+  cancelStatus		   : string 				   "Статус документа отмены в ЦРПТ",
+  cancelStatusDescr	   : string 				   "Описание статуса отмены в ЦРПТ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+Create table CRPT_SpShipmentDocs "ЦРПТ Спецификация документов отгрузки"
+With table_Code = 31640
+with Replace
+(
+  NRec                 : comp                        "Номер записи",
+  cDoc				   : ref(CRPT_ShipmentDocs)      "Ссылка на документ",
+  kitu                 : string                      "SSCC-код паллеты",
+  cKatMc			   : comp 						 "Ссылка на кат МЦ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+

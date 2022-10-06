@@ -1,0 +1,75 @@
+create view vMetOtpEd
+var
+  _Rec_     : comp;
+  _coTable_ : word;
+from
+
+  SpSopr
+, KatOtpEd
+, SaldTune
+, SpecMTR
+, SpStep
+, KatMC
+, SpOtpEd
+
+where
+((
+     _coTable_         ==  SpecMTR.coTable
+AND  _Rec_             ==  SpecMTR.cSpec
+AND  SpecMTR.cSaldTune ==  SaldTune.nRec
+))
+;
+
+function GetMcRec(Rec : comp; coTable : word) : comp;
+{
+  GetMcRec := 0;
+
+  case coTable of
+    coSpSopr :
+      if (vMetOtpEd.GetFirst SpSopr where ((Rec == SpSopr.NRec)) = tsOK)
+        GetMcRec := vMetOtpEd.SpSopr.cMCUsl;
+    coSpStep :
+      if (vMetOtpEd.GetFirst SpStep where ((Rec == SpStep.NRec)) = tsOK)
+        GetMcRec := vMetOtpEd.SpStep.cMCUsl;
+  end;
+}
+
+
+Function GetKoefOtpEdT(Rec, _cKoef : comp; coTable : word) : double;
+{
+  set vMetOtpEd._Rec_     := Rec;
+  set vMetOtpEd._coTable_ := coTable;
+
+  GetKoefOtpEdT := 1.0;
+
+  if (vMetOtpEd.GetFirst KatOtpEd where ((_cKoef == KatOtpEd.NRec)) = tsOk)
+    GetKoefOtpEdT := vMetOtpEd.KatOtpEd.Koef;
+
+  if (NOT ExistTune('Doc.ChTaraVolume.Used'))
+    Exit;
+
+  if (wGetTune('Doc.ChTaraVolume.Koef') = 1)
+    {
+      var dKofOtp : double; dKofOtp := 1.0;
+      var dKofUch : double; dKofUch := 1.0;
+
+      if (vMetOtpEd.GetFirst SpecMTR = tsOk)
+        if (vMetOtpEd.GetFirst SaldTune = tsOk)
+          if (UpCase(Trim(vMetOtpEd.SaldTune.Name)) = 'íÄêÄ')
+            if (vMetOtpEd.GetFirst KatMC where ((GetMcRec(Rec, coTable) == KatMC.NRec)) = tsOK)
+              {
+                if (vMetOtpEd.GetFirst SpOtpEd where ((vMetOtpEd.KatOtpEd.NRec  == SpOtpEd.cOtpEd
+                                                   AND vMetOtpEd.SpecMTR.cObj   == SpOtpEd.cMCTara)) = tsOk)
+                  dKofOtp := vMetOtpEd.SpOtpEd.Koef;
+
+                if (vMetOtpEd.GetFirst KatOtpEd where ((word(1)              ==  KatOtpEd.PrMC
+                                                   AND  vMetOtpEd.KatMC.NRec ==  KatOtpEd.cMCUsl
+                                                   AND  vMetOtpEd.KatMC.cEd  ==  KatOtpEd.cKatEd)) = tsOk)
+                  if (vMetOtpEd.GetFirst SpOtpEd where ((vMetOtpEd.KatOtpEd.NRec  == SpOtpEd.cOtpEd
+                                                     AND vMetOtpEd.SpecMTR.cObj   == SpOtpEd.cMCTara)) = tsOk)
+                    dKofUch := vMetOtpEd.SpOtpEd.Koef;
+
+                GetKoefOtpEdT := dKofUch/dKofOtp;
+              }
+    }
+}

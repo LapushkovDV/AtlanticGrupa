@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>l_dogovor</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika_stend\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.36.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\inc\*
+					..\..\SourceGal\*
+					..\..\..\..\Galaktika_stend\FRM\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_COMMON.res
+					$[GalExe]\L_DOGOVOR.res
+				</ResourceList>
+				<OutputResource>..\..\Alter_l_dogovor_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm_STEND</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="l_dogovor.prj" PosX="33" PosY="27" OpenEditor="True" Active="True"/>
+			<File Name="alter\dogovor.vip" PosX="66" PosY="99" OpenEditor="True"/>
+			<File Name="cnf\l_dogovor_dogovor.cnf" PosX="29" PosY="10" OpenEditor="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="l_dogovor.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\Alter_l_dogovor\l_dogovor.prj" DateTimeStart="43863,4324783681" DateTimeCompile="0,000623483792878687" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\Alter_l_dogovor\ALTER\dogovor.vip" SourceLine="27" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\Alter_l_dogovor\ALTER\dogovor.vip" SourceLine="113" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;DOGOVOR.setDefaultSpDog&quot;, объявленный в C:\Galaktika\res\src\Alter_l_dogovor\ALTER\dogovor.vip(17), не был использован" SourceFileName="C:\Galaktika\res\src\Alter_l_dogovor\ALTER\dogovor.vip" SourceLine="125" SourceColumn="5"/>
+					<CompileMessage MessageType="mtError" MessageText="AddToDriver+AddField Ничего не найдено." SourceFileName="C:\Galaktika\res\src\Alter_l_dogovor\CNF\l_dogovor_dogovor.cnf" SourceLine="1" SourceColumn="46"/>
+					<CompileMessage MessageType="mtError" MessageText="AddToDriver+AddField Ничего не найдено." SourceFileName="C:\Galaktika\res\src\Alter_l_dogovor\CNF\l_dogovor_dogovor.cnf" SourceLine="1" SourceColumn="46"/>
+					<CompileMessage MessageType="mtError" MessageText="Компиляция прервана в результате ошибки процесса компиляции."/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="02.02.2020 10:23:40"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<MarkerList>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
+		</MarkerList>
+	</ProjectManager>
+</Viper>

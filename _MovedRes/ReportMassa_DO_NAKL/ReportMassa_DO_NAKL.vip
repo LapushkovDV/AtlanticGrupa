@@ -1,0 +1,631 @@
+const
+CoDoStr     = 'ДО';
+coDoNaklStr = 'накладных к ДО';
+coNaklStr   = 'Накладная';
+end;
+Interface ReportMassa_DO_NAKL
+table struct TableReport
+(
+     cDoc       : comp
+    ,TypeDocStr : String
+    ,DDoc       : date
+    ,NoDoc      : String
+    ,Netto      : Double
+    ,tara       : Double
+    ,Brutto     : Double
+    ,Volume     : Double
+    ,Pallete    : Double
+)
+with index
+(
+ ind0 = cDoc + TypeDocStr
+)
+;
+
+create view
+var _TypeDO   : byte;
+    _markerDocs : longint;
+     ByDO
+    ,ByNakl : boolean;
+from
+  Pick
+, TableReport
+, TableReport TableReportDo_NAkl
+;
+parameters
+    _TypeDO
+  , _markerDocs
+;
+create view vDO
+as select pick.crec
+  from
+    pick
+    , stepdoc
+    ,  basedoc
+    , spstep
+    , katmc
+    , KATOTPED K1
+    , KATOTPED K2
+    , KATOTPED K3
+
+  where
+    ((
+               word(32) == Pick.wlist
+       and pick.crec    == basedoc.nrec
+       and basedoc.nrec == stepdoc.cbasedoc
+       and stepdoc.nrec == spstep.cstepdoc
+      AND spstep.CMCUSL == katmc.NREC
+      AND spstep.COTPED == K1.NREC
+         AND katmc.NREC == K2.CMCUSL
+      AND (upcase(k2.NAME) = 'ПОДДОН')
+         AND katmc.NREC == K3.CMCUSL
+      AND (upcase(k3.NAME) = 'ПОДДОН ДЛЯ СПРАВКИ')
+
+    ))
+  ORDER BY basedoc.DDOC, basedoc.NODOC
+;
+create view vDO_Nakl
+ var _cstepDoc : comp;
+  as select katmcNakl.nrec
+  from
+      katmc katmcNakl
+    , KATOTPED K1Nakl
+    , KATOTPED K2Nakl
+    , KATOTPED K3Nakl
+    , KatSopr
+    , SpSopr
+
+  where
+      ((        _cstepDoc == KatSopr.cStepDoc
+           AND katsopr.nrec  == spsopr.csopr
+           AND spsopr.CMCUSL == KatMCNakl.NREC
+           AND spsopr.COTPED == K1Nakl.NREC
+          AND katmcNakl.NREC == K2Nakl.CMCUSL
+       AND (upcase(k2Nakl.NAME) = 'ПОДДОН')
+         AND katmcnakl.NREC == K3nakl.CMCUSL
+      AND (upcase(k3nakl.NAME) = 'ПОДДОН ДЛЯ СПРАВКИ')
+
+      ))
+;
+Create view vNakl
+as select Pick.crec
+  from
+      Pick
+    , katsopr
+    , spsopr
+    , KatMC
+    , KATOTPED K1
+    , KATOTPED K2
+    , KATOTPED K3
+where
+    ((
+                     22  == Pick.wList
+         and pick.crec   == katsopr.nrec
+       AND katsopr.nrec  == spsopr.csopr
+       AND spsopr.CMCUSL == KatMC.NREC
+       AND spsopr.COTPED == K1.NREC
+          AND katmc.NREC == K2.CMCUSL
+       AND (upcase(k2.NAME) = 'ПОДДОН')
+          AND katmc.NREC == K3.CMCUSL
+       AND (upcase(k3.NAME) = 'ПОДДОН ДЛЯ СПРАВКИ')
+
+    ))
+  ORDER BY katSopr.dSopr, katSopr.dSopr
+;
+function CreateExcel (FExcelName : string) : boolean;
+{
+  StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Инициализация EXCEL', 1);
+    result := true;
+
+    DeleteFile(FExcelName);
+
+    if (not xlCreateExcel(FExcelName, true))
+    {
+      message('ОШИБКА! Не удалось инициализировать сессию Excel', Error);
+      xlKillExcel;
+      result := false;
+      exit;
+    }
+
+    if (not xlIsExcelValid)
+    {
+      message('ОШИБКА! Не удалось инициализировать сессию Excel', Error);
+      xlKillExcel;
+      result := false;
+      exit
+    }
+  var xlCount : word;
+  xlCount := 0;
+   Do
+   {
+    xlGetSheetsCount(xlCount);
+    xlDeleteSheet(xlCount);
+   } while xlCount > 1
+
+    xlSetActiveSheet(1);
+    xlSetSheetName(1, 'ReportMassa_DO_NAKL_'+UserName);
+
+   StopVisual('',0);
+}
+Procedure MyPrintMatrixToExcel(var nrow, nrowReal : longint);
+{
+ if nrow = 100 then
+  {
+   xlWritematrixToExcel(nrowReal,1);
+   xlclearMatrix;
+   nrowReal := nrowReal + nrow-1;
+   nrow := 1;
+  }
+}
+
+Procedure PrintNakltoDo(_typeCol: byte; nrow,nrowreal : longInt);
+{
+  if _TypeDO = 0 and byNakl
+  {
+    if _typeCol = 1      // вывод пустышки
+     {
+       xlMergeCells(nrow+nrowreal-1,2+ 2 + 2,nrow+nrowreal-1,4+ 3 + 2); xlStWriteToMatrix(nrow, 2 + 2 + 2,'Справка об объеме и массе позиций ' + coDoNaklStr);
+     }
+    if getfirst TableReportDo_NAkl where ((TableReport.cDoc == TableReportDo_NAkl.cDoc
+                                            and coDoNaklStr == TableReportDo_NAkl.TypeDocStr
+                                         ))  = tsok
+     {
+       case _typeCol of
+        1: {   xlMergeCells(nrow+nrowreal-1,2+ 2 + 2,nrow+nrowreal-1,4+ 3 + 2); xlStWriteToMatrix(nrow, 2 + 2 + 2,'Справка об объеме и массе позиций '+TableReportDo_NAkl.TypeDocStr+' № ' +TableReportDo_NAkl.NoDoc + ' от ' + TableReportDo_NAkl.DDoc);}
+        2: {xlStWriteToMatrix(nrow, 2 + 3 + 2,'Масса нетто: '); xlDoWriteToMatrix(nrow, 3+ 3 + 2,TableReportDo_NAkl.Netto); xlStWriteToMatrix(nrow, 4+ 3 + 2,'кг');}
+        3: {xlStWriteToMatrix(nrow, 2 + 3 + 2,'Масса брутто: ');    xlDoWriteToMatrix(nrow, 3+ 3 + 2,TableReportDo_NAkl.tara   ); xlStWriteToMatrix(nrow, 4+ 3 + 2,'кг');}
+        4: {xlStWriteToMatrix(nrow, 2 + 3 + 2,'Масса тары: ');      xlDoWriteToMatrix(nrow, 3+ 3 + 2,TableReportDo_NAkl.Brutto ); xlStWriteToMatrix(nrow, 4+ 3 + 2,'кг');}
+        5: {xlStWriteToMatrix(nrow, 2 + 3 + 2,'Объем товаров: ');   xlDoWriteToMatrix(nrow, 3+ 3 + 2,TableReportDo_NAkl.Volume ); xlStWriteToMatrix(nrow, 4+ 3 + 2,'м3');}
+        6: {xlStWriteToMatrix(nrow, 2 + 3 + 2,'Кол-во поддонов: '); xlDoWriteToMatrix(nrow, 3+ 3 + 2,TableReportDo_NAkl.Pallete); xlStWriteToMatrix(nrow, 4+ 3 + 2,'шт');}
+       end;
+     }
+  }
+}
+Procedure PrintReport_Matrix;
+{
+  if not CreateExcel(GetStringParameter('Files','TmpFilesDirectory',0)+'ReportMassa_DO_NAKL_Matrix_'+UserName+'_'+DateToStr(Cur_Date,'YYYYMMDD')+'_'+TimeToStr(Cur_Time,'HHMMSS')+'.xlsx')
+    then {Stop; Abort; exit;}
+
+
+  StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Формирование отчета', 1);
+  xlCreateMatrix(100,10);
+
+  var Nrow0,nrow0FrameBold, Nrow, column, nrowreal : longint;
+ nrowreal := 1;
+ Nrow := column := 1;
+
+
+/*
+  Добавьте вывод фильтров в отчет
+*/
+
+// xlMergeCells(nrow,column,nrow,column+5);
+ xlSetFontStyle(1,nrow,1,nrow,6);
+ Nrow++;
+
+ xlSetColumnWidth(18,1,1,1,1);
+ xlSetColumnWidth(20,1,2,1,2);
+ xlSetColumnWidth(15,1,3,1,3);
+ xlSetColumnWidth(12,1,4,1,4);
+
+ xlSetColumnWidth(20,1,2+2+2,1,2+2+2);
+ xlSetColumnWidth(15,1,3+2+2,1,3+2+2);
+ xlSetColumnWidth(26,1,4+2+2,1,4+2+2);
+ MyPrintMatrixToExcel(Nrow,NrowReal);
+
+ _Loop TableReport where TableReport.TypeDocStr = coDoStr or TableReport.TypeDocStr = coNaklStr
+  {
+    setvisualheader('Формирование отчета'+
+     + ''#13'' + TableReport.TypeDocStr+' № ' +TableReport.NoDoc + ' от ' + TableReport.DDoc );
+   nrow0FrameBold :=  nrow+nrowreal-1;
+   xlMergeCells(nrow+nrowreal-1,1,nrow+nrowreal-1,4);
+   xlStWriteToMatrix(nrow, 1,'Справка об объеме и массе позиций '+TableReport.TypeDocStr+' № ' +TableReport.NoDoc + ' от ' + TableReport.DDoc);  PrintNakltoDo(1,nrow,nrowreal);  Nrow++; MyPrintMatrixToExcel(Nrow,NrowReal);
+   xlStWriteToMatrix(nrow, 2,'Масса нетто: ');     xlDoWriteToMatrix(nrow, 3,TableReport.Netto);   xlStWriteToMatrix(nrow, 4,'кг');  PrintNakltoDo(2,nrow,nrowreal); Nrow++; MyPrintMatrixToExcel(Nrow,NrowReal);
+   xlStWriteToMatrix(nrow, 2,'Масса брутто: ');    xlDoWriteToMatrix(nrow, 3,TableReport.tara   ); xlStWriteToMatrix(nrow, 4,'кг');  PrintNakltoDo(3,nrow,nrowreal); Nrow++; MyPrintMatrixToExcel(Nrow,NrowReal);
+   xlStWriteToMatrix(nrow, 2,'Масса тары: ');      xlDoWriteToMatrix(nrow, 3,TableReport.Brutto ); xlStWriteToMatrix(nrow, 4,'кг');  PrintNakltoDo(4,nrow,nrowreal); Nrow++; MyPrintMatrixToExcel(Nrow,NrowReal);
+   xlStWriteToMatrix(nrow, 2,'Объем товаров: ');   xlDoWriteToMatrix(nrow, 3,TableReport.Volume ); xlStWriteToMatrix(nrow, 4,'м3');  PrintNakltoDo(5,nrow,nrowreal); Nrow++; MyPrintMatrixToExcel(Nrow,NrowReal);
+   xlStWriteToMatrix(nrow, 2,'Кол-во поддонов: '); xlDoWriteToMatrix(nrow, 3,TableReport.Pallete); xlStWriteToMatrix(nrow, 4,'шт');  PrintNakltoDo(6,nrow,nrowreal); Nrow++; MyPrintMatrixToExcel(Nrow,NrowReal);
+   xlFrameCells(xlBorderL + xlBorderR + xlBorderT + xlBorderB, xlMedium, xlContinuous, 0, nrow0FrameBold, 1, nrow+nrowreal-2, 4);
+   if _TypeDO = 0 and byNakl
+   {
+     xlFrameCells(xlBorderL + xlBorderR + xlBorderT + xlBorderB, xlMedium, xlContinuous, 0, nrow0FrameBold, 1+5, nrow+nrowreal-2, 4+5);
+   }
+
+   Nrow++; MyPrintMatrixToExcel(Nrow,NrowReal);
+   Nrow++; MyPrintMatrixToExcel(Nrow,NrowReal);
+
+//   nrow0FrameBold := nrow + NrowReal - 1;
+  }
+ xlWriteMatrixToExcel(NrowReal,1);
+ xlKillExcel;
+ StopVisual('',0);
+}
+Procedure AddMassaToDoc( _TypeDocStr : String;
+                         _cDoc    : comp;
+                         _DDoc    : date;
+                         _NoDoc   : String ;
+                         _Netto   : double;  // dNetto
+                         _tara    : double;// dTara
+                         _Brutto  : double;// dBrutto
+                         _Volume  : double;// dVol
+                         _Pallete : double// dPal
+                       );
+{
+If Getfirst TableReport where ((_cDoc == TableReport.cDoc
+                      and _TypeDocStr == TableReport.TypeDocStr )) <> tsOK
+   {
+    clearbuffer(tnTableReport);
+      TableReport.cDoc       := _cDoc;
+      TableReport.TypeDocStr := _TypeDocStr;
+      TableReport.DDoc       := _DDoc ;
+      TableReport.NoDoc      := _NoDoc;
+    Insert current TableReport;
+   }
+
+    TableReport.Netto   := TableReport.Netto   + _Netto   ;
+    TableReport.tara    := TableReport.tara    + _tara    ;
+    TableReport.Brutto  := TableReport.Brutto  + _Brutto  ;
+    TableReport.Volume  := TableReport.Volume  + _Volume  ;
+    TableReport.Pallete := TableReport.Pallete + _Pallete ;
+  update current TableReport;
+}
+procedure GetDataDONAKL;
+{
+  StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Сбор информации', 1);
+  delete all TableReport;
+ case _TypeDO of
+    0 :
+       {
+         vDo._loop Pick
+          {
+            SetVisualHeader('Сбор информации' +
+             +''#13''+vDo.basedoc.DDoc + '  ' +vDo.basedoc.NoDoc);
+            vDo._loop SpStep
+             {
+                AddMassaToDoc( CoDoStr
+                              ,vDo.basedoc.Nrec
+                              ,vDo.basedoc.DDoc
+                              ,vDo.basedoc.NoDoc
+                              ,(vDo.KatMc.MASSA * vDo.spstep.KOL * vDo.K1.KOEF) // dNetto
+                              ,(vDo.KatMc.mtara * vDo.spstep.KOL * vDo.K1.KOEF) // dTara
+                              ,((vDo.KatMc.MASSA + vDo.KatMc.mtara) * vDo.spstep.KOL * vDo.K1.KOEF)  // dBrutto
+                              ,(vDo.KatMc.VOLUME * vDo.spstep.KOL * vDo.K1.KOEF) // dVol
+                              ,(vDo.spstep.KOL * vDo.K1.KOEF) / if(vDo.K3.KOEF <> 0, vDo.K3.KOEF, vDo.K2.KOEF) // dPal
+                             )
+             }
+          if ByNakl
+           {
+            set vDo_Nakl._cstepDoc  := vDo.StepDoc.Nrec;
+              vDo_Nakl._loop KatSopr
+              vDo_Nakl._loop SpSopr
+              {
+                  AddMassaToDoc( coDoNaklStr
+                                ,vDo.basedoc.Nrec
+                                ,vDo.basedoc.DDoc
+                                ,vDo.basedoc.NoDoc
+                                ,(vDo_Nakl.KatMcNakl.MASSA * vDo_Nakl.spsopr.KOLFACT * vDo_Nakl.K1Nakl.KOEF) // dNetto nakl
+                                ,(vDo_Nakl.KatMcNakl.mtara * vDo_Nakl.spsopr.KOLFACT * vDo_Nakl.K1Nakl.KOEF) // dTara nakl
+                                ,((vDo_Nakl.KatMcNakl.MASSA + vDo_Nakl.KatMcNakl.mtara)*vDo_Nakl.spsopr.KOLFACT * vDo_Nakl.K1Nakl.KOEF) // dBrutto nakl
+                                ,(vDo_Nakl.KatMcNakl.VOLUME * vDo_Nakl.spsopr.KOLFACT * vDo_Nakl.K1Nakl.KOEF) // dVol nakl
+                                ,(vDo_Nakl.spsopr.KOLfact * vDo_Nakl.K1Nakl.KOEF) / if(vDo_Nakl.K3Nakl.KOEF <> 0,vDo_Nakl.K3Nakl.KOEF, vDo_Nakl.K2Nakl.KOEF) // dPal nakl
+                               )
+              }
+           }
+          }
+       }
+    1 :
+       {
+         vNakl._loop Pick
+          {
+            SetVisualHeader('Сбор информации' +
+             +''#13''+vNakl.KatSopr.dSopr + '  ' +vNakl.KatSopr.nSopr);
+
+            vNakl._loop SpSopr
+             {
+                  AddMassaToDoc( coNaklStr
+                                ,vNakl.KatSopr.Nrec
+                                ,vNakl.KatSopr.dSopr
+                                ,vNakl.KatSopr.nSopr
+                                ,(vNakl.KatMc.MASSA * vNakl.spsopr.KOLFACT * vNakl.K1.KOEF) // dNetto nakl
+                                ,(vNakl.KatMc.mtara * vNakl.spsopr.KOLFACT * vNakl.K1.KOEF) // dTara nakl
+                                ,((vNakl.KatMc.MASSA + vNakl.KatMc.mtara)*vNakl.spsopr.KOLFACT * vNakl.K1.KOEF) // dBrutto nakl
+                                ,(vNakl.KatMc.VOLUME * vNakl.spsopr.KOLFACT * vNakl.K1.KOEF) // dVol nakl
+                                ,(vNakl.spsopr.KOLfact * vNakl.K1.KOEF) / if(vNakl.K3.KOEF <> 0,vNakl.K3.KOEF,vNakl.K2.KOEF) // dPal nakl
+                               )
+             }
+          }
+       }
+  end;
+ StopVisual('',0);
+}
+handleevent
+cminit:
+{
+//  Message(if(_TypeDO = 0,'ПО ДО','ПО НАКЛАДНЫМ')+getMarKerCount(_markerDocs));
+if getMarKerCount(_markerDocs) = 0
+ {
+  message('Пометьте документы',error);
+  stop; abort; exit;
+ }
+  case _TypeDO of
+    0 : {
+          ByDO   := true;
+          if message('Формировать дополнительный отчет по связанным накладным?', YesNo) = cmYes then ByNakl := true;
+        }
+    1 :
+       {
+         ByNakl := true;
+       }
+    else {Message('Неверный первый параметр = ' +_TypeDO,error); stop; abort; exit;}
+  end;
+  delete Pick where ((if(_TypeDO = 0,32,22) == Pick.wList));
+  var i: longint;
+  var _crec : comp;
+   for(i := 0; i < GetMarkerCount(_markerDocs); i++)
+    if GetMarker(_markerDocs, i, _cRec)
+    {
+      clearbuffer(tnPick);
+       Pick.wList := if(_TypeDO = 0,32,22);
+       Pick.crec  := _cRec;
+      insert current Pick;
+    }
+  GetDataDoNakl;
+  PrintReport_Matrix;
+}
+end;
+end.
+
+/*
+dlgNakl_massa DIALOG
+fields
+ d1: date;
+ d2: date;
+Buttons
+ cmOK, default;
+ cmCancel;
+<< 'Ввод параметров отчета'
+
+     Укажите диапазон дат для отбора накладных:
+        .@@@@@@@@@@@@         .@@@@@@@@@@@@@
+
+           <.Готово.>         <.Отмена.>
+>>
+
+
+.Form 'Nakl_massa'
+.NameInList 'Справка об объеме и массе позиций накладной'
+.F 'Nakl_massa.out'
+.ARD
+.var
+  iSopr : Comp;
+  dNetto: Double;
+  dBrutto: Double;
+  dTara: Double;
+  dVol: Double;
+  dPal: Double;
+  d1: date;
+  d2: date;
+
+.endvar
+
+.Create view H1
+  As Select *
+  from
+    Pick, katsopr, spsopr, KatMC, KATOTPED K1, KATOTPED K2, KATOTPED K3
+  where
+    ((
+       22  ==   Pick.wList
+       and katsopr.nrec  == pick.crec  (NOINDEX)
+       AND spsopr.csopr /==   katsopr.nrec
+       AND spsopr.CMCUSL ==   KatMC.NREC
+       AND spsopr.COTPED ==   K1.NREC
+       AND katmc.NREC == K2.CMCUSL
+       AND katmc.NREC == K3.CMCUSL
+       AND 'поддон для справки' == k3.NAME (NOINDEX)
+    ))
+   AND 'поддон' = k2.NAME
+  ;
+.Begin
+  d1 := cur_date;
+  d2 := cur_date;
+
+  if (rundialog('dlgNakl_massa',d1,d2) = cmCancel) then
+  {
+     Message('Выполнение отчета прервано!', warning);
+    Nakl_massa.FExit;
+    Nakl_massa.fbreak;
+  }
+
+  if (runInterface('L_GRSOPR::GetSomeKatSopr', 201, d1, d2, 1) = cmCancel)
+  {
+    Message('Выполнение отчета прервано!', warning);
+    Nakl_massa.FExit;
+    Nakl_massa.fbreak;
+  }
+  dNetto := 0;
+  dBrutto := 0;
+  dTara := 0;
+  dVol := 0;
+  dPal := 0;
+end.
+.{table 'H1';
+.Begin
+   dNetto := dNetto + (KatMc.MASSA * spsopr.KOLFACT * K1.KOEF);
+  dTara := dTara + KatMc.mtara * spsopr.KOLFACT * K1.KOEF;
+  dBrutto := dNetto + dTara;
+  dVol := dVol + KatMc.VOLUME * spsopr.KOLFACT * K1.KOEF;
+  If (K3.KOEF > 0)
+  {
+     dPal := dPal + (spstep.KOL * K1.KOEF) / K3.KOEF;
+  }
+  else
+  {
+     dPal := dPal + (spstep.KOL * K1.KOEF) / K2.KOEF;
+  }
+end.
+.} //H1
+.FIELDS
+  H1.katsopr.nsopr
+  H1.katsopr.DSOPR
+  dNetto
+  dBrutto
+  dTara
+  dVol
+  dPal
+.ENDFIELDS
+ +-----------------------------------------------------------------------------+
+  Справка об объеме и массе позиций накладной № @@@@@@@@@@@@@@@ от @@@@@@@@@@@@
+  Масса нетто:      &#&&&&&&&.&&& кг
+  Масса брутто:     &#&&&&&&&.&&& кг
+  Масса тары:       &#&&&&&&&.&&& кг
+  Объем товаров:    &#&&&&&&&.&&& м3
+  Кол-во поддонов:  &#&&&&&&&.&&& шт
+ +-----------------------------------------------------------------------------+
+.endform
+
+
+.Form 'DO_massa'
+.NameInList 'Справка об объеме и массе позиций документов-оснований'
+.F 'DO_massa.out'
+.ARD
+.var
+  sNODOC: String;
+  sDDOC: String;
+  dNetto: Double;
+  dBrutto: Double;
+  dTara: Double;
+  dVol: Double;
+  dPal: Double;
+  dNettoi: Double;
+  dBruttoi: Double;
+  dTarai: Double;
+  dVoli: Double;
+  dPali: Double;
+.endvar
+.Create view H1
+  As
+  Select *
+  from
+    pick, stepdoc,  basedoc, spstep, katmc, KATOTPED K1, KATOTPED K2, KATOTPED K3
+  where
+    ((
+      word(32) == Pick.wlist
+      and pick.crec /== stepdoc.nrec
+      and stepdoc.cbasedoc /== basedoc.nrec
+      and stepdoc.nrec /== spstep.cstepdoc
+      AND spstep.CMCUSL /== katmc.NREC
+      AND spstep.COTPED ==   K1.NREC
+      AND katmc.NREC == K2.CMCUSL
+      AND katmc.NREC == K3.CMCUSL
+      AND 'поддон для справки' == k3.NAME (NOINDEX)
+    ))
+  AND 'поддон' = k2.NAME
+  ORDER BY basedoc.DDOC, basedoc.NODOC
+  ;
+.Begin
+  if (runInterface('F_SOPRHOZ::GetDBase','False', 1) = cmCancel)
+  {
+    Message('Выполнение отчета прервано!', warning);
+    DO_massa.FExit;
+    DO_massa.fbreak;
+  }
+  sNODOC := '';
+  sDDOC := '';
+  dNetto := 0;
+  dBrutto := 0;
+  dTara := 0;
+  dVol := 0;
+  dPal := 0;
+  dNettoi := 0;
+  dBruttoi := 0;
+  dTarai := 0;
+  dVoli := 0;
+  dPali := 0;
+  if H1.getfirst = 0
+  {
+   sNODOC := H1.basedoc.NODOC;
+   sDDOC  := H1.basedoc.DDOC;
+  }
+end.
+.FIELDS
+  sNODOC
+  sDDOC
+  dNetto
+  dBrutto
+  dTara
+  dVol
+  dPal
+  sNODOC
+  sDDOC
+  dNetto
+  dBrutto
+  dTara
+  dVol
+  dPal
+  dNettoi
+  dBruttoi
+  dTarai
+  dVoli
+  dPali
+.ENDFIELDS
+.{table 'H1';
+.{?Internal; sNODOC <> H1.basedoc.NODOC)
+ +-----------------------------------------------------------------------------+
+  Справка об объеме и массе позиций док-та-основания № @@@@@@@@@@ от @@@@@@@@@@
+
+  Масса нетто:      &#&&&&&&&.&&& кг
+  Масса брутто:     &#&&&&&&&.&&& кг
+  Масса тары:       &#&&&&&&&.&&& кг
+  Объем товаров:    &#&&&&&&&.&&& м3
+  Кол-во поддонов:  &#&&&&&&&.&&& шт
+ +-----------------------------------------------------------------------------+
+.Begin
+   sNODOC := H1.basedoc.NODOC;
+   sDDOC  := H1.basedoc.DDOC;
+  dNetto := 0;
+  dBrutto := 0;
+  dTara := 0;
+  dVol := 0;
+  dPal := 0;
+end.
+.}
+.Begin
+  dNetto := dNetto + (KatMc.MASSA * spstep.KOL * K1.KOEF);
+  dTara := dTara + KatMc.mtara * spstep.KOL * K1.KOEF;
+  dBrutto := dNetto + dTara;
+  dVol := dVol + KatMc.VOLUME * spstep.KOL * K1.KOEF;
+  dNettoi := dNettoi + (KatMc.MASSA * spstep.KOL * K1.KOEF);
+  dTarai := dTarai + KatMc.mtara * spstep.KOL * K1.KOEF;
+  dBruttoi := dNettoi + dTarai;
+  dVoli := dVoli + KatMc.VOLUME * spstep.KOL * K1.KOEF;
+  If (K3.KOEF > 0)
+  {
+     dPal := dPal + (spstep.KOL * K1.KOEF) / K3.KOEF;
+     dPali := dPali + (spstep.KOL * K1.KOEF) / K3.KOEF;
+  }
+  else
+  {
+     dPal := dPal + (spstep.KOL * K1.KOEF) / K2.KOEF;
+     dPali := dPali + (spstep.KOL * K1.KOEF) / K2.KOEF;
+  }
+end.
+.} //H1
+
+ +-----------------------------------------------------------------------------+
+  Справка об объеме и массе позиций док-та-основания № @@@@@@@@@@ от @@@@@@@@@@
+
+  Масса нетто:      &#&&&&&&&.&&& кг
+  Масса брутто:     &#&&&&&&&.&&& кг
+  Масса тары:       &#&&&&&&&.&&& кг
+  Объем товаров:    &#&&&&&&&.&&& м3
+  Кол-во поддонов:  &#&&&&&&&.&&& шт
+ +-----------------------------------------------------------------------------+
+ ИТОГО по всем ДО:
+  Масса нетто:      &#&&&&&&&.&&& кг
+  Масса брутто:     &#&&&&&&&.&&& кг
+  Масса тары:       &#&&&&&&&.&&& кг
+  Объем товаров:    &#&&&&&&&.&&& м3
+  Кол-во поддонов:  &#&&&&&&&.&&& шт
+.endform
+
+*/

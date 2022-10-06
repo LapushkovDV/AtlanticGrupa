@@ -1,0 +1,22 @@
+table struct tblTemp (
+  code		:string,
+  tSpName	:string,
+  tSpKodotped   :string,
+  tSpOtpEd	:string,
+  tSpKol	:string,
+  tSpPrNoNds	:double,
+  tSpSumNoNDS	:double,
+  tSpAkciz	:double,
+  tSpPerc	:double,
+  tSpNDS	:double,
+  tSpSumma	:double,
+  tpriceTotal	:double,
+  tSpKodCountry	:string,
+  tSrcCountry	:string,
+  tGTDNumber	:string,
+  tOrder        :string
+)
+with index (
+  tempCode  = Code,
+  tempOrder = tOrder
+);

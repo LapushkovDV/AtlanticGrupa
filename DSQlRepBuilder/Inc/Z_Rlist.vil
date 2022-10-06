@@ -1,0 +1,15 @@
+#ifdef ComponentVersion
+#component "z_rlist"
+#end
+vipinterface Rlis licensed(free);
+vipinterface Infvidn licensed(free);
+vipinterface RList licensed(free);
+vipinterface Rlistpar
+  licensed
+  (
+    #include Rlistpar.lih
+  )
+  parameters(prOne: word);
+
+vipinterface Rlistrab licensed(free) parameters(prOne: word);
+vipinterface vRLIST_SENDMAIL licensed(free);

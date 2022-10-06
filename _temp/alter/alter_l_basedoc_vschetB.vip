@@ -1,0 +1,75 @@
+////////////// подменяем обработчик событий 
+#component "L_BASEDOC"
+alter interface VSCHETB;
+Create view
+//var  extAttr: iExtAttr;
+as Select
+ extAttr.sgetAttr( coBaseDoc,baseDoc.nrec,'Заключение') (fieldname=DO_ZAKLYUCHENIE)
+;
+ExtendFormats BRVSCHET;
+Browse BRVSCHET;
+fields
+ DO_ZAKLYUCHENIE 'Заключение' ('Заключение',,): [4] , Protect;
+ KATPAYMENT.NAME 'Форма расчета' ('Форма расчета',,): [10] , Protect;
+ KatSopr.dSopr 'Накладная','дата' ('Дата накладной по ДО',,): [10] , Protect;
+ KatSopr.NSopr 'Накладная','Номер' ('Номер накладной по ДО',,): [10] , Protect;
+end;
+
+ExtendFormats SCVSCHET;
+window WVSCHET;
+screen SCVSCHET;
+fields
+ DO_ZAKLYUCHENIE ('заключение'): noprotect;
+<<
+                                                                                                                                      Заключение
+                                                                                                                                      .@@@@@@@@@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>
+end;
+end;
+handleevent
+cmExprFieldChanged: {
+ inherited::handleevent(cmExprFieldChanged);
+ case curfield of
+ #DO_ZAKLYUCHENIE:
+  {
+   extAttr.sSetAttr( coBaseDoc,baseDoc.nrec,'Заключение',exprfieldvalue)
+  }
+ end;
+ rereadrecord;
+}
+cmValue68:
+{
+  var tmpKM : TPtr = InitMarker('', 8, 100, 10);
+    pMarker.ExportTo(tmpKM);
+   RunInterface('ATLANTIC::ReportSumDeclarationToDO'
+                    , tmpKM
+               )
+
+}
+cmValue65:
+{
+  _PickingReport_View.ShowPickingReportData(0h, BaseDoc.nrec)  ;
+}
+
+end;
+end. // interface

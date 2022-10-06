@@ -1,0 +1,34 @@
+////////////// подменяем обработчик событий 
+#component "L_TTNDOC"
+alter interface TTNDOC;
+
+Panel paTTNDoc
+  Table TTNDoc;
+Handleevent
+cmPick:
+{
+
+ if Inherited::handleevent(cmPick) = heAbort
+  {
+    stop;abort;exit;
+  }
+  case curfield of
+   #MARAVT.NMARAVT:
+   {
+     case pTable of
+       coBaseDoc:
+        if ExtTTNInNakl AND IsValid(#TTNDoc) // пир 102.39722
+        if TTNDoc.cOrgAvt <> 0h
+        {
+          update current BaseDoc set BaseDoc.cGrPol := TTNDoc.cOrgAvt;
+          set pGruzR :=  BaseDoc.cGrPol;       // грузополучатель
+        }
+        end;
+   }
+   end;
+   rereadrecord;
+}
+end;  // HandleEvent Panel paTTNDoc
+end;  // Panel paTTNDoc
+
+end. // interface

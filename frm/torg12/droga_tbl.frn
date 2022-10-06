@@ -1,0 +1,35 @@
+table struct tblT12Tmp (
+tNom		:word,
+tName		:string,
+tCodeMC		:string,
+tUed		:string,
+tCodeEd		:string,
+tCodeOtpEd	:string,
+tOtpEd		:string,
+tKolOneGrM	:string,
+tKolGrM		:double,
+tCol9		:double,
+tCol10		:double,
+tPriceNoNDS	:double,
+tPriceValNoNDS	:double,
+tSumNoNDS 	:double,
+tSumValNoNDS 	:double,
+tStNal		:double,
+tSumNal		:double,
+tSumValNal      :double,
+tSumTotal 	:double,
+tSumValTotal 	:double,
+tMassMC 	:double,
+tMassTara 	:double,
+tCountU4 	:double,
+tgrMBEI 	:string,
+tgrMCount 	:double,
+tCountF 	:double,
+tSrcCountry     :string,   
+tGtdNumber      :string,    
+tOrder          :string
+)
+with index (
+  tempCode  = tCodeMC+ tGtdNumber,
+  tempOrder = tOrder+ tNom
+);

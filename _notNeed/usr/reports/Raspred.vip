@@ -1,0 +1,490 @@
+#component 'F_UserReport'
+//Выбор накладных по дате и автопредприятию.
+TABLE STRUCT tKatSopr
+(
+ IsPicked : char,
+ nrec     : comp,
+ dsopr    : date,
+ nsopr    : string,
+ OrgName  : string,
+ summa    : double
+)
+WITH INDEX
+(
+ tKatSopr01 = nrec,
+ tKatSopr02 = IsPicked,
+ tKatSopr03 = dsopr + nsopr
+);
+#include Raspred_GetSopr.vip
+#include Raspred_GetDogovor.vip
+#component 'F_UserReport'
+INTERFACE Droga_RaznosUslug 'Распределение транспортных расходов по накладным';
+Show (,,76,21);
+
+CONST
+#include DrogaConst.inc
+END;
+
+TABLE STRUCT tSpUsl
+(
+ NumPos  :integer,
+ DateUsl :date,
+ SumUsl  :double,
+ Comment :string
+)
+WITH INDEX
+(
+ tSpUsl02 = Dateusl,
+ tSpUsl01 = NumPos
+);
+
+TABLE STRUCT tSpNakl
+(
+ NumPos  :integer,
+ cSpUsl  :integer,
+ cNakl   :comp,
+ dsopr   :date,
+ nsopr   :string,
+ OrgName :string,
+ SumNakl :double,
+ SumRasp :double
+)
+WITH INDEX
+(
+ tSpNakl01 = dsopr + nsopr,
+ tSpNakl02 = NumPos,
+ tSpNakl03 = cSpUsl + NumPos
+);
+
+CREATE VIEW
+var basedocNodoc, nOrg, nUsl, DogovorNodoc :string;
+    basedocDdoc, dogovorDdoc, d1, d2:date;
+    cOrg, cUsl, cUslOtpEd, cBank, cStatus, cDogovor, cDog, cApp :comp;
+    vNumPosUsl, vNumPosNakl:integer;
+AS SELECT *
+FROM attrnam, attrval, katorg, katusl, katotped, tKatSopr,
+     tSpUsl, tSpUsl tSpUslCheck, tSpNakl, tSpNakl tSpNaklCheck,
+     basedoc, stepdoc, spstep, soprhoz, katnotes, katbank, katbank mykatbank,
+     dogovor
+WHERE
+((
+    tSpUsl.NumPos == tSpNakl.cSpUsl
+and tSpUslCheck.NumPos == tSpNaklCheck.cSpUsl
+and cOrg == katorg.nrec
+and cDogovor == dogovor.nrec
+and cOrg == katbank.corg and word(1)==katbank.aktiv
+and cUsl == katusl.nrec
+and word(2) == katotped.prmc and cUsl == katotped.cmcusl and word(1) == katotped.akt
+and word(40)==katnotes.viddoc and word(2)==katnotes.status
+));
+//Очистка всех таблиц
+PROCEDURE ClearAllTables;
+{ DELETE ALL tSpUsl; DELETE ALL tSpNakl; DELETE ALL tKatSopr;}//ClearAllTables;
+
+//Проверка параметров заголовка
+FUNCTION HeadParamsOK :Boolean;
+{
+ HeadParamsOK:=TRUE;
+ IF basedocNodoc = '' THEN {HeadParamsOK := false; Exit;}
+ IF basedocDdoc  = date(0,0,0) or basedocDdoc>Cur_Date THEN {HeadParamsOK := false; Exit;}
+ IF cOrg = 0 THEN {HeadParamsOK := false; Exit;}
+ IF cUsl = 0 THEN {HeadParamsOK := false; Exit;}
+ IF d1>d2 or d1=date(0,0,0) or d2=date(0,0,0) or d1>basedocDdoc or d2>basedocDdoc THEN {HeadParamsOK := false; Exit;}
+}//headparamsok
+
+//Проверка текущей записи в спецификации услуг
+FUNCTION SpUslPosOK :boolean;
+{
+ SpUslPosOK := TRUE;
+ IF tSpUsl.DateUsl=date(0,0,0) or tSpUsl.DateUsl<d1 or tSpUsl.DateUsl>d2 THEN {SpUslPosOK:=false;Exit;}
+ IF tSpUsl.SumUsl<=0 THEN {SpUslPosOK:=false;Exit;}
+}//spuslPosok
+
+FUNCTION CountSoprForCurUsl (var vSum:double) :integer;
+VAR i:integer;
+{
+ i:=0;vSum:=0;
+ _LOOP tSpNaklCheck {i:=i+1; vSum:=vSum+tSpNaklCheck.SumRasp;}
+ CountSoprForCurUsl:=i;
+}
+
+FUNCTION EverythingIsOK :boolean;
+VAR vSum:double;
+{
+ EverythingIsOK := FALSE;
+ IF NOT HeadParamsOK THEN {Message('Не заполнены необходимые параметры!');Exit;}
+ IF RecordsInTable(tntSpUslCheck)=0 THEN {Message('Не задано ни одной позиции услуг!');Exit;}
+ _LOOP tSpUslCheck
+ {
+  vSum:=0;
+  IF CountSoprForCurUsl(vSum) = 0 THEN {Message('Не задано ни одной накладной'+chr(13)+'для распределения услуги от '+tSpUslCheck.dateusl);Exit;}
+  IF Round(vSum,2)<>Round(tSpUslCheck.SumUsl,2) THEN {Message('Некорректно распределена по накладным сумма услуги'+chr(13)+'от '+tSpUslCheck.dateusl);Exit;}
+ }
+ EverythingIsOK := TRUE;
+}//everythingisok
+
+//Вставка или обновление внешних атрибутов
+PROCEDURE ProcessExtAttr (vtable:word; vName:string; vRec:comp; vstring:string;vdate:date;vcomp:comp);
+{
+ IF GetFirst fastfirstrow attrnam where ((vtable==attrnam.wtable and vName == attrnam.name)) = tsOK
+ {
+  UPDATE attrval where ((vtable==attrval.wtable and vRec==attrval.crec and attrnam.nrec==attrval.cattrnam))
+     SET attrval.vstring:=vstring,
+         attrval.vdate  :=vDate,
+         attrval.vcomp  :=vcomp
+  ;
+  IF RowCount = 0 THEN
+  INSERT attrval
+     SET attrval.wtable   := vtable,
+         attrval.crec     := vRec,
+         attrval.cattrnam := attrnam.nrec,
+	      attrval.vstring  := vstring,
+         attrval.vdate    := vDate,
+         attrval.vcomp    := vcomp
+  ;
+ }
+}//insertextattr
+
+//Задание значений для новой записи в спецификации услуг
+PROCEDURE CreateNewSpUsl;
+{
+ vNumPosUsl := vNumPosUsl+1;
+ ClearBuffer(#tSpUsl);
+ tSpUsl.NumPos  := vNumPosUsl;
+ tSpUsl.DateUsl := d1;
+}//createnewspusl
+
+//Вызов выбора накладных и распределение суммы услуги по ним
+PROCEDURE CreateRaspred;
+VAR KolSelected:integer;
+{
+ KolSelected:=0;
+ IF RunInterface(Droga_GetSoprForRaznos,tSpUsl.DateUsl,cOrg,KolSelected)=cmDefault and KolSelected<>0
+ {
+  StartNewVisual(vtRotateVisual, vfTimer, 'Распределяю сумму по накладным', 0);
+  _LOOP tKatSopr WHERE (('V'==tKatSopr.IsPicked))
+  {
+   vNumPosNakl := vNumPosNakl+1;
+   INSERT tSpNakl
+      SET tSpNakl.NumPos := vNumPosNakl,
+          tSpNakl.cSpUsl := tSpUsl.NumPos,
+          tSpNakl.cNakl  := tKatSopr.nrec,
+          tSpNakl.dsopr  := tKatSopr.dsopr,
+          tSpNakl.nsopr  := tKatSopr.nsopr,
+          tSpNakl.OrgName:= tKatSopr.OrgName,
+          tSpNakl.SumNakl:= tKatSopr.Summa,
+          tSpNakl.SumRasp:= tSpUsl.SumUsl/KolSelected
+   ;
+  }//loop
+  RescanPanel(tntSpNakl);
+  StopVisual('',0);
+ }
+}//createraspred
+
+//Панель заголовка
+PANEL Panel1 Show (,,75,5) NoTableNavigation;
+ SCREEN Scr1;
+  FIELDS basedocNodoc :noprotect;
+         basedocDdoc  :noprotect;
+         nOrg         :protect,pickbutton;
+         dogovorNodoc :protect,pickbutton;
+         dogovorDdoc  :protect;
+         nUsl         :protect,pickbutton;
+         d1           :noprotect;
+         d2           :noprotect;
+  BUTTONS cmOK,,,'Сформировать ДО на закупку транспортных услуг';
+          cmClearRasp,,,'Очистить распределение для текущей услуги';
+<<
+  № документа             .@@@@@@@@@@ от .@@@@@@@@@@     <.  Выполнить  .>
+  Контрагент (перевозчик) .@@@@@@@@@@@@@@@@@@@@@@@@@
+  Договор с перевозчиком  .@@@@@@@@@@ от .@@@@@@@@@@
+  Транспортная услуга     .@@@@@@@@@@@@@@@@@@@@@@@@@     <.Отм. распред..>
+  За период:            с .@@@@@@@@@@ по .@@@@@@@@@@
+>>
+ END; //screen
+END;//panel1
+
+//Панель спецификации услуг
+PANEL Panel2 Show (,6,75,10) Table tSpUsl;
+ BROWSE Br2;
+   Table tSpUsl;
+   Fields tSpUsl.DateUsl 'Дата', 'услуги'        :[10], noprotect;
+          tSpUsl.SumUsl  'Стоимость','услуги'    :[15,'\2p[|-]366`666`666`666`666.88'], noprotect;
+          tSpUsl.Comment 'Примечание','к услуге' :[30], noprotect;
+ END;//browse
+ HANDLEEVENT
+ cmSetDefault  : IF CurTable = #tSpUsl THEN {CreateNewSpUsl;SelectField(#tSpUsl.DateUsl)} ELSE Abort;
+ cmInsertRecord: IF CurTable = #tSpUsl THEN
+                 {
+                  insert current tSpUsl;
+					  }
+					  ELSE Abort;
+ cmDeleteRecord: IF CurTable = #tSpUsl THEN
+                 {
+					   DELETE tSpNakl WHERE ((tSpUsl.NumPos == tSpNakl.cSpUsl));
+					   DELETE Current tSpUsl;
+					   ReReadRecord(#tSpUsl);
+	              }
+	              ELSE Abort;
+ cmUpDateRecord: IF CurTable = #tSpUsl THEN
+                 {
+                  update current tSpUsl;
+					  }
+					  ELSE Abort;
+ cmCheckField  : {
+                  IF CurField = #tSpUsl.DateUsl
+                  {
+                   IF tSpUsl.DateUsl<D1 or tSpUsl.DateUsl>D2 THEN
+                   {
+                    Message('Дата услуги не входит в заданный период!');
+                    Abort;
+                   }
+                  }
+                 }
+ END;//handleevent panel2
+END;//Panel2
+
+//Панель спецификации накладных
+PANEL Panel3 Show (,11,75,20) Table tSpNakl;
+ BROWSE Br3;
+   Table tSpNakl;
+   Fields tSpNakl.dsopr   'Дата' ,'накладной'      :[10], protect, skip;
+          tSpNakl.nsopr   'Номер','накладной'      :[10], protect, skip;
+          tSpNakl.OrgName 'Контрагент','по накладной' :[20], protect, skip;
+          tSpNakl.SumNakl 'Сумма','накладной'      :[15,'\2p[|-]366`666`666`666`666.88'], protect, skip;
+          tSpNakl.SumRasp 'Распределенная','сумма' :[15,'\2p[|-]366`666`666`666`666.88'], noprotect;
+ END;//browse
+ HANDLEEVENT
+// cmSetDefault: {}//cmsetdefault
+// cmInsertRecord: insert current tSpNakl;
+// cmDeleteRecord: delete current tSpNakl;
+ cmUpdateRecord: update current tSpNakl;
+ END;//handleevent panel2
+END;//Panel3
+
+HANDLEEVENT
+cmInit:
+{
+ ClearAllTables;
+ basedocNodoc:=''; basedocDdoc := Cur_Date; d1 := date(1,Month(Cur_Date),Year(Cur_Date)); d2 := Cur_Date;
+ cOrg := 0; cBank := 0; nOrg := ''; cUsl :=0; cUslOtpEd := 0; nUsl := '';
+ cDogovor :=0;
+ cStatus:=0;
+ vNumPosUsl:=0; vNumPosNakl:=0;
+}//cmInit
+cmPick:
+{
+ CASE CurField OF
+ #nOrg :
+         {
+          RunInterface('L_KATORG::Getkator',cOrg);
+          IF GetFirst fastfirstrow katorg = tsOK THEN SET nOrg := katorg.name;
+         }
+ #DogovorNodoc:
+         IF cOrg = 0 THEN Message('Сначала выберите Контрагента!')
+         ELSE
+         {
+          RunInterface('F_UserReport::Droga_GetDogForRaznos', cOrg, cDogovor);
+          IF GetFirst fastfirstrow dogovor = tsOK THEN
+			 {
+			  SET DogovorNodoc := dogovor.nodoc;
+			  SET DogovorDdoc  := dogovor.ddoc;
+		    }
+         }
+ #nUsl :
+         {
+          RunInterface('L_MCU::GetUsl',cUsl);
+          IF GetFirst fastfirstrow katusl = tsOK THEN
+			 {
+			  SET nUsl := katusl.name;
+			  IF GetFirst fastfirstrow katotped = tsOK THEN cUslOtpEd := katotped.nrec;
+		    }
+         }
+ END;//case
+}//cmPick
+cmSwitchFormat:
+{
+ IF FocusedFormat=Scr1 and (Target = Br2 OR Target = Br3) THEN IF NOT HeadParamsOK THEN {Message('Не все параметры заголовка верно заполнены!');Abort;Exit;}
+ CASE Target OF
+ Br3     :{
+           IF NOT SpUslPosOK THEN {Message('Не все параметры услуги верно заполнены!');Abort;}
+           ELSE
+           {
+		      IF GetFirst fastfirstrow tSpNakl<>tsOK THEN CreateRaspred;
+           }
+          }
+ END;//case
+}
+cmClearRasp:
+IF GetFirst tSpUslCheck WHERE ((tSpUsl.NumPos==tSpUslCheck.NumPos))=tsOK THEN
+IF CountSoprForCurUsl(0) <> 0 THEN
+IF Message('Очистить распределение текущей услуги по накладным?', YesNo+Confirmation)=cmYes THEN
+{
+ DELETE tSpNakl WHERE ((tSpUsl.NumPos == tSpNakl.cSpUsl));
+ RescanPanel(tntSpNakl);
+}//cmclearrasp
+cmOK:
+IF EverythingIsOK THEN
+IF Message('Сформировать ДО с заданными параметрами?', YesNo+Confirmation)=cmYes THEN
+{
+ VAR NRow : integer;
+ VAR AllOK: boolean;
+ StartNewVisual(vtRotateVisual, vfTimer, 'Создаю документ-основание на закупку услуг', 0);
+ AllOK:=TRUE;
+ IF GetFirst fastfirstrow katnotes = tsOK THEN cStatus:=katnotes.nrec ELSE Message('Не найден статус "исполняемый"!');
+ IF GetFirst fastfirstrow dogovor = tsOK THEN
+ {
+  cDog    := IF(dogovor.cdogovor=0,dogovor.nrec,dogovor.cdogovor);
+  cApp    := IF(dogovor.cdogovor=0,     0      ,dogovor.nrec    );
+ }
+ ELSE IF GetFirst fastfirstrow katbank = tsOK THEN
+      {
+       cDog    := 0; cApp    := 0;
+		 cBank   := katbank.nrec;
+      }
+ //Вставляем ДО
+ INSERT basedoc
+    SET basedoc.descr    := sgettune('USER.DESCR'),
+        basedoc.desgr    := sgettune('USER.DESGR'),
+	     basedoc.corg     := cOrg,
+	     basedoc.cbank    := IF(cDog<>0,dogovor.cbankpol,cBank),
+	     basedoc.cmybank  := IF(cDog<>0,dogovor.cbankplat,coGetTune('MyBank')),
+	     basedoc.cgrpol   := IF(cDog<>0,dogovor.cgrpol,coGetTune('MyOrg')),
+	     basedoc.cgrotpr  := IF(cDog<>0,dogovor.cgrotp,cOrg              ),
+        basedoc.viddoc   := word(101),
+        basedoc.nodoc    := basedocNodoc,
+        basedoc.dform    := basedocDdoc,
+        basedoc.ddoc     := basedocDdoc,
+        basedoc.yeardoc  := Year(basedocDdoc),
+        basedoc.koldn    := 3,
+        basedoc.dend     := Add_Day(basedocDdoc,3),
+        basedoc.cdogovor := cDog,
+        basedoc.cappdogovor := cApp,
+        basedoc.status   := word(2),
+        basedoc.cnote    := cStatus,
+        basedoc.tipmoney := 1,
+        basedoc.direct   := 2,
+        basedoc.name     := 'Транспортные расходы',
+        basedoc.vhodnal  := 1 //налоги входят в цену
+ ;//basedoc
+ IF RowCount =0 THEN AllOK := false;
+
+ IF AllOK THEN
+ {
+  INSERT stepdoc
+     SET stepdoc.cbasedoc := basedoc.nrec,
+         stepdoc.nstep    := 1,
+         stepdoc.dstart   := basedoc.ddoc,
+         stepdoc.dend     := basedoc.dend,
+         stepdoc.doplmax  := IF(cDog<>0,dogovor.dend,date(0,0,0)),
+         stepdoc.dotgr    := IF(cDog<>0,dogovor.dend,date(0,0,0)),
+         stepdoc.status   := basedoc.status
+  ;//stepdoc
+  IF RowCount =0 THEN AllOK := false;
+ }
+
+ //Вставляем хозяйственную операцию по ДО
+ IF AllOK THEN
+ {
+  INSERT soprhoz
+     SET soprhoz.cdogovor := basedoc.cdogovor,
+         soprhoz.cappdogovor := basedoc.cappdogovor,
+         soprhoz.cstepdoc := stepdoc.nrec,
+         soprhoz.csoprdoc := basedoc.nrec,
+         soprhoz.datob    := basedoc.ddoc,
+         soprhoz.tipdoc   := 41,
+         soprhoz.tidkgal  := 41,
+         soprhoz.nodoc    := basedoc.nodoc,
+         soprhoz.descr    := basedoc.descr,
+         soprhoz.desgr    := basedoc.desgr
+  ;//soprhoz
+ }
+
+ IF AllOK THEN
+ {
+  ProcessExtAttr(1102,AttrDOPeriodBegin   ,basedoc.nrec,'',D1,0);
+  ProcessExtAttr(1102,AttrDOPeriodEnd     ,basedoc.nrec,'',D2,0);
+ }//AllOK
+
+ //Вставляем спецификацию ДО
+ IF AllOK THEN
+ {
+  NRow := 0;
+  _LOOP tSpUsl
+  {
+   _LOOP tSpNakl
+   {
+    NRow := NRow + 1;
+    INSERT spstep
+       SET spstep.npp      := NRow,
+           spstep.prmc     := 2,
+           spstep.cmcusl   := cUsl,
+           spstep.cotped   := cUslOtpEd,
+           spstep.kol      := 1,
+           spstep.price    := tSpNakl.SumRasp,
+           spstep.ddoc     := basedoc.ddoc,
+           spstep.cstepdoc := stepdoc.nrec,
+           spstep.kolskl   := 1,
+           spstep.cdogovor := basedoc.cdogovor,
+           spstep.cappdogovor := basedoc.cappdogovor
+    ;//insert spstep
+    IF RowCount = 1 THEN
+    {
+     ProcessExtAttr(1104,AttrSPDateUsl,spstep.nrec,''              ,tSpUsl.DateUsl,0            );
+     ProcessExtAttr(1104,AttrSPComment,spstep.nrec,tSpUsl.Comment  ,Date(0,0,0)   ,0            );
+     ProcessExtAttr(1104,AttrSPNakl   ,spstep.nrec,''              ,Date(0,0,0)   ,tSpNakl.cNakl);
+    }
+   }//loop spnakl
+  }//loop spusl
+ }//AllOK спецификация
+ ClearAllTables;
+ StopVisual('',0);
+ RunInterface('L_BASEDOC::VSCHETB',basedoc.nrec);
+ CloseInterface(cmDefault);
+}//cmOK
+cmCancel:
+{
+ ClearAllTables;
+ CloseInterface(cmCancel);
+}//cmcancel
+END;//Handleevent
+END.//interface
+
+//////////////////////////////////////////////
+//
+//  пункт меню в отчетах пользовател
+//
+#component 'F_UserReport'
+#include UserReport.vih
+VipInterface UserReport_RaznosUslug Implements IUserReport;
+
+Interface UserReport_RaznosUslug;
+
+create view;
+procedure Run;
+begin
+RunInterface('Droga_RaznosUslug');
+end;
+function GetReportName: String;
+begin
+  GetReportName := 'Разноска транспортных услуг по накладным';
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+end;
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'BUY';
+    2 : VisibleInModule := 'SELL';
+    3 : VisibleInModule := 'DOGOVOR';
+  end;
+end;
+!-------------------------------------------------------------------------------
+end.

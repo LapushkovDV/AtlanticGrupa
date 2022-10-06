@@ -1,0 +1,12 @@
+////////////// подменяем обработчик событий 
+#component "C_EXTCLASS"
+alter interface Attribute;
+overload
+ Procedure doInit;
+end;
+Procedure doInit;
+{
+  Inherited::doInit;
+  bNotEditAttribute := bogettune('USERTUNE.ACCESSDATA.CantEditAllAttr');
+}
+end. // interface

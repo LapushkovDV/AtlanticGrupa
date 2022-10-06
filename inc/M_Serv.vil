@@ -1,0 +1,28 @@
+// Галактика 8.00 2004г.
+// Описание экспортируемых интерфейсов компонента M_Serv
+
+#ifdef ComponentVersion
+#component "M_Serv"
+#end
+
+//******************************************************************************
+// меню:
+// документов
+// VipInterface ManServis; // реализация объекта. подключать должны сами (#include oiManServis.vih)
+VipInterface InServis  Licensed(Free) Parameters(TypeSopr: word; pNRec: comp);
+VipInterface UslServis Licensed(Free) Parameters(TypeSopr: word; pNRec: comp);
+VipInterface OutServis Licensed(Free) Parameters(TypeSopr: word; pNRec: comp);
+// отчетов
+VipInterface iRepObjOut  Licensed(Service);
+VipInterface inRasDO     Licensed(Service) Parameters(PoChem: word);
+VipInterface inRasMC     Licensed(Service) Parameters(PoChem: word);
+VipInterface IspolnDO    Licensed(Service) Parameters(PoChem: word);
+VipInterface iRepDepDone Licensed(Service);
+VipInterface iRepIspDone Licensed(Service);
+VipInterface iRepDocDone Licensed(Service);
+VipInterface iRepObjDone Licensed(Service);
+VipInterface Serv_DO     Licensed(Service);
+
+//******************************************************************************
+// public interface
+Vipinterface GetGoods Licensed(Free) Parameters(org1, org2: comp);

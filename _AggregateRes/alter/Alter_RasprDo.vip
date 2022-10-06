@@ -1,0 +1,39 @@
+////////////// подменяем обработчик событий 
+
+/*
+Кондакова Татьяна:
+Власть немного меняется)))
+
+Приоритет следующий:
+1.	Забрать до  -- zе надо говорят
+2.	Если <Забрать до> пустое, то <Доставить до>
+3.	Если оба предыдущих поля пустые, то предлагать текущую дату по календарю
+
+Изменения связаны с тем, что оказывается накладные на Кораблик у нас фиксируются датой поставки на РЦ
+
+*/
+#Component "L_BASEDOC"
+alter interface RASPRDO;
+
+Window wParamEx;
+ handleevent
+  cminit:
+  {
+   inherited::handleevent(cmInit);
+/*
+   dFor := if(STEPDOC.DZABOR <> 0
+             ,STEPDOC.DZABOR
+             ,if(STEPDOC.DOTGR <> 0
+                ,STEPDOC.DOTGR
+                ,cur_date
+                )
+             );
+             */
+   dFor := if( STEPDOC.DOTGR <> 0
+              ,STEPDOC.DOTGR
+              ,cur_date
+             );
+  }
+ end;
+end;
+end. // interface

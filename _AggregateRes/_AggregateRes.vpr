@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>alter_vschet</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.33.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\inc\*
+					..\..\SourceGal\*
+					..\..\..\FRM\*
+					..\MercuryPRJ\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_BaseDoc.res
+					$[GalExe]\L_Common.res
+				</ResourceList>
+				<OutputResource>..\..\alter_vschet_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:10.2.1.151[1997]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="alter\alter_l_basedoc_vschet.vip" PosX="30" PosY="261" OpenEditor="True" Active="True"/>
+			<File Name="cnf\L_BASEDOC_VSCHET.cnf" PosX="34" PosY="285" OpenEditor="True"/>
+			<File Name="cnf\L_BASEDOC_VSCHETB.cnf" PosX="32" PosY="5" OpenEditor="True"/>
+			<File Name="..\..\SourceGal\5.5.31\L\L_BaseDoc\vip\vschet.vip" PosX="36" PosY="17" OpenEditor="True"/>
+			<File Name="..\..\SourceGal\5.5.31\L\L_BaseDoc\vip\vschet_release.vip" PosX="6" PosY="956" OpenEditor="True"/>
+			<File Name="..\..\SourceGal\5.5.31\L\L_BaseDoc\vip\BaseStep\BaseStep.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="alter\alter_l_basedoc_vschetB.vip" PosX="65" PosY="61" OpenEditor="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="alter_vschet.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\alter_vschet\alter_vschet.prj" DateTimeStart="43816,9454626852" DateTimeCompile="0,000382222220650874" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\alter_vschet\ALTER\alter_l_basedoc_vschet.vip" SourceLine="201" SourceColumn="7"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\alter_vschet\ALTER\alter_l_basedoc_vschet.vip" SourceLine="202" SourceColumn="17"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\alter_vschet\ALTER\alter_l_basedoc_vschet.vip" SourceLine="241" SourceColumn="3"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\alter_vschet\ALTER\alter_l_basedoc_vschet.vip" SourceLine="254" SourceColumn="17"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\alter_vschet\ALTER\alter_l_basedoc_vschet.vip" SourceLine="285" SourceColumn="17"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\alter_vschet\ALTER\alter_l_basedoc_vschet.vip" SourceLine="513" SourceColumn="8"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект IVIPIFCIFC ATLANTIC::REPORTMASSA_DO_NAKL, описывающий интерфейс вызова. Параметры вызова для ATLANTIC::REPORTMASSA_DO_NAKL не проверены." SourceFileName="C:\GALAKTIKA\RES\SRC\ALTER_VSCHET\ALTER\ALTER_L_BASEDOC_VSCHET" SourceLine="635" SourceColumn="17"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект IVIPIFCIFC L_DOGOVOR::GETSOMKATNOTES, описывающий интерфейс вызова. Параметры вызова для L_DOGOVOR::GETSOMKATNOTES не проверены." SourceFileName="C:\GALAKTIKA\RES\SRC\ALTER_VSCHET\ALTER\alter_l_basedoc_vschet.vip" SourceLine="574" SourceColumn="26"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="17.12.2019 22:42:01"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<MarkerList>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
+			<Marker FileName="alter\alter_l_basedoc_vschetB.vip" Caption="Нумерованная закладка 1" Line="22" NumIndex="1" MarkerType="mtNumBookmark" Comment="DO_ZAKLYUCHENIE : ;"/>
+			<Marker FileName="alter\alter_l_basedoc_vschet.vip" Caption="Нумерованная закладка 1" Line="461" NumIndex="1" MarkerType="mtNumBookmark" Comment="rescanpanel()"/>
+		</MarkerList>
+		<BreakPointList>
+			<BreakPoint FileName="alter_vschet.prj" Line="42"/>
+		</BreakPointList>
+	</ProjectManager>
+</Viper>

@@ -1,0 +1,94 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика ERP - логистика
+// Экспорт в хранилище данных
+// Процедуры сохранения/восстановления списка значений параметров
+//********************************************************************************
+
+Procedure StoreMarkerToMemo(mf_handle: longint; sMrkName: string; ItemSize: byte);
+var
+//*************
+  Marker
+, MrkCount
+, i
+    : longint;
+//*************
+  PickRec
+    : comp;
+//*************
+  PickNum
+    : word;
+//*************
+{
+  Marker := InitMarker(sMrkName, ItemSize, 100, 10);
+
+  MrkCount := GetMarkerCount(Marker);
+
+  StoreFieldToMemo(mf_handle, MrkCount);
+
+  for (i := 1; i <= MrkCount; i := i + 1)
+    case ItemSize of
+    // word
+      2:
+        {
+          GetMarker(Marker, i - 1, PickNum);
+          StoreFieldToMemo(mf_handle, PickNum);
+        }
+    // comp
+      8:
+        {
+          GetMarker(Marker, i - 1, PickRec);
+          StoreFieldToMemo(mf_handle, PickRec);
+        }
+    end;
+
+  DoneMarker(Marker, '');
+}
+
+//********************************************************************************
+Procedure LoadMarkerFromMemo(mf_handle : longint; sMrkName : string; ItemSize: byte);
+var
+  Marker
+, MrkCount
+, i
+    : longint;
+
+  PickRec
+    : comp;
+
+  PickNum
+    : word;
+{
+  Marker := InitMarker(sMrkName, ItemSize, 100, 10);
+
+  ClearMarker(Marker);
+  
+  if ( not File_EOF(mf_handle) ) // для совместимости со старыми параметрами, иначе - ошибка при чтении
+    {
+      LoadFieldFromMemo(mf_handle, MrkCount);
+
+      for (i := 1; i <= MrkCount; i := i + 1)
+        {
+          if File_EOF(mf_handle)
+            Break;
+
+          case ItemSize of
+          // word
+            2:
+              {
+                LoadFieldFromMemo(mf_handle, PickNum);
+                InsertMarker(Marker, PickNum);
+              }
+          // comp
+            8:
+              {
+                LoadFieldFromMemo(mf_handle, PickRec);
+                InsertMarker(Marker, PickRec);
+              }
+          end;
+        }
+    }
+
+  DoneMarker(Marker, sMrkName);
+}
+//********************************************************************************

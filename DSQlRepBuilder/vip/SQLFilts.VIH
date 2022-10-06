@@ -1,0 +1,21 @@
+/*************************************************************************************************\
+* Наименование:  отчеты на DSQL                                                                   *
+* Контур/Модуль: Утилиты                                                                          *
+* Примечание:                                                                                     *
+* Вид работы  |Номер         |Дата    |Исполнитель              |Проект                           *
+* ----------------------------------------------------------------------------------------------- *
+\*************************************************************************************************/
+#ifndef _SQLFilts_
+#define _SQLFilts_
+
+#component "ATLANTIC_Common"
+
+ObjInterface objSQLFilts;
+  procedure ReInit(_cOborCFG: comp);
+  procedure ReadFiltValue(_cOborCFG : comp);
+  function ReadOneFiltValueToMarker(_cOborCFG : comp; nField : integer): boolean;
+  function GetFiltMarkerName(_cOborCFG : comp; nField : integer): string;
+End;
+
+vipinterface SQLFilts implements objSQLFilts #Licensed_Free;
+#endif

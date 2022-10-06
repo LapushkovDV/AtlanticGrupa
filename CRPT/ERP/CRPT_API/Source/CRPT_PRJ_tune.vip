@@ -1,0 +1,113 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - настройки
+// Создание/модификация настроек в компонентах
+//********************************************************************************
+
+#include CreateTune.vih
+
+//------------------------------------------------------------------------------
+Handler with replace CRPT_DateModifyTune on ExtensionPoint
+  epDateModifyTune (TS : ObjStartCreateTune)
+Action
+{
+  TS.SetLastDateModTune(01,07,2018);
+  Result := true;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+Handler with replace CRPT_CreateTuneComponent on extensionPoint
+  epCreateTuneComponent (TR: ObjCreateTuneEx)
+  // Внимание, приоритеты вызова обработчиков см. в CreateTune.vih
+Action
+{
+  Result := true;
+  //----------------------------------------------------------------------------
+  // Обязательно установить  имя компонента
+  TR.SetComponent('ATLANTIC');
+  //----------------------------------------------------------------------------
+
+  TR.AddPart(   ttSysUserTune
+             , 'USERTUNE'
+             , 'Tune'
+             , 'Настройки пользовательских доработок'
+             , 0);
+
+     TR.AddPart (ttSysUserTune,'USERTUNE.CRPT_PRJ','USERTUNE','Честный знак',0);
+        TR.AddTune (ttSysTune,'USERTUNE.CRPT_PRJ.tokenPath','USERTUNE.CRPT_PRJ','Директория с файлом токена',ftString,'','',0);
+           TR.AddIntrTune ('USERTUNE.CRPT_PRJ.tokenPath','CRPT_PRJ_getdir');
+
+        TR.AddTune (ttSysTune,'USERTUNE.CRPT_PRJ.INFOTOOLSLOADER_InputFolder','USERTUNE.CRPT_PRJ','INFOTOOLSLOADER. Директория INPUT',ftString,'','',0);
+           TR.AddIntrTune ('USERTUNE.CRPT_PRJ.INFOTOOLSLOADER_InputFolder','CRPT_PRJ_getdir');
+        TR.AddTune (ttSysTune,'USERTUNE.CRPT_PRJ.INFOTOOLSLOADER_OutputFolder','USERTUNE.CRPT_PRJ','INFOTOOLSLOADER. Директория Output (arch)',ftString,'','',0);
+           TR.AddIntrTune ('USERTUNE.CRPT_PRJ.INFOTOOLSLOADER_OutputFolder','CRPT_PRJ_getdir');
+        TR.AddTune (ttSysTune,'USERTUNE.CRPT_PRJ.INFOTOOLSLOADER_LogFolder','USERTUNE.CRPT_PRJ','INFOTOOLSLOADER. Директория Log',ftString,'','',0);
+           TR.AddIntrTune ('USERTUNE.CRPT_PRJ.INFOTOOLSLOADER_LogFolder','CRPT_PRJ_getdir');
+
+        TR.AddTune (ttSysTune,'USERTUNE.CRPT_PRJ.CryptoCrtf','USERTUNE.CRPT_PRJ','Сертификат КРИПТО ПРО',ftString,'','',0);
+
+//    createEcodCell(ChildOne, 'certificate_type', 'CONFORMITY_CERTIFICATE');
+        TR.AddTune (ttSysTune,'USERTUNE.CRPT_PRJ.CONFORMITY_CERTIFICATE_Number'          ,'USERTUNE.CRPT_PRJ','Сертификат соответствия. Number',ftString,'','',0);
+        TR.AddTune (ttSysTune,'USERTUNE.CRPT_PRJ.CONFORMITY_CERTIFICATE_certificate_date','USERTUNE.CRPT_PRJ','Сертификат соответствия. certificate_date',ftString,'','',0);
+        TR.AddTune (ttSysTune,'USERTUNE.CRPT_PRJ.CONFORMITY_CERTIFICATE_tnved_code'      ,'USERTUNE.CRPT_PRJ','Сертификат соответствия. tnved_code',ftString,'','',0);
+
+//    createEcodCell(ChildOne, 'certificate_number', 'RU.77.99.32.006.R.000337.02.20');
+//    createEcodCell(ChildOne, 'certificate_date','2020-02-11');
+//    createEcodCell(ChildOne, 'tnved_code','2201101900');
+
+
+
+}
+//------------------------------------------------------------------------------
+
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - настрокйи
+// Обработка настроек с вызовом интерфейсов в компонентах
+//********************************************************************************
+
+
+#include  TuneSpec.vih
+
+#component ""
+VipInterface CRPT_PRJ_IntrTune implements ObjIntrTuneComponent licensed (FREE);
+
+// Обработчик точки расширения epIntrTuneComponent
+// Должен вернуть FALSE если обработка проводилась. TRUE - если не проводилась.
+handler with replace CRPT__IntrTune on extensionPoint epIntrTuneComponent (TR: objTuneIntr; TVal: TTuneVal; Inter: string)
+action
+{
+   var ifc : CRPT_PRJ_IntrTune;
+   result := not ifc.TuneIntrComponent (TR, TVal, Inter);
+}
+
+Interface CRPT_PRJ_IntrTune;
+
+Create view
+;
+
+// Обязательно должна вернуть False если обработка не производилась, иначе true
+Public Function TuneIntrComponent (TR: objTuneIntr; TVal: TTuneVal; Inter: string) : boolean;
+{
+  Var PrOk : boolean;     PrOk := False;
+  var TuneCode : string;  TuneCode := TR.GetTuneCode(TVal.cTune);  // код текущей настройки, если нужен
+
+  TuneIntrComponent := true; // Чтобы в каждом case не писать это
+
+  case UpCase(Inter) of
+  'CRPT_PRJ_GETDIR':   {var s:string  ;
+                        s:=getdirname('Выбор директории');
+                        if length(s)>0 and TVal.strVal<>s
+                          {TVal.strVal:=s;
+                           PrOk := true;}
+                       }
+   else
+     TuneIntrComponent := false;  // Если не зашли в обработку, то обязательно установим в false
+   end;  // case
+
+   if (PrOk)
+      TR.UpdateTuneVal(TVal);
+}     // TuneIntrComponent
+
+end. // интерфейс

@@ -1,0 +1,6 @@
+SQL Function ATL_GET_SERVERNAME():String
+{
+  return '';
+}
+
+

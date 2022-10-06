@@ -1,0 +1,28 @@
+object 'L_BASEDOC::VSCHETB' : InterfaceWindow {
+
+  object WVSCHET : InterfaceWindow {
+
+    object BRSPSCHET : Browser {
+
+      // Информация: объект "'Field: SPSTEP.NREC'" типа Column не найден в базовой конфигурации!
+      object 'Field: KATMC.BARKOD2' : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        Skip = False;
+        UpCase = False;
+        Password = False;
+        NoValidCheck = True;
+        StatusCtx = 16;
+        Title = 'Артикул';
+        HelpLine = 'Артикул';
+        FieldName = 'Field: KATMC.BARKOD2';
+        Index = 4;
+        DefaultWidth = 21;
+        ButtonType = 0;
+      } // Field: SPSTEP.NREC : Column
+    }
+  } // WVSCHET : InterfaceWindow
+} // L_BASEDOC::VSCHETB : InterfaceWindow
+//-----------------------------------------------------------------------------

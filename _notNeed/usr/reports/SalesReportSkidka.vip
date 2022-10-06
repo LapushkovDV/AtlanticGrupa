@@ -1,0 +1,1099 @@
+#define ComponentVersion // для vih
+#include  extattr.vih   // вн.Атрибут
+
+#component 'F_XLSRep'
+INTERFACE Droga_SalesReportSkidka 'Отчет о Реализации (Скидки,Премии,Каналы сбыта)'  EscClose ;  //(,,sci1Esc)
+SHOW AT (,,65,20);
+! -------------------------------------------------------------------------------
+var fExAttr: iExtAttr;
+Const
+#include  fldcolor.inc  //палитра для scr1  - даты
+ DefaultShablonPath   = '%StartPath%DrogaResources\XLT\Droga_SalesRep.xlt';
+// DefaultShablonPath   = 'c:\Gal810\b_Droga\Droga_SalesRep.xlt';
+ stNDS = 0.18 ;  // 18% ставка НДС по умолчанию для Прайс-листов с налогами "Входят в Цену"
+end; //const
+! ----------------------------------------------------------------------------
+TABLE STRUCT tDataR   //Data  - для первого листа
+(
+ bVidDoc   :byte,    //1 сбыт, 2 акт, 3 бух.спр
+ sDoc      :String[65],
+ sDog	   :string[65],
+ sDC1      :string[65],
+ sDC2      :string[65],
+ cSbyt   : comp,
+ cOrg    : comp,
+ cMc     : comp,
+
+ KolR     :double,
+ SumR     :double,
+ Gross   :double,
+ Net1    :double
+, Cost    :double
+, CostA   :double
+)
+; 
+TABLE STRUCT tSTTL  // Итоги расчет % бонуса  2-й лист
+(
+ cSbyt   : comp,
+ cOrg    : comp,
+// cState  : comp,
+ cMc     : comp,
+
+ Kol     :double,
+ KolA    :double,
+ KolTTL  :double,
+ Niv     :double,
+ Gross   :double,
+ Net1    :double,
+ Bonus   :double
+, Cost    :double
+, CostA   :double
+)
+WITH INDEX
+(
+ tSTTL01 = cOrg + cSbyt + cMC
+)
+;
+TABLE STRUCT tSTTLPr  // Выручка и Премии по Орг-ции 
+(
+ cOrg    : comp,
+//  cSbyt   : comp,    // все равно не сможем придется считать в целом по организации премию даже если несколько каналов
+ Niv     : double,
+ Bonus   : double
+)
+WITH INDEX
+(
+ tSTTLPr01 = cOrg 
+);
+TABLE STRUCT tSTTLi  //  итоги по разрезам Орг или МЦ
+(
+ wTab : word, //Закладака Excel  1 -TTL_C, 2-TTL_Item ...    (строк 65536)		
+ bOrg : byte, // 1- Орг, 2-МЦ
+ cRec  : comp,
+
+ Kol     :double,
+ KolA    :double,
+ KolTTL  :double,
+ mKol     :double,
+ mKolA    :double,
+ mKolTTL  :double,
+ Niv     :double,
+ Gross   :double,
+ Net1    :double,
+ Bonus   :double
+, Cost    :double
+, CostA   :double
+)
+WITH INDEX
+(
+ tSTTLi01 = wTab  + cRec
+);
+TABLE STRUCT tfState
+(
+ nrec    : comp,
+ State   :string,
+ wTab    : word  //закладка МЦ по государствам
+)
+WITH INDEX
+(
+ tfstate1 = nrec
+);
+TABLE STRUCT tfKsb
+(
+ nrec    : comp,
+ kSbyt   :string,
+ wTabOrg : word
+// wTabMC  : word
+)
+WITH INDEX
+(
+ tfKsb1 = nrec
+);
+TABLE STRUCT tfOrg
+(
+ nrec    : comp,
+ kodOrg    :string,
+ sOrg      :string,
+ cState   : comp,
+ state     :string
+)
+WITH INDEX
+(
+ tfOrg1 = nrec,
+ tfOrg2 = sOrg
+);
+TABLE STRUCT tfMC
+(
+ nrec    : comp,
+ kodMC  :string,
+ sMC    :string,
+ sGrMC  :string,
+ Massa  :double
+)
+WITH INDEX
+(
+ tfMC01 = nrec,
+ tfMC02 = sGrMc + sMc
+);
+////////////////////////////////////////////////////////////////////////////
+CREATE VIEW   vS
+VAR d1,d2  :date;
+  // cOtEd : comp;
+   cfState, cfSbyt, cSbAttrNam, cDC  : comp // Для фильтров
+AS SELECT *
+FROM  katsopr, spSopr, SpOrder, Dogovor, Dogovor DogDC, KatOtpEd, Prices, KLPrice,
+      SpDocs, SpDocs SpDC,
+      katmc, groupmc, 
+      tDataR, tSTTL, tSTTLPr, tfOrg, tfKsb, tfMC, tfState, tsTTLi,
+      pick, KatState, SpKau , KatOrg, KatOrg KatOrgP, AttrVal,
+      synonym Pick pickOrg , synonym Pick PickMC, synonym Pick pickGrMC
+
+WHERE
+((   katsopr.nrec == spsopr.csopr 
+ and KatSopr.cDogovor == Dogovor.nRec   
+ and Dogovor.cPriceLS ==  KLPrice.nRec
+ and Dogovor.cPriceLS == Prices.cKLPrice  and  SpSopr.cMCUsl == Prices.cThing                                      
+ and 400 == SpDocs.tidk and KatSopr.cDogovor == SpDocs.cDoc and SpSopr.cMcUsl == SpDocs.cMcUsl (noindex)
+ and cDC == DogDC.nrec
+ and 401 == SpDC.tidk and  cDC== SpDC.cDoc and SpSopr.cMcUsl == SpDC.cMcUsl (noindex)
+ and  KatOrg.cState == KatState.nrec
+// and SpSopr.cMcUsl == katmc.nrec 
+ and katmc.cgroupmc == groupmc.nrec
+ and KatSopr.cStepdoc == StepDoc.nrec and StepDoc.cBaseDoc==BaseDoc.nrec 
+// and word(2)       == pick.wlist  // GroupMC
+ and SpSopr.nRec==SpOrder.cSpSopr 
+
+))
+Bounds B_McPrice  as
+  Prices.cThing == katmc.nrec 
+Bounds B_McSopr  as
+  SpSopr.cMcUsl == katmc.nrec 
+Bounds B_Sbyt  as
+  word(201) == KatSopr.vidsopr  and d1  <<= KatSopr.dOpr and d2  >>= Katsopr.dopr 
+Bounds B_SbytO  as
+  KatSopr.cOrg  == KatOrg.nrec 
+Bounds B_Akt  as //281474976710656015 KATSOPR.CPODRFROM	comp(03E800000000000Fh)
+  word(204) == KatSopr.vidsopr  and d1  <<= KatSopr.dOpr and d2  >>= Katsopr.dopr
+Bounds B_AktP  as
+   KatSopr.cPodrFrom /== KatPodr.nrec and comp(03E800000000000Fh) /== KatPodr.cPodr(noindex)
+Bounds B_AktO  as
+   KatPodr.cOrg  == KatOrg.nrec 
+Bounds B_PlPor  as
+  10 == PlPor.tidk and d1  <<= PlPor.datVip and d2  >>= PlPor.datVip  and ( pos( 'премия' , LoCase(PlPor.NamePl1) ) >0 )
+Bounds B_PlPorO  as 
+ PlPor.cPlat  == KatOrg.nrec 
+
+Bounds B_piOrg  as
+   6 ==  PickOrg.wList  and  KatSopr.cOrg /== PickOrg.cRec  
+Bounds B_piOrgA  as
+   6 ==  PickOrg.wList  and  KatPodr.cOrg /== PickOrg.cRec  
+Bounds B_piOrgPl  as
+   6 ==  PickOrg.wList  and  PlPor.cPlat /== PickOrg.cRec  
+Bounds B_piState  as
+  KatSopr.cOrg /== KatOrgP.nrec and   ( KatOrgP.cState  = cfState )
+Bounds B_piStateA  as
+  KatPodr.cOrg /== KatOrgP.nrec and   ( KatOrgP.cState  = cfState )
+Bounds B_piStatePl  as
+  PlPor.cPlat /== KatOrgP.nrec and   ( KatOrgP.cState  = cfState )
+Bounds B_piSbyt  as
+ word(1102)==AttrVal.wTable and StepDoc.cBaseDoc/==AttrVal.cRec and cSbAttrNam/==AttrVal.cAttrNam and ( AttrVal.vComp=cfSbyt )
+Bounds B_piSbytA  as
+ word(1418)==AttrVal.wTable and KatPodr.cOrg/==AttrVal.cRec and cSbAttrNam/==AttrVal.cAttrNam and ( AttrVal.vComp=cfSbyt )
+Bounds B_piSbytPl  as
+ word(1418)==AttrVal.wTable and PlPor.cPlat/==AttrVal.cRec and cSbAttrNam/==AttrVal.cAttrNam and ( AttrVal.vComp=cfSbyt )
+Bounds B_piMc  as
+   7 ==  PickMc.wList  and  spsopr.cmcusl /== PickMC.cRec  
+Bounds B_piGrMc  as
+   2 ==  PickGrMc.wList  and  katMc.cgroupmc /== PickGrMC.cRec  
+;
+
+FILE MyFile;
+
+VAR
+  bTemp:boolean; //var dateChanged если дата записи переменной не равна текущей-true
+  lfOrg, lfMc, lfGrMC : longInt; // кол-во в фильтре
+  DlgState, DlgKauSbyt, DlgKauOrg, DlgKauMC, DlgGrMC : string;  //для Scr1
+  sXLTFileName, sXLSFileName :string;
+  sGrPrice : string; 
+  RepOption : word;
+  bDetail, bSbytTTL, bStateTTL : boolean; // Подробный отчет, Итоги по Каналам сбыта, Итоги по Странам
+   iKol, PrGP, PrDC, iSum, iGross, iNet1, iCost     :double;   //врем.  Кол-во , сумма ...
+  cOrgAttrNam,   cMCAttrNam  :comp; //вн.аттрибут код Sap для организаций, Мц
+  R_iStr: array [1..4] of LongInt ;  //номер строки в отчете  на i стр.
+   i : word; //номер страницы в отчете
+   j : LongInt;  //счетчик строки в отчете  на i стр.
+  lRepOrg , lRepMC  : longInt; //количество в выборке отчета Организаций, МЦ
+////////////////////////////////////////////////////////////////////////////////
+Screen scr1  //; (,,sci1Esc) 
+ NoTableNavigation
+ fields
+   d1 : ['DD/MM/YYYY'], NoProtect,{Font = {Bold = True; BackColor = if (longint(d1) = 0, ColorNeed, 0);
+                                                        Color = if (d1 > d2, ColorError, 0)}};
+   d2 : ['DD/MM/YYYY'], NoProtect,{Font = {Bold = True; BackColor = if (longint(d2) = 0, ColorNeed, 0)}};
+
+  DlgState     : Protect,  PickButton ; //('', hcBKatalFSaldKAU )  QuickChoice,
+  DlgKauSbyt   : Protect,  PickButton ; //hcBKatalFSaldKAU = 14182//, {Font = {BackColor = GetBackColor(#DlgKauD#Num)}};
+  DlgKauOrg    : Protect,  PickButton ;
+  DlgKauMC     : Protect,  PickButton ;
+
+  DlgGrMC : Protect, PickButton;
+  RepOption : NoProtect;  //   bDetail  + bSbytTTL +   bStateTTL 
+
+  sXLTFileName: NoProtect, PickButton;
+
+   Buttons
+   cmOK, Default, ,,;
+   cmCancel,,,,;
+<< 'Параметры отчета'
+
+  `За период`   &с  .@@@@@@@@@@ `по`.@@@@@@@@@@
+  `    Фильтры: `
+  `Страна       `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `Канал сбыта  `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `Покупатель   `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `МЦ           `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `группа МЦ    `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  -------------------------------------------------------------------------------------------------
+    `Опции:`    [.] выводить подробно по первичным документам `
+                [.] разбивать Итоги по Каналам сбыта          `
+                [.] разбивать Итоги по Странам                `
+  -------------------------------------------------------------------------------------------------
+  `XLT шаблон   `.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+     <.  Ok   .>               <.Cancel.>
+
+>>
+End;
+////////////////////////////////////////////////
+procedure   tsTTLiToExcel ();
+{    if not(tsTTLi.mKol=0)   xlDoWriteToMatrix( j,4,tsTTLi.mKol ); 
+     if not(tsTTLi.mKolA=0)  xlDoWriteToMatrix( j,5,tsTTLi.mKolA );
+      xlDoWriteToMatrix( j,6,tsTTLi.mKolTTL );
+
+  if not(tsTTLi.Kol=0)    xlDoWriteToMatrix( j,7,tsTTLi.Kol ); 
+  if not(tsTTLi.KolA=0)   xlDoWriteToMatrix( j,8,tsTTLi.KolA );  xlDoWriteToMatrix( j,9,tsTTLi.KolTTL );  
+  if not( tsTTLi.Gross=0) 
+   {  if tsTTLi.bOrg=2 { if not(tsTTLi.KolTTL=0) xlDoWriteToMatrix(j,10,tsTTLi.Gross/tsTTLi.KolTTL); }
+     xlDoWriteToMatrix(j,11,tsTTLi.Gross);
+     if not( tsTTLi.Gross=tsTTLi.Net1)
+     { xlDoWriteToMatrix(j,12,(tsTTLi.Gross-tsTTLi.Net1)/tsTTLi.Gross );  xlDoWriteToMatrix(j,13,tsTTLi.Gross-tsTTLi.Net1 ); }
+   }
+   if not( tsTTLi.Net1=0)
+    { xlDoWriteToMatrix(j,14,tsTTLi.Net1); 
+      if not( tsTTLi.Net1=tsTTLi.Niv)
+       {  xlDoWriteToMatrix(j,15,(tsTTLi.Net1-tsTTLi.Niv)/tsTTLi.Net1); xlDoWriteToMatrix(j,16,tsTTLi.Net1-tsTTLi.Niv); }
+    }
+   if not(tsTTLi.Niv=0)   {  xlDoWriteToMatrix( j, 17, tsTTLi.Niv ); if not(tsTTLi.Bonus=0) xlDoWriteToMatrix(j,18, tsTTLi.Bonus/tsTTLi.Niv ); }
+   if not(tsTTLi.Bonus=0)  xlDoWriteToMatrix( j, 19, tsTTLi.Bonus );
+   xlDoWriteToMatrix( j, 20, tsTTLi.Niv - tsTTLi.Bonus );
+
+   if not(tsTTLi.Cost=0)   xlDoWriteToMatrix( j, 21, tsTTLi.Cost );
+   if not(tsTTLi.CostA=0)  xlDoWriteToMatrix( j, 22, tsTTLi.CostA );
+                           xlDoWriteToMatrix( j, 23, tsTTLi.Cost +tsTTLi.CostA );
+}
+/////////////////////////////////////////////////////
+Function RunRep : boolean;
+{
+  RunRep := False;
+  var   Excel_WorkbookName :String; 
+// CONNECT EXCEL
+// создаем отчет на основании существующего шаблона
+  if not( xlCreateExcelWithTemplate( sXLTFileName, true ) )  { Message('Ошибка1 создания Excel-файла',Error); exit;}
+    xlDisplayAlerts( true );
+  if not(  xlGetActiveWorkBookName( Excel_WorkbookName ) and  Excel_WorkbookName<>'' )
+     { Message('Ошибка2 создания Excel-файла',Error); xlKillExcel; exit;}
+/////////////////// -------------------  
+if bDetail
+{ if xlSetActiveSheet(1) // xlSetActiveSheetByName('Data')  стр. Data ------------------------------
+{    RestartVisual('Шаг 3 из 3: Выгрузка в Excel, лист Data', 0);
+
+  XLCREATEMATRIX( if(R_iStr[1] < 65530, R_iStr[1]+1,65530) , 32 );   //65536 - 6 ограничение по числу строк  Excel
+    j:=0  // - xlClearMatrix;
+ _LOOP tDataR
+ {  IF NOT NextVisual THEN break;
+   ++j;
+  xlStWriteToMatrix( j, 1, j );
+  xlStWriteToMatrix( j, 2, case( tDataR.bVidDoc; 1: 'накл.сбыт', 2: 'акт спис.', 3: 'бух.спр.' ; tDataR.bVidDoc ) );
+  xlStWriteToMatrix( j, 3, tDataR.sDoc );
+  xlStWriteToMatrix( j, 4, tDataR.sDog );
+  xlStWriteToMatrix( j, 5, tDataR.sDC1 );
+  xlStWriteToMatrix( j, 6, tDataR.sDC2 );
+
+ IF GetFirst fastfirstrow tfKSb where ((tDataR.cSbyt== tfKSb.nrec)) = tsOK      xlStWriteToMatrix( j, 7, tfKsb.kSbyt );
+ IF GetFirst fastfirstrow tfOrg where ((tDataR.cOrg == tfOrg.nrec)) = tsOK 
+     { xlStWriteToMatrix( j, 8, tfOrg.sOrg );  xlStWriteToMatrix( j, 9, tfOrg.kodOrg );  xlStWriteToMatrix( j, 10, tfOrg.State );}
+ IF GetFirst fastfirstrow tfMC where ((tDataR.cMC== tfMC.nrec)) = tsOK 
+    { xlStWriteToMatrix( j, 11, tfMC.sMC ); xlStWriteToMatrix( j, 12, tfMC.kodMC ); xlStWriteToMatrix( j, 13, tfMC.sGrMC ); 
+     if not(tDataR.KolR=0) { xlDoWriteToMatrix( j,if(tDataR.bVidDoc=1,14,15),tDataR.KolR* tfMC.Massa); xlDoWriteToMatrix( j,16,tDataR.KolR*tfMC.Massa);}
+    }
+
+  if not(tDataR.KolR=0) 
+   { xlDoWriteToMatrix( j, if(tDataR.bVidDoc=1,17,18), tDataR.KolR );  xlDoWriteToMatrix( j, 19 , tDataR.KolR ); 
+     xlDoWriteToMatrix( j, 20, tDataR.Gross/tDataR.KolR );
+   }
+  if not( tDataR.Gross=0) 
+   { xlDoWriteToMatrix(j,21,tDataR.Gross);
+     if not( tDataR.Gross=tDataR.Net1) 
+     { xlDoWriteToMatrix(j,22,(tDataR.Gross-tDataR.Net1)/tDataR.Gross ); xlDoWriteToMatrix(j,23,tDataR.Gross-tDataR.Net1 );}
+   }
+   if not( tDataR.Net1=0)
+    { xlDoWriteToMatrix(j,24,tDataR.Net1); 
+     if not( tDataR.Net1=tDataR.SumR)
+      { xlDoWriteToMatrix(j,25,(tDataR.Net1-tDataR.SumR)/tDataR.Net1); xlDoWriteToMatrix(j,26,tDataR.Net1-tDataR.SumR); }
+    }
+   if not(tDataR.SumR=0)   xlDoWriteToMatrix( j, if(tDataR.bVidDoc=3,29,27), tDataR.SumR );
+
+   if not(tDataR.Cost=0)   xlDoWriteToMatrix( j, 30, tDataR.Cost );
+   if not(tDataR.CostA=0)  xlDoWriteToMatrix( j, 31, tDataR.CostA );
+                           xlDoWriteToMatrix( j, 32, tDataR.Cost +tDataR.CostA );
+
+  } //TDataR
+  xlWriteMatrixToExcel(4,1);  /// вставляем с 4-й строки
+  xlFreeMatrix;
+     for (i := 21; i <= 32; i:=i+3 )  xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i);
+} //Data
+else {  Message( 'Ошибка1 Excel шаблон изменился' , Error); xlKillExcel; exit; } 
+} //bDetail
+!--------- //end 1я стр Data
+
+if  xlSetActiveSheet(2) //xlSetActiveSheetByName('DataTTL') //
+{ // стр. DataTTL --------------------------------- 
+ RestartVisual('Шаг 3 из 3: Выгрузка в Excel, лист DataTTL', 0);
+ xlSetCellStringValue(CommonFormHeader, 1,1,1,1); 
+ xlSetCellStringValue( 'с ' +d1 +' по ' +d2, 2,3,2,3); 
+ xlSetCellStringValue('GP: '+ sGrPrice , 1,5,1,5); 
+
+  XLCREATEMATRIX( if(R_iStr[2] < 65530, R_iStr[2]+1,65530) , 27);   //65536 - 6 ограничение по числу строк  Excel
+    j:=0  // - xlClearMatrix;
+ _LOOP tSTTL
+ {  IF NOT NextVisual THEN break;
+  ++j;
+  if GetFirst fastfirstrow tfKSb where ((tsTTL.cSbyt== tfKSb.nrec)) = tsOK      xlStWriteToMatrix( j, 1, tfKsb.kSbyt );
+  if GetFirst fastfirstrow tfOrg where ((tsTTL.cOrg == tfOrg.nrec)) = tsOK 
+     { xlStWriteToMatrix( j, 2, tfOrg.sOrg );  xlStWriteToMatrix( j, 3, tfOrg.kodOrg );  xlStWriteToMatrix( j, 4, tfOrg.State );}
+  if GetFirst fastfirstrow tfMC where ((tsTTL.cMC== tfMC.nrec)) = tsOK 
+    { xlStWriteToMatrix(j,5,tfMC.sMC); xlStWriteToMatrix(j,6,tfMC.kodMC); xlStWriteToMatrix(j,7,tfMC.sGrMC); 
+     if not(tsTTL.Kol=0)   xlDoWriteToMatrix( j,8,tsTTL.Kol * tfMC.Massa); 
+     if not(tsTTL.KolA=0)  xlDoWriteToMatrix( j,9,tsTTL.KolA * tfMC.Massa); xlDoWriteToMatrix( j,10,tsTTL.KolTTL * tfMC.Massa);
+    }
+
+  if not(tsTTL.Kol=0)    xlDoWriteToMatrix( j,11,tsTTL.Kol ); 
+  if not(tsTTL.KolA=0)   xlDoWriteToMatrix( j,12,tsTTL.KolA );  xlDoWriteToMatrix( j,13,tsTTL.KolTTL );  
+  if not( tsTTL.Gross=0) 
+   { if not(tsTTL.KolTTL=0) xlDoWriteToMatrix(j,14,tsTTL.Gross/tsTTL.KolTTL);
+     xlDoWriteToMatrix(j,15,tsTTL.Gross);
+     if not( tsTTL.Gross=tsTTL.Net1)
+     { xlDoWriteToMatrix(j,16,(tsTTL.Gross-tsTTL.Net1)/tsTTL.Gross );  xlDoWriteToMatrix(j,17,tsTTL.Gross-tsTTL.Net1 ); }
+   }
+   if not( tsTTL.Net1=0)
+    { xlDoWriteToMatrix(j,18,tsTTL.Net1); 
+      if not( tsTTL.Net1=tsTTL.Niv)
+       {  xlDoWriteToMatrix(j,19,(tsTTL.Net1-tsTTL.Niv)/tsTTL.Net1); xlDoWriteToMatrix(j,20,tsTTL.Net1-tsTTL.Niv); }
+    }
+   if not(tsTTL.Niv=0)   {  xlDoWriteToMatrix( j, 21, tsTTL.Niv ); if not(tsTTL.Bonus=0) xlDoWriteToMatrix(j,22, tsTTL.Bonus/tsTTL.Niv ); }
+   if not(tsTTL.Bonus=0)  xlDoWriteToMatrix( j, 23, tsTTL.Bonus );
+   xlDoWriteToMatrix( j, 24, tsTTL.Niv - tsTTL.Bonus );
+
+    if not(tsTTL.Cost=0)   xlDoWriteToMatrix( j, 25, tsTTL.Cost );
+    if not(tsTTL.CostA=0)  xlDoWriteToMatrix( j, 26, tsTTL.CostA );
+     xlDoWriteToMatrix( j, 27, tsTTL.Cost + tsTTL.CostA);
+
+ }  //loop tsTTL
+  xlWriteMatrixToExcel(4,1);  /// вставляем с 4-й строки
+  xlFreeMatrix;
+     for (i := 15; i <= 27; i++ ) 
+     { if (i != 16 and i != 19 and i != 22)   xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i); }
+} // DataTTL
+else {  Message( 'Ошибка2 Excel шаблон изменился' , Error); xlKillExcel; exit; } 
+!------- end 2я стр. DataTTL
+ /////// ---- копируем страницы ---- если надо разбивать по разрезам
+ var  tSheetName: string[10];
+ var bErrAddSheet : boolean; //ошибка вставки листа
+   bErrAddSheet :=true;
+if ( not xlSetActiveSheet(3) ) {  Message( 'Ошибка3 Excel шаблон изменился' , Error); xlKillExcel; exit; } 
+xlGetSheetName(3, tSheetName );
+if ( tSheetName <> 'TTL_C' ) {  Message( 'Ошибка4 Excel шаблон изменился' , Error); xlKillExcel; exit; } 
+ i:=2 ; //лист перед 'TTL_C'
+ if bSbytTTL 
+ {  _Loop  tfKsb   
+   { ++i;
+     if not ( i = tfKsb.wTabOrg ) {  Message( 'Ошибка5 Excel лист:'+i +'wtabOrg:'+tfKsb.wTabOrg, Error); xlKillExcel; exit; } 
+
+     if (not xlSetActiveSheetByName('TTL_C')  ) { bErrAddSheet:=false; Message( 'Ошибка Excel нет листа TTL_C' , Error); break; }
+     tSheetName := substr(tfKsb.kSbyt,1,3);
+      if (Not xlAddSheet)  { bErrAddSheet:=false; Message( 'Ошибка вставки листа Excel 1:' +'c__'+ tSheetName, Error); break; }
+      if (Not xlSetSheetName(i, 'c__'+ tSheetName))
+       { bErrAddSheet:=false; Message( 'Ошибка вставки листа Excel 2:' +'c__'+ tSheetName, Error); break; }
+     xlSetActiveSheetByName('TTL_C');       xlCopyToBuff(1,1,lRepOrg+4,23);	 
+     xlSetActiveSheet(i);    xlSetColumnWidth( 40, 1,1,1,1); xlSetColumnWidth( 20, 1,11,1,23);
+     xlPasteAllFromBuff(1,1,1,1);
+     ++i;
+     if (not xlSetActiveSheetByName('TTL_C')  ) { bErrAddSheet:=false; Message( 'Ошибка Excel нет листа TTL_C' , Error); break; }
+      if (Not xlAddSheet)  { bErrAddSheet:=false; Message( 'Ошибка вставки листа Excel 1:' +'i__'+ tSheetName, Error); break; }
+      if (Not xlSetSheetName(i, 'i__'+ tSheetName))
+       { bErrAddSheet:=false; Message( 'Ошибка вставки листа Excel 2:' +'i__'+ tSheetName, Error); break; }
+     if not( xlSetActiveSheetByName('TTL_Item') )  { bErrAddSheet:=false; Message( 'Ошибка Excel нет листа TTL_Item' , Error); break; }
+     xlCopyToBuff(1,1,lRepMC+4,23);	 
+     xlSetActiveSheet(i);    xlSetColumnWidth( 40, 1,1,1,1); xlSetColumnWidth( 20, 1,11,1,23);
+     xlPasteAllFromBuff(1,1,1,1);
+   } //_Loop  tfKsb 
+  bSbytTTL := bErrAddSheet;
+ } //bSbytTTL
+ if bStateTTL 
+ { _Loop  tfState    
+   { ++i; 
+     if not ( i = tfState.wTab ) {  Message( 'Ошибка5 Excel лист:'+i +'wtab:'+tfState.wTab, Error); xlKillExcel; exit; } 
+     if (not xlSetActiveSheetByName('TTL_C')  ) { bErrAddSheet:=false; Message( 'Ошибка Excel нет листа TTL_C' , Error); break; }
+      tSheetName := substr(tfState.State,1,3);
+      if (Not xlAddSheet)  { bErrAddSheet:=false; Message( 'Ошибка вставки листа Excel 1:' +'I__'+ tSheetName, Error); break; }
+      if (Not xlSetSheetName(i, 'I__'+ tSheetName))
+       { bErrAddSheet:=false; Message( 'Ошибка вставки листа Excel 2:' +'I__'+ tSheetName, Error); break; }
+     if not( xlSetActiveSheetByName('TTL_Item') )  { bErrAddSheet:=false; Message( 'Ошибка Excel нет листа TTL_Item' , Error); break; }
+     xlCopyToBuff(1,1,lRepMC+4,23);	 
+     xlSetActiveSheet(i);    xlSetColumnWidth( 40, 1,1,1,1); xlSetColumnWidth( 20, 1,11,1,23);
+     xlPasteAllFromBuff(1,1,1,1);
+   } 
+ } //bStateTTL
+ // выводим в Excel Итоги
+if xlSetActiveSheetByName('TTL_C')
+{
+ RestartVisual('Шаг 3 из 3: Выгрузка в Excel, лист TTL_C', 0);
+  XLCREATEMATRIX( lRepOrg + 1 , 23);  
+   j:=0  // - xlClearMatrix;
+ _LOOP tfOrg   ordered by tfOrg.sOrg //(desc)
+ {  IF NOT NextVisual THEN break;
+  ++j;
+  xlStWriteToMatrix( j, 1, tfOrg.sOrg );  xlStWriteToMatrix( j, 2, tfOrg.kodOrg );  xlStWriteToMatrix( j, 3, tfOrg.State );
+  if GetFirst fastfirstrow tsTTLi where ((1 ==tsTTLi.wTab and tfOrg.nrec==tsTTLi.cRec)) = tsOK    {       tsTTLiToExcel ;   }
+ }  //loop tfOrg
+  xlWriteMatrixToExcel(4,1);  /// вставляем с 4-й строки
+  xlFreeMatrix;
+        for (i := 11; i <= 23; i++ ) 
+             { if (i != 12 and i != 15 and i != 18) xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i); }
+}  //xlSetActiveSheetByName('TTL_C')
+if xlSetActiveSheetByName('TTL_Item')
+{
+ RestartVisual('Шаг 3 из 3: Выгрузка в Excel, лист TTL_Item', 0);
+  XLCREATEMATRIX( lRepMc + 1 , 23); 
+   j:=0  // - xlClearMatrix;
+ _LOOP tfMC   ordered by tfMc.sGrMc, tfMc.sMc //(desc)   sGrMc + sMc
+ {  IF NOT NextVisual THEN break;
+  ++j;
+  xlStWriteToMatrix(j,1,tfMC.sMC); xlStWriteToMatrix(j,2,tfMC.kodMC); xlStWriteToMatrix(j,3,tfMC.sGrMC); 
+  if GetFirst fastfirstrow tsTTLi where ((2 ==tsTTLi.wTab and tfMc.nrec==tsTTLi.cRec)) = tsOK   {  tsTTLiToExcel ; }
+ }  //loop tfMc
+  xlWriteMatrixToExcel(4,1);  /// вставляем с 4-й строки
+  xlFreeMatrix;
+     for (i := 11; i <= 23; i++ ) 
+             { if (i != 12 and i != 15 and i != 18) xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i); }
+}  //xlSetActiveSheetByName('TTL_Item')
+ RestartVisual('Шаг 3 из 3: Выгрузка в Excel' , 0);
+
+   if bSbytTTL   _Loop  tfKsb 
+    {            
+    if xlSetActiveSheet(tfKsb.wTabOrg)
+     {   xlSetCellStringValue( tfKsb.kSbyt + ' - Итоги по Покупателям', 1,7,1,7); 
+        XLCREATEMATRIX( lRepOrg + 1 , 23);  
+        j:=0  // - xlClearMatrix;
+      _LOOP tfOrg   ordered by tfOrg.sOrg //(desc)
+       {  IF NOT NextVisual THEN break;
+         ++j;
+        xlStWriteToMatrix( j, 1, tfOrg.sOrg );  xlStWriteToMatrix( j, 2, tfOrg.kodOrg );  xlStWriteToMatrix( j, 3, tfOrg.State );
+        if GetFirst fastfirstrow tsTTLi where (( tfKsb.wTabOrg ==tsTTLi.wTab and tfOrg.nrec==tsTTLi.cRec)) = tsOK    {       tsTTLiToExcel ;   }
+       }  //loop tfOrg
+       xlWriteMatrixToExcel(4,1);  /// вставляем с 4-й строки
+       xlFreeMatrix;
+        for (i := 11; i <= 23; i++ )
+             { if (i != 12 and i != 15 and i != 18)  xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i); }
+
+     } //xlSetActiveSheet
+
+     if xlSetActiveSheet( tfKsb.wTabOrg + 1 )
+      {   xlSetCellStringValue( tfKsb.kSbyt + ' - Итоги по МЦ ', 1,7,1,7); 
+         XLCREATEMATRIX( lRepMc + 1 , 23); 
+         j:=0  // - xlClearMatrix;
+       _LOOP tfMC   ordered by tfMc.sGrMc, tfMc.sMc //(desc)   sGrMc + sMc
+       {  IF NOT NextVisual THEN break;
+         ++j;
+         xlStWriteToMatrix(j,1,tfMC.sMC); xlStWriteToMatrix(j,2,tfMC.kodMC); xlStWriteToMatrix(j,3,tfMC.sGrMC); 
+        if GetFirst fastfirstrow tsTTLi where (( word(tfKsb.wTabOrg + 1) ==tsTTLi.wTab and tfMc.nrec==tsTTLi.cRec)) = tsOK   {  tsTTLiToExcel ; }
+       }  //loop tfMc
+       xlWriteMatrixToExcel(4,1);  /// вставляем с 4-й строки
+       xlFreeMatrix;
+        for (i := 11; i <= 23; i++ )
+             { if (i != 12 and i != 15 and i != 18)  xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i); }
+       }  //xlSetActiveSheet2
+    } //bSbytTTL           
+   if bStateTTL  _Loop  tfState 
+    { 
+     if xlSetActiveSheet( tfState.wTab  )
+      {  //Итоги по МЦ
+         xlSetCellStringValue( tfState.State + ' - Итоги по МЦ ', 1,7,1,7); 
+         XLCREATEMATRIX( lRepMc + 1 , 23); 
+         j:=0  // - xlClearMatrix;
+       _LOOP tfMC   ordered by tfMc.sGrMc, tfMc.sMc //(desc)   sGrMc + sMc
+        {  IF NOT NextVisual THEN break;
+         ++j;
+         xlStWriteToMatrix(j,1,tfMC.sMC); xlStWriteToMatrix(j,2,tfMC.kodMC); xlStWriteToMatrix(j,3,tfMC.sGrMC); 
+         if GetFirst fastfirstrow tsTTLi where (( tfState.wTab ==tsTTLi.wTab and tfMc.nrec==tsTTLi.cRec)) = tsOK   {  tsTTLiToExcel ; }
+        }  //loop tfMc
+       xlWriteMatrixToExcel(4,1);  /// вставляем с 4-й строки
+       xlFreeMatrix;
+        for (i := 11; i <= 23; i++ )
+             { if (i != 12 and i != 15 and i != 18)  xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i); }
+       }  //xlSetActiveSheet
+    } //bSbytTTL
+ //------------ DISCONNECT EXCEL
+ //  xlSetCellStringValue('', R_iStroka,1,R_iStroka,3);
+  xlKillExcel;
+  Message('Сформирован отчет: '+ Excel_WorkbookName 
+          + if(R_iStr[1]>65530, ''#13'подробый отчет не полностью Data: 65530 из '+R_iStr[1],'')   );
+  RunRep := True;
+}//runrep
+///////////////////////////////////// 
+procedure  InsTsTTLi (iwTab:word; ibOrg:byte; icRec: comp) ; // итоги по разрезам
+{
+  iNet1 := 0;
+ if GetFirst fastfirstrow tfMC where ((tsTTL.cMC== tfMC.nrec)) = tsOK  iNet1:=tfMc.Massa;
+
+    if GetFirst fastfirstrow  tsTTLi where ((iwTab==tsTTLi.wTab  and icRec==tsTTLi.cRec))  = tsOK
+     update current tsTTLi set  tsTTLi.Kol:=tsTTLi.Kol+ tsTTL.Kol, tsTTLi.KolA:=tsTTLi.KolA+tsTTL.KolA, tsTTLi.KolTTL:=tsTTLi.KolTTL+tsTTL.KolTTL, 
+      tsTTLi.mKol:=tsTTLi.mKol + tsTTL.Kol*iNet1, tsTTLi.mKolA:=tsTTLi.mKolA+tsTTL.KolA*iNet1, tsTTLi.mKolTTL:=tsTTLi.mKolTTL+tsTTL.KolTTL*iNet1, 
+      tsTTLi.Niv :=tsTTLi.Niv+tsTTL.Niv, tsTTLi.Gross:=tsTTLi.Gross+tsTTL.Gross, 
+      tsTTLi.Net1 := tsTTLi.Net1+tsTTL.Net1, tsTTLi.Bonus :=tsTTLi.Bonus+tsTTL.Bonus, tsTTLi.cost := tsTTLi.cost+tsTTL.cost, tsTTLi.costA := tsTTLi.costA+tsTTL.costA
+      ;
+    else insert tsTTLi set tsTTLi.wTab:=iwTab, tsTTLi.bOrg:=ibOrg , tsTTLi.cRec:= icRec, // if(ibOrg=1,tsTTL.cOrg,tsTTL.cOrg) , 
+            tsTTLi.Kol:= tsTTL.Kol, tsTTLi.KolA:=tsTTL.KolA, tsTTLi.KolTTL:=tsTTL.KolTTL,
+            tsTTLi.mKol:= tsTTL.Kol*iNet1, tsTTLi.mKolA:=tsTTL.KolA*iNet1, tsTTLi.mKolTTL:=tsTTL.KolTTL*iNet1,
+     tsTTLi.Niv:=tsTTL.Niv, tsTTLi.Gross := tsTTL.Gross, tsTTLi.Net1 := tsTTL.Net1, tsTTLi.Bonus :=tsTTL.Bonus, tsTTLi.cost :=tsTTL.cost, tsTTLi.costA :=tsTTL.costA
+            ;
+}
+///////////    Распределение Премии и Расчет Итогов //
+FUNCTION CalcSalesRepTTL : boolean;
+{ CalcSalesRepTTL := false;
+ RestartVisual('Шаг 2 из 3: распределение Премий', 100);
+ _LOOP tSTTLPr 
+ {  IF NOT NextVisual THEN break;
+   if( tSTTLPr.Bonus>0 and tSTTLPr.Niv>0 )
+   {//есть что распределять
+    iSum:= tSTTLPr.Bonus; // сумма к распределению
+    _Loop tSTTL where (( tSTTLPr.cOrg==tSTTL.cOrg  )) 
+     { iKol := round( tSTTLPr.Bonus * tSTTL.Niv / tSTTLPr.Niv,2) //часть премии на данный разрез Орг+Сбыт+МЦ
+       update current tSTTL set Bonus := iKol;
+       iSum := iSum - iKol;
+     } //tsTTL
+     if not(iSum=0) {update current tSTTL set Bonus := tSTTL.Bonus+iSum;} //остаток округления на последнюю
+   }//есть что распределять
+   else 
+    { if tSTTLPr.Bonus>0  //есть только премия но нет реализации
+         { insert tSTTL set cSbyt:=fExAttr.coGetAttrID( coKatOrg, tSTTLPr.cOrg , cSbAttrNam ),   // cSbAttrNam - последний был по KatOrg
+            cOrg:=tSTTLPr.cOrg, cMC:=0, Kol:=0, KolA:=0, KolTTL:=0, Niv:= 0, Gross:=0, Net1:=0, Bonus:=tSTTLPr.Bonus  ; 
+           ++R_iStr[2]; 
+         }
+    } //есть только премия но нет реализации
+ } //tSTTLPr
+
+ _Loop tSTTL    // пересчитываем Gross, Net1, с учетом Акций KolA
+   {  if ( tSTTL.Kol  <> 0 and tSTTL.KolA <> 0)
+        update current tSTTL set Gross := round(tSTTL.KolTTL * tSTTL.Gross/tSTTL.Kol,2), Net1 := round(tSTTL.KolTTL * tSTTL.Net1/tSTTL.Kol,2)  ;
+   }  // пересчитываем Gross, Net1, с учетом Акций
+
+RestartVisual('Шаг 2 из 3: Расчет итогов с учетом Премий ', 100);
+// Cуммируем Итоги по разрезам
+  i:=2; //последняя страница в шаблоне
+ if bSbytTTL   { _Loop  tfKsb   { ++i; update current tfKsb set wTabOrg:=i; ++i ;  } }
+ if bStateTTL  { _Loop  tfState { ++i; update current tfState set wTab:=i; }  }
+
+ _LOOP tSTTL  //// ---------------   расчитываем итоги tsTTLi
+ {  IF NOT NextVisual THEN break;
+   InsTsTTLi (1 , 1, tsTTL.cOrg ); //(iwTab:word, ibOrg:byte, icOrg:=comp )  //1- Org
+   InsTsTTLi (2 , 2, tsTTL.cMc ); //(iwTab:word, ibOrg:byte, icOrg:=comp )   //2- MC
+
+   if bSbytTTL { if GetFirst fastfirstrow tfKsb where (( tsTTL.cSbyt == tfKsb.nrec)) = tsOk
+                   { InsTsTTLi (tfKsb.wTabOrg  , 1, tsTTL.cOrg );
+                     InsTsTTLi (tfKsb.wTabOrg+1, 2, tsTTL.cMc  );
+                   }
+               }
+   if bStateTTL { if GetFirst fastfirstrow  tfOrg  where ((tsTTL.cOrg==tfOrg.nrec)) = tsOk
+                   if GetFirst fastfirstrow  tfState  where ((tfOrg.cState == tfState.nrec)) = tsOk
+                   { InsTsTTLi (tfState.wTab  , 2, tsTTL.cMc );   }
+                }
+ }// tSTTL
+ CalcSalesRepTTL := true;
+}//CalcSalesRepTTL
+///////////////
+procedure InsTfstate ();  // если новое Государства
+{ if GetFirst fastfirstrow tfState where ((KatOrg.cState ==tfState.nrec))  <> tsOK
+         if(KatOrg.cState=0) insert tfState set  nrec:= 0, State:= 'Undef', wTab:=0;
+          else insert tfState set  nrec:= KatOrg.cState, State:= KatState.Name, wTab:=0;
+} //InsTfstate
+////
+procedure InsTfOrg (ccOrg:comp ); //если новая Организация
+{    if GetFirst fastfirstrow tfOrg where (( ccOrg ==tfOrg.nrec))  <> tsOK 
+       { ++lRepOrg;
+         insert tfOrg set nrec := ccOrg, kodOrg:= fExAttr.sGetAttrID(coKatOrg,ccOrg,cOrgAttrNam),
+         sOrg := KatOrg.Name, state:= if(ccOrg=0,'',KatState.name), cState:=KatOrg.cState ;
+         if bStateTTL InsTfstate;
+       }
+}// InsTfOrg
+////
+procedure InsTfMC(compMc:comp) ; //если новая МЦ  SpSopr.cMcUsl
+{ ++lrepMc;
+ if  GetFirst fastfirstrow KatMC = tsOK 
+  {  insert tfMc set nrec := compMc , kodMc := fExAttr.sGetAttrID(coKatMc,compMc,cMCAttrNam), 
+      sMC := KatMc.Name, sGrMC := GroupMC.Kod, Massa := KatMC.Massa;
+  } //KatMc
+  else { insert tfMc set nrec := compMc , kodMc := fExAttr.sGetAttrID(coKatMc,compMc,cMCAttrNam), 
+        sMC := 'cMc:'+string(compMc), sGrMC := '', Massa := 0; }
+} //InsTfMC
+///
+FUNCTION GetKOtpEd(ccOtped:comp): Double;  //коэф.пересчета в уч.Ед.изм.
+{  GetKOtpEd :=0;
+    IF GetFirst fastfirstrow katotped where (( ccOtped==KatOtped.nrec )) = tsOK   { GetKOtpEd :=  katotped.koef;}
+    if GetKOtpEd = 0 GetKOtpEd:=1;
+}
+FUNCTION vRate(ccVal:comp ; dat: date): Double;  //курс валюты
+{ 
+! можно только  vRate := PRate(ccVal, dat);   // работает для G_val.dll вер.выше 8.10.4.0
+// --- но для страрой версии  как сейчас у Дрога
+ InitGetCur;
+  vRate:= PGetNatCurrency( ccVal, 1 , dat) ; //курс 1уе 
+ DoneGetCur;
+}
+/////////////  Выборка из БД /////////////////////////////////////////////////
+FUNCTION InitTableSalesRepSk : boolean;
+{
+  InitTableSalesRepSk := False;  
+ var kOtpEd :double; var kValDog :double;  var kValPr :double; var kValDC :double;  
+ var ccDog :comp;  var ccSbyt : comp;// вр.ссылки на основной договор Gross и ДС1
+ var ssDog :String[65]; var ssDC1 :String[65]; var ssDC2    :String[65];
+ var cSbAttrNamOrg:comp; 
+
+  for (i := 1; i <= 4; ++i )  R_iStr[i] :=0;
+
+ lRepOrg :=0; lRepMC:=0; //
+ cSbAttrNam := fExAttr.AttrID( coBaseDoc, 'Канал Сбыта' ) ;
+ cOrgAttrNam := fExAttr.AttrID( coKatOrg, 'Код SAPа' ) ;  //Код SAPа
+ cMCAttrNam  := fExAttr.AttrID( coKatMC, 'Код SAPа' ) ;
+ cSbAttrNamOrg := fExAttr.AttrID( coKatOrg, 'Канал Сбыта' ) ;
+   // ---------  ищем Gross Price и заполняем tfMC ---------
+PushBounds(tbB_McPrice);
+ if lfMC = 0 //нет фильтра по МЦ
+ {  _Loop KatSopr where ((   word(201) == KatSopr.vidsopr  and d1  <<= KatSopr.dOpr and d2  >>= Katsopr.dopr and (KatSopr.cDogovor>0) ))
+    { if  GetFirst fastfirstrow  Dogovor = tsOk
+        if  GetFirst fastfirstrow KLPrice = tsOk
+        { sGrPrice := KlPrice.Name; 
+          _Loop Prices where (( KlPrice.nrec == Prices.cKLPrice))
+            {  if  GetFirst fastfirstrow tfMC where ((Prices.cThing ==tfMC.nrec))  <> tsOK  InsTfMC(Prices.cThing) ; //МЦ
+            }
+          //  Message('lrepMc:'+ lrepMc+' Нашли GP:' + KlPrice.Name ,Error ); break;
+          break;
+        }//KlPrice
+    }
+ } // lfMC = 0 //нет фильтра по МЦ
+PopBounds(tbB_McPrice);
+
+// ------  Накладные на сбыт ----------------------------------------------------
+PushBounds(tbB_Sbyt); //   ограничения по накладным на сбыт
+AddBounds(tbB_SbytO);
+  AddBounds(tbB_McSopr); //  as  SpSopr.cMcUsl == katmc.nrec 
+ if (lfOrg > 0  )  AddBounds ( tbB_piOrg );  if (cfState > 0 )  AddBounds ( tbB_piState );
+ if (lfMC  > 0  )  AddBounds ( tbB_piMC  );  if (lfGrMC > 0 )  AddBounds ( tbB_piGrMC); 
+ if (cfSbyt  > 0 )  AddBounds ( tbB_piSbyt );
+
+
+ _LOOP KatSopr
+ {
+  IF NOT NextVisual THEN Exit;
+      ccDog :=KatSopr.cDogovor;  //Ссылка на основной договор
+      IF GetFirst fastfirstrow Dogovor  = tsOK
+        {  if bDetail ssDog:=  Dogovor.Nodoc + ' от '+ DateToStr( Dogovor.dDoc, 'DD.MM.YY' ) ;
+           kValDog :=1;  // курс валюты  договора
+           kValPr :=1 ;  // курс валюты GP
+           kValDC :=1;  // курс валюты  договора
+         if Dogovor.cVal=0   kValDog :=1;  else  kValDog :=vRate(Dogovor.cVal, KatSopr.dOpr);
+            if GetFirst fastfirstrow KLPrice  = tsOK   // Dogovor.METHODPRICE = 1 // Прайс-лист
+            {  if KLPrice.cVal=0   kValPr :=1;  else  kValPr :=vRate(KLPrice.cVal, KatSopr.dOpr);
+            } //Прайс-лист
+        } //Dogovor
+        else  { ssDog := if(ccDog=0 ,'- Без Дог.','Error cDogovor:'+ccDog ) ;  ccDog:=0; }
+
+      ssDC1 :='';  ssDC2:='';
+      cDC := KatSopr.cAppDogovor;  // -------  Ищем ДС1
+        do { if GetFirst fastfirstrow DogDC  = tsOK
+              { if  DogDC.cDogovor = ccDog  //ДС1
+                { // cDC:= DogDC.nRec;
+                   if bDetail { ssDC1:=  DogDC.Nodoc + ' от '+ DateToStr( DogDC.dDoc, 'DD.MM.YY' ) ;  }
+                   kValDC :=1;  // курс валюты  ДС
+                   if DogDC.cVal=0   kValDC :=1;  else  kValDC :=vRate(DogDC.cVal, KatSopr.dOpr);
+                  // break;
+                } //ДС1
+                else {  if bDetail ssDC2:=  DogDC.Nodoc + ' от '+ DateToStr( DogDC.dDoc, 'DD.MM.YY' ) ; cDC:= DogDC.cDogovor; }
+              }
+              else { ssDC1 := if(cDC=0 ,'-','Error cDC:'+cDC ) ; cDC:=0;  break; }
+            // if message('cDC:'+cDC + ''#13'DCc:'+ DogDC.cDogovor +''#13'Dog:'+ccDog   )  = cmCancel break;
+            } while  not ( DogDC.cDogovor = ccDog  or  cDC = 0 )
+
+     if GetFirst fastfirstrow StepDoc  = tsOK  ccSbyt:= fExAttr.coGetAttrID( coBaseDoc, StepDoc.cBaseDoc , cSbAttrNam );   else ccSbyt:=0;
+       if ccSbyt = 0 ccSbyt:= fExAttr.coGetAttrID( coKatOrg, KatSopr.cOrg , cSbAttrNamOrg ); // если в ДО нет возьмем из Организации
+  // ---------      заполняем таблицы для отчета  по KatSopr ---------
+    InsTfOrg(KatSopr.cOrg) ;
+   if GetFirst fastfirstrow tfkSb where ((ccSbyt ==tfKSb.nrec))  <> tsOK 
+    insert tfKSb set nrec := ccSbyt, kSbyt:= fExAttr.sGetAttrID(coBaseDoc,StepDoc.cBaseDoc,cSbAttrNam), wTabOrg:=0 ; //, wTabMc:=0;
+
+  _LOOP SpSopr
+  { 
+    kOtpEd := GetKOtpEd(SpSopr.cOtpEd) ;  //коэф. пересчета в уч. единицу
+    iKol := SpSopr.KolFact * kOtpEd;                                                   // в уч.единицах
+    iSum := spSopr.Price * SpSopr.KolFact - if(KatSopr.VhodNal = 1, spSopr.SumNDS,0);  // НДЕ без НДС
+    iSum := round( iSum , 2);
+
+     PrGP := iSum / iKol ; 
+      IF not(ccDog=0)  // --- есть договор Gross
+         { If GetFirst  SpDocs  = tsOK   //из спецификации 
+            { kOtpEd := GetKOtpEd(SpDocs.cOtpEd) ;  //коэф. пересчета в уч. единицу
+              PrGP := ( SpDocs.Price / kOtpEd - if(Dogovor.VhodNal = 1, spDocs.SumNDS/ (SpDocs.Kol*kOtpEd ) ,0) )   * kValDog  ;
+            } //SpDocs
+            else //иначе из прайс-листа
+             { 
+               If GetFirst  Prices  = tsOK
+                { kOtpEd := GetKOtpEd(Prices.cOtpEd) ;  //коэф. пересчета в уч. единицу
+                  if Prices.cVal=0    PrGP := (Prices.Price / kOtpEd)    *  if(KlPrice.VhodNal = 1, 1/(1+stNDS) , 1)	   ;       //НДС = 18%
+                     else             PrGP := (Prices.SumVal / kOtpEd) * kValPr * if(KlPrice.VhodNal = 1,  1/(1+stNDS) , 1) ;
+                }
+             } //иначе из прайс-листа
+         } //есть договор Gross
+       iGross := round(PrGP * iKol,2);
+
+     PrDC := iSum / iKol ; 
+      IF not(cDC=0)  // --- есть ДС1
+         { If GetFirst  SpDC  = tsOK   //из спецификации 
+            { kOtpEd := GetKOtpEd(SpDC.cOtpEd) ;  //коэф. пересчета в уч. единицу
+              PrDC := (SpDC.Price / kOtpEd - if(DogDC.VhodNal = 1, spDC.SumNDS/(kOtpEd*SpDC.Kol),0) )   * kValDC   ;
+            } //SpDocs
+         } //есть ДС1
+       iNet1 := round(PrDC * iKol,2);
+     if  iNet1 > iGross iGross:= iNet1;
+     iCost :=0;
+       if  GetFirst fastfirstrow SpOrder = tsOk     {  iCost :=  SpOrder.Kol*SpOrder.srPrice;        } //SpOrder
+
+   // ---------      заполняем таблицы для отчета  по SpSopr ---------
+    if  GetFirst fastfirstrow tfMC where ((SpSopr.cMcUsl ==tfMC.nrec))  <> tsOK  InsTfMC(SpSopr.cMcUsl) ; //МЦ
+
+   if  GetFirst fastfirstrow tSTTL where ((Katsopr.cOrg==tSTTL.cOrg and ccSbyt==tSTTL.cSbyt and  SpSopr.cMcUsl ==tSTTL.cMC))  = tsOK 
+     update current tSTTL set Kol:=tSTTL.Kol+iKol, KolTTL:=tsTTL.KolTTL+iKol, Niv:=tSTTL.Niv+iSum, Gross:=tsTTL.Gross+iGross, Net1:=tsTTL.Net1+iNet1, cost:=tsTTL.cost+iCost ;
+   else 
+    { insert tSTTL set cSbyt:=ccSbyt, cOrg:=KatSopr.cOrg, cMC:=SpSopr.cMcUsl, Kol:=iKol, KolA:=0, KolTTL:=iKol,
+                  Niv:= iSum, Gross:=iGross, Net1:=iNet1, Bonus:=0, cost:=iCost  ; ++R_iStr[2]; }
+
+     if  GetFirst fastfirstrow tsTTLPr where ((Katsopr.cOrg==tsTTLPr.cOrg ))  = tsOK 
+      update current tsTTLPr set Niv:=tSTTLPr.Niv+iSum;
+     else   { insert tsTTLPr set  cOrg:=Katsopr.cOrg,  Niv:= iSum, Bonus:=0  ;  }
+
+    if bDetail
+    { insert tDataR set bVidDoc := 1, sDoc := KatSopr.nSopr+' от '+ DateToStr( KatSopr.dSopr, 'DD.MM.YY' ) ,
+             sDog :=ssDog,  sDC1 :=ssDC1,  sDC2 := ssDC2,
+             cSbyt := ccSbyt,  cOrg := KatSopr.cOrg, cMC := SpSopr.cMcUsl,
+             KolR := iKol ,  SumR := iSum , Gross:=iGross, Net1 := iNet1, cost := iCost
+     ; ++R_iStr[1];
+    } // bDetail
+  }//Spsopr
+ }//loop Katsopr
+
+ PopBounds(tbB_piOrg); PopBounds(tbB_piMC); PopBounds(tbB_piGrMC); PopBounds(tbB_piState); PopBounds(tbB_piSbyt);
+ PopBounds(tbB_SbytO); PopBounds(tbB_Sbyt);
+! ------------  end по накладным на сбыт
+// exit ;
+// ------  Акты на списание ----------------------------------------------------
+ cSbAttrNam := fExAttr.AttrID( coKatOrg, 'Канал Сбыта' ) ;
+PushBounds(tbB_Akt); //   ограничения по актам
+AddBounds(tbB_AktP); AddBounds(tbB_AktO);
+
+ if (cfSbyt  > 0 )  AddBounds ( tbB_piSbytA );
+ if (lfOrg > 0  )  AddBounds ( tbB_piOrgA );  if (cfState > 0 )  AddBounds ( tbB_piStateA );
+ if (lfMC  > 0  )  AddBounds ( tbB_piMC  );  if (lfGrMC > 0 )  AddBounds ( tbB_piGrMC); 
+
+ _LOOP KatSopr
+ {
+  IF NOT NextVisual THEN Exit;
+
+   if GetFirst fastfirstrow KatOrg  = tsOK  ccSbyt:= fExAttr.coGetAttrID( coKatOrg, KatOrg.nRec , cSbAttrNam );   else ccSbyt:=0;
+  // ---------      заполняем таблицы для отчета  по KatSopr ---------
+    InsTfOrg(KatPodr.cOrg) ;
+   if GetFirst fastfirstrow tfkSb where ((ccSbyt ==tfKSb.nrec))  <> tsOK 
+    insert tfKSb set nrec := ccSbyt, kSbyt:= fExAttr.sGetAttrID(coKatOrg,KatPodr.cOrg,cSbAttrNam) , wTabOrg:=0; //, wTabMc:=0;
+
+  _LOOP SpSopr
+  { 
+    kOtpEd := GetKOtpEd(SpSopr.cOtpEd) ;  //коэф. пересчета в уч. единицу
+    iKol := SpSopr.KolFact * kOtpEd;                                             // в уч.единицах
+
+     iCost :=0;
+       if  GetFirst fastfirstrow SpOrder = tsOk     {  iCost :=  SpOrder.Kol*SpOrder.srPrice;        } //SpOrder
+
+    // ---------      заполняем таблицы для отчета  по SpSopr ---------
+     if  GetFirst fastfirstrow tfMC where ((SpSopr.cMcUsl ==tfMC.nrec))  <> tsOK  InsTfMC(SpSopr.cMcUsl) ; //МЦ
+
+     if  GetFirst fastfirstrow tSTTL where ((KatPodr.cOrg==tSTTL.cOrg and ccSbyt==tSTTL.cSbyt and  SpSopr.cMcUsl ==tSTTL.cMC))  = tsOK 
+      update current tSTTL set KolA:=tSTTL.KolA+iKol, KolTTL:=tsTTL.KolTTL+iKol, costA:=tsTTL.costA+iCost  ;
+     else 
+      { insert tSTTL set cSbyt:=ccSbyt, cOrg:=KatPodr.cOrg, cMC:=SpSopr.cMcUsl, Kol:=0, KolA:=iKol, KolTTL:=iKol,
+                  Niv:= 0, Gross:=0, Net1:=0, Bonus:=0 , costA:=iCost  ; ++R_iStr[2]; }
+    if bDetail
+    { insert tDataR set bVidDoc := 2, sDoc := KatSopr.nSopr+' от '+ DateToStr( KatSopr.dSopr, 'DD.MM.YY' ) ,
+             sDog :='',  sDC1 :='',  sDC2 := '',
+             cSbyt := ccSbyt,  cOrg := KatPodr.cOrg, cMC := SpSopr.cMcUsl,
+             KolR := iKol ,  SumR := 0 , Gross:=0, Net1 := 0 , costA:=iCost 
+     ; ++R_iStr[1];
+    } // bDetail
+  }//Spsopr
+ }//loop Katsopr
+
+PopBounds(tbB_piOrgA); PopBounds(tbB_piStateA); PopBounds(tbB_piSbytA);
+PopBounds(tbB_piMC); PopBounds(tbB_piGrMC); 
+PopBounds(tbB_AktO); PopBounds(tbB_AktP); PopBounds(tbB_Akt);
+
+PopBounds(tbB_McSopr);  // для актов и накладных один
+! ------  end Акты на списание ----------------------------------------------------
+// ------  Бух справки Премии ----------------------------------------------------
+PushBounds(tbB_Plpor); //   ограничения по бухсправкам
+AddBounds(tbB_PlporO);
+ if (cfSbyt  > 0 )  AddBounds ( tbB_piSbytPl );
+ if (lfOrg > 0  )  AddBounds ( tbB_piOrgPl );  if (cfState > 0 )  AddBounds ( tbB_piStatePl );
+ _LOOP PlPor
+ {
+  IF NOT NextVisual THEN Exit;
+   if GetFirst fastfirstrow KatOrg  = tsOK  ccSbyt:= fExAttr.coGetAttrID( coKatOrg, KatOrg.nRec , cSbAttrNam );   else ccSbyt:=0;
+  // ---------      заполняем таблицы для отчета  по KatSopr ---------
+    InsTfOrg(PlPor.cPlat) ;
+   if GetFirst fastfirstrow tfkSb where ((ccSbyt ==tfKSb.nrec))  <> tsOK 
+    insert tfKSb set nrec := ccSbyt, kSbyt:= fExAttr.sGetAttrID(coKatOrg,PlPor.cPlat,cSbAttrNam) , wTabOrg:=0; //, wTabMc:=0;
+  //---
+     if  GetFirst fastfirstrow tsTTLPr where ((PlPor.cPlat==tsTTLPr.cOrg ))  = tsOK 
+      update current tsTTLPr set Bonus:=tsTTLPr.Bonus + PlPor.SumPlat;
+     else   { insert tsTTLPr set  cOrg:=PlPor.cPlat,  Niv:=0, Bonus:=PlPor.SumPlat  ;  }
+
+    if bDetail
+    { insert tDataR set bVidDoc := 3, sDoc := PlPor.NoDok +' от '+ DateToStr( PlPor.datVip, 'DD.MM.YY' ) ,
+             sDog :='',  sDC1 :='',  sDC2 := '',
+             cSbyt := ccSbyt,  cOrg := PlPor.cPlat , cMC := 0,
+             KolR := 0 ,  SumR := PlPor.SumPlat , Gross:=0, Net1 := 0
+     ; ++R_iStr[1];
+    } // bDetail
+
+
+ }//loop PlPor
+PopBounds(tbB_piOrgPl); PopBounds(tbB_piStatePl); PopBounds(tbB_piSbytPl);
+PopBounds(tbB_PlPorO); PopBounds(tbB_PlPor);
+! ------ end Бух справки Премии ----------------------------------------------------
+ InitTableSalesRepSk := True;
+}//InitTableSalesRepSk
+/////////////////////////////////////////////////////////
+FUNCTION CheckFileExistence(sFileName:string):boolean;
+{
+ CheckFileExistence:=TRUE
+ _TRY MyFile.OpenFile (sFileName,stOpen)
+ _EXCEPT
+	  ON ExFileNotFound:
+	  {
+	   CheckFileEXISTENCE := FALSE;
+	   _SkipFinally;
+	  }
+ _FINALLY MyFile.Close;
+}//checkfileexistence
+
+FUNCTION AllParametersOK :boolean;
+{   AllParametersOK := false;
+    If d2 < d1
+      {       Message(''#13'Начальная дата не может быть больше конечной!', mfCancelButton + mfWarning); exit;
+      } else 
+           {  if longint(d1) = 0  { Message(''#13'задайте начальную дату!', mfCancelButton + mfWarning); exit;}
+              else  { SaveMyDsk(d1, 'dStart_GetSome_Any'); SaveMyDsk(d2, 'dStop_GetSome_Any');}
+           }
+ IF sXLTFileName=''                  THEN { Message('Не указан путь к шаблону отчета!');Exit;}
+ IF NOT CheckFileExistence(sXLTFileName) THEN { Message('Не найден шаблон отчета по указанному пути:'+chr(13)+sXLTFileName);Exit;}
+
+  bDetail   := (RepOption And 1 ) = 1; // Подробный отчет
+  bSbytTTL  := (RepOption And 2 ) = 2; // Итоги по Каналам сбыта
+  bStateTTL := (RepOption And 4 ) = 4; //  Итоги по Странам
+     //   Message(''#13'detail:'+bDetail+ ''#13'ksbyt:'+bsbytTTL+''#13'state:'+bstateTTL);
+  AllParametersOK := TRUE
+}//AllParametersOK
+
+HANDLEEVENT
+cmInit:
+{
+/// Инициализация d1 и d2
+    If (Not ReadMyDsk(d1, 'dStart_GetSome_Any', bTemp) Or d1 = Date(0,0,0))
+      {  d1 := Date(1, 1, Year(Cur_Date)); SaveMyDsk(d1, 'dStart_GetSome_Any');
+      }
+    If (Not ReadMyDsk(d2,  'dStop_GetSome_Any',  bTemp) Or d2 = Date(0,0,0))
+      {  d2 := Cur_Date;                   SaveMyDsk(d2, 'dStop_GetSome_Any');
+      }
+ // DlgGrMC := '';
+ cfState :=0; cfSbyt:=0; lfOrg:=0; lfMc:=0; lfGrMC :=0;  // Для фильтров
+
+ sXLTFileName := TranslatePath(DefaultShablonPath);
+ sXlSFileName := '';
+ // RepOption:=0;
+}//cmInit
+
+cmPick:
+{
+  var PickedKol : integer;   //для множественного выбора
+
+CASE CurField OF
+  #d1,#d2:
+     If d2 < d1  {  Message(''#13'Начальная дата не может быть больше конечной!', mfCancelButton + mfWarning); }
+  #DlgState:
+  { 
+   if  RunInterface( 'L_KATORG::GETSTATE', cfState ) <> CmCancel
+      {  
+          IF GetFirst fastfirstrow katState where ((cfState== nrec)) = tsOK THEN
+          {  set DlgState:=  KatState.Name ;}
+           else { set DlgState:='-- Ошибка выбора страны'; }
+      }
+   }//#DlgState
+  #DlgKauSbyt:
+  {  var TempMarker  : longint;  // врем. маркер для выбора пользовательской аналитики
+     // RunInterface('GtKodGroup',wIntMode,wKau_Real,cKau,TempMarker,wKau_Pick) wKAU := word(10022) Код аналитики   wKau_Pick := wKau;  
+    TempMarker := InitMarker('',8,100,50,false);
+   if  RunInterface( F_GETAN::GTKODGROUP , word(1) , word(10022) , cfSbyt ,TempMarker, word(10022) ) <> CmCancel  //,wKau_Pick
+      { 
+        //  message( 'cRec:'+string(cfSbyt) + ''#13+'TempMarker:'+string(TempMarker) );
+         IF GetFirst fastfirstrow SpKAU where ((cfSbyt 	== nrec)) = tsOK THEN
+          {  set DlgKauSbyt:=  SpKAU.Name ;}
+           else { set DlgKauSbyt:='-- Ошибка выбора канала сбыта ' + string(cfSbyt) ; }
+      }
+     DoneMarker(TempMarker,'');
+  }//#DlgKauSbyt
+  #DlgKauOrg:
+  {  // L_KATORG vipinterface GetSomeKontr     licensed (FREE) Parameters (NotNeedKill : boolean);
+     if  RunInterface( 'L_KATORG::GetSomeKontr', True ) <> CmCancel   // сохр. выбор
+     {  lfOrg:=0;
+        _Loop pick  where (( 6 == wlist))  { ++lfOrg;}
+        IF lfOrg=1 
+        { IF GetFirst fastfirstrow KatOrg where ((pick.crec==KatOrg.nrec))=tsOK  SET DlgKauOrg := Katorg.Name ;
+          else { set DlgKauOrg :='-- Ошибка выбора Покупателя ' + string(Pick.cRec) ;}
+        }//Pickedkol=1
+        else { SET DlgKauOrg := 'Множественный выбор ('+lfOrg+')';}
+     } //GetSomeKontr
+  } // #DlgKauOrg
+  #DlgKauMC:
+  {
+      if  RunInterface( 'L_MCU::GetSomeMC', comp(-12345) ) <> CmCancel   // сохр. выбор
+     {  lfMC:=0;
+        _Loop pick  where (( 7 == wlist))  { inc( lfMC);}
+        IF lfMC=1 
+        { IF GetFirst fastfirstrow KatMC where ((pick.crec==KatMC.nrec))=tsOK  SET DlgKauMC := KatMC.Name ;
+          else { set DlgKauMC :='-- Ошибка выбора МЦ ' + string(Pick.cRec) ;}
+        }//Pickedkol=1
+        else { SET DlgKauMC := 'Множественный выбор ('+lfMC+')';}
+     } //GetSomeKontr
+   }//#DlgKauMC
+ #DlgGrMC:
+ {
+  if  RunInterface('L_MCU::GETSOMGM') <> CmCancel
+  {  lfGrMC:=0;
+   _Loop pick where (( 2 == wlist)) { inc( lfGrMC);}
+        IF lfGrMC=1 
+        { IF GetFirst fastfirstrow groupMC where ((pick.crec==groupMC.nrec))=tsOK  SET DlgGrMC := groupMC.Name ;
+          else { set DlgGrMC :='-- Ошибка выбора грМЦ ' + string(Pick.cRec) ;}
+        }//Pickedkol=1
+        else { SET DlgGrMC := 'Множественный выбор ('+lfGrMC+')';}
+  }
+ }//DlgGrMC
+
+ #sXLTFileName:
+ {
+  SET sXLTFileName := GetFileName('*.xlt', 'Выберите шаблон отчета');
+ }//sxltfilename
+END;//case
+}//cmPick
+
+cmDelOnProtect:
+{
+CASE CurField OF
+ #DlgState:    { set DlgState  :='' ; cfState:=0; }
+ #DlgKauSbyt:  { set DlgKauSbyt:='' ; cfSbyt :=0; }
+ #DlgKauOrg:   { set DlgKauOrg :='' ; lfOrg :=0; } //DELETE Pick WHERE ((word(6)==pick.wlist)); }
+ #DlgKauMC:    { set DlgKauMC  :='' ; lfMc  :=0; } //DELETE Pick WHERE ((word(7)==pick.wlist)); }
+ #DlgGrMC:     { set DlgGrMC   :='' ; lfGrMC:=0; } //DELETE Pick WHERE ((word(2)==pick.wlist)); }
+END;//case
+}//очистка фильтра по группе
+
+cmOK:
+{
+ if AllParametersOK THEN
+ {               
+  StartNewVisual(vtNumericVisual, vfTimer + vfBreak + vfConfirm, 'Шаг 1 из 3: Выборка значений из БД', 100);  //vtRotateVisual
+  if InitTableSalesRepSk THEN
+  {
+   if CalcSalesRepTTL 
+    { RestartVisual('Шаг 3 из 3: Выгрузка в шаблон Excel', 100);
+     IF NOT RunRep THEN Message('Выгрузка данных в шаблон Excel прервана пользователем!');
+    }
+  }//Если нормально выборка из БД 
+
+  DELETE ALL tDataR; DELETE ALL tSTTL; DELETE ALL tSTTLPr; DELETE ALL tfOrg; DELETE ALL tfMC; DELETE ALL tfState;
+   DELETE ALL tSTTLi; 
+  StopVisual('',0);
+  CloseInterface(cmDefault);
+ }//Если параметры нормально заданы
+}//cmOK
+
+cmCancel:
+{
+ CloseInterface(cmCancel);
+}//cmCancel
+end;//HandleEvent
+end.//interface
+
+//////////////////////////////////////////////
+//
+//  пункт меню в отчетах пользовател
+//
+#component 'F_UserReport'
+#include UserReport.vih
+VipInterface UserReport_Droga_salesRepSk Implements IUserReport;
+
+Interface UserReport_Droga_salesRepSk;
+
+create view;
+procedure Run;
+begin
+RunInterface('F_XLSRep::Droga_SalesReportSkidka')
+end;
+function GetReportName: String;
+begin
+  GetReportName := 'Отчет о Реализации (Скидки,Премии,Каналы сбыта)';
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+  case Level of
+    1 : GetGroupName := 'Droga Продажи';
+//    2 : GetGroupName := '';
+  end;
+end;
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'SELL';
+    2 : VisibleInModule := 'DOGOVOR';
+    3 : VisibleInModule := 'B_FINANS'; //ФРО
+  end;
+end;
+!-------------------------------------------------------------------------------
+end.
+
+object 'F_XLSREP::DROGA_SALESREPORTSKIDKA' : InterfaceWindow {
+  Centered = True;
+  StatusCtx = 6906;  //Sci13EnEsc
+ } // F_XLSREP::DROGA_SALESREPORTSKIDKA : InterfaceWindow
+//-----------------------------------------------------------------------------

@@ -1,0 +1,67 @@
+#ifdef ComponentVersion
+#component "L_Smeta"
+#end
+
+VipInterface CatPSD                         licensed (FREE) Parameters (CatType : word; cur_CATALPSD : comp; ES : boolean);
+VipInterface BatchImportSmeta               licensed (FREE) ;
+VipInterface GetMCUslFromLink               licensed (FREE) Parameters (JobRes : word; pJobRes : comp; OutMCUsl : comp; pPrMCUsl : word);
+VipInterface GetSmetaMCU                    licensed (FREE) Parameters (
+  pTipDoc : string;
+  pTipObj,        //0-строительство/1-ремонты/100-все (SmetaFREE.coTable)
+  pOstMC  : word; //контроль остатков МЦ (0-нет/1-да/2-на выбор)
+  pObj    : comp; //фильтр на Объект строительсва/ремонта (д.б. pTipObj<>100)
+  pSm,            //ссылка на смету
+  pSp     : comp; //ссылка на спецификацию сметы
+  pPrMC   : word; //признак 1-МЦ/2-Услуги
+  pMCU,           //МЦ/Услуга
+  pPodr,          //Подразделение (для МЦ)
+  pMol,           //МОЛ           (для МЦ)
+  pParty  : comp; //Партия        (для МЦ)
+  pRez    : word  //режимы выбора
+);
+VipInterface ImportSNB                      licensed (FREE) Parameters (sTarget : string; cTargetRef : comp);
+VipInterface LocalSmeta
+  licensed
+  (
+    #include LOCALSMETA.lih
+  )
+  Parameters (TypeDoc : word; cSm : comp; cSp : comp);
+VipInterface NormHier                       licensed (FREE) Parameters (c1 : comp; c2 : comp);
+VipInterface ObjSmeta                       licensed (FREE) Parameters (TypeDoc : word; cSm : comp; cSp : comp);
+VipInterface SvodSmeta                      licensed (FREE) Parameters (TypeDoc : word; cSm : comp; cSp : comp);
+VipInterface PaketImportSmet                licensed (FREE) ;
+VipInterface PaketImportSmetXML             licensed (FREE) Parameters (pwMode : word);
+VipInterface GetIconPSD                     licensed (FREE) Parameters (Tip: word; NameIc : string);
+VipInterface GetUrovPSD                     licensed (FREE) Parameters (c1 : comp; EV : boolean; cCatPSD : comp; Tit : string);
+VipInterface GetTypeKR                      licensed (FREE) Parameters (c1 : comp; EV : boolean; Tit : string);
+VipInterface CopySpDocSmeta                 licensed (FREE) Parameters (coTabSrc : word; cRecSrc : comp; coTabDst : word; cRecDst : comp);
+VipInterface PsdPrn licensed (FREE) Parameters (cnRec : comp);
+VipInterface NalPsd licensed (FREE);
+VipInterface ShowSpesHowSmeta licensed (FREE) Parameters (pcDoc : comp; pwTable : word);
+VipInterface GetKatLimit licensed (FREE) Parameters (c1 : comp; EV : boolean);
+VipInterface GetKatKoeff licensed (FREE) Parameters (c1 : comp; w1 : word; EV : boolean);
+VipInterface CopyKoeffToAct licensed (FREE) Parameters (pcSpSopr : comp; pwPr : word);
+VipInterface SmetKoeffForAct licensed (FREE) Parameters (pcKatSopr : comp; pwPr : word);
+VipInterface MakeAkt110 licensed (FREE) Parameters (Source: comp);
+
+VipInterface iVSmeta
+  licensed (FREE)
+  Parameters (cSp : comp; coSP : word);
+
+VipInterface iGetSmeta
+  licensed (FREE)
+  Parameters (
+    TypeDoc  : word;
+    cpSmeta  : comp;
+    wMCUsl   : word;
+    wTable   : word;
+    cObj     : comp;
+    ccurMC   : comp
+  );
+
+VipInterface ImportSmetaXML_ST              licensed (FREE) Parameters (pcParam : comp; pwRet: word; pcGrpMC, pcGrpUsl: comp);
+VipInterface ImportSmetaXML_GR              licensed (FREE) Parameters (pcParam : comp; pwRet: word);
+VipInterface ImportAktXML_ST                licensed (FREE) Parameters (pcParam : comp; pwRet: word; pcKatOrg, pcZatr: comp; pcGrpMC, pcGrpUsl: comp);
+VipInterface ImportAktXML_GR                licensed (FREE) Parameters (pcParam : comp; pwRet: word; pcKatOrg, pcZatr, pcSmeta: comp);
+VipInterface OutSklXML                      licensed (FREE);
+VipInterface GetSmetaSimple                 licensed (FREE) Parameters (pwTiDk: word; pcSmeta: comp);

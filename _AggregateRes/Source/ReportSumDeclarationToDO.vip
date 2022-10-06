@@ -1,0 +1,254 @@
+#include Query.vih
+Interface ReportSumDeclarationToDO
+
+table struct TableReport
+(
+      cDoc   : comp
+    , DDoc   : date
+    , NoDoc  : String
+    , Org    : String
+    , SumVal : double
+    , Sum    : double
+    , SumPoshlina : Double
+    , SumNDS      : Double
+    , SumSbor     : Double
+)
+with index
+(
+ ind0 = cDoc
+)
+;
+create view
+var _markerDocs : longint;
+as select pick.crec
+  from
+     pick
+   , BaseDoc
+   , TableReport
+  where
+    ((
+               word(32) == Pick.wlist
+       and pick.crec    == basedoc.nrec
+    ))
+  ORDER BY basedoc.DDOC, basedoc.NODOC
+;
+parameters _markerDocs
+;
+function CreateExcel (FExcelName : string) : boolean;
+{
+  StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Инициализация EXCEL', 1);
+    result := true;
+
+    DeleteFile(FExcelName);
+
+    if (not xlCreateExcel(FExcelName, true))
+    {
+      message('ОШИБКА! Не удалось инициализировать сессию Excel', Error);
+      xlKillExcel;
+      result := false;
+      exit;
+    }
+
+    if (not xlIsExcelValid)
+    {
+      message('ОШИБКА! Не удалось инициализировать сессию Excel', Error);
+      xlKillExcel;
+      result := false;
+      exit
+    }
+  var xlCount : word;
+  xlCount := 0;
+   Do
+   {
+    xlGetSheetsCount(xlCount);
+    xlDeleteSheet(xlCount);
+   } while xlCount > 1
+
+    xlSetActiveSheet(1);
+    xlSetSheetName(1, 'ReportMassa_DO_NAKL_'+UserName);
+
+   StopVisual('',0);
+}
+Procedure MyPrintMatrixToExcel(var nrow, nrowReal : longint);
+{
+ if nrow = 100 then
+  {
+   xlWritematrixToExcel(nrowReal,1);
+   xlclearMatrix;
+   nrowReal := nrowReal + nrow-1;
+   nrow := 1;
+  }
+}
+Function GeSumSbor(_Sum : double) : double;
+{
+ if _sum <= 200000                        then result := 375;
+ if _sum >=  200000  and _sum <=   450000 then result := 750;
+ if _sum >=  450000  and _sum <=  1200000 then result := 1500;
+ if _sum >= 1200000  and _sum <=  2500000 then result := 4125;
+ if _sum >= 2500000  and _sum <=  5000000 then result := 5625;
+ if _sum >= 5000000  and _sum <= 10000000 then result := 15000;
+ if _sum >= 10000000                      then result := 22500;
+}
+Procedure PrintReport_Matrix;
+{
+  if not CreateExcel(GetStringParameter('Files','TmpFilesDirectory',0)+'ReportMassa_DO_NAKL_Matrix_'+UserName+'_'+DateToStr(Cur_Date,'YYYYMMDD')+'_'+TimeToStr(Cur_Time,'HHMMSS')+'.xlsx')
+    then {Stop; Abort; exit;}
+
+
+  StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Формирование отчета', 1);
+  xlCreateMatrix(100,10);
+
+  var Nrow0,nrow0FrameBold, Nrow, column, nrowreal : longint;
+ nrowreal := 1;
+ Nrow := column := 1;
+
+ xlSetFontStyle(1,nrow,1,nrow,6);
+
+ xlStWriteToMatrix(nrow, 1, 'Справка о предполагаемой сумме затрат на таможне. Курс взят на дату: ' + Cur_date);
+ XlMergeCells(nrow,1,nrow,8);
+ xlSetColumnWidth(18,1,1,1,1);
+ xlSetColumnWidth(13,1,2,1,2);
+ xlSetColumnWidth(70,1,3,1,3);
+ xlSetColumnWidth(16,1,4,1,4);
+ xlSetColumnWidth(16,1,5,1,5);
+ xlSetColumnWidth(16,1,6,1,6);
+ xlSetColumnWidth(16,1,7,1,7);
+ xlSetColumnWidth(16,1,8,1,8);
+
+ Nrow++;
+ column := 1;
+    xlStWriteToMatrix(nrow, column, 'Номер ДО'); column++;
+    xlStWriteToMatrix(nrow, column, 'Дата ДО'); column++;
+    xlStWriteToMatrix(nrow, column, 'Организация'); column++;
+    xlStWriteToMatrix(nrow, column, 'Сумма в Валюте'); column++;
+    xlStWriteToMatrix(nrow, column, 'Сумма в рублях'); column++;
+    xlStWriteToMatrix(nrow, column, 'Сумма пошлины, руб'); column++;
+    xlStWriteToMatrix(nrow, column, 'Сумма НДС, руб'); column++;
+    xlStWriteToMatrix(nrow, column, 'Сумма сбора, руб'); column++;
+    Nrow++;
+  MyPrintMatrixToExcel(Nrow,NrowReal);
+
+ _Loop TableReport
+  {
+    setvisualheader('Формирование отчета'+
+     + ''#13'' + TableReport.NoDoc+' № ' +TableReport.NoDoc );
+    nrow0FrameBold :=  nrow+nrowreal-1;
+    column := 1;
+    xlStWriteToMatrix(nrow, column, chr(39)+TableReport.NoDoc);  column++;
+    xlStWriteToMatrix(nrow, column, chr(39)+TableReport.DDoc);   column++;
+    xlStWriteToMatrix(nrow, column, TableReport.Org);            column++;
+    xlStWriteToMatrix(nrow, column, TableReport.SumVal);         column++;
+    xlStWriteToMatrix(nrow, column, TableReport.Sum);            column++;
+    xlStWriteToMatrix(nrow, column, TableReport.SumPoshlina);    column++;
+    xlStWriteToMatrix(nrow, column, TableReport.SumNDS);         column++;
+    xlStWriteToMatrix(nrow, column, GeSumSbor(TableReport.Sum));        column++;
+    Nrow++;
+    MyPrintMatrixToExcel(Nrow,NrowReal);
+//   nrow0FrameBold := nrow + NrowReal - 1;
+  }
+  xlFrameCells(63, 2, 1, 1, 2, 1, nrow+nrowreal-2, 8);
+
+  xlSetNumberFormat('# ##0,00',2,4,nrow+nrowreal-1, 8);
+
+ xlWriteMatrixToExcel(NrowReal,1);
+ xlKillExcel;
+ StopVisual('',0);
+}
+Procedure MyLog(_str : string);
+{
+  logstrtofile('ReportSumDeclarationToDO.log',datetostr(Cur_date,'YYYY-MM-DD') + ' ' + timeToStr(Cur_time,'HH:MM:SS') + ' ' + _str)
+}
+procedure MysqlAddStr(var query_handle: longInt; add_query_str: string);
+{
+   sqlAddStr(query_handle, add_query_str);
+   MyLog(add_query_str);
+} //Function MysqlAddStr(var query_handle: longInt; add_query_str: string): longInt;
+
+
+procedure GetDataSumDo;
+{
+  StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Сбор информации', 1);
+  delete all TableReport;
+    _loop Pick
+    {
+       var hstr : longint = 0;
+      MysqlAddStr(hstr, ' select                    ');
+      MysqlAddStr(hstr, '       t.cDoc as cDoc      ');
+      MysqlAddStr(hstr, '     , t.dDOc as DDoc      ');
+      MysqlAddStr(hstr, '     , t.NoDoc as NoDoc    ');
+      MysqlAddStr(hstr, '     , t.Org as Org        ');
+      MysqlAddStr(hstr, '     , Sum(t.PositionSum) as SumVal             ');
+      MysqlAddStr(hstr, '     , Sum(t.Kurs*t.PositionSum) as Sum         ');
+      MysqlAddStr(hstr, '     , Sum(t.Kurs*t.PositionSum*t.ProcentPoshlina/100) as SumPoshlina  ');
+      MysqlAddStr(hstr, '     , Sum(t.Kurs*t.PositionSum*(1+t.ProcentPoshlina/100)*t.ProcentNDS/100) as SumNDS ');
+      MysqlAddStr(hstr, '     ,0 as SumSbor                      ');
+      MysqlAddStr(hstr, ' from (                                ');
+      MysqlAddStr(hstr, ' select                                ');
+      MysqlAddStr(hstr, '    spst.nrec                          ');
+      MysqlAddStr(hstr, '  , kurs.SumRubl as kurs                  ');
+      MysqlAddStr(hstr, '  , BD.Nrec as cDoc                      ');
+      MysqlAddStr(hstr, '  , BD.dDOc as DDoc                      ');
+      MysqlAddStr(hstr, '  , BD.NoDoc as NoDoc                    ');
+      MysqlAddStr(hstr, '  , Org.name as Org                      ');
+      MysqlAddStr(hstr, '  , Spst.kol* spst.price as PositionSum   ');
+      MysqlAddStr(hstr, '  , Sum(case when kn.name = ''Таможенная пошлина'' then spgrnal.nalog else 0 end ) as ProcentPoshlina ');
+      MysqlAddStr(hstr, '  , Sum(case when kn.name = ''НДС'' then spgrnal.nalog else 0 end  ) as ProcentNDS                    ');
+      MysqlAddStr(hstr, ' from basedoc bd                                                                                    ');
+      MysqlAddStr(hstr, ' join stepdoc std on std.cbasedoc = bd.nrec                                                         ');
+      MysqlAddStr(hstr, ' join KatOrg org on org.nrec = BD.cORg                                                              ');
+      MysqlAddStr(hstr, ' join spstep spst on spst.cstepdoc = std.nrec                                                       ');
+      MysqlAddStr(hstr, ' join grnal on grnal.nrec = spst.cgrnal                                                             ');
+      MysqlAddStr(hstr, ' join spgrnal on spgrnal.cgrnal = grnal.nrec                                                        ');
+      MysqlAddStr(hstr, ' join katNalog kn on kn.nrec = spgrnal.cNalog                                                       ');
+      MysqlAddStr(hstr, ' outer apply (select top 1 cv.SumRubl, cv.DatVal                                                    ');
+      MysqlAddStr(hstr, '               from cursVal cv                                                                      ');
+      MysqlAddStr(hstr, '              where cv.kodvalut = std.cval                                                          ');
+      MysqlAddStr(hstr, '                and cv.datVal <= #date('+DateToStr(cur_date,'DD,MM,YYYY')+')                        ');
+      MysqlAddStr(hstr, '              order by cv.datval desc) KURS                                                         ');
+      MysqlAddStr(hstr, ' where bd.viddoc = 101                                                                              ');
+      MysqlAddStr(hstr, ' and bd.nrec = #comp('+String(Basedoc.Nrec)+')                                                      ');
+      MysqlAddStr(hstr, ' //and spst.prmc=1                                                                                  ');
+      MysqlAddStr(hstr, ' and spgrnal.isCUstom = 3                                                                           ');
+      MysqlAddStr(hstr, ' and spgrnal.nald1 <= #date('+DateToStr(cur_date,'DD,MM,YYYY')+')                                   ');
+      MysqlAddStr(hstr, ' and spgrnal.nald2 >= #date('+DateToStr(cur_date,'DD,MM,YYYY')+')                                   ');
+      MysqlAddStr(hstr, ' group by kurs.SumRubl, Spst.kol* spst.price, spst.nrec , Org.name , BD.Nrec, BD.dDOc,BD.NoDoc      ');
+      MysqlAddStr(hstr, ' ) t                                                                                                ');
+      MysqlAddStr(hstr, ' group by  t.cDoc, t.dDOc, t.NoDoc,t.Org                          ');
+     var objQuery: iQuery;
+          objQuery := queryManager.createQuery(hstr);
+        if objQuery.execute.errorCode != tsOk
+         then {Message('Ошибка выполнения запроса '+ objQuery.errorCode);
+               MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+               exit;
+              }
+        else
+        {sqlCopyInto(objQuery, tnTableReport, true);
+        }
+    }
+ StopVisual('',0);
+}
+handleevent
+cminit:
+{
+//  Message(if(_TypeDO = 0,'ПО ДО','ПО НАКЛАДНЫМ')+getMarKerCount(_markerDocs));
+if getMarKerCount(_markerDocs) = 0
+ {
+  message('Пометьте документы',error);
+  stop; abort; exit;
+ }
+  delete Pick where ((32 == Pick.wList));
+  var i: longint;
+  var _crec : comp;
+   for(i := 0; i < GetMarkerCount(_markerDocs); i++)
+    if GetMarker(_markerDocs, i, _cRec)
+    {
+      clearbuffer(tnPick);
+       Pick.wList := 32;
+       Pick.crec  := _cRec;
+      insert current Pick;
+    }
+  GetDataSumDo;
+  PrintReport_Matrix;
+}
+end;
+end.

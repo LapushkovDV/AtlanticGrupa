@@ -1,0 +1,675 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Логистика - склад
+// Модификация сальдовых остатков из ордеров
+//******************************************************************************
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// !!!!!!!   данный файл служит ТОЛЬКО для совпестимости при сборке патчей
+// !!!!!!!   его развитие - остановлено, только исправления ошибок, которые
+// !!!!!!!   следует делать параллельно и в modifsal.vip !!
+
+
+#ifNdef __ModifSal_vip__
+#error Вместо #include ModifSal.vpp необходимо использовать методы объекта (см ModifSal.vih)
+#end
+
+//******************************************************************************
+
+#ifNdef _modifSal_vpp_
+#define _modifSal_vpp_
+
+//******************************************************************************
+
+#include tekrun.var
+
+//******************************************************************************
+
+const
+co_dTeks = date(1,1,2100);
+end;
+
+Create view MS
+var
+//------------------------------------------------------------------------------
+  useOldSaldo
+, multyVal
+                :  boolean;
+//------------------------------------------------------------------------------
+  presision
+, SpOrderPriceN
+, vPriceN
+                : double;
+//------------------------------------------------------------------------------
+  order_SP
+                : word;
+//------------------------------------------------------------------------------
+  order_MC
+, order_Podr
+, order_MOL
+, order_Party
+                : comp;
+//------------------------------------------------------------------------------
+From
+  SaldoMC
+, SaldoMC SaldoMC2
+, CursVal
+, SpOrder(readOnly)
+;
+//******************************************************************************
+
+
+//******************************************************************************
+//----не исп.----------------------------------------------------
+Function GetEqualSaldoMC(SP_: word; cMC_, cPodr_, cMOL_, cParty_: comp;
+                         Date_: Date): word;
+{
+  GetEqualSaldoMC := MS.GetFirst SaldoMC where ((
+             SP_     == SaldoMC.SP      AND  cMC_   == SaldoMC.cMC     AND
+             cPodr_  == SaldoMC.cPodr   AND  cMOL_  == SaldoMC.cMOL    AND
+             cParty_ == SaldoMC.cParty  AND  Date_  == SaldoMC.dSaldo ));
+}
+
+//******************************************************************************
+
+Function GetLastLessSaldoMC(SP_: word; cMC_, cPodr_, cMOL_, cParty_: comp;
+                            Date_: Date): word;
+{
+  GetLastLessSaldoMC := MS.GetLast SaldoMC where ((
+             SP_     == SaldoMC.SP      AND  cMC_   == SaldoMC.cMC     AND
+             cPodr_  == SaldoMC.cPodr   AND  cMOL_  == SaldoMC.cMOL    AND
+             cParty_ == SaldoMC.cParty  AND  Date_  >> SaldoMC.dSaldo ));
+}
+
+//******************************************************************************
+
+Function GetEqualSaldoMC2(SP_: word; cMC_, cPodr_, cMOL_, cParty_: comp;
+                          Date_: Date): word;
+{
+  GetEqualSaldoMC2 := MS.GetFirst SaldoMC2 where ((
+             SP_     == SaldoMC2.SP      AND  cMC_   == SaldoMC2.cMC     AND
+             cPodr_  == SaldoMC2.cPodr   AND  cMOL_  == SaldoMC2.cMOL    AND
+             cParty_ == SaldoMC2.cParty  AND  Date_  == SaldoMC2.dSaldo ));
+}
+
+//******************************************************************************
+
+Function GetLastLessOrEqualSaldoMC(SP_: word; cMC_, cPodr_, cMOL_, cParty_: comp;
+                                   Date_: Date): word;
+{
+  GetLastLessOrEqualSaldoMC := MS.GetLast SaldoMC where ((
+             SP_     == SaldoMC.SP      AND  cMC_   == SaldoMC.cMC     AND
+             cPodr_  == SaldoMC.cPodr   AND  cMOL_  == SaldoMC.cMOL    AND
+             cParty_ == SaldoMC.cParty  AND  Date_  >>= SaldoMC.dSaldo ));
+}
+
+//******************************************************************************
+
+Procedure FillNewSaldoMC(SP_: word;
+                         cMC_, cPodr_, cMOL_, cParty_, cVal_: comp;
+                         Date_: Date );
+{
+  MS.SaldoMC.SP       := SP_;
+  MS.SaldoMC.cMC      := cMC_;
+  MS.SaldoMC.cPodr    := cPodr_
+  MS.SaldoMC.cMOL     := cMOL_
+  MS.SaldoMC.cParty   := cParty_
+  MS.SaldoMC.dSaldo   := Date_
+  MS.SaldoMC.kol      := 0;
+  MS.SaldoMC.srPrice  := 0;
+  MS.SaldoMC.vPrice   := 0;
+  MS.SaldoMC.cVal     := cVal_;
+  MS.SaldoMC.priceN   := 0;
+
+  MS.SaldoMC.kolP     := 0;
+  MS.SaldoMC.kolR     := 0;
+  MS.SaldoMC.srP      := 0;
+  MS.SaldoMC.srR      := 0;
+  MS.SaldoMC.srPV     := 0;
+  MS.SaldoMC.srRV     := 0;
+
+  MS.SaldoMC.opers    := 0;
+  MS.SaldoMC.NRec     := 0;
+}
+
+//******************************************************************************
+
+Procedure FillNewSaldoMC2(SP_: word; cMC_, cPodr_, cMOL_, cParty_, cVal_: comp;
+                          Date_: Date );
+{
+  MS.SaldoMC2.SP        := SP_;
+  MS.SaldoMC2.cMC       := cMC_;
+  MS.SaldoMC2.cPodr     := cPodr_;
+  MS.SaldoMC2.cMOL      := cMOL_
+  MS.SaldoMC2.cParty    := cParty_;
+  MS.SaldoMC2.dSaldo    := Date_
+  MS.SaldoMC2.kol       := 0;
+  MS.SaldoMC2.srPrice   := 0;
+  MS.SaldoMC2.vPrice    := 0;
+  MS.SaldoMC2.cVal      := cVal_;
+  MS.SaldoMC2.priceN    := 0;
+
+  MS.SaldoMC2.kolP      := 0;
+  MS.SaldoMC2.kolR      := 0;
+  MS.SaldoMC2.srP       := 0;
+  MS.SaldoMC2.srR       := 0;
+  MS.SaldoMC2.srPV      := 0;
+  MS.SaldoMC2.srRV      := 0;
+
+  MS.SaldoMC2.opers     := 0;
+  MS.SaldoMC2.NRec      := 0;
+}
+
+//******************************************************************************
+
+Procedure FillSaldoMC2_by_SaldoMC;
+{
+  MS.SaldoMC2.kol     := MS.SaldoMC.kol    ;
+  MS.SaldoMC2.srPrice := MS.SaldoMC.srPrice;
+  MS.SaldoMC2.vPrice  := MS.SaldoMC.vPrice ;
+  MS.SaldoMC2.cVal    := MS.SaldoMC.cVal   ;
+  MS.SaldoMC2.priceN  := MS.SaldoMC.priceN ;
+
+  MS.SaldoMC2.kolP    := MS.SaldoMC.kolP   ;
+  MS.SaldoMC2.kolR    := MS.SaldoMC.kolR   ;
+  MS.SaldoMC2.srP     := MS.SaldoMC.srP    ;
+  MS.SaldoMC2.srR     := MS.SaldoMC.srR    ;
+  MS.SaldoMC2.srPV    := MS.SaldoMC.srPV   ;
+  MS.SaldoMC2.srRV    := MS.SaldoMC.srRV   ;
+  MS.SaldoMC2.opers   := 21001; // главное чтобы не ноль ! 21001 пусть будет как признак
+}
+
+//******************************************************************************
+
+Function if_01(d_: double): double;
+{
+  if MS.presision = 0
+    MS.presision := 0.0001;
+
+  if_01 := if(abs(d_) < MS.presision, 1, d_);
+}
+
+//******************************************************************************
+
+Function CountSrPriceN(kolSal_, priceSal_: double;
+                       kolOrd_, priceOrd_: double): double;
+{
+  var d: double;
+  d := if(SpOrder.vidOrder = 0 AND SpOrder.tipOrd>= 4 AND SpOrder.tipOrd<= 7,
+                if_01(kolOrd_), //для переоценки = 1
+                kolOrd_ ); //для числителя
+
+  CountSrPriceN := ( priceSal_*if_01(kolSal_) + priceOrd_ * d ) / if_01(kolSal_ + kolOrd_);
+}
+
+//******************************************************************************
+
+Function CntSrAdd(kol1_, price1_: double;
+                  kol2_, price2_: double): double;
+{
+  var d: double; d := if(SpOrder.vidOrder = 0 AND
+             ((SpOrder.tipOrd>= 4 AND SpOrder.tipOrd<= 7) OR (SpOrder.tipOrd = 15)),
+            if_01(kol2_), //для переоценки = 1
+            kol2_ ); //для числителя
+
+  CntSrAdd := (price1_ * if_01(kol1_) + price2_ * d) / if_01(kol1_ + kol2_);
+}
+
+//******************************************************************************
+
+Procedure CountSaldoMC(kol_, price_, vPrice_, priceN_: double;
+                       cVal_: comp;
+                       Date_: Date;
+                       prev_dSaldo_: Date);
+{
+  var oldcVal_, saveSaldoVal: comp;
+
+  date_        := sub_day(date_, 1); //для перевода валют, уже было +1 раньше
+  prev_dSaldo_ := if(MS.SaldoMC.dSaldo = Date_, prev_dSaldo_, MS.SaldoMC.dSaldo); //для перевода валют м.б. только = или >
+  prev_dSaldo_ := sub_day(prev_dSaldo_, 1); //для перевода валют
+
+  //------------------------------- валюта ----------------------------------
+  if cVal_ = 0 AND  not(SpOrder.vidOrder = 0 AND SpOrder.tipOrd>= 4 AND SpOrder.tipOrd<= 7)
+    {
+      vPrice_ := 0    //обнуляем
+      if oValFunc.valBase<>0
+        {
+          vPrice_ := oValFunc.GetBaseCurrency(comp(0), price_, Date_);
+          cVal_  := oValFunc.valBase;
+        }
+    }
+
+  oldcVal_ := cVal_; //здесь! -сейчас не используется
+
+  if MS.SaldoMC.cVal = 0
+    {
+      MS.SaldoMC.vPrice := 0;  MS.SaldoMC.SrPV := 0;  MS.SaldoMC.SrRV := 0; //обнуляем
+      MS.SaldoMC.cVal := cVal_;
+      if oValFunc.valBase<>0
+        {
+          MS.SaldoMC.vPrice := oValFunc.GetBaseCurrency(comp(0), MS.SaldoMC.srPrice, prev_dSaldo_);
+          MS.SaldoMC.srPV  := oValFunc.GetBaseCurrency(comp(0), MS.SaldoMC.srP, prev_dSaldo_);
+          MS.SaldoMC.srRV  := oValFunc.GetBaseCurrency(comp(0), MS.SaldoMC.srR, prev_dSaldo_);
+          MS.SaldoMC.cVal  := oValFunc.valBase;
+        }
+    }
+
+  saveSaldoVal := MS.SaldoMC.cVal; //здесь! -сейчас не используется
+
+  //если валюты разные, приводим к базовой валюте:
+  if cVal_<>MS.SaldoMC.cVal  OR  MS.multyVal = FALSE //при простом учете - всегда
+    if oValFunc.valBase<>0
+      {
+        vPrice_ := oValFunc.GetBaseCurrency(cVal_, vPrice_, Date_);
+        cVal_   := oValFunc.valBase;
+        MS.SaldoMC.vPrice := oValFunc.GetBaseCurrency(MS.SaldoMC.cVal, MS.SaldoMC.vPrice, prev_dSaldo_);
+        MS.SaldoMC.srPV  := oValFunc.GetBaseCurrency(MS.SaldoMC.cVal, MS.SaldoMC.srPV, prev_dSaldo_);
+        MS.SaldoMC.srRV  := oValFunc.GetBaseCurrency(MS.SaldoMC.cVal, MS.SaldoMC.srRV, prev_dSaldo_);
+        MS.SaldoMC.cVal  := oValFunc.valBase;
+      }
+    else //в валюту сальдо
+      {
+        vPrice_ := oValFunc.GetAnyCurrency(cVal_, vPrice_, Date_, MS.SaldoMC.cVal);
+        cVal_   := MS.SaldoMC.cVal;
+      }
+
+  //вычисляем среднюю валютную:
+  MS.SaldoMC.vPrice := CntSrAdd(MS.SaldoMC.kol, MS.SaldoMC.vPrice,
+                                if(SpOrder.vidOrder = 0, kol_, -kol_), vPrice_);
+
+  if (MS.SaldoMC.cVal = 0)
+    MS.SaldoMC.vPrice := 0;
+
+  //---------------для приходов и расходов----------------------------------
+  case SpOrder.vidOrder of
+  //----------------------
+    0:
+      {
+        MS.SaldoMC.srP  := CntSrAdd(MS.SaldoMC.kolP, MS.SaldoMC.srP, kol_, price_);
+        MS.SaldoMC.srPV := CntSrAdd(MS.SaldoMC.kolP, MS.SaldoMC.srPV, kol_, vPrice_);
+        MS.SaldoMC.kolP := MS.SaldoMC.kolP  + kol_
+      }
+  //----------------------
+    1:
+      {
+        MS.SaldoMC.srR  := CntSrAdd(MS.SaldoMC.kolR, MS.SaldoMC.srR, kol_, price_);
+        MS.SaldoMC.srRV := CntSrAdd(MS.SaldoMC.kolR, MS.SaldoMC.srRV, kol_, vPrice_);
+        MS.SaldoMC.kolR := MS.SaldoMC.kolR  + kol_
+      }
+  //----------------------
+  end;//c
+
+  //------------------------------ рубли -----------------------------
+  MS.SaldoMC.srPrice := CntSrAdd(MS.SaldoMC.kol, MS.SaldoMC.srPrice,
+                                if(SpOrder.vidOrder = 0, kol_, -kol_), price_);
+
+  //-- налоговая цена рубли ------------------------------------------
+  if SpOrder.vidOrder = 1 OR SpOrder.tipOrd = 3
+    priceN_ := MS.SaldoMC.priceN;
+
+  if abs(MS.SaldoMC.kol) < MS.presision
+    MS.SaldoMC.priceN := 0;
+
+  MS.SaldoMC.priceN := CntSrAdd(MS.SaldoMC.kol, MS.SaldoMC.priceN,
+                               if(SpOrder.vidOrder = 0, kol_, -kol_), priceN_);
+
+  //------------------------------ кол-во -----------------------------
+  MS.SaldoMC.kol := MS.SaldoMC.kol + if(SpOrder.vidOrder = 0, kol_, -kol_);
+  //-------------------------------------------------------------------
+  if abs(MS.SaldoMC.kol) < MS.presision
+    MS.SaldoMC.priceN := priceN_;
+
+  //-------------------------------------------------------------------
+  //округляем для исключения знаков в младших разрядах double
+  if abs(MS.SaldoMC.kol) < MS.presision
+    MS.SaldoMC.kol := 0;
+
+  if abs(MS.SaldoMC.kolP) < MS.presision
+    MS.SaldoMC.kolP := 0;
+
+  if abs(MS.SaldoMC.kolR) < MS.presision
+    MS.SaldoMC.kolR := 0;
+
+  if MS.SaldoMC.kol = 0
+    if wGetTune('Round.Order')<>0 AND //округление в ордерах
+       ( (SpOrder.SP = 0 AND boGetTune('Oper.Period') = FALSE)  or
+         (SpOrder.SP <>0) )
+      {
+        if abs(MS.SaldoMC.srPrice)< doGetTune('Round.OrderRub')
+          MS.SaldoMC.srPrice := 0;
+
+        if abs(MS.SaldoMC.vPrice) < doGetTune('Round.OrderVal')
+          MS.SaldoMC.vPrice := 0;
+      }
+}
+
+//******************************************************************************
+
+Procedure SetPrices_If_OldSaldo(minKol_: double);
+{
+  MS.SaldoMC.vPrice := if(MS.SaldoMC.cVal<>0, MS.SaldoMC.vPrice, 0);//подстрах.
+  if MS.SaldoMC.opers = 0 //старое сальдо
+    {
+      MS.SaldoMC.kolP := if( abs(MS.SaldoMC.kol)<minKol_, 0, MS.SaldoMC.kol);
+      MS.SaldoMC.kolR := if( abs(MS.SaldoMC.kol)<minKol_, 0, MS.SaldoMC.kol);
+      MS.SaldoMC.srP  := MS.SaldoMC.srPrice;
+      MS.SaldoMC.srR  := MS.SaldoMC.srPrice;
+      MS.SaldoMC.srPV := if(MS.SaldoMC.cVal<>0, MS.SaldoMC.vPrice, 0);
+      MS.SaldoMC.srRV := if(MS.SaldoMC.cVal<>0, MS.SaldoMC.vPrice, 0);
+    }
+}
+
+//******************************************************************************
+
+Procedure UpdateSaldos(SP_: word;
+                       cMC_, cPodr_, cMOL_, cParty_: comp;
+                       kol_, price_, vPrice_, priceN_: double;
+                       cVal_: comp;
+                       Date_: Date;
+                       minKol_: double;
+                       del_: boolean);
+var c_: word;  del_NRec: comp; need_DelSaldo: boolean;
+    prev_dSaldo: Date;
+{
+  //находим сальдо, если нет то создаем
+  MS.useOldSaldo := FALSE;
+  prev_dSaldo := Date_; //потом вычтем 1
+
+  if GetLastLessOrEqualSaldoMC( SP_, cMC_, cPodr_, cMOL_, cParty_, Date_ )<>tsOk
+    {
+      FillNewSaldoMC( SP_, cMC_, cPodr_, cMOL_, cParty_, cVal_, Date_ );
+      if MS.insert current SaldoMC <> tsOk
+        {
+          Message('Ошибка добавления записи в таблицу SaldoMC');
+          Exit;
+        }
+    }
+  else//сальдо найдено
+    if (date_ = MS.SaldoMC.dSaldo)
+      MS.useOldSaldo := (MS.SaldoMC.opers = 0);//сальдо за сегодня
+    else                                       //найдено сальдо предыдущее, не за сегодня
+      {
+        prev_dSaldo := MS.SaldoMC.dSaldo; //потом вычтем 1
+
+        SetPrices_If_OldSaldo(minKol_); //перед opers
+        MS.SaldoMC.dSaldo := Date_;
+        MS.SaldoMC.opers := 0;
+        MS.SaldoMC.NRec  := 0;
+        if MS.insert current SaldoMC <> tsOk
+          {
+            Message('Ошибка добавления записи в таблицу SaldoMC(2)');
+            Exit;
+          }
+      }
+
+  //идем по сальдо вперед и модифицируем начиная с нашей даты
+  c_ := 0;
+  del_NRec := 0;
+  need_DelSaldo := FALSE;
+  MS._LOOP SaldoMC where ((
+               SP_     == SaldoMC.SP      AND  cMC_   == SaldoMC.cMC     AND
+               cPodr_  == SaldoMC.cPodr   AND  cMOL_  == SaldoMC.cMOL    AND
+               cParty_ == SaldoMC.cParty  AND  Date_ <<= SaldoMC.dSaldo  AND
+                                             co_dTeks >> SaldoMC.dSaldo ))
+    {
+      c_ := c_+1;
+      if c_ = 20
+        StartNewVisual(vtDownVisual, 0, 'Модификация сальдовых остатков', 200);
+
+      if c_>= 20
+        NextVisual;
+
+      CountSaldoMC(kol_, price_, vPrice_, priceN_, cVal_, Date_, prev_dSaldo);
+      if (date_ = MS.SaldoMC.dSaldo) AND (MS.useOldSaldo = FALSE)//не старое сальдо
+        MS.SaldoMC.opers := MS.SaldoMC.opers +if(del_, -1, 1);
+
+      SetPrices_If_OldSaldo(minKol_);
+      if MS.update current SaldoMC <> tsOk
+        {
+          Message('Ошибка модификации записи в таблице SaldoMC');
+          Exit;
+        }
+
+      //запомнить запись за сегодня
+      if (date_ = MS.SaldoMC.dSaldo)
+        if (del_NRec = 0)
+          del_NRec := MS.SaldoMC.NRec;
+        else
+          Message('Ошибка в сальдовых остатках - необходимо сделать их пересчет c '+
+                     DateToStr(sub_day(MS.SaldoMC.dSaldo, 1), 'DD/MM/YYYY'));
+
+      //удалить запись за сегодня, если нет операций:
+      if (MS.SaldoMC.opers = 0) AND
+         (date_ = MS.SaldoMC.dSaldo) AND (NOT MS.useOldSaldo)//не старое сальдо
+        need_DelSaldo := TRUE;
+
+      //если была вставка перед старым сальдо, удаляем эту вставку(запись за сегодня):
+      if (MS.SaldoMC.dSaldo > Date_) AND //это следующее по датам сальдо
+         (MS.SaldoMC.opers = 0)          //это обновляемое сальдо - старое сальдо
+        {
+          if (MS.useOldSaldo = FALSE) //если мы используем не старое сальдо - т.к старое нельзя удалять
+            need_DelSaldo := TRUE;
+
+          if (cPodr_ = 0 AND cMOL_ = 0 AND cParty_ = 0) //если идем по общим сальдо
+          //добавляем пустую запись для сальдо по разрезу -
+          //для последующей корректировки и удаления нового сальдо по разрезу перед этим "старым"
+            if GetEqualSaldoMC2(MS.order_SP, MS.order_MC, MS.order_Podr, MS.order_MOL, MS.order_Party, MS.SaldoMC.dSaldo) <>tsOk
+              {
+                FillNewSaldoMC2(MS.order_SP, MS.order_MC, MS.order_Podr, MS.order_MOL, MS.order_Party, 0, MS.SaldoMC.dSaldo);
+
+                if MS.insert current SaldoMC2 <> tsOk
+                  {
+                    Message('Ошибка добавления записи в таблицу SaldoMC(3)');
+                    Exit;
+                  }
+              }
+        }
+    }//MS._LOOP SaldoMC
+
+  if (need_DelSaldo = TRUE) AND (del_NRec<>0) AND (MS.useOldSaldo = FALSE)//не старое сальдо
+    if MS.delete novisual SaldoMC where (( del_NRec == SaldoMC.NRec)) <> tsOk
+      {
+        Message('Ошибка удаления записи в таблице SaldoMC');
+        Exit;
+      }
+
+
+  // текущие для производства
+  #ifndef _NOCALCTEKS_
+  if SP_ = 1
+    if (GetLastLessSaldoMC( SP_, cMC_, cPodr_, cMOL_, cParty_, co_dTeks) = tsOk) AND
+       NOT ((abs(MS.SaldoMC.kol) < GetPresision_forKol AND MS.SaldoMC.srPrice = 0 AND MS.SaldoMC.vPrice = 0))
+      {
+        if GetEqualSaldoMC2(SP_, cMC_, cPodr_, cMOL_, cParty_, co_dTeks) = tsOk
+          {
+            FillSaldoMC2_by_SaldoMC;
+            MS.update current SaldoMC2;
+          }
+        else
+          {
+            FillNewSaldoMC2(SP_, cMC_, cPodr_, cMOL_, cParty_, cVal_, co_dTeks);
+            FillSaldoMC2_by_SaldoMC;
+            MS.insert current SaldoMC2;
+          }
+      }
+    else // нет ордеров по разрезу или нулевые остатки
+      {
+        if GetEqualSaldoMC2(SP_, cMC_, cPodr_, cMOL_, cParty_, co_dTeks) = tsOk
+          MS.delete current SaldoMC2;
+      }
+  #end
+
+  if c_>= 20
+    StopVisual('', 0);
+}
+
+//******************************************************************************
+
+Function AddSaldoMC(SP_: word; cMC_, cPodr_, cMOL_, cParty_: comp;
+                    kol_, price_, vPrice_: double; cVal_: comp;
+                    priceN_, vPriceN: double;
+                    Date_: Date; minKol_: double; del_: boolean): boolean;
+{
+  AddSaldoMC := FALSE;
+  MS.presision := minKol_;
+
+  MS.multyVal :=
+                 #ifNdef _CORPO_
+                 GetMultiVal;
+                 #else
+                 boGetTune('Oper.MultiCurrReg');
+                 #end
+
+  MS.order_SP := SP_;
+  MS.order_MC := cMC_;
+  MS.order_Podr := cPodr_;
+  MS.order_MOL := cMOL_;
+  MS.order_Party := cParty_;
+
+  date_ := Add_Day(date_, 1);
+
+  //-----обновляем сальдо по предприятию-------
+  UpdateSaldos(SP_, cMC_, 0, 0, 0 /*cPodr_ cMOL_ cParty_*/,
+               kol_, price_, vPrice_, priceN_, cVal_, Date_, minKol_, del_); //общее
+
+  //-----обновляем сальдо по разрезу-------
+  UpdateSaldos(SP_, cMC_, cPodr_, cMOL_, cParty_,
+               kol_, price_, vPrice_, priceN_, cVal_, Date_, minKol_, del_);
+
+  //-----для УКС---------------
+  #ifNdef recalcsp_vip
+#ifndef __MTR_TO_SPEC__
+      if boGetTune('Oper.Purpose')
+#end
+        RunInterface('VipMtrCount', word(coSpOrder), MS.SpOrder.NRec, MS.SpOrder.VidOrder, del_);
+  #end // recalcsp_vip
+
+  MS.useOldSaldo := FALSE;//для подстраховки
+  AddSaldoMC := TRUE;
+}
+
+//******************************************************************************
+
+var cMCold, cPodrOld, cMOLold, cPartyOld: comp;
+var kolOld: double;
+
+//******************************************************************************
+
+Procedure SaveOld;
+{
+  cMCold     := MS.SpOrder.cMC;
+  cPodrOld   := MS.SpOrder.ccPodr;
+  cMOLold    := MS.SpOrder.ccMOL;
+  cPartyOld  := MS.SpOrder.cParty;
+  kolOld     := if (MS.SpOrder.vidOrder = 0, MS.SpOrder.kol, -MS.SpOrder.kol);
+}
+
+//******************************************************************************
+
+Function NewRazrez: boolean;
+{
+  NewRazrez := cMCold <> MS.SpOrder.cMC
+                OR
+               cPodrOld <> MS.SpOrder.ccPodr
+                or
+               cMOLold <> MS.SpOrder.ccMOL
+                OR
+               cPartyOld <> MS.SpOrder.cParty
+}
+
+//******************************************************************************
+
+Function NewKol: boolean;
+{
+  NewKol := kolOld <> MS.SpOrder.kol;
+}
+
+//******************************************************************************
+
+Function AddSaldoMC_Upd(cSpOrder_: comp; del_: boolean; upd_: boolean): boolean;
+var
+  delPereo: boolean;
+  minKol: double;
+{
+  AddSaldoMC_Upd := FALSE;
+
+  if MS.GetFirst SpOrder where ((cSpOrder_ == SpOrder.NRec)) <>tsOk
+    Exit;
+
+  #ifNdef recalcsp_vip
+  oValFunc.InitVal;
+  #end
+
+  #ifNdef _CORPO_
+  minKol := GetPresision_ForKol;
+  #else
+  minKol := doGetTune('Oper.MinKolMC');
+  #end
+
+  minKol := if(minKol = 0, 0.0001, minKol);//presision
+
+  if (upd_) AND (del_)
+    SaveOld;//только перед update   current SpOrder
+
+  delPereo := (del_)
+                AND
+              (MS.SpOrder.vidOrder = 0)
+                AND
+              (
+                (MS.SpOrder.tipOrd>= 4 AND MS.SpOrder.tipOrd<= 7)
+              OR
+                (MS.SpOrder.tipOrd = 15 AND abs(MS.SpOrder.kol) < minKol)
+              );
+
+  AddSaldoMC_Upd :=
+    AddSaldoMC(MS.SpOrder.SP, MS.SpOrder.cMC, MS.SpOrder.ccPodr, MS.SpOrder.ccMOL, MS.SpOrder.cParty,
+              if (del_, -MS.SpOrder.kol, MS.SpOrder.kol),
+              if (delPereo, -MS.SpOrder.srPrice, MS.SpOrder.srPrice),
+              if (delPereo, -MS.SpOrder.vPrice, MS.SpOrder.vPrice), MS.SpOrder.cVal,
+              if (delPereo, -MS.SpOrder.priceN, MS.SpOrder.priceN),
+              if (delPereo, -MS.SpOrder.vPriceN, MS.SpOrder.vPriceN),
+              MS.SpOrder.dOrd, minKol, del_);
+
+  #ifNdef recalcsp_vip
+
+  //модификация текущих:
+  if (MS.SpOrder.SP <> 0) //далее только для складских ордеров
+    Exit;
+
+  if (not upd_) //при Ins или Del ордера
+    {
+      if MS.SpOrder.vidOrder = 1
+        MS.SpOrder.kol := -MS.SpOrder.kol;
+
+      fTekRun.ModifyAllTek(MS.SpOrder.cMC, MS.SpOrder.ccPodr, MS.SpOrder.ccMOL, MS.SpOrder.cParty,
+                   if(del_, -MS.SpOrder.kol, MS.SpOrder.kol), 0/*res*/);
+      Exit;
+    }
+
+  if upd_ AND (not del_) //только после update   current SpOrder
+    if NewRazrez //f
+     {
+       if MS.SpOrder.vidOrder = 1
+         MS.SpOrder.kol := -MS.SpOrder.kol;//kolOld уже инверт.
+
+       fTekRun.ModifyAllTek(cMCold, cPodrOld, cMOLold, cPartyOld, -kolOld, 0);
+       fTekRun.ModifyAllTek(MS.SpOrder.cMC, MS.SpOrder.ccPodr, MS.SpOrder.ccMOL, MS.SpOrder.cParty,
+                    MS.SpOrder.kol, 0);
+     }
+    else //not NewRazrez
+      if newKol //f
+       {
+         if MS.SpOrder.vidOrder = 1
+           MS.SpOrder.kol := -MS.SpOrder.kol;
+
+         fTekRun.ModifyAllTek(MS.SpOrder.cMC, MS.SpOrder.ccPodr, MS.SpOrder.ccMOL, MS.SpOrder.cParty,
+                      MS.SpOrder.kol - kolOld, 0);
+       }
+  #end
+}
+
+//******************************************************************************
+
+#end
+
+//******************************************************************************

@@ -1,0 +1,38 @@
+#ifdef ComponentVersion
+#component "L_Sklad"
+#end
+
+#doc
+структуры записи таблицы SpOrder
+#end
+type TypeSpOrder = record as table SpOrder;
+
+#doc
+Для реализации public-функций триггеров складских ордеров
+#end
+ObjInterface ModifOrdsObj;
+
+#doc
+Вставка позиции спецификации ордера
+#end
+  function AnySpOrder_insert(var spOrd_: TypeSpOrder): word;   // tsOk - если всё ок
+
+#doc
+Модификация позиции спецификации ордера
+#end
+  function AnySpOrder_update(var spOrd_: TypeSpOrder): word;   // tsOk - если всё ок
+
+#doc
+Удаление позиции спецификации ордера
+#end
+  function AnySpOrder_Delete(spOrd_    : TypeSpOrder): word;   // tsOk - если всё ок
+end;
+
+
+VipInterface ModifOrds implements ModifOrdsObj
+
+#ifdef ATL51
+licensed (FREE)
+//Parameters (SPTypeSopr: word; pNRec: comp)
+#end
+;

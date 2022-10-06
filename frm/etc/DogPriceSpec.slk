@@ -1,0 +1,341 @@
+ID;PWXL;N;E
+P;PGeneral
+P;P0
+P;P0.00
+P;P#,##0
+P;P#,##0.00
+P;P#,##0_Ns_.;;\-#,##0_Ns_.
+P;P#,##0_Ns_.;;[Red]\-#,##0_Ns_.
+P;P#,##0.00_Ns_.;;\-#,##0.00_Ns_.
+P;P#,##0.00_Ns_.;;[Red]\-#,##0.00_Ns_.
+P;P#,##0"$";;\-#,##0"$"
+P;P#,##0"$";;[Red]\-#,##0"$"
+P;P#,##0.00"$";;\-#,##0.00"$"
+P;P#,##0.00"$";;[Red]\-#,##0.00"$"
+P;P0%
+P;P0.00%
+P;P0.00E+00
+P;P##0.0E+0
+P;P#" "?/?
+P;P#" "??/??
+P;Pdd/mm/yyyy
+P;Pdd/mmm/yy
+P;Pdd/mmm
+P;Pmmm/yy
+P;Ph:mm\ AM/PM
+P;Ph:mm:ss\ AM/PM
+P;Ph:mm
+P;Ph:mm:ss
+P;Pdd/mm/yyyy\ h:mm
+P;Pmm:ss
+P;Pmm:ss.0
+P;P@
+P;P[h]:mm:ss
+P;P_-* #,##0"$"_-;;\-* #,##0"$"_-;;_-* "-""$"_-;;_-@_-
+P;P_-* #,##0_Ns_._-;;\-* #,##0_Ns_._-;;_-* "-"_Ns_._-;;_-@_-
+P;P_-* #,##0.00"$"_-;;\-* #,##0.00"$"_-;;_-* "-"??"$"_-;;_-@_-
+P;P_-* #,##0.00_Ns_._-;;\-* #,##0.00_Ns_._-;;_-* "-"??_Ns_._-;;_-@_-
+P;P#,##0.000
+P;FArial Cyr;M200
+P;FArial Cyr;M200
+P;FArial Cyr;M200
+P;FArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200
+P;EArial Cyr;M200;SB
+P;EArial Cyr;M160
+P;EArial Cyr;M240;SB
+P;EArial Cyr;M240;SBU
+P;EArial Cyr;M200;SBU
+P;EArial Cyr;M200;SU
+F;P0;DG0G8;M255
+B;Y72;X10;D0 0 71 9
+O;L;D;V0;K47;G100 0.001
+F;W1 1 14
+F;W2 2 11
+F;W3 3 25
+F;W4 4 7
+F;W6 6 6
+F;W9 10 14
+F;M315;R40
+F;M315;R41
+F;M315;R43
+C;Y1;X1;K".LinkForm 'Droga_PriceSpec' Prototype is 'DOGPRN2'"
+C;Y2;K".Group 'NHINsNCiNHaNAaNqNAa'"
+C;Y3;K".NameInList 'NHONJaNBiNCiNCaNAaNHy NDnNHiNJaNHoNAeNCoNAeNCeNAaNHoNAeNHy'"
+C;Y4;K".SLKNUMBER"
+C;Y5;K".CREATE VIEW vDogovor AS SELECT * FROM dogovor, dogovor MainDog, katorg, katbank "
+C;Y6;K"WHERE ((comp(nRecNHA_NDN) == dogovor.nrec and dogovor.cbankpol == katbank.nrec and dogovor.cmyorg == katorg.nrec and comp(nRecNHANCiNDaNCiNCaNCiNsNAa)==MainDog.nrec));;"
+C;Y7;K".CREATE VIEW vSpDog AS SELECT * FROM spdocs, katotped, katmc, katnalog, spgrnal "
+C;Y8;K"WHERE ((comp(nRecNDNNAoNsNCi/7NCeNAe) == spdocs.nrec and spdocs.cmcusl == katmc.nrec and spdocs.cotped == katotped.nrec "
+C;Y9;K"and 'NDS'==katnalog.kod and spdocs.cgrnal == spgrnal.cgrnal and katnalog.nrec == spgrnal.cnalog)) and (spgrnal.ccountry<>0);;"
+C;Y10;K".VAR"
+C;Y11;K"IncludingNDS : boolean;;"
+C;Y12;K".ENDVAR"
+C;Y13;K".fields"
+C;Y14;K"IF(nRecNHANCiNDaNCiNCaNCiNsNAa='0','NHaNCiNDaNCiNCaNCiNsNBo','NHaNCiNHiNCiNHeNBiNAeNAoNJaNHeNHuNBiNCiNAiNBo NDnNCiNDaNHeNAaNyNJaNBiNAeN|')"
+C;Y15;K"NBINCiNAiNJaNs   DateToStr(vDogovor.dogovor.ddoc, 'DD Mon YYYY NDa.')"
+C;Y16;K"vDogovor.MainDog.nodoc    DateToStr(vDogovor.MainDog.ddoc, 'DD Mon YYYY NDa.')"
+C;Y17;K"vDogovor.katorg.name"
+C;Y18;K"  NHANAaNAoNAaNDN"
+C;Y19;K"vDogovor.katorg.indexk + ', '+ vDogovor.katorg.addr"
+C;Y20;K"vDogovor.katorg.tel"
+C;Y21;K"vDogovor.katorg.UNN + ' / ' + vDogovor.katorg.kodplatnds"
+C;Y22;K"vDogovor.katbank.name"
+C;Y23;K"vDogovor.katbank.schet1 + ' NBANAENCE ' + vDogovor.katbank.mfo1"
+C;Y24;K"vDogovor.katbank.schet2"
+C;Y25;K"if(vDogovor.dogovor.vhodnal=1, 'NCaNCeNHeN|/7NAaNHy NBINHANDN', 'NBaNJaNKc NBINHANDN')"
+C;Y26;K"if(vDogovor.dogovor.vhodnal=1, 'NCaNCeNHeN|/7NAaNHy NBINHANDN', 'NBaNJaNKc NBINHANDN')"
+C;Y27;K"if(vDogovor.dogovor.vhodnal=1, 'NCaNCeNHeN|/7NAaNHy NBINHANDN', 'NBaNJaNKc NBINHANDN')"
+C;Y28;K"vSpDog.katotped.bkod"
+C;Y29;K"vSpDog.katmc.barkod"
+C;Y30;K"  NAINHO"
+C;Y31;K"DoubleToStr(vSpDog.katmc.massa,'\d.\3p[|-]36666666666666666667^888')"
+C;Y32;K"vSpDog.katotped.koef"
+C;Y33;K"vSpDog.spgrnal.nalog"
+C;Y34;K"DoubleToStr(double(NHONJaNBiNAa),'\d.\2p[|-]36666666666666666667^88')"
+C;Y35;K"DoubleToStr(double(NHONJaNBiNAa)/vSpDog.katotped.koef, '\d.\2p[|-]36666666666666666667^88')"
+C;Y36;K".endfields"
+C;Y37;K".{CheckEnter DOGGROUP"
+C;Y38;K".}"
+C;Y39;K".{table 'vDogovor'"
+F;SDM62;Y40
+C;K"NHINsNAeNHeNCiNqNJaNBiNAeNJa NQ 1"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;SDM62;Y41;X1
+C;K"NCe ^ NQ ^ NCiNAo ^"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;SM1;Y42;X1
+C;K".{?internal;;(nRecNHANCiNDaNCiNCaNCiNsNAa<>'0');;"
+F;SDM62;Y43
+C;K"NHiNCi NHaNCiNDaNCiNCaNCiNsNBo NQ ^ NCiNAo ^"
+F;X2
+F;X3
+F;X4
+F;X5
+F;X6
+F;X7
+F;X8
+F;X9
+F;X10
+F;SM1;Y44;X1
+C;K".}"
+F;SDM59;Y46
+C;K"NDNNCeNHeNAaNHa NCiNAoNHiNBoNDnNCeNAa:"
+F;SBM0;X2
+F;SBM0;X3
+F;P0;FG0R;SDM59;X10
+C;K"NHANAaNAoNAa NCaNDnNAoNBoNHiNHeNJaNBiNAeNHy NCa NHaNJaNBeNDnNAoNCaNAeNJa"
+F;SDM59;Y47;X1
+C;K"NHINsNCiNHaNAaNCaNJaNHo:"
+F;SDM59;X2
+C;K"^"
+F;P0;FG0R;X10
+C;K"^"
+F;P0;FG0R;Y48;X1
+C;K"NAANHaNsNJaNDn:"
+C;X2;K"^ "
+F;P0;FG0R;Y49;X1
+C;K"NAONJaNHe./NCoNAaNCeNDn:"
+C;X2;K"^ "
+F;P0;FG0R;Y50;X1
+C;K"NAENBINBI / NCENHINHI:"
+C;X2;K"^ "
+F;P0;FG0R;Y51;X1
+C;K"NBANAaNBiNCe:"
+C;X2;K"^ "
+F;P0;FG0R;Y52;X1
+C;K"Nb/NDN:"
+C;X2;K"^ "
+F;P0;FG0R;Y53;X1
+C;K"NCE/NDN:"
+C;X2;K"^ "
+F;P0;FG0R;Y54;X1
+F;P0;FG0C;SLRTM0;Y55
+F;P0;FG0C;SLRTM0;X2
+F;P0;FG0C;SLRTM0;X3
+F;P0;FG0C;SLRTM0;X4
+F;P0;FG0C;SLRTM0;X5
+F;P0;FG0C;SLRTM0;X6
+F;P0;FG0C;SLTM0;X7
+F;P0;FG0C;SRTM0;X8
+F;P0;FG0C;SLRTM0;X9
+F;P0;FG0C;SLRTM0;X10
+C;K"NAINAeNBiNAeNAiNAaNHeNHuNBiNAaNHy"
+F;P0;FG0C;SLRM0;Y56;X1
+F;P0;FG0C;SLRM0;X2
+F;P0;FG0C;SLRM0;X3
+F;P0;FG0C;SLRM0;X4
+F;P0;FG0C;SLRM0;X5
+F;P0;FG0C;SLRM0;X6
+F;P0;FG0C;SLM0;X7
+F;P0;FG0C;SRM0;X8
+F;P0;FG0C;SLRM0;X9
+F;P0;FG0C;SLRM0;X10
+C;K"NsNJaNCeNCiNAiNJaNBiNHaNBoNJaNAiNAaNHy"
+F;P0;FG0C;SLRM0;Y57;X1
+F;P0;FG0C;SLRM0;X2
+F;P0;FG0C;SLRM0;X3
+F;P0;FG0C;SLRM0;X4
+F;P0;FG0C;SLRM0;X5
+F;P0;FG0C;SLRM0;X6
+F;P0;FG0C;SLM0;X7
+F;P0;FG0C;SRM0;X8
+F;P0;FG0C;SLRM0;X9
+C;K"NAINAeNBiNAeNAiNAaNHeNHuNBiNAaNHy"
+F;P0;FG0C;SLRM0;X10
+C;K"NHoNJaNBiNAa NHaNHeNHy"
+F;P0;FG0C;SLRM0;Y58;X1
+F;P0;FG0C;SLRM0;X2
+F;P0;FG0C;SLRM0;X3
+F;P0;FG0C;SLRM0;X4
+F;P0;FG0C;SLRM0;X5
+F;P0;FG0C;SLRM0;X6
+F;P0;FG0L;SLM0;X7
+C;K"    NHONJaNBiNAa NCa NsNBoNBaNHeNHyNDo"
+F;P0;FG0C;SRM0;X8
+F;P0;FG0C;SLRM0;X9
+C;K"NsNJaNCeNCiNAiNJaNBiNHaNBoNJaNAiNAaNHy"
+F;P0;FG0C;SLRM0;X10
+C;K"NsNCiNKcNBiNAe/7NBiNCuNDo"
+F;P0;FG0C;SLRM0;Y59;X1
+F;P0;FG0C;SLRM0;X2
+F;P0;FG0C;SLRM0;X3
+C;K"NBINAaNAeNAiNJaNBiNCiNCaNAaNBiNAeNJa"
+F;P0;FG0C;SLRM0;X4
+C;K"NCANJaNDn NyNAo."
+F;P0;FG0C;SLRM0;X5
+C;K"NCENCiNHe-NCaNCi"
+F;P0;FG0C;SLRM0;X6
+C;K"NDNNAoNAaNCaNCeNAa"
+F;P0;FG0L;SLBM0;X7
+C;K"    (^)"
+F;P0;FG0C;SRBM0;X8
+F;P0;FG0C;SLRM0;X9
+C;K"NHoNJaNBiNAa NHaNHeNHy NCiNHiNAoNAa"
+F;P0;FG0C;SLRM0;X10
+C;K"NHiNCiNCeNBoNHiNAaNAoNJaNHeNJaNBe"
+F;P0;FG0C;SLRBM0;Y60;X1
+C;K"EAN 13"
+F;P0;FG0C;SLRBM0;X2
+C;K"NAANsNAoNAeNCeNBoNHe"
+F;P0;FG0C;SLRBM0;X3
+C;K"NAoNCiNCaNAaNsNAa"
+F;P0;FG0C;SLRBM0;X4
+C;K"(NCeNDa)"
+F;P0;FG0C;SLRBM0;X5
+C;K"NCa NBoNHiNAaNCe-NCeNJa"
+F;P0;FG0C;SLRBM0;X6
+C;K"NBINHANDN"
+F;P0;FG0C;SLRTBM0;X7
+C;K"NBoNHiNAaNCeNCiNCaNCeNAe"
+F;P0;FG0C;SLRTBM0;X8
+C;K"NyNAoNBoNCeNAe"
+F;P0;FG0C;SLRBM0;X9
+C;K"(^)"
+F;P0;FG0C;SLRBM0;X10
+C;K"(^)"
+C;Y61;X1;K".} //vdogovor"
+C;Y62;K".{CheckEnter SPEC"
+F;P0;FG0L;Y63
+C;K".{table 'vSpDog'"
+F;SLRTBM0;Y64
+C;K"^ "
+F;SLRTBM0;X2
+C;K"^ "
+F;SLRTBM0;X3
+C;K"^"
+F;P36;FF3G;SLRTBM0;X4
+C;K"^"
+F;P3;FI0G;SLRTBM0;X5
+C;K"^"
+F;P3;FI0G;SLRTBM0;X6
+C;K"^"
+F;P4;FF2G;SLRTBM0;X7
+C;K"^"
+F;P4;FF2G;SLRTBM0;X8
+C;K"^"
+F;SLRTBM0;X9
+F;SLRTBM0;X10
+C;Y65;X1;K".}//vspdog"
+C;Y66;K".}"
+C;Y68;K"NHINsNCiNHaNAaNCaNJaNHo"
+F;P0;FG0R;X10
+C;K"NHINCiNCeNBoNHiNAaNAoNJaNHeNHu"
+F;SBM0;Y70;X1
+F;SBM0;X2
+F;SBM0;X9
+F;SBM0;X10
+C;Y71;X1;K"NAI.NHI."
+F;P0;FG0R;X10
+C;K"NAI.NHI."
+C;Y72;X1;K".EndForm"
+E

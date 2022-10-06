@@ -1,0 +1,367 @@
+#ifdef ComponentVersion
+#component "z_staff"
+#end
+
+#include ComDeptF.VIH
+#include ComFiltr.VIH
+#include KCatHist.vih
+
+vipinterface FrmStsAll licensed(free) parameters(StrTitleNrec : comp);
+//vipinterface InfoAcademic licensed(free);
+vipinterface AcademicList licensed(staffmainmenu, staffmainmenu2);
+vipinterface AddressWinN licensed(free) parameters(Title: String; EntryPoint: comp; wType: word; cPers: comp);
+//vipinterface AddressFunc licensed(free);
+vipinterface AdrTest licensed(free);
+vipinterface AdrSocrName licensed(free) parameters(refNRec : comp);
+vipinterface AllStaj licensed(free) parameters(cPerson : comp; CloseEdit: word);
+vipinterface InfoAnalytic licensed(free) parameters(PersNrec : comp);
+vipinterface StaffCheckAppendix licensed(free);
+vipinterface AppendixWin licensed(free) parameters(Title: String[100]; PsnFIO: String[60]; AppPerson: comp; AppTbl: LongInt; AppRec: comp);
+vipinterface AppendssWin licensed(free) parameters(Title: String[100]; StStPost: String[100]; AppStSt: comp; AppTbl: LongInt; AppRec: comp);
+//vipinterface AppointmentsFunctions licensed(free);
+!vipinterface iAppHist;   // Конфликтует с объектным враппером на таблиц Z_Staff::AppHist
+vipinterface APPPROFL licensed(free);
+vipinterface ap_tarif licensed(free);
+vipinterface AttWin licensed(free) parameters(Title: string[60]; EntryPsn: comp);
+vipinterface Attestation
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface OrderParams licensed(free) parameters(OrderNo: string; OrderDate: date; cAttType: comp);
+vipinterface iAppHist licensed(free) parameters (Title: string[60]; EntryPsn: comp; EntryApp: comp);
+vipinterface BonusList licensed(free) parameters (PersNrec: comp; typeOtchet: word);
+vipinterface StaffReCalcLgots licensed(free);
+vipinterface CasePsn licensed(free) parameters (cPsn: comp);
+vipinterface CasePsn1 licensed(free) parameters (p1: comp; cPsn: comp; p2: double);
+vipinterface CorrKoeffSostav licensed(free) parameters (EntryStr : comp; regim : word; choose : word);
+vipinterface CatForIr licensed(free);
+vipinterface StaffFinishedApps licensed(free);
+vipinterface FrmStsRD23 licensed(free) parameters (StrPartNrec: comp);
+vipinterface GetApp licensed(free) parameters (cPersons: comp; curApp: comp; typeApp: integer; runDate: date);
+vipinterface StaffEditDopTable licensed(free) parameters (ParModCode: comp; ParPerson: comp);
+vipinterface StaffGetTariff licensed(free) parameters (Sis: word; TarStav_NRec: comp; RAZR: word; tari: double; curDate: date; CorrectiveFactor: double);
+vipinterface SelectAdr licensed(free) parameters (refNRec: comp);
+vipinterface GetAllLschet licensed(free) parameters (cPersons: comp; curLSchet: comp);
+vipinterface SetJointApps licensed(free);
+vipinterface SetLinkPers licensed(free);
+vipinterface planFact licensed(free);
+vipinterface PrintMadeChangingInSHR licensed(free);
+vipinterface ProfAtt licensed(free) parameters (EntryPsn: comp);
+vipinterface ProfInspect licensed(free) parameters (numReport: integer; DljaSozdanieZapisi :integer);
+vipinterface QPersBelTel licensed(free);
+vipinterface StrPersView licensed(free);
+vipinterface AttOrder
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface AttOrderEdit licensed(free) parameters (cHead: comp);
+vipinterface PersonAtt licensed(free) parameters(cPersons : comp);
+vipinterface StaffReCalcLgot licensed(free);
+vipinterface Check_ss licensed(free);
+vipinterface ChildLgot licensed(free);
+vipinterface ChkStr licensed(free);
+//vipinterface CommonFiltrDept licensed(free);
+//vipinterface CommonFiltr licensed(free);
+vipinterface ConvAddr1 licensed(free);
+vipinterface converterAddr licensed(free);
+vipinterface ConvAtt licensed(free);
+vipinterface CountryCatalog licensed(free) parameters (NRecCountry: comp);
+vipinterface Cr_Staff licensed(free);
+vipinterface Fill_StaffCustom licensed(free) parameters (DeptMarker: longint; iRepCode: integer; dRepToDate: date);
+vipinterface PsnDisease
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface StaffDopTbls licensed(free);
+vipinterface StaffViewDopTbls licensed(free) parameters (ParModCode: word; ParPerson: comp);
+vipinterface StaffEditDopTabl licensed(free) parameters (ParTable: comp; ParPerson: comp);
+vipinterface StaffEd1 licensed(free);
+//vipinterface EducFunctions licensed(free);
+vipinterface Ed_base licensed(free);
+vipinterface StaffCheckFields licensed(free);
+vipinterface Kat_Filial licensed(free) parameters (NrecFil : comp);
+vipinterface StaffFinishedApp licensed(free);
+vipinterface FiltrEducation licensed(free);
+vipinterface flt_st licensed(free);
+vipinterface Form16VN
+  licensed (staffmainmenu,staffmainmenu2);
+//vipinterface FreeTabNPers licensed(free);
+vipinterface Funcstr licensed(free);
+vipinterface StaffGetTarif licensed(free) parameters (Sis: word; NRec: comp; RAZR: word; tari: double);
+vipinterface StaffGetCurrency licensed(free) parameters (NRec: comp);
+vipinterface StaffCatDiagnosis licensed(free);
+vipinterface StaffGetDiagnosis licensed(free) parameters (NRec: comp);
+vipinterface GetPrOper licensed(free) parameters (wCod: word; bFlt: word);
+vipinterface EditTypePr licensed(free)  parameters (p1: comp; p2: double);
+vipinterface GetPost licensed(free) parameters (cDepart: comp; cRef: comp);
+vipinterface GetRaise licensed(free) parameters (cPsn: comp; dPr: date; cRef: comp);
+vipinterface GetRaiseSts licensed(free) parameters (cStr: comp; dPr: date; cRef: comp);
+vipinterface GetTelephone licensed(free) parameters (cPers: comp; _Telephone: string);
+vipinterface GetVac licensed(free) parameters (cPsn: comp; dPr: date; cRef: comp);
+vipinterface StaffGetVidOpl licensed(free) parameters (VidOplP: Longint; NVidOpl: string[60];  iPar: longint);
+//vipinterface SelectPersons licensed(free) parameters (PersNrec : comp);
+vipinterface GrafOtpusk licensed(free) parameters (NrecPersons: comp; MarkVac: longint; OtpuskYear: word; NrecTitleDoc: comp);
+vipinterface GrPDoplKadr licensed(free) parameters
+                         (cNRECPers : comp;
+                          prTabN    : longint;
+                          prcex     : comp;
+                          GrNumber  : comp;
+                          prDateN   : date;
+                          prDateOK  : date;
+                          p2        : double;
+                          OrderNmb  : string[15];
+                          OrderDate : date
+                         );
+vipinterface GrPDoplStatR licensed(free);
+vipinterface HireWin licensed(free) parameters (Title: string[60]; EntryPsn: comp; EntryApp: comp);
+vipinterface HistAdrReg licensed(free) parameters (Title: string; EntryPoint: comp; wType: word; PsnNrec: comp);
+//vipinterface VColFuncTmpPers licensed(free);
+//vipinterface IncRecordToZarsignal licensed(free);
+vipinterface StaffIzhdev licensed(free) parameters (dWorkDate: date; bWorkType: boolean; DeptMarker: longint);
+vipinterface KadrReserv
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface KadrReservList licensed(free) parameters (numReport : integer);
+vipinterface KadrReservPost
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface KnowLanguage licensed(free) parameters (PersNrec: comp);
+vipinterface FIO_2_ZPL licensed(free) parameters (EntryPoint: comp; OpCode: integer);
+vipinterface LSCH_APP licensed(free);
+vipinterface iMilRanks licensed(free) parameters (ParPerson: comp; Mode: word);
+vipinterface StaffCheckMilRanks licensed(free);
+//vipinterface Move_Psn licensed(free);
+vipinterface EntNewStr_Date licensed(free);
+vipinterface Move_Str licensed(free);
+vipinterface StaffReplaceTarStav licensed(free);
+vipinterface MinRazrDatIzm licensed(free) parameters (DatIzm: date);
+vipinterface GetOtherPersons licensed(free) parameters (cOthPers: comp);
+vipinterface PersonOtpuskSetups licensed(free);
+vipinterface PsnOpenLschet licensed(free);
+vipinterface StaffOtpuskSetups licensed(free);
+vipinterface GetOtpOtz licensed(free) parameters (PsnNrec: comp);
+//vipinterface pAmount licensed(free);
+vipinterface StaffCheckPersons licensed(free);
+//vipinterface PersonDependants licensed(free);
+vipinterface PensWin licensed(free) parameters (cPerson: comp);
+vipinterface StaffPersonsToArc licensed(free);
+//vipinterface Copy_Psn licensed(free) parameters (NrecCurPers: comp);
+vipinterface CheckPersLSC licensed(free);
+vipinterface pickCatalogEx licensed(free) parameters (EntryPoint: integer; coVar: comp; ChoiceMode: comp; myMarker  : longint);
+vipinterface IPJournal
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface Place_Penstaz licensed(free);
+vipinterface BeginPlOtpusk licensed(free) parameters (NrecPersons: comp; PlanOtpNrec: comp; DateOtpusk: word);
+vipinterface postEducation licensed(free);
+vipinterface PovishenieReport licensed(free);
+vipinterface Filtr_postEduc licensed(free);
+vipinterface ActEduc licensed(free) parameters (cActEduc: comp);
+//vipinterface vcomIMyShow licensed(free);
+//vipinterface coMyShow licensed(free);
+vipinterface Prs_App licensed(free) parameters  (cPrs: comp; sFIO: string[100]; Par1: comp);
+vipinterface Pr_All
+  licensed (staffmainmenu,staffmainmenu2) parameters (TitlNRec: comp);
+vipinterface Prikaz
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface Pr_T5
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface Pr_T6
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface Pr_T8
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface PersonAddWin licensed(free) parameters (Title: string[60]; EntryPoint: comp);
+vipinterface PsnBorn licensed(free);
+vipinterface PersonDocAppendWin licensed(free) parameters (cEntryPoint: comp; Title: string[60]);
+vipinterface PsnDecl licensed(free) parameters (NRecPsn: comp);
+vipinterface PersonDocWin licensed(free) parameters (Title: string[60]; EntryPoint: comp; Human: boolean; NrecDoc: comp);
+//vipinterface PersonsFunctions licensed(free);
+//vipinterface PersonEraser licensed(free);
+vipinterface RaiseWin licensed(free) parameters (Title: string[60]; EntryPsn: comp; EntryApp: comp; NrecContDoc: comp);
+vipinterface RaiseTest licensed(free);
+vipinterface ReceptionT2 licensed(free) parameters (PersNRec: comp);
+vipinterface ReceptionT2Old licensed(staffmainmenu, staffmainmenu2) parameters (PersNRec: comp);
+vipinterface ReceptionMain  licensed(staffmainmenu, staffmainmenu2) parameters (PersNRec: comp);
+//vipinterface Recwin01 licensed(free) parameters (PersNRec : comp; Choice : word);
+vipinterface StaffRetrievalPsn1 licensed(free) parameters (RepParent: comp; iBaseMode: integer; DeptMarker: longint);
+vipinterface StaffRetrievalStSt licensed(free) parameters (RepParent: comp; DeptMarker: longint; dRepToDate: date);
+vipinterface RunPostMail licensed(free);
+//vipinterface RunRaise licensed(free);
+//vipinterface RunStaj licensed(free);
+vipinterface Run_Orpusk_Report licensed(free);
+vipinterface SelRepTD licensed(free) parameters (PsnNrec: comp; wType: word);
+vipinterface SelectPsn licensed(free) parameters (cDepSelect: comp;
+                                                  cPar2: comp;
+                                                  bUpdateSertCat: boolean;
+                                                  DeptMarker: longint;
+                                                  StatPers: word
+                                                 );
+vipinterface PrikPsn licensed(free) parameters (bPrT1: byte; cDepSelect: comp; cPar2: comp);
+#include Sel_Kps.vih         // Интерфейс выбора Особых условий
+
+vipinterface SelDisPers licensed(free) parameters (ResPsn: comp);
+vipinterface SelectStr licensed(free) parameters (cDepSelect: comp; cPar2: comp; DeptMarker: longint; Date_str: date);
+vipinterface StaffServLenEdit licensed(free) parameters (cPerson: comp; cPosition: comp; cCurPos: comp);
+vipinterface ServN licensed(free) parameters (PsnTabN: longint; cPsn: comp);
+vipinterface SetJointApp licensed(free);
+vipinterface SetLinkPer licensed(free);
+//vipinterface SetupSendMess licensed(free);
+vipinterface StaffServLenHandler licensed(free) parameters (bRecalc: boolean);
+vipinterface ServLenHistory licensed(free) parameters (cPerson: comp; cPosition: comp);
+vipinterface StaffServLenRecalc licensed(free) parameters (cCurPos: comp);
+vipinterface SostavWork licensed(free);
+vipinterface StaffKatPodrShow licensed(free);
+vipinterface SprMesR licensed(free) parameters (PersNrec: comp; Otchet: word);
+vipinterface StaffStructReport licensed(free) parameters (FullReport: boolean; DeptMarker: longint; dRepToDate: date);
+vipinterface SSNapReportParams licensed(free) parameters
+                               (RaisesNmb :  byte;
+                                Raise1, Raise2, Raise3, Raise4, Raise5, Raise6, Raise7, Raise8, Raise9, Raise10: comp;
+                                RaisesSumFlag: boolean
+                               );
+vipinterface SS_NapReport licensed(free) parameters
+             (DeptMarker:  longint;
+              wWhatRaises: word;
+              RaisesNmb: byte;
+              Raise1, Raise2, Raise3, Raise4, Raise5, Raise6, Raise7, Raise8, Raise9, Raise10: comp;
+              RaisesSumFlag: boolean;
+              dRepToDate   : date
+             );
+vipinterface StafHist licensed(free) parameters (EntryStr: comp);
+vipinterface PickFormField2 licensed(free) parameters (VisGroup: integer; FldCode: integer; FldHost: integer; FldType: integer);
+vipinterface StaffRepAdjust licensed(free);
+vipinterface LinkedFormNames licensed(free) parameters (BaseFormName: string; NamesTable: longint; fldNames: word; strLnkForm: string);
+vipinterface StaffStruct licensed(free);
+vipinterface PickVacancy licensed(free) parameters (Parent: comp; NRec: comp; lFSt: boolean; dCurrent: date);
+vipinterface EditPersonVacancy licensed(free) parameters (strTitle: string[100]; cNrecLoc: comp; Nvac: double; dRateLoc: double; dForOldApp: date);
+vipinterface PersonVacancy licensed(free) parameters (Parent: comp; NRec: comp; dForOldApp: date);
+vipinterface MoveVacancy licensed(free) parameters
+                         ( Parent : comp;
+                           dRateLoc : double;
+                           cNrecLoc : comp;
+                           Nvac: double;
+                           cOldApp: comp;
+                           SelButton: word;
+                           wIsStaff: word;
+                           NrecLS: comp;
+                           DAppoint: date
+                         );
+vipinterface StrCopy licensed(free);
+//vipinterface StringFunctions licensed(free);
+vipinterface GetStrOper licensed(free) parameters (wCod: word; wFlt: word; Markers: longint;  Flags: word);
+vipinterface EditStrPr licensed(free) parameters (p1    : comp; p2    : double);
+vipinterface StrView licensed(free);
+vipinterface Str_Pr
+  licensed (staffmainmenu,staffmainmenu2);
+vipinterface St_Hist licensed(free);
+vipinterface St_Str licensed(free);
+vipinterface st_tarif licensed(free);
+vipinterface TelWin licensed(free) parameters (cPers: comp; TypeView : word);
+vipinterface TerrCatalog licensed(free) parameters
+                           (iEntryPoint: integer;
+                            NRecTerr: comp;
+                            parmode: comp);
+vipinterface TerrCatalog1 licensed(free) parameters
+                           (iEntryPoint: integer;
+                            NRecTerr: comp;
+                            oldRec: comp;
+                            parmode: comp);
+vipinterface StaffTestDataKadr licensed(free);
+vipinterface StaffTestTarStav licensed(free);
+//vipinterface RunUsersRep_Rep1 licensed(free);
+vipinterface StaffCheckVacancy licensed(free);
+vipinterface StaffCalcVacancy licensed(free);
+vipinterface Vacations_OtpOtz licensed(free);
+vipinterface VozOtpuskRep licensed(free) parameters (DocNrec: comp);
+vipinterface UpdateRaise licensed(free) parameters (cStaffStruct: comp; cRaiseStS: comp; bUpdateType: byte;
+  bSummaMod: boolean; bCurrMod: boolean; dBeg: date; dEnd: date; cPrik: comp; dOrderDate: Date; sOrderNmb: string; cNrecRaiseHist: comp);
+vipinterface ChangeTabN licensed (free);
+vipinterface Del_LScet licensed (free);
+vipinterface ViewPersons licensed (free) parameters(PersFIO : string);
+vipinterface StaffServLenCalc licensed (free);
+// vipinterface ZamPersons licensed (free) parameters(VInter : CommonFiltrDept; JobMarker : LongInt; NoDate : Word) ;
+vipinterface CorrectAppointments licensed (free);
+//--------- события системы ----------------------------------------------------
+//vipinterface StEvents licensed (free);
+
+//vipinterface Events_Browser licensed (free);
+//vipinterface UserEvents_Browser licensed (free);
+
+//vipinterface Event_STR_ClosePodr licensed (free);
+//vipinterface Event_STR_ClosePost licensed (free);
+
+//vipinterface Event_Pers_EndPaspDate licensed (free);
+//vipinterface Event_Pers_EndTestPeriod licensed (free);
+//vipinterface Event_Pers_EndDateTempMove licensed (free);
+//vipinterface Event_Pers_ReturnTarif licensed (free);
+//vipinterface Event_Pers_ReturnRegim licensed (free);
+//vipinterface Event_Pers_ReturnApp licensed (free);
+//vipinterface Event_Pers_PlanOtp licensed (free);
+
+vipinterface SettingsEvSystem licensed (free);
+vipinterface UserEvents licensed (free);
+
+//------------------------------------------------------------------------------
+vipinterface ap_tarifFunc licensed (free);
+vipinterface st_tarifFunc licensed (free);
+vipinterface InvalidDoc licensed (free);
+vipinterface CheckAppDate licensed (free);
+vipinterface ReturnApp licensed (free);
+vipinterface SelectRecovery licensed (free);
+vipinterface EntDateCloseRaise licensed(free);
+
+vipinterface MultipleSelectSisOpl licensed(free) parameters(SisOplMarker: LongInt);
+vipinterface Select_TarStav licensed(free) parameters(CurDate: Date; cRetDate: Date; cResTarStav: comp);
+vipinterface BrowseAppointments parameters(cPsnNrec: comp; lPrizn: integer) licensed(free);
+vipinterface ViewChangingSalary licensed (free);
+vipinterface CarryingShPZ licensed(free);
+vipinterface EditPostWithOutStaff licensed (free) parameters(p1 : comp);
+vipinterface PostWithOutStaff licensed (free) parameters(p1 : comp);
+vipinterface TREE_VIEWCHANGINGSALARY licensed (free);
+vipinterface SelectOperator licensed (free) parameters(TypeField: integer; ResultOperator: string[6]);
+vipinterface Sts_RaiseHist  licensed (free) parameters(NRecStsRaise: comp; NRecSts: comp);
+vipinterface Pers_RaiseHist licensed (free) parameters(NRecPersRaise: comp; NRecPers: comp; NRecApp: comp);
+vipinterface HistorySHR licensed (free) parameters(iEntry: integer; OurDate: date; Markers: longint; Flags: word);
+//vipinterface ReceptNotify licensed (free);
+
+//vipinterface Sts_Raise licensed (free);
+
+vipinterface ConvStaffTunes licensed (free);
+vipinterface ConvRaiseHist licensed (free);
+vipinterface TestCatATD licensed (free);
+vipinterface PNFond  licensed (free) parameters(Title : string[60]; EntryPoint : comp);
+vipinterface SetNewRaisesToWorkers licensed(free);
+vipinterface UpdateSS_AppHist licensed (free) parameters(cStHistNrec: comp; dDocDate: Date; sDocNmb: string[20]; cStrPartNrec: comp);
+VipInterface wInsertPersons Licensed (FREE) parameters (nRecOld: comp);
+VipInterface CalcKK Licensed (FREE) parameters (nRecTable: comp; Rezult: double);
+VipInterface ChoiseYourPersons Licensed (FREE) parameters (DeptMarker: longint; cPar2: word; cPsn: comp; Markers: longint; Flags: word);
+VipInterface PrikAllPsn Licensed (FREE) parameters (dDate: date; cDepSelect: comp; DepartmentFiltr: LongInt; Markers: longint; MarkerFlag: word);
+vipinterface NotesForContDoc licensed (free);
+vipinterface GetStaffDopTbls  licensed (free) parameters (ParModCode: word; nRecCur: comp; Markers: longint; HereFlags: word);
+vipinterface OrdersList licensed (free) parameters (DocNRec: comp);
+vipinterface OutputAppendix licensed (free);
+vipinterface OutputPrMemo licensed (free) parameters(typePrint: longint; nRecTable: comp);
+vipinterface PrMemoForOrders licensed (free) parameters(nRecTable: comp; wwRef: word);
+vipinterface FiltrForStaffStruct licensed (free) parameters(NameStr: string; TypePost: word);
+vipinterface GetPrEducation licensed (free) parameters(cPerson: comp; cEducation: comp);
+vipinterface SetPersonsAccess licensed (free);
+vipinterface SetPersonsTypePr licensed (free);
+vipinterface CheckPersLSCH licensed (free);
+vipinterface NEW_OTPUSK licensed (free);
+vipinterface TESTCORCOEF licensed (free);
+vipinterface PickManyRPD  licensed (free);
+vipinterface LocalConvertFieldsAndTables licensed(free);
+vipinterface AppointKps licensed (free) parameters(Appointments_Nrec: comp; kps_readonly: boolean);
+//------------------------------------------------------------------------------
+//                                                                       Диалоги
+//------------------------------------------------------------------------------
+
+// staffdlgs.dlg
+
+dialog GetFilterArg(strTitle1: string[100]; strTitle2: string[100]; w1: String[100]);
+dialog GetFilterArgI(strTitle1: string[100]; strTitle2: string[100]; w1: LongInt);
+dialog GetFilterArgDate(strTitle1: string[100]; strTitle2: string[100]; w1: date);
+dialog GetFilterArgR(strTitle1: string[100]; strTitle2: string[100]; w1: double);
+dialog GetGroupIntervals(strTitle1: string[100]; strTitle2: string[100]; w1: String[100]);
+dialog GetSortLength(strTitle1: string[100]; w1: Integer);
+dialog GetCatEntryCode(w1: Integer);
+dialog GetAFValR(w1: double);
+dialog GetAFValL(w1: LongInt);
+dialog GetAFValDate(w1: date);
+dialog GetAFValS(w1: string[30]);
+dialog StaffRepsInit(State: word);
+dialog StaffSpravInit(State: word; wIsEtalon: word);
+dialog StaffSpravSavLost(State: word);
+dialog StaffGetArcDate(w1: date);
+dialog StaffPrT5End(w1: date);
+dialog StaffNewStr(w1: date);

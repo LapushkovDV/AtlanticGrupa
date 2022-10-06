@@ -1,0 +1,12 @@
+// 8.1
+// Экпортируемые интерфейсы компоненты F_PlPorRep
+
+#ifdef ComponentVersion
+#component "F_PlPorRep"
+#end
+
+VipInterface SeeBank      licensed (B_FINANS);
+VipInterface SeeNoPlats   licensed (B_FINANS)                  Parameters (SrokPlat : boolean);
+VipInterface SeePlats     licensed (B_FINANS,B_KASSA)          Parameters (myTiDkGal : word; myTiDkUser : word);
+VipInterface SeeTreePlPor licensed (B_FINANS,B_KASSA,NALOGREG) Parameters (cUserDeskRep : comp; wLevelValut : word);
+VipInterface SetTreePlPor licensed (B_FINANS,B_KASSA,NALOGREG) Parameters (parIsBankDoc : boolean);

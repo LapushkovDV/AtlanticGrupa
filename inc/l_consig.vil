@@ -1,0 +1,28 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента l_consig
+
+#ifdef ComponentVersion
+#component "l_consig"
+#end
+
+VipInterface ifcBrowseCDoc     licensed (otprcons);
+VipInterface By_Sell           licensed (FREE) Parameters (d_Nrec: comp; d_Resume:double; d_Parametr: word);
+VipInterface c_group           licensed (otprcons);
+VipInterface c_realiz          licensed (otprcons);
+VipInterface ConsSell          licensed (otprcons);
+VipInterface ConsVedomost1     licensed (otprcons);
+VipInterface ConsVedomost2     licensed (otprcons);
+VipInterface ConsVedomost3     licensed (otprcons);
+VipInterface ConsVedomost4     licensed (otprcons);
+VipInterface ConsVedomost8     licensed (otprcons);
+VipInterface ConsVedomost9     licensed (otprcons);
+VipInterface ContBDoc          licensed (FREE) Parameters (Vid: word);
+VipInterface GetSomeSpStep     licensed (FREE) Parameters (pBaseDoc: comp; wMSel: word);
+VipInterface OstCons           licensed (otprcons);
+VipInterface Real_Cons         licensed (otprcons);
+VipInterface ifcSalesConsignee licensed (otprcons);
+VipInterface SomeDoc           licensed (otprcons);
+VipInterface iSpStepDO         licensed (FREE) Parameters (pSpStep, pOrg, pVal: comp; datDO: date);
+VipInterface Sverk             licensed (FREE) Parameters (p1: comp);
+VipInterface SverkB            licensed (FREE) Parameters (p1: comp);
+VipInterface ConsRep_MC        licensed (otprcons);

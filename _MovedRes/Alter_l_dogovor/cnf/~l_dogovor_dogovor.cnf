@@ -1,0 +1,37 @@
+object 'L_DOGOVOR::DOGOVOR' : InterfaceWindow {
+
+  //Редактирование уточняющего соглашения
+  object WIDOGOVORATTACHMAIN : InterfaceWindow {
+
+    object SCDOGOVORATTACHHEAD : Screen {
+
+      object 'ExtClass: DOGOVOR,281474976710656018' : PanelInputLine {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        StatusCtx = 16;
+        FieldName = 'ExtClass: DOGOVOR,281474976710656018,0,35,0,Наименование договора';
+        Origin_X = 681;
+        Origin_Y = 63;
+        Size_X = 150;
+        Size_Y = 14;
+        ButtonType = 0;
+      } // ExtClass: DOGOVOR,281474976710656018 : PanelInputLine
+
+      object 'LbExtClass: DOGOVOR,281474976710656018' : Label {
+        Original = False;
+        Title = 'цены';
+        Visible = True;
+        Hidden = False;
+        Origin_X = 638;
+        Origin_Y = 62;
+        Size_X = 26;
+        Size_Y = 14;
+      } // LbExtClass: DOGOVOR,281474976710656018 : Label
+
+    } //SCDOGOVORATTACHHEAD : Screen
+
+  } //WIDOGOVORATTACHMAIN : InterfaceWindow
+
+} //L_DOGOVOR::DOGOVOR : InterfaceWindow

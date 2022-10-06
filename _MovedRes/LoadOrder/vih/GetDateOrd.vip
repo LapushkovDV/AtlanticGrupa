@@ -1,0 +1,79 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Логистика
+// Диалоговое окно для формирования ордера
+//******************************************************************************
+
+Interface iGetDateOrd 'Введите дату' Gray, DoAccept, EscClose;
+  Show at (10,5,43,12);
+
+var
+  dForm   : date; // дата формирования
+  dFormOld: date; // дата формирования первоначальная
+  wParam  : word; // дополнительные параметры
+
+Create View
+;
+
+Parameters
+  dForm
+;
+
+//******************************************************************************
+Procedure CheckDate;
+{
+  if ((wParam AND 1) = 1)
+    dForm := Cur_Date
+  else
+    dForm := dFormOld;
+}
+
+//******************************************************************************
+Screen scrGetDateOrd (,hcD_GetFormNa,sci1EnEsc) noTableNavigation;
+
+Fields
+  dForm  ('Дата формирования',,sci13EnEsc): ['DD/MM/YYYY'], noProtect;
+  wParam ('Дополнительный параметр',,)    : ['DD/MM/YYYY'], noProtect;
+
+Buttons
+  cmValue1, Default,,'Продолжить формирование',,sci1Esc;
+  cmCancel,        ,,'Отмена формирования'    ,,sci1Esc;
+
+<<
+
+ `Формирование на`.@@@@@@@@@@@
+
+  [.] текущую дату`
+
+  <.Продолжить.>  <.  Отмена .>
+>>
+end;
+
+//******************************************************************************
+Handleevent
+cmInit:
+{
+  if (NOT ReadMyDSK(wParam, 'iGetDateOrd_wParam', FALSE))
+    wParam := 0;
+
+  dFormOld := dForm;
+
+  CheckDate;
+}
+
+cmValue1:
+{
+  SaveMyDSK(wParam, 'iGetDateOrd_wParam');
+  PutCommand(cmDefault);
+}
+
+cmCheckField:
+{
+  case CurField of
+    #wParam: CheckDate;
+  end;
+}
+
+end;
+
+End.

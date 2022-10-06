@@ -1,0 +1,33 @@
+#param /linc:autoexec.vpp
+
+#include galnet.inc end;
+#include dictypes.def
+type TPtr = longint;
+//#include glovars.inc
+
+#define ComponentVersion // для vih
+#include RepBarCode.vih
+#include ExtAttr.vih
+#include ExtClass.vih
+#include MCOriginCountry.vih
+#include Commission.vih
+#include adrfunc.vih
+
+#include feeSigners.inc
+#include feeSigners.vih
+
+#define __PrnSoprFunMem__
+#include prnSoprMem.inc
+#include prnSoprFun.vih
+#include sdFuns.vih
+
+#component 'L_PRNSOPR'
+
+#include drogaFunc\drogaFunc.vih
+
+#make "DrogaFunc/*.vip"
+#define _DROGA
+#include prnSopr.inc
+#make "FillTmpTbl/*.frm"
+#make "frm\SklOrder.frm"
+#make "frm\SklOrder_podpisant.frm"

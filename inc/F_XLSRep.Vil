@@ -1,0 +1,6 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_XLSRep
+
+#ifdef ComponentVersion
+#component "F_XLSRep"
+#end

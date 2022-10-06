@@ -1,0 +1,7 @@
+#ifndef _EditDoc_var_Included
+#define _EditDoc_var_Included
+
+// Переменная типа интерфейс EditDoc
+var iEditDoc : EditDoc;
+
+#end // _EditDoc_var_Included

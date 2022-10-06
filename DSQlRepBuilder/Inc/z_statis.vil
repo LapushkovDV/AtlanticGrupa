@@ -1,0 +1,24 @@
+#ifdef ComponentVersion
+#component "z_statis"
+#end
+
+vipinterface Statis
+  licensed (menuzarp,menuzarp2);
+vipinterface FormStat  licensed(free);
+vipinterface PrinSred  licensed(free);
+vipinterface PrintP4   licensed(free);
+vipinterface Printsto  licensed(free);
+vipinterface ViewStat  licensed(free);
+vipinterface ViewStat2 licensed(free) parameters(p1: comp; p2: double);
+vipinterface otchspz
+  licensed (menuzarp,menuzarp2);
+vipinterface Otr1_tr licensed(free);
+
+vipinterface FNotch
+  licensed (menuzarp,menuzarp2);
+vipinterface FNotch_2 licensed(free) parameters(My: word);
+vipinterface FNotch_3 licensed(free) parameters(My: word);
+vipinterface FrmNmbr1
+  licensed (menuzarp,menuzarp2);
+vipinterface Statform_N57 licensed(free);
+vipinterface SelKodOutrClassifier licensed(free) parameters(mrkOuterClassfier: longint);

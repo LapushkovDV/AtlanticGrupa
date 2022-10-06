@@ -1,0 +1,9 @@
+//#ifdef ComponentVersion
+#component "droga"
+
+// Управление сбытом - Отчеты - Реализация товаров и оказание услуг
+// ( Подробные отчеты, Итоги || Налоги, Наценки,массу и Объем)
+
+#make "helpers\real.vip"
+#make "reports\*.frm"
+#make "reports\*.slk"

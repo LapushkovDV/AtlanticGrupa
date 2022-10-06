@@ -1,0 +1,380 @@
+procedure fillrecArray_GetSubProductList;
+{
+    var _npp: byte;
+        _npp := 1;
+    SetLimit(_recArray, 0);
+    SetLimit(_recArray, 1);
+
+  _recArray[_npp].def := coPS1_SubProductType_ProductGuid   ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_SubProductType_Guid   ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_SubProductType_Active ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_SubProductType_Name   ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_SubProductType_Code
+
+}
+Function GetProductNrecByGuid(_fnguid: string) : comp; cacheable;
+{
+   var hstr : longint = 0;
+    delete all ttmpSpKau;
+  result := 0;
+    MysqlAddStr(hstr, 'select             ');
+    MysqlAddStr(hstr, '   spk.nrec   as cspKau   ');
+    MysqlAddStr(hstr, ' , av.vstring as Guid     ');
+    MysqlAddStr(hstr, ' , spk.name   as name     ');
+    MysqlAddStr(hstr, ' , spk.code   as active   ');
+    MysqlAddStr(hstr, 'from spkau spk     ');
+    MysqlAddStr(hstr, 'join attrnam an on an.wtable = 8512       ');
+    MysqlAddStr(hstr, '               and an.name = '''+coAttrNam_GUID+''' ');
+    MysqlAddStr(hstr, 'join attrval av on av.cattrnam = an.nrec  ');
+    MysqlAddStr(hstr, '               and av.wtable = an.wtable  ');
+    MysqlAddStr(hstr, '               and av.crec = spk.nrec     ');
+    MysqlAddStr(hstr, 'where spk.kodgrkau = '+coVETIS_VidPRoduct+'    ');
+    MysqlAddStr(hstr, '    and av.vstring = '''+_fnguid+'''      ');
+
+
+    var objQuery: iQuery;
+      objQuery := queryManager.createQuery(hstr);
+    if objQuery.execute.errorCode != tsOk
+     then {
+           MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+           exit;
+          }
+        else
+        {sqlCopyInto(objQuery, tnttmpSpKau, true);
+        }
+ if getfirst ttmpSpKau = tsOK
+  {
+    result := ttmpSpKau.cspkau
+  }
+}
+Procedure Insert_SubProduct;
+{
+  var _i: byte;
+  var _ProductGUID   : string = '';
+  var _GUID   : string = '';
+  var _ACTIVE : string = '';
+  var _NAME   : string = '';
+  var _CODE   : string = '';
+  for(_i := 1; _I <= getLimit(_recArray); _i++)
+  {
+    case upcase(_recArray[_i].def) of
+      Upcase(coPS1_SubProductType_ProductGuid  ) : _ProductGUID := Trim(_recArray[_i].value);
+      Upcase(coPS1_SubProductType_Guid  ) : _GUID   := Trim(_recArray[_i].value);
+      Upcase(coPS1_SubProductType_Active) : _ACTIVE := Trim(_recArray[_i].value);
+      Upcase(coPS1_SubProductType_Name  ) : _NAME   := Trim(_recArray[_i].value);
+      Upcase(coPS1_SubProductType_Code  ) : _CODE   := Trim(_recArray[_i].value);
+    end;
+  }
+  if _GUID = '' then exit;
+
+  var _cProduct : comp = GetProductNrecByGuid(_ProductGUID);
+   if _cProduct = 0h then exit;
+
+    var hstr : longint = 0;
+    delete all ttmpSpKau;
+
+    MysqlAddStr(hstr, 'select             ');
+    MysqlAddStr(hstr, '   spk.nrec   as cspKau   ');
+    MysqlAddStr(hstr, ' , av.vstring as Guid     ');
+    MysqlAddStr(hstr, ' , spk.name   as name     ');
+    MysqlAddStr(hstr, ' , spk.code   as active   ');
+    MysqlAddStr(hstr, 'from spkau spk     ');
+    MysqlAddStr(hstr, 'join attrnam an on an.wtable = 8512       ');
+    MysqlAddStr(hstr, '               and an.name = '''+coAttrNam_GUID+''' ');
+    MysqlAddStr(hstr, 'join attrval av on av.cattrnam = an.nrec  ');
+    MysqlAddStr(hstr, '               and av.wtable = an.wtable  ');
+    MysqlAddStr(hstr, '               and av.crec = spk.nrec     ');
+    MysqlAddStr(hstr, 'where spk.kodgrkau = '+coVETIS_VidPRoduct+'    ');
+    MysqlAddStr(hstr, '    and av.vstring = '''+_GUID+'''      ');
+
+
+    var objQuery: iQuery;
+      objQuery := queryManager.createQuery(hstr);
+    if objQuery.execute.errorCode != tsOk
+     then {
+           MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+           exit;
+          }
+        else
+        {sqlCopyInto(objQuery, tnttmpSpKau, true);
+        }
+  var _needInsert : boolean = true;
+  if getfirst ttmpSpKau = tsOK
+   {
+     if getfirst fastfirstrow spkau where (( ttmpSpKau.cspKau == spkau.nrec)) = tsOK // ну вдруг каким то немыслимым образом уже удалили  0_о
+      {
+        _needInsert := false;
+       if spkau.name <> _NAME or spkau.code <> _active or spkau.CNODE <> _cProduct
+        {
+         if spkau.name <> _NAME
+          {
+           mylog('"'+spkau.name + '" меняем: "' + spkau.name + '"->"' +_NAME+'"');
+           spkau.name  := _NAME;
+          }
+
+         if spkau.code <> _active
+          {
+           mylog('"'+spkau.name + '" меняем: "' + spkau.code + '"->"' +_active+'"');
+           spkau.code  := _active ;
+          }
+
+         if spkau.CNODE <> _cProduct
+          {
+           mylog('"'+spkau.name + '" меняем: "' + spkau.CNODE + '"->"' +_active+'"');
+           spkau.cNode := _cProduct;
+          }
+         update current spkau;
+        }
+        /*
+        else
+         {
+           mylog("'"+spkau.name + '" Изменений не требуется');
+         }
+        */
+      }
+   }
+   if _needInsert
+    {
+      Insert SpKau set
+        spkau.name     := _NAME
+      , spkau.code     := _active
+      , spkau.cNode    := _cProduct
+      , spkau.kodgrkau := coVETIS_VidPRoduct
+     ;
+     extAttr.ssetattr(8512, spkau.nrec, coAttrNam_GUID, _GUID);
+     extAttr.ssetattr(8512, spkau.nrec, coAttrNam_ExternalCode, _CODE);
+     mylog('Создаем новую ' + _NAME +'|'+_active+'|'+_GUID +'|'+_CODE+'|'+ String(_cProduct));
+    }
+}  // tInsertSaldoMC
+procedure fill_tProductGUID(_productGUID : string);
+{
+  delete all tProductGUID  ;
+    var hstr : longint = 0;
+   MysqlAddStr(hstr, 'select             ');
+    MysqlAddStr(hstr, '  av.vstring as Guid     ');
+    MysqlAddStr(hstr, 'from spkau spk     ');
+    MysqlAddStr(hstr, 'join attrnam an on an.wtable = 8512       ');
+    MysqlAddStr(hstr, '               and an.name = '''+coAttrNam_GUID+''' ');
+    MysqlAddStr(hstr, 'join attrval av on av.cattrnam = an.nrec  ');
+    MysqlAddStr(hstr, '               and av.wtable = an.wtable  ');
+    MysqlAddStr(hstr, '               and av.crec = spk.nrec     ');
+    MysqlAddStr(hstr, 'where spk.kodgrkau = '+coVETIS_VidPRoduct+'    ');
+    MysqlAddStr(hstr, '    and spk.cNode = #comp(0)             ');
+  if _productGUID <> ''
+   {
+    MysqlAddStr(hstr, '    and av.vstring = '''+_productGUID+'''      ');
+   }
+
+    var objQuery: iQuery;
+      objQuery := queryManager.createQuery(hstr);
+    if objQuery.execute.errorCode != tsOk
+     then {
+           MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+           exit;
+          }
+        else
+        {sqlCopyInto(objQuery, tntProductGUID, true);
+        }
+}
+Procedure FillPS1_VetisAPI_GetSubProductList(_ExcelFileOut, _OleGenerateGUID: string; _productGUID : string);
+{
+  fill_tProductGUID(_productGUID);
+  if getfirst tProductGUID <> tsOK then exit;
+  MyWriteLN('#Сначала надо импортировать модуль 1 раз для работы с EXCEL ');
+  MyWriteLN('# Если есть инет, то запускаем оболочку от имени админа и запускаем');
+  MyWriteLN('# [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls12');
+  MyWriteLN('# Install-Module -Name ImportExcel                                                                                                           ');
+  MyWriteLN('# Set-Executionpolicy -Scope CurrentUser -ExecutionPolicy ByPass                                                                             ');
+  MyWriteLN('# Import-Module ImportExcel                                                                                                                  ');
+  MyWriteLN('#                                                                                                                                            ');
+  MyWriteLN('# если нет на машине инета, то идем https://www.powershellgallery.com/packages/ImportExcel/7.1.0 и качаем вручную все                        ');
+  MyWriteLN('#                                                                        ');
+  MyWriteLN('#name="test"                                                             ');
+  MyWriteLN('#Set-Executionpolicy -Scope CurrentUser -ExecutionPolicy ByPass          ');
+  MyWriteLN('#Import-Module ImportExcel                                               ');
+  MyWriteLN('                                                                         ');
+  MyWriteLN('                                                                         ');
+  MyWriteLN('Get-ChildItem -Path $PSScriptRoot -Include @("*.ps1","*.log", "*.xls*") -Recurse | Where-Object -Property CreationTime -lt (Get-Date).AddDays(-8) | Remove-Item -Force -ErrorAction SilentlyContinue');
+  MyWriteLN('$circuitserviceID="'+coCircuit_serviceID+'"                              ');
+  MyWriteLN('$circuitendpointUrl="'+coCircuit_endpointUrlGetSubProductList+'"                          ');
+  MyWriteLN('$circuitlogin="'+coCircuit_login+'"                                      ');
+  MyWriteLN('$circuitpassword="'+coCircuit_password+'"                                ');
+  MyWriteLN('$circuitapiKey="'+coCircuit_apiKey+'"                            ');
+  MyWriteLN('$circuitissureId="'+coCircuit_issureId+'"                                ');
+  MyWriteLN('$circuitsysLogin="'+coCircuit_sysLogin+'"                                 ');
+  MyWriteLN('$circuitenterpriseGuid="'+coCircuit_enterpriseGuid+'"                     ');
+  MyWriteLN('$circuitbusinessEntityGuid ="'+coCircuit_businessEntityGuid+'"            ');
+  MyWriteLN('                                                                           ');
+  MyWriteLN('$circuitCountTry           = '+coCircuit_CountTry+'                        ');
+  MyWriteLN('$circuitPause              = '+coCircuit_Pause+'                           ');
+  MyWriteLN('                                                                                     ');
+  MyWriteLN('$fileLog =    "'+_MylogFile+'" ');
+  MyWriteLN('$ReportPath = "'+_ExcelFileOut +'"                                         ');
+  MyWriteLN('[String]$GlobError                                                                   ');
+  MyWriteLN('$GlobError = ""                                                                      ');
+  MyWriteLN('$RQST_GUID = "'+_OleGenerateGUID+'"                                                                                     ');
+  MyWriteLN('$conStrinGal  = '''+GetConnString+'''');
+  MyWriteLN('function Invoke-DatabaseQuery {                                                         ');
+  MyWriteLN('        [CmdletBinding()]                                                               ');
+  MyWriteLN('        param (                                                                         ');
+  MyWriteLN('                [string]$connectionString,                                              ');
+  MyWriteLN('                [string]$query,                                                         ');
+  MyWriteLN('                [switch]$isSQLServer                                                    ');
+  MyWriteLN('        )                                                                               ');
+  MyWriteLN('        if ($isSQLServer) {                                                             ');
+  MyWriteLN('                Write-Verbose ''in SQL Server mode''                                    ');
+  MyWriteLN('                $connection = New-Object -TypeName System.Data.SqlClient.SqlConnection  ');
+  MyWriteLN('        } else {                                                                        ');
+  MyWriteLN('                Write-Verbose ''in OleDB mode''                                         ');
+  MyWriteLN('                $connection = New-Object -TypeName System.Data.OleDb.OleDbConnection    ');
+  MyWriteLN('        }                                                                               ');
+  MyWriteLN('        $connection.ConnectionString = $connectionString                                ');
+  MyWriteLN('        $command = $connection.CreateCommand()                                          ');
+  MyWriteLN('        $command.CommandText = $query                                                   ');
+  MyWriteLN('        $connection.Open()                                                              ');
+  MyWriteLN('        $command.ExecuteNonQuery()                                                      ');
+  MyWriteLN('        $connection.close()                                                             ');
+  MyWriteLN('}                                                                                       ');
+  MyWriteLN('$GUID_PRODUCTARRAY = @( "--"');
+_loop tProductGUID
+ {
+  MyWriteLN(' ,"'+tProductGUID.GUID +'"');
+ }
+  MyWriteLN(')');
+  MyWriteLN('Function GetDataFromWeb([xml]$fnXML, [string]$URL)                                   ');
+  MyWriteLN('{                                                                                    ');
+  MyWriteLN('                                                                                     ');
+  MyWriteLN('$headers = @{}                                                                       ');
+  MyWriteLN('$headers.add("SOAPAction","GetResponse")                                             ');
+  MyWriteLN('$headers.add("Accept","text/xml")                                                    ');
+  MyWriteLN('$resultValue = $null                                                                 ');
+  MyWriteLN('$credentials = New-Object System.Management.Automation.PSCredential -ArgumentList @($circuitlogin,(ConvertTo-SecureString -String $circuitpassword -AsPlainText -Force))');
+  MyWriteLN('#write-host "try Invoke-WebRequest"  -ForegroundColor Green                                                    ');
+  MyWriteLN('   try                                                                                                                                                                  ');
+  MyWriteLN('    {                                                                                                                                                                   ');
+  MyWriteLN('     $resultValue = Invoke-WebRequest -URI $URL -Headers $headers -Method Post -Body $fnXML -ContentType ''text/xml;charset="utf-8"'' -Credential $credentials -UseBasicParsing');
+  MyWriteLN('    # write-host "Invoke-WebRequest OK"  -ForegroundColor Green                                            ');
+  MyWriteLN('    }                                                                             ');
+  MyWriteLN('    catch                                                                         ');
+  MyWriteLN('    {                                                                             ');
+  MyWriteLN('     # write-host "Invoke-WebRequest error"                                       ');
+  MyWriteLN('      $GlobError = $error[0].ToString()                                           ');
+  MyWriteLN('      #write-host $error[0].ToString()                                            ');
+  MyWriteLN('    }                                                                             ');
+  MyWriteLN('    #write-host $resultValue                                                      ');
+  MyWriteLN(' $resultValue                                                                     ');
+  MyWriteLN('}                                                                                 ');
+  MyWriteLN('Function GetResponse([string]$productGuid, [string]$offset)                          ');
+  MyWriteLN('{                                                                                    ');
+  MyWriteLN(' $template = @''                                                                     ');
+  MyWriteLN('  <soapenv:Envelope                                                                   ');
+  MyWriteLN('                  xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"           ');
+  MyWriteLN('                  xmlns:ws="http://api.vetrf.ru/schema/cdm/registry/ws-definitions/v2"');
+  MyWriteLN('                  xmlns:bs="http://api.vetrf.ru/schema/cdm/base"                      ');
+  MyWriteLN('                  xmlns:dt="http://api.vetrf.ru/schema/cdm/dictionary/v2">            ');
+  MyWriteLN('                    <soapenv:Header/>                                                 ');
+  MyWriteLN('                    <soapenv:Body>                                                    ');
+  MyWriteLN('                      <ws:getSubProductByProductListRequest>                          ');
+  MyWriteLN('      	                 <bs:listOptions>                                              ');
+  MyWriteLN('                            <bs:count>1000</bs:count>                                 ');
+  MyWriteLN('                            <bs:offset>{0}</bs:offset>                                ');
+  MyWriteLN('                         </bs:listOptions>                                            ');
+  MyWriteLN('                         <dt:productGuid>{1}</dt:productGuid>                         ');
+  MyWriteLN('                      </ws:getSubProductByProductListRequest>                         ');
+  MyWriteLN('                    </soapenv:Body>                                                   ');
+  MyWriteLN('                </soapenv:Envelope>                                                   ');
+  MyWriteLN('''@                                                                                   ');
+  MyWriteLN('                                                                                      ');
+  MyWriteLN('#            webRequest.Credentials = credentials;                                    ');
+  MyWriteLN('                                                                                      ');
+  MyWriteLN('$fnc_RqstBody = $template -f $offset, $productGuid                                    ');
+  MyWriteLN('                                                                                      ');
+  MyWriteLN('                                                                                      ');
+  MyWriteLN('[xml] $XmlPrepare = $fnc_RqstBody                                                     ');
+  MyWriteLN('                                                                                      ');
+  MyWriteLN('$response = GetDataFromWeb -fnXML $XmlPrepare -URL $circuitendpointUrl                ');
+  MyWriteLN('                                                                                      ');
+  MyWriteLN('    If ( ($response.StatusCode -eq 200) -and ($response -ne $null))                   ');
+  MyWriteLN('    {                                                                                 ');
+  MyWriteLN('     $response.content                                                                ');
+  MyWriteLN('    }                                                                                 ');
+  MyWriteLN('    else                                                                              ');
+  MyWriteLN('    {                                                                                 ');
+  MyWriteLN('     $null                                                                            ');
+  MyWriteLN('    }                                                                                 ');
+  MyWriteLN('}                                                                                     ');
+  MyWriteLN('   [int]$nppArray = 1                                                                                   ');
+  MyWriteLN('    [System.Collections.ArrayList] $FinalReport = @();                                                                 ');
+  MyWriteLN('foreach($GUID_PRODUCT in $GUID_PRODUCTARRAY)                                          ');
+  MyWriteLN('{                                                                                     ');
+  MyWriteLN('    [xml]$stockEntryElementList = $null                                               ');
+  MyWriteLN('    [int]$npp = 0                                                                     ');
+  MyWriteLN('     write-host "Запрос GETPSUBRODUCTLIST " $nppArray.tostring() "из" $GUID_PRODUCTARRAY.count.tostring() " . Отправка запроса GETPSUBRODUCTLIST " $NPP.ToString()  -ForegroundColor Green');
+  MyWriteLN('Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Запрос GETPSUBRODUCTLIST "+ $nppArray.tostring()+ "из" +$GUID_PRODUCTARRAY.count.tostring() +" . Отправка запроса GETPSUBRODUCTLIST " +$NPP.ToString()) -Encoding Oem');
+
+  MyWriteLN('    $nppArray = $nppArray + 1                   ');
+  MyWriteLN('    [xml]$stockEntryElementList = GetResponse -productGuid $GUID_PRODUCT -offset $npp.ToString()                       ');
+  MyWriteLN('    while ($stockEntryElementList -ne $null)                                                                           ');
+  MyWriteLN('    {                                                                                                                  ');
+  MyWriteLN('                                                                                                                       ');
+  MyWriteLN('        foreach($subProduct in $stockEntryElementList.Envelope.Body.getSubProductByProductListResponse.subProductList.subProduct)');
+  MyWriteLN('        {                                                                                                                        ');
+  MyWriteLN('          $item = New-Object PSObject                                                                                            ');
+  MyWriteLN('          $item | Add-Member -type NoteProperty -Name "'+coPS1_SubProductType_ProductGuid+'" -Value  $GUID_PRODUCT;                                      ');
+  MyWriteLN('          $item | Add-Member -type NoteProperty -Name "'+coPS1_SubProductType_Guid+'" -Value  $subProduct.Guid;        ');
+  MyWriteLN('          $item | Add-Member -type NoteProperty -Name "'+coPS1_SubProductType_Active+'" -Value  $subProduct.Active;                                     ');
+  MyWriteLN('          $item | Add-Member -type NoteProperty -Name "'+coPS1_SubProductType_Name+'" -Value  $subProduct.Name;                        ');
+  MyWriteLN('          $item | Add-Member -type NoteProperty -Name "'+coPS1_SubProductType_Code+'" -Value  $subProduct.Code;                      ');
+  MyWriteLN('          write-host "        " $subproduct.Name  -ForegroundColor Cyan                                                                     ');
+  MyWriteLN('Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " " + $subproduct.Name ) -Encoding Oem');
+
+  MyWriteLN('          $FinalReport +=,$item                                                                                                  ');
+  MyWriteLN('        }                                                                                                                        ');
+  MyWriteLN('     [int]$npp = $npp + 1000                                                                                                     ');
+  MyWriteLN('     write-host "Запрос GETPSUBRODUCTLIST. Отправка запроса GETPSUBRODUCTLIST " $NPP.ToString()  -ForegroundColor Green          ');
+  MyWriteLN('     [xml]$stockEntryElementList = GetResponse -productGuid $GUID_PRODUCT -offset $npp.ToString()                                ');
+  MyWriteLN('    }                                                                                                                            ');
+  MyWriteLN('}                                                                                                                                ');
+  MyWriteLN(' #$FinalReport | Export-Excel -Path $ReportPath -AutoSize -WorksheetName "'+_Parameter+'"                                 ');
+  MyWriteLN(' [int]$npp = 1                                                                       ');
+  MyWriteLN('[string]$sqlQuery = ""');
+  MyWriteLN(' write-host "Запрос стока. Запись в буферную таблицу" -ForegroundColor Green         ');
+  MyWriteLN(' foreach($item in $FinalReport)                                                      ');
+  MyWriteLN('  {                                                                                  ');
+  MyWriteLN('   if([math]::Truncate($npp/23) -eq $npp/23) ');
+  MyWriteLN('    {                                       ');
+  MyWriteLN('      write-host "Запись запроса " $npp.tostring() " из " $FinalReport.Count.toString()  -ForegroundColor Cyan       ');
+  MyWriteLN('      Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Запись запроса " +$npp.tostring() +" из " +$FinalReport.Count.toString()) -Encoding Oem');
+  MyWriteLN('    }                                       ');
+  MyWriteLN('   if([math]::Truncate($npp/23) -eq $npp/23) ');
+  MyWriteLN('    {                                       ');
+  MyWriteLN('     write-host "Запись в буферную таблицу полученных результатов" -ForegroundColor Cyan       ');
+  MyWriteLN('     $res = Invoke-DatabaseQuery -connectionString $conStrinGal -query $sqlQuery -isSQLServer ');
+  MyWriteLN('     $sqlQuery = "" ');
+  MyWriteLN('    }                                       ');
+
+  MyWriteLN('   foreach( $property in $item.psobject.properties.name )                            ');
+  MyWriteLN('    {                                                                                ');
+  MyWriteLN('      if ($item.$property -eq $null)                                                 ');
+  MyWriteLN('        {                                                                            ');
+  MyWriteLN('         $itemproperty = ""                                                          ');
+  MyWriteLN('        }                                                                            ');
+  MyWriteLN('        else                                                                         ');
+  MyWriteLN('         {                                                                           ');
+  MyWriteLN('          $itemproperty = $item.$property                                            ');
+  MyWriteLN('         }                                                                           ');
+  MyWriteLN('      $sqlQuery = $sqlQuery + ''Insert t$ATL_RQSTAPIVALUES (f$RQST_GUID, f$RSQT_PROVIDER, f$NROW, f$COLUMNNAME, f$VALUE)    ');
+  MyWriteLN('                   values (''''''+$RQST_GUID+'''''',''''''+$circuitserviceID+'''''',''+$npp.tostring()+'',''''''+$property.Replace("''","''''")+'''''',''''''+$itemproperty.Replace("''","''''")+'''''') ');
+  MyWriteLN('                  ''                                                                                               ');
+  MyWriteLN('    }                                                                                          ');
+  MyWriteLN('    $npp = $npp + 1                                                                            ');
+  MyWriteLN('  }                                                                                            ');
+  MyWriteLN('   write-host "Запись в буферную таблицу полученных результатов" -ForegroundColor Cyan       ');
+  MyWriteLN('    $res = Invoke-DatabaseQuery -connectionString $conStrinGal -query $sqlQuery -isSQLServer ');
+  MyWriteLN('    $sqlQuery = "" ');
+  MyWriteLN('Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Запись в буферную таблицу" +$($npp-1).tostring() +" из " +$FinalReport.Count.toString()) -Encoding Oem');
+}
+Function GetRequestToAPIVetis_GetSubProductList(_productGUID: string) : boolean;
+{
+   #BodyProcedureGetRqst(GetSubProductList,_productGUID)
+}

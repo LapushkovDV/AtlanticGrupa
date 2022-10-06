@@ -1,0 +1,44 @@
+!Дрога код МЦ из атрибутов МЕТРО
+!CodeOtpEd - Артикул 13-значный, CodeEd - Код МЕТРО
+.begin
+  codeOtpEd := codeEd := codeMGB := '';
+  srcCountry := gtdNumber  := '-';
+
+#ifdef __PrnSoprFunMem__
+  FROMKATMCMEM.pNrec := comp(спецификацияМЦ_нрек);
+  if (FROMKATMCMEM.GetFirst SpSoprMemTTN = tsOk) {
+    if (FROMKATMCMEM.SpSoprMemTTN.PrMC = 1) {
+      if (FROMKATMCMEM.GetFirst KatMC = tsOk) {
+        srcCountry := #f_(iCountry.getCountryName(FROMKATMCMEM.KatMC.nrec, FROMKATMCMEM.SpSoprMemTTN.cParty));
+        gtdNumber  := #f_(iCountry.getGTDNumber(FROMKATMCMEM.SpSoprMemTTN.cParty));
+        CodeOtpEd := sGetAttr(coKatMC, FROMKATMCMEM.KatMC.nrec, 'Артикул МЕТРО (13-значный)');
+        if trim(sGetAttr(coKatMC, FROMKATMCMEM.KatMC.nrec, 'Код МЕТРО')) <> '' {
+          codeEd := sGetAttr(coKatMC, FROMKATMCMEM.KatMC.nrec, 'Код МЕТРО');
+          codeMGB := sGetAttr(coKatMC, FROMKATMCMEM.KatMC.nrec, 'MGB артикул МЕТРО');
+        }
+        else {
+          CodeEd := 'Нет значения '+ FROMKATMCMEM.KatMC.BarKod;
+        }
+      }
+    } //prmc = 1
+  }
+#else
+  FROMKATMC.pNrec := comp(спецификацияМЦ_нрек);
+  if (FROMKATMC.GetFirst SpSopr = tsOk) {
+    if (FROMKATMC.SpSopr.PrMC = 1) {
+      if (FROMKATMC.GetFirst KatMC = tsOk) {
+        srcCountry := #f_(iCountry.getCountryName(FROMKATMC.KatMC.nrec, FROMKATMC.SpSopr.cParty));
+        gtdNumber  := #f_(iCountry.getGTDNumber(FROMKATMC.SpSopr.cParty));
+        CodeOtpEd := sGetAttr(coKatEd, FROMKATMC.KatMC.NRec, 'Артикул МЕТРО (13-значный)');
+        if trim(sGetAttr(coKatMC, FROMKATMC.KatMC.nrec, 'Код МЕТРО')) <> '' {
+          codeEd := sGetAttr(coKatMC, FROMKATMC.KatMC.nrec, code_attr);
+          codeMGB := sGetAttr(coKatMC, FROMKATMC.KatMC.nrec, 'MGB артикул МЕТРО');
+        }
+        else {
+          CodeEd :=  'Нет значения '+ FROMKATMC.KatMC.BarKod;
+        }
+      }
+    }
+  }
+#end
+end.

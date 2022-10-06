@@ -1,0 +1,227 @@
+#ifndef __DateInterim_vih__
+#define __DateInterim_vih__
+
+#Component ""
+
+const
+   // DateInterimSpan constants
+   DIS_NONE     = 0;        
+   DIS_YEAR     = 1;        
+   DIS_HALF     = 2;
+   DIS_QUART    = 3;
+   DIS_MONTH    = 4;
+   DIS_WEEK     = 5;
+   DIS_DAY      = 6;
+   DIS_TIME     = 7;
+
+   // DateInterimRepresent constants
+   DIR_NONE     = 0;        
+   DIR_RELATIVE = 1;        
+   DIR_FIXED    = 2;        
+   DIR_UNLIMIT  = 3;        
+
+   // DateInterimType constants
+   DIT_NONE     = 0;        
+   DIT_INTERVAL = 1;        
+   DIT_PERIOD   = 2;        
+
+   // DateInterimFields constants
+   DIF_BEG      =    1;        
+   DIF_END      =    2;        
+
+   DIF_NONE     =    0;        
+   DIF_UNLIMIT  =    1;        
+   DIF_RELATIVE =    2;        
+   DIF_YEAR     =    4;        
+   DIF_HALF     =    8;
+   DIF_QUART    =   16;
+   DIF_MONTH    =   32;
+   DIF_WEEK     =   64;
+   DIF_DAY      =  128;
+   DIF_TIME     =  256;
+
+   DIF_FIXED    =  DIF_YEAR or DIF_HALF or DIF_QUART or DIF_MONTH or DIF_WEEK or DIF_DAY;
+
+
+   // DateInterimError constants
+   dieOk             =  0;
+   dieInvalidInterim =  1;
+   dieInvalidDate    =  2;
+   dieIncorrectRep   =  3;
+   dieIncorrectType  =  4;
+   dieIncorrectSpan  =  5;
+   dieBadDSKName     =  6;
+   dieBadDSKVersion  =  7;
+   dieBadDSKStruct   =  8;
+   dieSaveError      =  9;
+   dieEmptyDate      = 10;        
+
+   cdfNone           =  0;
+   cdfFirst          =  1;
+   cdfLast           =  2;
+
+   DIO_VERSION: byte =  1;
+
+end;
+
+
+  // ──────────────────────────────────────
+  ObjInterface IDateInterim;        // #docl Объект временного диапазона. </brief>
+
+    property InterimType            // #docl Тип диапазона (интервал, период). </brief>
+                   :  byte    Read Write;
+    property BegDate                // #docl Начальная дата диапазона. </brief>
+                   :  Date    Read Write;
+    property BegTime                // #docl Начальное время диапазона. </brief>
+                   :  Time    Read Write;
+    property BegValue               // #docl Значение для начальной границы диапазона; заполняется в соответствии со значением свойств BegSpan и BegRepresent. </brief>
+                   :  Longint Read Write;
+    property BegSpan                // #docl Временной промежуток начальной границы диапазона (год, месяц, неделя...). </brief>
+                   :  byte    Read Write;
+    property BegRepresent           // #docl Представление начальной границы диапазона (относительное, фиксированное). </brief>
+                   :  byte    Read Write;
+    property EndDate                // #docl Финальная дата диапазона. </brief>
+                   :  Date    Read Write;
+    property EndTime                // #docl Финальное время диапазона. </brief>
+                   :  Time    Read Write;
+    property EndValue               // #docl Значение для финальной границы диапазона; заполняется в соответствии со значением свойств EndSpan и EndRepresent. </brief>
+                   :  Longint Read Write;
+    property EndSpan                // #docl Временной промежуток финальной границы диапазона (год, месяц, неделя...). </brief>
+                   :  byte    Read Write;
+    property EndRepresent           // #docl Представление финальной границы диапазона (относительное, фиксированное). </brief>
+                   :  byte    Read Write;
+
+    function CheckDateInterim       // #docl Функция проверки корректности диапазона. </brief>
+                   (bMessage        // #docl Признак необходимости выдачи информационного сообщения в случае некорректности. </brief>
+                   : boolean): word // #docl Код возврата, константа вида die*. </brief>
+                   ;
+  end;
+
+  // ──────────────────────────────────────
+  ObjInterface IDateInterimInterface; // #docl Поддержка интерфейсов выбора интервалов дат, периодов. </brief>
+    property Caption                // #docl Заголовок окна. </brief>
+                   :  String  Read Write;
+    property AutoCalc               // #docl Показывать и пересчитывать диапазон дат. </brief>
+                   :  boolean Read Write;
+    property AutoCheck              // #docl Проверять корректность диапазона перед закрытием окна выбора. </brief>
+                   :  boolean Read Write;
+
+    function SelectDateInterim      // #docl Функция выбора диапазона, запуск окна выбора. </brief>
+                   :  word          // #docl Код возврата (событие закрытия окна выбора), константа вида cm*. </brief>
+                   ;
+    function LoadDateInterim        // #docl Функция загрузки параметров из dsk-файла. </brief>                                        
+                   (sSuffix         // #docl Имя объекта для чтения из dsk-файла. </brief> 
+                   : string): word  // #docl Код возврата, константа вида die*. </brief>                                              
+                   ;
+    function SaveDateInterim        // #docl Функция сохранения параметров в dsk-файл. </brief>                                        
+                   (sSuffix         // #docl Имя объекта для записи в dsk-файла. </brief> 
+                   : string): word  // #docl Код возврата, константа вида die*. </brief>                                              
+                   ;
+    procedure SetDisableFields      // #docl Процедура для запрета редактирования значений полей. </brief>
+                   (aDIField        // #docl Граница диапазона: либо начальная, либо финальная (одно из значений: DIF_BEG или DIF_END). </brief>
+                   : byte;
+                    aDIMask         // #docl Маска, перечень запрещенных полей. </brief> 
+                   : word);
+    function SetHiddenFields        // #docl Процедура для скрытия полей. </brief>
+                   (aDIMask         // #docl Маска, перечень скрываемых полей. Доступные для скрытия поля: DIF_UNLIMIT, DIF_RELATIVE, DIF_FIXED, DIF_TIME</brief> 
+                   : word):   word  // #docl Код возврата, константа вида die*. </brief>
+                   ;
+  end;
+
+  // ──────────────────────────────────────
+  ObjInterface  IDateInterimPanel;  // #docl Поддержка панели для интерфейсов выбора интервалов дат, периодов. </brief>
+    property    dipDate             // #docl Дата диапазона; по ней формируются значения всех полей для редактирования. </brief>
+                   : Date    Read Write;
+    property    dipTime             // #docl Время диапазона. </brief>
+                   : Time    Read Write;
+    property    dipValue            // #docl Значение диапазона. </brief>
+                   : Longint Read Write;
+    property    dipSpan             // #docl Временной промежуток диапазона (год, месяц, неделя...). </brief>
+                   : byte    Read Write;
+    property    dipRepresent        // #docl Представление диапазона (относительное, фиксированное, без ограничений). </brief>
+                   : byte    Read Write;
+    property    dipFrame            // #docl Признак границы диапазона, для которой создается панель. </brief>
+                   : byte    Read Write;
+    property    dipDisable          // #docl Маска, перечень запрещенных полей. </brief> 
+                   : word    Read Write;
+    property    dipHide             // #docl Маска, перечень скрываемых полей. </brief> 
+                   : word    Read Write;
+  end;
+
+  // ──────────────────────────────────────
+  ObjInterface  IDateInterimFunctions;
+    function    CorrectDate   (aDay, aMon: byte; aYear: word):         Date;
+    function    GetDateByWeek (aCur: Date; aWeek, aFlag: byte):        Date;
+    function    GetDateByMonth(aCur: Date; aMonth, aFlag: byte):       Date;
+    function    GetDateByYear (aCur: Date; aYear: word; aFlag: byte):  Date;
+    function    GetDateByHalf (aCur: Date; aHalf: byte; aFlag: byte):  Date;
+    function    GetDateByQuart(aCur: Date; aQuart: byte; aFlag: byte): Date;
+    function    GetInterimString(bUnlimit: boolean; aDate: Date; aTime: Time; bNeedTime: boolean): string;
+    function    GetInterimInWords(aDate: Date; aRep, aSpan: byte; aValue: longint): string;
+    function    CalcRelativeDate(aSpan: word; aOffset: integer; aFlag: byte):  Date;
+    function    CheckDatesCorrespondence(aBeg, aEnd: Date; bMessage: boolean): word;
+  end;
+
+
+
+  // ──────────────────────────────────────
+  VipInterface  DateInterimFunctions
+    implements IDateInterimFunctions
+    licensed (free);
+
+  // ──────────────────────────────────────
+  VipInterface  DateInterimPanel
+    implements IDateInterimPanel
+    licensed (free);
+
+  Public:
+    constructor Init;
+    destructor  Done;
+    function    InitStart: word;
+    procedure   CalculateInterimFields;
+
+    event procedure OnCalculate;
+  end;
+
+  // ──────────────────────────────────────
+  VipInterface  DateInterim         // #docl Системный интерфейс, предназначенный для определения интервала дат, периодов. </brief>
+    implements IDateInterim, IDateInterimInterface
+    licensed (free);
+
+  Public:
+    constructor Init;
+    procedure   SetAutoCalc(bACalc: boolean);
+    procedure   SetCaption(sCaption: string);
+    function    IDateInterimInterface.SetHiddenFields(aDIMask: word): word;
+  end;
+
+  // ──────────────────────────────────────
+  VipInterface  DateInterimPeriod   // #docl Системный интерфейс, предназначенный для определения периодов. </brief>
+    (DateInterim);
+
+  Public:
+    constructor Init;
+    destructor  Done;
+    procedure   SetAutoCalc(bACalc: boolean);
+    procedure   SetCaption(sCaption: string);
+    function    IDateInterimInterface.SelectDateInterim: word;
+    procedure   IDateInterimInterface.SetDisableFields(aDIField: byte; aDIMask: word);
+    function    IDateInterimInterface.SetHiddenFields(aDIMask: word): word;
+  end;
+
+  // ──────────────────────────────────────
+  VipInterface  DateInterimInterval // #docl Системный интерфейс, предназначенный для определения интервалов. </brief>
+    (DateInterim);
+
+  Public:
+    constructor Init;
+    destructor  Done;
+    procedure   SetAutoCalc(bACalc: boolean);
+    procedure   SetCaption(sCaption: string);
+    function    IDateInterimInterface.SelectDateInterim: word;
+    procedure   IDateInterimInterface.SetDisableFields(aDIField: byte; aDIMask: word);
+    function    IDateInterimInterface.SetHiddenFields(aDIMask: word): word;
+  end;
+
+
+#endif

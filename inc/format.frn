@@ -1,0 +1,150 @@
+.var
+  Cena_Pr
+, Cena_PrTTN
+, Cena_PrR
+, Cena_PrRTTN
+, Cena_PrV
+, Cena_PrVTTN
+, Cena_PrU
+, Cena_PrA
+, Kol_Pr
+, Capas_Pr
+, Massa_Pr
+, Massa_Tn // масса в тоннах
+, Massa_Kg // масса в килограммах
+, Massa_Gr // масса в граммах
+, Str_Rub1
+, Str_Rub2
+, Str_Tys1
+, Str_Tys2
+, Skidka_Pr
+, NDS_St   // ставка НДС
+, RoundGrm
+, strDr
+    : string;
+
+  nn
+, ii
+    : word;
+
+  KolZn
+, wRoundMass2
+, wRoundCap
+, wNDS_St
+, wSkidka_Pr
+    : byte;
+
+.endvar
+.Function GetDblFormat(isUseSepSym: boolean; _len: byte): string;
+var
+  i: byte;
+  sSymbPoint : string;
+{
+  sSymbPoint := sGetTune('Doc.SD.PrnNakl.PointSymbol');
+
+  if not isUseSepSym
+    Result := '[|-]3666666666666666'
+  else
+  {
+    var sSymb : string;
+
+    sSymb := sGetTune('Doc.SD.PrnNakl.SepSymbol');
+
+    Result := '[|-]3666' + sSymb + '666'  + sSymb + '666'  + sSymb + '666' + sSymb + '666';
+  }
+
+  for (i := 1; i <= _len; i++)
+    Result += if (i = 1, sSymbPoint + '8', '8');
+
+  Result := '\' + string(_len) + 'p' + Result;
+end.
+.begin
+  var sSymbPoint : string;
+
+  sSymbPoint := sGetTune('Doc.SD.PrnNakl.PointSymbol');
+
+  Massa_Pr := '\3p[|-]3666`666`666`666' + sSymbPoint + '888';
+
+  // Масса округляется по настройке
+  Massa_Tn := Massa_Kg := Massa_Gr := '\0p[|-]3666`666`666`666';
+
+  wRoundMass2 := bGetTune('Doc.SD.PrnNakl.MassaRound');
+  wRoundCap   := bGetTune('Doc.Capacity.KolCapacitySym');
+
+  if (wRoundMass2 > 0)
+    Massa_Tn := PadCh('\' + string(wRoundMass2)       + 'p[|-]3666`666`666`666' + sSymbPoint, '8', 24 + wRoundMass2);
+
+  if (wRoundMass2 > 3)
+    Massa_Kg := PadCh('\' + string(wRoundMass2 mod 3) + 'p[|-]3666`666`666`666' + sSymbPoint, '8', 21 + wRoundMass2);
+
+  if (wRoundMass2 > 6)
+    Massa_Gr := PadCh('\' + string(wRoundMass2 mod 3) + 'p[|-]3666`666`666`666' + sSymbPoint, '8', 18 + wRoundMass2);
+
+  //------------------------------------------------------------------------------
+  NDS_St  := '\0p[|-]3666';
+  wNDS_St := bGetTune('Doc.SD.PrnNakl.KolSignNDS');
+
+  if (wNDS_St > 0)
+    NDS_St := PadCh('\'+string(wNDS_St) + 'p[|-]3666' + sSymbPoint, '8', 12 + wNDS_St);
+
+  if (wRoundCap > 0)
+    Capas_Pr := '\' + string(wRoundCap) + 'p[|-]3666`666`666`666~' + PadCh('', '9', wRoundCap);
+
+  //------------------------------------------------------------------------------
+  Skidka_Pr  := '\0p[|-]3666';
+  wSkidka_Pr := bGetTune('Doc.SD.PrnNakl.KolSignProcNac');
+
+  if (wSkidka_Pr > 0)
+    Skidka_Pr := PadCh('\'+string(wSkidka_Pr) + 'p[|-]3666' + sSymbPoint, '8', 12 + wSkidka_Pr);
+
+  if (wSkidka_Pr > 0)
+    Skidka_Pr := '\' + string(wSkidka_Pr) + 'p[|-]3666`666`666`666~' + PadCh('', '9', wSkidka_Pr);
+
+  //------------------------------------------------------------------------------
+  var isUseSepSym: boolean;
+
+#ifdef USE_SEP_SYMBOL
+  isUseSepSym := true;
+#else
+  isUseSepSym := false;
+#end
+
+  KolZn       := bGetTune('Doc.SD.PrnNakl.GrmRound');
+
+  if (KolZn <> 0)
+    strDr := '\n4, 5'
+  else
+    strDr := '\0p4';
+
+  RoundGrm    := GetDblFormat(isUseSepSym, KolZn);
+  Kol_Pr      := GetDblFormat(False      , bGetTune('Round.KolSign'));
+
+  Cena_Pr     := GetDblFormat(isUseSepSym, GetPrecisionGroup('brForSopr_RVPrice'));
+  Cena_PrTTN  := GetDblFormat(isUseSepSym, GetPrecisionGroup('brForSoprTTN_RVPrice'));
+  Cena_PrR    := GetDblFormat(isUseSepSym, GetPrecisionGroup('brForSopr_Price'));
+  Cena_PrRTTN := GetDblFormat(isUseSepSym, GetPrecisionGroup('brForSoprTTN_Price'));
+  Cena_PrV    := GetDblFormat(isUseSepSym, GetPrecisionGroup('brForSopr_VPrice'));
+  Cena_PrVTTN := GetDblFormat(isUseSepSym, GetPrecisionGroup('brForSoprTTN_VPrice'));
+  Cena_PrA    := GetDblFormat(isUseSepSym, GetPrecisionGroup('brForSoprAkt_price'));
+  Cena_PrU    := GetDblFormat(isUseSepSym, 2);
+
+  //------------------------------------------------------------------------------
+
+  Str_Rub1 := '';
+  Str_Rub2 := ',';
+  Str_Tys1 := '999';
+  Str_Tys2 := ',999';
+
+  nn := GetPrecisionGroup('brForSopr_RVPrice');
+
+  for (ii := 1; ii <= nn; ii++)
+  {
+    Str_Rub1 += '9';
+    Str_Rub2 += '9';
+    Str_Tys1 += '9';
+    Str_Tys2 += '9';
+  }
+
+  Str_Rub2 := '\' + string(nn) + 'p' + Str_Rub2 + ' ';
+  Str_Tys2 := '\' + string(nn) + 'p' + Str_Tys2 + ' ';
+end.

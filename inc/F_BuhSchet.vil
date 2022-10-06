@@ -1,0 +1,13 @@
+// 8.0
+// Экспортируемые интерфейсы компоненты F_BuhSchet
+
+#ifdef ComponentVersion
+#component "F_BuhSchet"
+#end
+
+VipInterface CheckCor     Licensed (Free);
+VipInterface GetBuhSchet  Licensed (Free) Parameters (wIntMode : word; myPlansNo : comp; sGetSch : tSchet3; sGetSub : tSubSch);
+VipInterface SprSchet     Licensed (Free) Parameters (wIntMode : word; myPlansNo : comp; sGetSch : tSchet3; sGetSub : tSubSch);
+VipInterface GetSchDef    Licensed (Free) Parameters (myPlansNo : comp; mySetDef : word; mySchet : tSchet3; mySubSch : tSubSch);
+VipInterface GetSchetCorr Licensed (Free) Parameters (isDebit: boolean; mySchetCorr: tSchet3; mySubCorr: tSubSch; mySchet: tSchet3; mySub : tSubSch);
+

@@ -1,0 +1,343 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Логистика
+// функции для ФИФО по складам
+//******************************************************************************
+
+#ifNdef _1111_VPP_
+#define _1111_VPP_
+
+#include MSview.vih
+
+#ifdef _AKTUSLB_VIP
+
+//******************************************************************************
+
+Create view lfd
+From
+  SklOrder
+, SpOrder
+, KatMC
+, SpOrder SpOrder2
+Where
+((
+  SpOrder.cMC == KatMC.NRec
+))
+;
+
+//******************************************************************************
+
+Function GetOstatok_onDate(
+                            cRec_   : comp;
+                            kol_    : double;       //остаток на дату формирования дооценки
+                            dDooc_  : Date
+                          ): double;
+{
+  lfd._LOOP SpOrder2 where ((cRec_ == SpOrder2.cSpOrder AND
+                                 1 == SpOrder2.vidOrder AND
+                            dDooc_ >> SpOrder2.dOrd ))
+    kol_ -= lfd.SpOrder2.kol;
+
+  GetOstatok_onDate := kol_;
+}
+
+//******************************************************************************
+//суммы по первичным приходам накладной (по всем МЦ)
+
+var DateF_: Date;
+var summaAllMC, vSummaAllMC, totMas, totVol: double;
+var vSumma_cVal: comp;
+
+//******************************************************************************
+
+Procedure GetSums_SklOrders(cSopr_: comp);
+{
+  summaAllMC := 0;
+  vSummaAllMC := 0;
+  totMas := 0;
+  totVol := 0;
+  vSumma_cVal := oValFunc.ValBase;
+
+  lfd._LOOP SklOrder where ((cSopr_ == SklOrder.cSopr))  //по первичным приходам
+    lfd._LOOP SpOrder  where ((SklOrder.NRec == SpOrder.cSklOrder))
+      {
+        summaAllMC := summaAllMC + (lfd.SpOrder.kol * lfd.SpOrder.srPrice);
+        vSummaAllMC := vSummaAllMC +
+                      if(lfd.SpOrder.cVal<>0,
+                         lfd.SpOrder.kol * oValFunc.GetAnyCurrency(lfd.SpOrder.cVal, lfd.SpOrder.vPrice, SpOrder.dOrd, SpOrder.cVal),
+                         0);
+
+        if IsValid(lfd.tnKatMC)
+          {
+            totMas := totMas + lfd.KatMC.massa *lfd.SpOrder.kol;
+            totVol := totVol + lfd.KatMC.volume*lfd.SpOrder.kol;
+          }
+      }
+}
+
+//******************************************************************************
+// SpOrder д.б. спозиционирован !!
+
+Procedure SumDooc(var price_, vPrice_ : TSumma);
+{
+  price_ := 0;
+  vPrice_ := 0;
+  if SpOrder.kol < GetPresision_forKol
+    Exit;  // д.б. рассчитан
+
+  var sum_: double;  sum_  := 0;
+  var sumV_: double; sumV_ := 0;
+  var sumMC_: double;   sumMC_  := SpOrder.srPrice * SpOrder.kol;
+  var vSumMC_: double;  vSumMC_ := if(SpOrder.cVal = 0, 0.0, SpOrder.vPrice * SpOrder.kol);
+
+  PushPos(#SpSopr);
+
+  _LOOP SpSopr //идем по услугам
+    {
+      if GetFirst KatMC where ((SpOrder.cMC == KatMC.NRec)) <> tsOk
+        { }
+
+      case SpSopr.prMC of
+        3:   sum_ := sum_+ (sumMC_ / summaAllMC) * SpSopr.price*SpSopr.kolFact; /*% как сум*/
+        4:   sum_ := sum_+ (sumMC_ / summaAllMC) * SpSopr.price*SpSopr.kolFact; /*сум*/
+        5:   sum_ := sum_+ ((KatMC.massa *SpOrder.kol)/totMas) * SpSopr.price*SpSopr.kolFact; /*масса*/
+        6:   sum_ := sum_+ ((KatMC.volume*SpOrder.kol)/totVol) * SpSopr.price*SpSopr.kolFact; /*объем*/
+        else sum_ := sum_+ (sumMC_ / summaAllMC) * SpSopr.price*SpSopr.kolFact; /*как сум*/
+      end; //c
+
+      //то же для валюты
+      SpSopr.vPrice := if(SpSopr.cVal<>0 AND SpOrder.cVal<>0, oValFunc.GetAnyCurrency(SpSopr.cVal, SpSopr.vPrice, SpOrder.dOrd, SpOrder.cVal), 0);
+      case SpSopr.prMC of
+        3:   sumV_ := sumV_+ (vSumMC_ / vSummaAllMC) * SpSopr.vPrice*SpSopr.kolFact; /*% как сум*/
+        4:   sumV_ := sumV_+ (vSumMC_ / vSummaAllMC) * SpSopr.vPrice*SpSopr.kolFact; /*сум*/
+        5:   sumV_ := sumV_+ ((KatMC.massa *SpOrder.kol)/totMas) * SpSopr.vPrice*SpSopr.kolFact; /*масса*/
+        6:   sumV_ := sumV_+ ((KatMC.volume*SpOrder.kol)/totVol) * SpSopr.vPrice*SpSopr.kolFact; /*объем*/
+        else sumV_ := sumV_+ (vSumMC_ / vSummaAllMC) * SpSopr.vPrice*SpSopr.kolFact; /*как сум*/
+      end; //c
+    }
+
+  PopPos(#SpSopr);
+
+  price_  := sum_;
+  vPrice_ := sumV_;
+}
+
+//******************************************************************************
+
+Procedure MakeDoocOrder_BySpOrder(
+                                   cSpOrder_ : comp;
+                                   cPodr_    : comp;
+                                   cMOL_     : comp;
+                                   DateF_    : Date;
+                                   sum_      : double;
+                                   sumV_     : double
+                                 );
+{
+  if GetFirst SklOrder where ((SpOrder.cSklOrder == SklOrder.NRec)) <>tsOk
+    Exit;
+
+  var vntDooc_: boolean; vntDooc_ := (SklOrder.tipOrd = 3);
+
+  SklOrder.vidOrder := 0; // приход
+  SklOrder.tipOrd   := 4; // дооценка
+  SklOrder.cSopr    := KatSopr.NRec; //не сбивает ключ - привязываем к акту, а не прих. накладной
+  SklOrder.nOrder   := oModifOrds.GetNextNOrderTekDate(TRUE, SklOrder.cPodr, SkPr, DateF_);
+  SklOrder.dOrd     := DateF_;
+  SklOrder.cPodr    := cPodr_;
+  SklOrder.cMOL     := cMOL_;
+  SklOrder.NRec     := 0;
+
+  insert current SklOrder;
+
+  SpOrder.rSrPrice  := if(SpOrder.vidOrder = 0, sum_, -sum_) * SpOrder.kol;
+  SpOrder.rVPrice   := if(SpOrder.vidOrder = 0, sum_, -sum_) * SpOrder.kol;
+  SpOrder.srPrice   := SpOrder.rSrPrice;
+  SpOrder.vPrice    := SpOrder.rVPrice;
+  SpOrder.vidOrder  := 0;
+  SpOrder.tipOrd    := 4;
+  SpOrder.cSklOrder := SklOrder.NRec;
+  SpOrder.cSpOrder  := cSpOrder_; //привязываем к приходному ордеру для дальнешего учета дооценок
+  SpOrder.cSpSopr   := 0; //отвязываем от накладной??
+  SpOrder.kolDop    := SpOrder.kol;
+  SpOrder.kol       := 0;
+  SpOrder.ostatok   := 0;
+  SpOrder.ostatokN  := 0;
+  SpOrder.dOrd      := DateF_;
+  SpOrder.ccPodr    := cPodr_;
+  SpOrder.ccMOL     := cMOL_;
+  SpOrder.NRec      := 0;
+
+  oModifOrds.AnySpOrder_Insert(TypeSpOrder(SpOrder.buffer));
+
+  InsertSoprHozByOrder(SpOrder.srPrice, SpOrder.vPrice, KatSopr.cValut);
+
+  if vntDooc_
+    oMSview.SetAttrLF_DoocVntForSpOrder(SpOrder.NRec); // дооценка внутреннего перемещения
+}
+
+//******************************************************************************
+
+#include MKORD.VPP
+
+//******************************************************************************
+Procedure UpdateDooc_toRash_SpOrders(fl_: boolean); forward;  //ниже
+
+//******************************************************************************
+Function AddPosDoocLF(var cPereocOrd_ : comp) : boolean;
+{
+  var cSklOrd_: comp; cSklOrd_ := 0;
+  cPereocOrd_ := 0;
+
+  result := True;
+  cSklOrd_ := SklOrder.NRec;
+  var dPrih_: Date; dPrih_  := SklOrder.dOrd;
+
+  _LOOP SpOrder where ((cSklOrd_ == SpOrder.cSklOrder)) //первичные приходы
+  {
+    NextVisual;
+
+    sumDooc(SpOrder.rSrPrice, SpOrder.rVPrice);
+
+    var sum1kol : double;  sum1kol  := SpOrder.rSrPrice / SpOrder.kol;
+    var vSum1kol: double;  vSum1kol := SpOrder.rVPrice  / SpOrder.kol;
+    var kolDooc : double;  kolDooc  := SpOrder.kol;
+
+    if f_KolIsZero(sum1kol*SpOrder.kol)
+      Continue;
+
+    // по приходу и приходным перемещениям этой партии
+    PushPos(#SpOrder); // первичный приход
+    var cParty_: comp;  cParty_ := SpOrder.cParty;
+    var cMC_: comp;     cMC_    := SpOrder.cMC;
+
+    var sp_: word;
+    For(sp_ := 0; sp_<= 1; sp_ := sp_+1)
+
+    _LOOP SpOrder where (( sp_       == SpOrder.SP       AND
+                           cParty_   == SpOrder.cParty   AND // партия
+                           word(0)   == SpOrder.vidOrder AND // приходы
+                           dPrih_   <<= SpOrder.dOrd     AND
+                           DateF_    >> SpOrder.dOrd     AND // >> !!
+                       (3  >= SpOrder.tipOrd  AND  cMC_ = SpOrder.cMC)  )) // не первичный для него уже сделали и не новый дооценочный
+      {
+        var cSpOrd_, cPodr_, cMOL_: comp;
+        cSpOrd_ := SpOrder.NRec;
+        cPodr_ := SpOrder.ccPodr;    cMOL_ := SpOrder.ccMOL;
+
+        PushPos(#SpOrder);
+        MakeDoocOrder_BySpOrder(cSpOrd_, cPodr_, cMOL_, DateF_, sum1kol, vSum1kol); //для прихода
+        cPereocOrd_ := SklOrder.NRec; // возвращается как результат работы
+
+        //по расходам этого прихода
+
+        _LOOP SpOrder where (( cSpOrd_ == SpOrder.cSpOrder AND
+                               word(1) == SpOrder.vidOrder AND
+                               DateF_  >> SpOrder.dOrd ))
+          {
+            PushPos(#SpOrder);
+            MakeDoocOrder_BySpOrder(cSpOrd_, cPodr_, cMOL_, DateF_, sum1kol, vSum1kol); //для расхода
+            PopPos(#SpOrder);
+          }
+
+        PopPos(#SpOrder);
+      }
+
+    PopPos(#SpOrder);
+
+    SpOrder.rSrPrice := sum1kol * kolDooc; // восстановливаем
+    SpOrder.rVPrice := vSum1kol* kolDooc;
+    SpOrder.kolDop  := kolDooc;
+    SpOrder.dOrd    := DateF_;
+
+    UpdateDooc_toRash_SpOrders(TRUE);
+  }
+}
+
+//******************************************************************************
+
+Function MakeDoocOrder: comp;
+{
+  var cPereocOrd_ : comp;
+  MakeDoocOrder := 0;
+
+  dateF_ := CanMakeOrder;
+  if DateF_ = ZeroDate
+    Exit;
+
+  StartNewVisual(vtRotateVisual, vfTimer, 'Формирование ордеров дооценки', 1);
+
+  GetSums_SklOrders(KatSopr.cKatSopr); //общая сумма по первичному ордеру // и остатки -> в kol
+
+  if (KatSopr.cKatSopr <> 0)
+  {
+    _LOOP SklOrder where ((KatSopr.cKatSopr == SklOrder.cSopr)) //формируем дооценку используя первичный ордер
+    {
+      PushPos(#SklOrder);
+      AddPosDoocLF(cPereocOrd_);
+      PopPos(#SklOrder);
+    }
+  }
+  else
+  {
+    _loop DocRef where ((  trNaklToAkt  == DocRef.wTypeRef
+                       and coKatSopr    == DocRef.wTable1
+                       and KatSopr.nRec == DocRef.cField1))
+      _loop SklOrder where ((DocRef.cField2 == SklOrder.cSopr))
+      {
+        PushPos(#SklOrder);
+        AddPosDoocLF(cPereocOrd_);
+        PopPos(#SklOrder);
+      }
+  }
+
+  StopVisual('', 0);
+
+  MakeDoocOrder := cPereocOrd_;
+}
+
+#end //#ifdef _AKTUSLB_VIP
+
+//******************************************************************************
+//SpOrder д.б. установлен на позицию дооценки,
+
+Procedure UpdateDooc_toRash_SpOrders(
+                                      fl_: boolean   // FALSE - убрать дооценку
+                                    );
+{
+  if SpOrder.method<>3
+    Exit;  // не LF_  - д.б. ордер дооценки LF_
+
+  var SP_    : word;    SP_    := SpOrder.SP;
+  var cMC_   : comp;    cMC_   := SpOrder.cMC;
+  var cPodr_ : comp;    cPodr_ := SpOrder.ccPodr;
+  var cMOL_  : comp;    cMOL_  := SpOrder.ccMOL;
+  var cParty_: comp;    cParty_:= SpOrder.cParty;
+  var dOrd_  : Date;    dOrd_  := SpOrder.dOrd;
+
+
+  var srPrice_ : double;   srPrice_ := if(fl_, SpOrder.rSrPrice, -SpOrder.rSrPrice);
+  var vPrice_  : double;   vPrice_  := if(fl_, SpOrder.rVPrice , -SpOrder.rVPrice);
+  var kol_     : double;   kol_     := SpOrder.kolDop;
+
+  PushPos(#SpOrder);
+
+  _LOOP SpOrder where (( SP_     == SpOrder.SP       AND
+                         cMC_    == SpOrder.cMC      AND
+                         cParty_ == SpOrder.cParty   AND
+                         dOrd_  <<= SpOrder.dOrd))
+    {
+      if (SpOrder.vidOrder = 0) AND (SpOrder.tipOrd>= 4) AND (SpOrder.tipOrd <= 7)
+        Continue; //переоценка
+
+      SpOrder.rSrPrice := SpOrder.rSrPrice +srPrice_/kol_;
+      SpOrder.rVPrice := SpOrder.rVPrice  +vPrice_/kol_;
+      SpOrder.srPrice := SpOrder.rSrPrice;
+      SpOrder.vPrice  := SpOrder.rVPrice;
+      oModifOrds.AnySpOrder_Update(TypeSpOrder(SpOrder.buffer));
+    }
+
+  PopPos(#SpOrder);
+}
+
+#end
+//******************************************************************************

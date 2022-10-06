@@ -1,0 +1,151 @@
+#statusline "statgal"
+#define ComponentVersion // для vih
+
+#include EanBarCode.vih
+
+#include galnet.inc
+#include Reports.inc
+end;
+//#include glovars.inc
+#include dictypes.def
+
+#ifdef Atl60
+  // для типов переменных и параметров функций
+type   TPtr = pointer;
+  // для типов табличных полей
+type   TSurrPtr = comp;
+#else
+ type  TPtr = longint;
+ type  TSurrPtr = longint;
+#end
+
+
+#include ExtAttr.vih
+#include ExtClass.vih
+#include MCOriginCountry.vih
+#include Commission.vih
+#include adrfunc.vih
+
+
+#include feeSigners.inc
+#include feeSigners.vih
+
+#define __PrnSoprFunMem__
+#include prnSoprMem.inc
+#include prnSoprFun.vih
+#include org_decl.frn
+#include sdFuns.vih
+#include GetPersSign.vih
+
+! ***   строка параметров   ***
+! У компоненты нет своих таблиц
+#param Vip.NoTablesInComponent=On
+! для форм
+!/Macro.IncludeEatLine=1 - чтобы не было на месте #include пустых строк в отчетах
+!/b - повторная пересборка (некоторых формы собираются под разными дефайнами)
+#param /Macro.IncludeEatLine=1 /b
+
+
+
+
+#declare f_(str_)
+if (trim(#str_) = '', '-', #str_)
+#end
+
+//Расчет массы и объема по позиции документов
+#make "etc\getposmassvol.vip"
+
+//Ctrl+P Отчет по накладным Сбыт
+#component 'droga'
+#include torg12\droga_tbl.frn
+#make "torg12\torg12_droga.rtf"
+#component 'C_COMMON'
+!#define _DROGA_CHAIN_
+!#make "torg12\chain.dlg"
+#define _TTN_ASHAN_
+#make "torg12\torg12_droga.rtf"
+#undef _TTN_ASHAN_
+#define _TTN_BAHETLE_
+#make "torg12\torg12_droga.rtf"
+#undef _TTN_BAHETLE_
+#define _TTN_GLOBUS_
+#make "torg12\torg12_droga.rtf"
+#undef _TTN_GLOBUS_
+#define _TTN_ZELGROS_
+#make "torg12\torg12_droga.rtf"
+#undef _TTN_ZELGROS_
+#define _TTN_LENTA_
+#make "torg12\torg12_droga.rtf"
+#undef _TTN_LENTA_
+#define _TTN_METRO_
+#make "torg12\torg12_droga.rtf"
+#undef _TTN_METRO_
+#define _TTN_MOSMART_
+#make "torg12\torg12_droga.rtf"
+#undef _TTN_MOSMART_
+#define _TTN_MOSMART_KOD_
+#make "torg12\torg12_droga.rtf"
+#undef _TTN_MOSMART_KOD_
+#define _TTN_PEREKRESTOK_
+#make "torg12\torg12_droga.rtf"
+#undef _TTN_PEREKRESTOK_
+#define _TTN_KORABLIK_
+#make "torg12\torg12_droga.rtf"
+#undef _TTN_KORABLIK_
+#make "torg12\torg12_metro.rtf"
+#make "torg12\torg12_val.rtf"
+//TTN01new
+#make "ttnnew\p4_ttn_droga.rtf"
+//Реестр сертификатов для Ленты и Метро
+#define RNum 'Номер'
+#doc
+Удостоверение качества и безопасности продовольственного сырья и пищевых продуктов
+#end
+#make "ree_sert\UdKachA.rtf"    // реестр для Ашан
+#make "ree_sert\UdKachL.rtf"
+#make "ree_sert\UdKachM.rtf"
+#make "ree_sert\UdKachM20150727.rtf"
+//Ctrl+P Отчет по накладным Снабжение
+#define _TTN_PRIH_
+#make "torg3\torg_3.rtf"    //Акт о расхождении по количеству и качеству (импорт). Форма ТОРГ-3 DROGA
+// Накладная на внутреннее перемещение
+#make "sklad\torg13.rtf"
+#make 'sklad\akciya.rtf'
+#make 'sklad\reklama.rtf'
+// Складские очеты
+#make "sklad\sverka.slk" //Ведомость наличия с кодами SAP (barkod2) SLK
+#make "sklad\sklad1.slk" //Ведомость движения по складам SLK
+//  -------Присоединенная RTF-форма Счет-фактура - модифицированная стандартная форма. 
+#include s4Fact\droga_tbl.frn
+#make "s4Fact\s4fAshan.rtf" // 01 'Счет-фактура Ашан (RTF-формат)'
+#make "s4Fact\s4fGiper.rtf" // 02 'Счет-фактура Гиперглобус (RTF-формат)'
+#make "s4Fact\s4fLenta.rtf" // 03 'Счет-фактура Лента (RTF-формат)'
+//#make "s4Fact\s4fZelg.rtf"
+#make "s4Fact\s4fExport.rtf"    //04 --- 'Дрога_Экспорт_Счет-фактура (RTF-формат)
+#make "s4Fact\s4fTander.rtf"    //05 'Счет-фактура Тандер (RTF-формат)'
+#make "s4Fact\s4fDroga.rtf"     //06 'Дрога_Счет-фактура_руб (RTF-формат)'
+#make "s4Fact\s4fPer2.rtf"      //07 'Счет-фактура Перекресток2 (RTF-формат)'
+#make "s4Fact\s4fBahetle.rtf"   //08 ---  'Счет-фактура БАХЕТЛЕ (RTF-формат)'
+#make "s4Fact\s4fMetro.rtf"     //09 --- 'Счет-фактура МЕТРО (RTF-формат)'
+#make "s4Fact\s4fKorablik.rtf"  //10 --- 'Счет-фактура Кораблик
+//
+#make "s4Fact\s4fM26122011.rtf" //10 Счет-фактура МЕТРО (RTF-формат) с 26.12.2011
+#make "s4Fact\s4fA26122011.rtf" //11 'Счет-фактура Ашан (RTF-формат) с 26.12.2011'
+#make "s4Fact\s4fD26122011.rtf" //12 'Дрога_Счет-фактура_руб (RTF-формат) c 26.12.2011' 
+#make "s4Fact\s4fE26122011.rtf" //13 'Дрога_Счет-фактура_стандарт  (RTF-формат) c 26.12.2011'
+#make "s4Fact\s4fZ26122011.rtf" //14  Счет-фактура Зельгрос (RTF-формат) с 26.12.2011
+//Присоединенная форма Ценовая спецификация договора. Печатается по Ctrl+P в окне договора
+#make 'etc\DogPriceSpec.slk';
+//Присоединенная форма Реестр организаций. Печатается по Ctrl+P в справочнике организаций
+#make "org_list\org_list.slk";
+
+
+//Присоединенная форма Заявка на поставку. Печатается по Ctrl+P в окне ДО на продажу
+#make 'order\order.slk';
+#make 'order\orderPlusNDS.slk';
+#make 'order\orderPlusNDSandSkidki.slk';
+#make 'order\orderRemains.slk';
+#make 'order\orderForSbora.slk';
+// добавляем текст снизу в счет на оплату
+//#make "order\PRBDOC_1010_RTF_PRBDOC.rtf"
+#make "order\PRBDOC_1010_RTF_PRBDOC_portrait.rtf"

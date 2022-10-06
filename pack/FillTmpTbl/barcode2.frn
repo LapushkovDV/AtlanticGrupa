@@ -1,0 +1,4 @@
+recSpec.DopInfo := drogaFunc.getSAPItemCode(recSpec.SpSoprNRec);
+
+recSpec.PartyOrg := drogaFunc.getCountInPack(recSpec.SpSoprNRec);
+recSpec.PartyCountry := drogaFunc.getPackVol(recSpec.SpSoprNRec);

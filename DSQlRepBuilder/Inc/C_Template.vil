@@ -1,0 +1,4 @@
+#ifdef ComponentVersion
+#component "C_Template"
+#end
+

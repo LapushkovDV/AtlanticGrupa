@@ -1,0 +1,49 @@
+#include PreDefs.inc; 
+const
+#include GloConst.inc;
+#include Galnet.csc;
+#include Galnet.ccm;
+#include TUNES.INC
+#include fldcolor.inc
+end;
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include DicTypes.def
+#include GloDefs.inc
+#include StatDefs.inc
+#define ComponentVersion
+#include ExtAttr.vih
+
+
+var PiextAttr : iExtAttr;
+#include NalogFun.vih
+#include SpNext.vih
+#include SpNext.var
+#include GetKau.vih
+#include GetKau.var
+#include CreateTune.vih
+#include marker.vih
+
+#include DOfuns.vih
+#Include ObjiexpImpScript_droga.vih
+
+
+
+#component "ATLANTIC"
+
+
+ const
+ coAttr_NeedDesadv = 'EDI-Desadv';
+ coAttr_NeedDESMER = 'EDI-DESMER';
+ coAttr_NeedDesscc = 'EDI-Desscc';
+ coAttr_NeedInvoic = 'EDI-Invoic';
+ coAttr_EDI_AUTO   = 'EDI-auto';
+
+end;
+  var extAttr: iExtAttr;
+#make    "vip\MercuryPRJ_Import.vip"
+#make    "vip\MercuryPRJ_tune.vip"
+#make    "vip\MercuryPRJ_View.vip"

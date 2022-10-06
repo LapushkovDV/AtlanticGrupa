@@ -1,0 +1,725 @@
+procedure tsTTLiToExcel;
+{
+  if (tsTTLi.mKol != 0) xlDoWriteToMatrix(j, 4, tsTTLi.mKol);
+  if (tsTTLi.mKolA != 0) {
+    //xlDoWriteToMatrix(j, 5, tsTTLi.mKolA);
+    xlDoWriteToMatrix(j, 6, tsTTLi.mKolTTL);
+  }
+  if tsTTLi.kol != 0 xlDoWriteToMatrix(j, 7, tsTTLi.Kol);
+  if tsTTLi.kolA != 0 {
+    //xlDoWriteToMatrix(j, 8, tsTTLi.kolA);
+    xlDoWriteToMatrix(j, 9, tsTTLi.kolTTL);
+  }
+  if (tsTTLi.gross != 0) {
+    if tsTTLi.bOrg = 2 {
+      if tsTTLi.kolTTL != 0 xlDoWriteToMatrix(j, 10, tsTTLi.gross/ tsTTLi.kolTTL);
+    }
+    xlDoWriteToMatrix(j, 11, tsTTLi.gross);
+    if (tsTTLi.gross != tsTTLi.net1) {
+      xlDoWriteToMatrix(j, 12, (tsTTLi.gross- tsTTLi.net1)/ tsTTLi.gross);
+      xlDoWriteToMatrix(j, 13, tsTTLi.gross- tsTTLi.net1);
+    }
+  }
+  if (tsTTLi.net1 != 0) {
+    xlDoWriteToMatrix(j, 14, tsTTLi.net1);
+    if (tsTTLi.net1 !=tsTTLi.niv) {
+      xlDoWriteToMatrix(j, 15, (tsTTLi.net1- tsTTLi.niv)/ tsTTLi.net1);
+      xlDoWriteToMatrix(j, 16, tsTTLi.net1- tsTTLi.niv);
+    }
+  }
+  if (tsTTLi.niv != 0) {
+    xlDoWriteToMatrix(j, 17, tsTTLi.niv);
+    if (tsTTLi.bonus != 0) xlDoWriteToMatrix(j, 19, tsTTLi.bonus/ tsTTLi.niv);
+  }
+  if (tsTTLi.ret != 0) xlDoWriteToMatrix(j, 18, tsTTLi.ret);
+  if (tsTTLi.bonus != 0) xlDoWriteToMatrix(j, 20, tsTTLi.bonus);
+  xlDoWriteToMatrix(j, 21, tsTTLi.niv - tsTTLi.bonus);
+
+  if (tsTTLi.cost!= 0) xlDoWriteToMatrix(j, 22, tsTTLi.cost);
+  if (tsTTLi.costA != 0) xlDoWriteToMatrix(j, 23, tsTTLi.costA);
+  xlDoWriteToMatrix(j, 24, tsTTLi.cost+ tsTTLi.costA);
+}
+
+procedure insTsTTLi(iwTab: word; ibOrg: byte; icRec: comp); // итоги по разрезам
+{
+  iNet1 := 0;
+  if getFirst fastfirstrow tfMC where ((tsTTL.cMC == nrec)) = tsOK
+    iNet1 := tfMc.Massa;
+  if getFirst fastfirstrow tsTTLi where ((iwTab == wTab and icRec == cRec)) != tsOk
+    insert tsTTLi set wTab = iwTab, bOrg = ibOrg, cRec = icRec; // if(ibOrg=1,tsTTL.cOrg,tsTTL.cOrg)
+  update current tsTTLi set
+    kol = tsTTLi.kol+ tsTTL.kol,
+    KolA = tsTTLi.kolA+ tsTTL.kolA,
+    KolTTL = tsTTLi.kolTTL+ tsTTL.kolTTL,
+    mKol = tsTTLi.mKol+ tsTTL.kol* iNet1,
+    mKolA = tsTTLi.mKolA+ tsTTL.kolA* iNet1,
+    mKolTTL = tsTTLi.mKolTTL+ tsTTL.kolTTL* iNet1,
+    niv = tsTTLi.niv+ tsTTL.niv,
+    ret = tsTTLi.ret+ tsTTL.ret,
+    gross = tsTTLi.gross+ tsTTL.gross,
+    net1 = tsTTLi.net1+ tsTTL.net1,
+    bonus = tsTTLi.bonus+ tsTTL.bonus,
+    cost = tsTTLi.cost+ tsTTL.cost,
+    costA = tsTTLi.costA+ tsTTL.costA;
+}
+
+function runRep: boolean;
+var
+  excel_workBookName: string = '';
+  tSheetName: string = '';
+  bErrAddSheet: boolean; //ошибка вставки листа
+{
+  result := false;
+// CONNECT EXCEL
+// создаем отчет на основании существующего шаблона
+  if not xlCreateExcelWithTemplate(sXLTFileName, true) {
+    message('Ошибка создания Excel-файла [1]', Error);
+    exit;
+  }
+  xlDisplayAlerts(true);
+  if not xlGetActiveWorkBookName(Excel_WorkbookName) or (Excel_WorkbookName = '') {
+    message('Ошибка создания Excel-файла [2]', Error);
+    xlKillExcel;
+    exit;
+  }
+/////////////////// -------------------  
+  if bDetail {
+    if xlSetActiveSheet(1) {// xlSetActiveSheetByName('Data')  стр. Data ------------------------------
+      restartVisual('Шаг 3 из 3: Выгрузка в Excel, лист Data', 0);
+
+    //xlCreateMatrix(if(r_iStr[1] < 65530, r_iStr[1]+ 1, 65530), 33);   //65536 - 6 ограничение по числу строк  Excel
+    xlCreateMatrix(r_iStr[1]+ 1, 33);
+    j := 0 ; // - xlClearMatrix;
+    _loop tData {
+      if not nextVisual() break;
+      j++;
+      xlStWriteToMatrix(j, 1, j);
+      xlStWriteToMatrix(j, 2, case(tData.bVidDoc; 1: 'накл.сбыт', 2: 'акт спис.', 3: 'бух.спр.', 4: 'накл.возвр', 5: 'корр.накл'; tData.bVidDoc));
+      xlStWriteToMatrix(j, 3, tData.sDoc);
+      xlStWriteToMatrix(j, 4, tData.sDog);
+      xlStWriteToMatrix(j, 5, tData.sDC1);
+      xlStWriteToMatrix(j, 6, tData.sDC2);
+
+      if (getFirst fastfirstrow tfKSb where ((tData.cSbyt==nrec)) = tsOk)
+        xlStWriteToMatrix(j, 7, tfKsb.kSbyt);
+      if getFirst fastfirstrow tfOrg where ((tData.cOrg == nrec)) = tsOk {
+        xlStWriteToMatrix(j, 8, tfOrg.sOrg);
+        xlStWriteToMatrix(j, 9, tfOrg.kodOrg);
+        xlStWriteToMatrix(j, 10, tfOrg.State);
+      }
+      if getFirst fastfirstrow tfMC where ((tData.cMC == nrec)) = tsOk {
+        xlStWriteToMatrix(j, 11, tfMC.sMC);
+        xlStWriteToMatrix(j, 12, tfMC.kodMC);
+        xlStWriteToMatrix(j, 13, tfMC.sGrMC);
+        if (tData.qty != 0) {
+          //xlDoWriteToMatrix(j, if(tData.bVidDoc = 1, 14, 15), tData.qty* tfMC.massa);
+          if(tData.bVidDoc = 1) {
+			xlDoWriteToMatrix(j, 14, tData.qty* tfMC.massa);
+			xlDoWriteToMatrix(j, 16, tData.qty* tfMC.massa);
+		  }
+		  else
+		  if(tData.bVidDoc = 4) {
+			xlDoWriteToMatrix(j, 14, (-1)* tData.qty* tfMC.massa);
+			xlDoWriteToMatrix(j, 16, (-1)* tData.qty* tfMC.massa);
+		  }
+        }
+      }
+
+      if (tData.qty != 0) {
+        //xlDoWriteToMatrix(j, if(tData.bVidDoc = 1, 17, 18), tData.qty);
+        if (tData.bVidDoc = 1) {
+		  xlDoWriteToMatrix(j, 17, tData.qty);
+		  xlDoWriteToMatrix(j, 19, tData.qty);
+		}
+		else
+		if(tData.bVidDoc = 4) {
+		  xlDoWriteToMatrix(j, 17, (-1)* tData.qty);
+		  xlDoWriteToMatrix(j, 19, (-1)* tData.qty); 
+		}
+		xlDoWriteToMatrix(j, 20, tData.gross/tData.qty);
+      }
+      	if tData.gross != 0 {
+		  xlDoWriteToMatrix(j, 21, if(tData.bVidDoc = 4, -1, 1)* tData.gross);
+          if (tData.gross != tData.net1) {
+            xlDoWriteToMatrix(j, 22, (tData.gross- tData.net1)/ tData.gross);
+            xlDoWriteToMatrix(j, 23, if(tData.bVidDoc = 4, -1, 1)* (tData.gross- tData.net1));
+          }
+        }
+        if tData.net1 <> 0 {
+          xlDoWriteToMatrix(j, 24, if(tData.bVidDoc = 4, -1, 1)* tData.net1);
+          if tData.net1 != tData.sum {
+            xlDoWriteToMatrix(j, 25, (tData.net1- tData.sum)/ tData.net1);
+            xlDoWriteToMatrix(j, 26, if(tData.bVidDoc = 4, -1, 1)* (tData.net1- tData.sum));
+          }
+        } //_loop
+		if tData.sum != 0 {
+			if(tData.bVidDoc = 4) {
+			  xlDoWriteToMatrix(j, 27, (-1)* tData.sum);
+			  xlDoWriteToMatrix(j, 28, tData.sum);
+			}
+			else
+			if(tData.bVidDoc = 3) {
+		   	  xlDoWriteToMatrix(j, 30, tData.sum);
+			}
+			else
+			  xlDoWriteToMatrix(j, 27, tData.sum);
+		  //if tData.SumV != 0 xlDoWriteToMatrix(j, 28, tData.SumV);
+		}
+
+        if tData.Cost != 0 xlDoWriteToMatrix(j, 31, if(tData.bVidDoc = 4, -1, 1)* tData.cost);
+        if tData.CostA != 0 xlDoWriteToMatrix(j, 32, if(tData.bVidDoc = 4, -1, 1)* tData.costA);
+        xlDoWriteToMatrix(j, 33, if(tData.bVidDoc = 4, -1, 1)* (tData.cost+ tData.costA));
+      } //_loop tData
+      xlWriteMatrixToExcel(4, 1);  /// вставляем с 4-й строки
+      xlFreeMatrix;
+      for (i := 21; i <= 33; i := i+ 3) xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i);
+      xlRunMacro('MarkBlue');
+    } //Data
+    else {
+      message( 'Ошибка Excel шаблон изменился [1]', Error);
+      xlKillExcel;
+      exit;
+    }
+//
+// Begin nd lapushkov_dv добавляем новый лист с информацие по НДС по каждой позиции
+//
+
+   if instr('sale_new.xltm',sXLTFileName) > 0
+    if xlSetActiveSheet(5) {// xlSetActiveSheetByName('Data')  стр. Data ------------------------------
+      restartVisual('Шаг 3.1 из 3: Выгрузка в Excel, лист Data_NDS', 0);
+
+    //xlCreateMatrix(if(r_iStr[1] < 65530, r_iStr[1]+ 1, 65530), 33);   //65536 - 6 ограничение по числу строк  Excel
+    xlCreateMatrix(r_iStr[1]+ 1, 33+3);
+    j := 0 ; // - xlClearMatrix;
+    _loop tData {
+      if not nextVisual() break;
+      j++;
+      xlStWriteToMatrix(j, 1, j);
+      xlStWriteToMatrix(j, 2, case(tData.bVidDoc; 1: 'накл.сбыт', 2: 'акт спис.', 3: 'бух.спр.', 4: 'накл.возвр', 5: 'корр.накл'; tData.bVidDoc));
+      xlStWriteToMatrix(j, 3, tData.sDoc);
+      xlStWriteToMatrix(j, 4, tData.sDog);
+      xlStWriteToMatrix(j, 5, tData.sDC1);
+      xlStWriteToMatrix(j, 6, tData.sDC2);
+
+      if (getFirst fastfirstrow tfKSb where ((tData.cSbyt==nrec)) = tsOk)
+        xlStWriteToMatrix(j, 7, tfKsb.kSbyt);
+      if getFirst fastfirstrow tfOrg where ((tData.cOrg == nrec)) = tsOk {
+        xlStWriteToMatrix(j, 8, tfOrg.sOrg);
+        xlStWriteToMatrix(j, 9, tfOrg.kodOrg);
+        xlStWriteToMatrix(j, 10, tfOrg.State);
+      }
+      if getFirst fastfirstrow tfMC where ((tData.cMC == nrec)) = tsOk {
+        xlStWriteToMatrix(j, 11, tfMC.sMC);
+        xlStWriteToMatrix(j, 12, tfMC.kodMC);
+        xlStWriteToMatrix(j, 13, tfMC.sGrMC);
+        if (tData.qty != 0) {
+          //xlDoWriteToMatrix(j, if(tData.bVidDoc = 1, 14, 15), tData.qty* tfMC.massa);
+          if(tData.bVidDoc = 1) {
+			xlDoWriteToMatrix(j, 14, tData.qty* tfMC.massa);
+			xlDoWriteToMatrix(j, 16, tData.qty* tfMC.massa);
+		  }
+		  else
+		  if(tData.bVidDoc = 4) {
+			xlDoWriteToMatrix(j, 14, (-1)* tData.qty* tfMC.massa);
+			xlDoWriteToMatrix(j, 16, (-1)* tData.qty* tfMC.massa);
+		  }
+        }
+      }
+
+      if (tData.qty != 0) {
+        //xlDoWriteToMatrix(j, if(tData.bVidDoc = 1, 17, 18), tData.qty);
+        if (tData.bVidDoc = 1) {
+		  xlDoWriteToMatrix(j, 17, tData.qty);
+		  xlDoWriteToMatrix(j, 19, tData.qty);
+		}
+		else
+		if(tData.bVidDoc = 4) {
+		  xlDoWriteToMatrix(j, 17, (-1)* tData.qty);
+		  xlDoWriteToMatrix(j, 19, (-1)* tData.qty);
+		}
+		xlDoWriteToMatrix(j, 20, tData.gross/tData.qty);
+      }
+      	if tData.gross != 0 {
+		  xlDoWriteToMatrix(j, 21, if(tData.bVidDoc = 4, -1, 1)* tData.gross);
+          if (tData.gross != tData.net1) {
+            xlDoWriteToMatrix(j, 22, (tData.gross- tData.net1)/ tData.gross);
+            xlDoWriteToMatrix(j, 23, if(tData.bVidDoc = 4, -1, 1)* (tData.gross- tData.net1));
+          }
+        }
+        if tData.net1 <> 0 {
+          xlDoWriteToMatrix(j, 24, if(tData.bVidDoc = 4, -1, 1)* tData.net1);
+          if tData.net1 != tData.sum {
+            xlDoWriteToMatrix(j, 25, (tData.net1- tData.sum)/ tData.net1);
+            xlDoWriteToMatrix(j, 26, if(tData.bVidDoc = 4, -1, 1)* (tData.net1- tData.sum));
+          }
+        } //_loop
+// begin add 3 column
+       xlDoWriteToMatrix(j, 27, tData.sumWithNDS);
+       if tdata.sum <> 0 xlDoWriteToMatrix(j, 28, round(100*tData.sumNDS/tData.Sum,2));
+       xlDoWriteToMatrix(j, 29, tData.sumNDS);
+// end add 3 column
+		if tData.sum != 0 {
+			if(tData.bVidDoc = 4) {
+			  xlDoWriteToMatrix(j, 27+3, (-1)* tData.sum);
+			  xlDoWriteToMatrix(j, 28+3, tData.sum);
+			}
+			else
+			if(tData.bVidDoc = 3) {
+		   	  xlDoWriteToMatrix(j, 30+3, tData.sum);
+			}
+			else
+			  xlDoWriteToMatrix(j, 27+3, tData.sum);
+		  //if tData.SumV != 0 xlDoWriteToMatrix(j, 28, tData.SumV);
+		}
+
+        if tData.Cost != 0 xlDoWriteToMatrix(j, 31+3, if(tData.bVidDoc = 4, -1, 1)* tData.cost);
+        if tData.CostA != 0 xlDoWriteToMatrix(j, 32+3, if(tData.bVidDoc = 4, -1, 1)* tData.costA);
+        xlDoWriteToMatrix(j, 33+3, if(tData.bVidDoc = 4, -1, 1)* (tData.cost+ tData.costA));
+      } //_loop tData
+      xlWriteMatrixToExcel(4, 1);  /// вставляем с 4-й строки
+      xlFreeMatrix;
+      for (i := 21; i <= 33+3; i := i+ 3) xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i);
+      xlRunMacro('MarkBlue');
+    } //Data
+    else {
+      message( 'Ошибка Excel шаблон изменился [5]', Error);
+      xlKillExcel;
+      exit;
+      }
+//
+// end lapushkov_dv добавляем новый лист с информацие по НДС по каждой позиции
+//
+
+  } //bDetail
+!--------- //end 1я стр Data
+
+  if xlSetActiveSheet(2) {//xlSetActiveSheetByName('DataTTL') //
+// стр. DataTTL ---------------------------------
+    restartVisual('Шаг 3 из 3: Выгрузка в Excel, лист DataTTL', 0);
+    xlSetCellStringValue(CommonFormHeader, 1, 1, 1, 1);
+    xlSetCellStringValue(datetostr(d1, 'с DD.MM.YYYY')+ datetostr(d2,' по DD.MM.YYYY') , 2, 3, 2, 3);
+    xlSetCellStringValue('GP: '+ sGrPrice, 1, 5, 1, 5);
+
+    //xlCreateMatrix( if(r_iStr[2] < 65530, r_iStr[2]+ 1, 65530), 28);   //65536 - 6 ограничение по числу строк  Excel
+    xlCreateMatrix(r_iStr[2]+ 1, 28);
+    j := 0 ; // - xlClearMatrix;
+    _loop tSTTL {
+      if not nextVisual() break;
+      j++;
+      if (getFirst fastfirstrow tfKSb where ((tsTTL.cSbyt == nrec)) = tsOk)
+        xlStWriteToMatrix(j, 1, tfKsb.kSbyt);
+      if (getFirst fastfirstrow tfOrg where ((tsTTL.cOrg == nrec)) = tsOk) {
+        xlStWriteToMatrix(j, 2, tfOrg.sOrg);
+        xlStWriteToMatrix(j, 3, tfOrg.kodOrg);
+        xlStWriteToMatrix(j, 4, tfOrg.State);
+      }
+      if getFirst fastfirstrow tfMC where ((tsTTL.cMC == tfMC.nrec)) = tsOK {
+        xlStWriteToMatrix(j, 5, tfMC.sMC);
+        xlStWriteToMatrix(j, 6, tfMC.kodMC);
+        xlStWriteToMatrix(j, 7, tfMC.sGrMC);
+        if (tsTTL.kol != 0) xlDoWriteToMatrix(j, 8, tsTTL.kol* tfMC.massa);
+        //if (tsTTL.kolA != 0) xlDoWriteToMatrix(j, 9, tsTTL.kolA* tfMC.massa);
+        xlDoWriteToMatrix(j, 10, tsTTL.kolTTL* tfMC.massa);
+      }
+
+      if (tsTTL.kol != 0) xlDoWriteToMatrix(j, 11, tsTTL.kol);
+      //if (tsTTL.kolA != 0) xlDoWriteToMatrix(j, 12, tsTTL.kolA);
+      xlDoWriteToMatrix(j, 13, tsTTL.kolTTL);
+      if tsTTL.gross != 0 {
+        if tsTTL.kolTTL != 0 xlDoWriteToMatrix(j, 14, tsTTL.gross/ tsTTL.kolTTL);
+        xlDoWriteToMatrix(j, 15, tsTTL.gross);
+        if tsTTL.gross != tsTTL.net1 {
+          xlDoWriteToMatrix(j, 16, (tsTTL.gross- tsTTL.net1)/ tsTTL.gross);
+          xlDoWriteToMatrix(j, 17, tsTTL.gross- tsTTL.net1);
+        }
+      }
+      if tsTTL.net1 != 0 {
+        xlDoWriteToMatrix(j, 18, tsTTL.net1);
+        if tsTTL.Net1 != tsTTL.niv {
+          xlDoWriteToMatrix(j, 19, (tsTTL.net1- tsTTL.niv)/ tsTTL.net1);
+          xlDoWriteToMatrix(j, 20, tsTTL.net1- tsTTL.niv);
+        }
+      }
+      if tsTTL.niv != 0 {
+        xlDoWriteToMatrix(j, 21, tsTTL.niv);
+        if (tsTTL.bonus != 0) xlDoWriteToMatrix(j, 23, tsTTL.bonus/ tsTTL.niv);
+      }
+      if (tsTTL.ret != 0) xlDoWriteToMatrix(j, 22, tsTTL.ret);
+      if (tsTTL.bonus != 0) xlDoWriteToMatrix(j, 24, tsTTL.bonus);
+      xlDoWriteToMatrix(j, 25, tsTTL.niv- tsTTL.bonus);
+
+      if tsTTL.cost != 0 xlDoWriteToMatrix(j, 26, tsTTL.cost);
+      if tsTTL.costA != 0 xlDoWriteToMatrix(j, 27, tsTTL.costA);
+      xlDoWriteToMatrix(j, 28, tsTTL.cost + tsTTL.costA);
+    }  //loop tsTTL
+    xlWriteMatrixToExcel(4, 1);  /// вставляем с 4-й строки
+    xlFreeMatrix;
+    for (i := 15; i <= 28; i++) {
+      if (i != 16 and i != 19 and i != 23)
+        xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R[' + string(j+ 3) + ']C)', 1, i ,1 ,i);
+    }
+  } // DataTTL
+  else {
+    message('Ошибка Excel шаблон изменился [2]', Error);
+    xlKillExcel;
+    exit;
+  }
+!------- end 2я стр. DataTTL
+ /////// ---- копируем страницы ---- если надо разбивать по разрезам
+  bErrAddSheet := true;
+  if not xlSetActiveSheet(3) {
+    message('Ошибка Excel шаблон изменился [3]' , Error);
+    xlKillExcel;
+    exit;
+  }
+  xlGetSheetName(3, tSheetName);
+  if (tSheetName <> 'TTL_C') {
+    message('Ошибка Excel шаблон изменился [4]' , Error);
+    xlKillExcel;
+    exit;
+  }
+  i := 2 ; //лист перед 'TTL_C'
+  if bSbytTTL {
+    _loop  tfKsb {
+      i++;
+      if (i != tfKsb.wTabOrg) {
+        message('Ошибка Excel лист:'+ string(i)+ '. wtabOrg: '+ tfKsb.wTabOrg+ ' [5]', Error);
+        xlKillExcel;
+        exit;
+      }
+
+      if not xlSetActiveSheetByName('TTL_C') {
+        bErrAddSheet := false;
+        message('Ошибка Excel нет листа TTL_C' , Error);
+        break;
+      }
+      tSheetName := substr(tfKsb.kSbyt,1,3);
+      if not xlAddSheet {
+        bErrAddSheet:=false;
+        message('Ошибка вставки листа Excel 1: c__'+ tSheetName, Error);
+        break;
+      }
+      if not xlSetSheetName(i, 'c__'+ tSheetName) {
+        bErrAddSheet:=false;
+        message('Ошибка вставки листа Excel 2: c__'+ tSheetName, Error);
+        break;
+      }
+      xlSetActiveSheetByName('TTL_C');
+      xlCopyToBuff(1, 1, lRepOrg+ 4, 24);
+      xlSetActiveSheet(i);
+      xlSetColumnWidth(40, 1, 1, 1, 1);
+      xlSetColumnWidth(20, 1, 11, 1, 24);
+      xlPasteAllFromBuff(1, 1, 1, 1);
+      i++;
+      if not xlSetActiveSheetByName('TTL_C') {
+        bErrAddSheet:=false;
+        message('Ошибка Excel нет листа TTL_C' , Error);
+        break;
+      }
+      if not xlAddSheet {
+        bErrAddSheet:=false;
+        message('Ошибка вставки листа Excel 1: i__'+ tSheetName, Error);
+        break;
+      }
+      if not xlSetSheetName(i, 'i__'+ tSheetName) {
+        bErrAddSheet:=false;
+        message('Ошибка вставки листа Excel 2: i__'+ tSheetName, Error);
+        break;
+      }
+      if not xlSetActiveSheetByName('TTL_Item')  {
+        bErrAddSheet:=false;
+        message('Ошибка Excel нет листа TTL_Item', Error);
+        break;
+      }
+      xlCopyToBuff(1, 1, lRepMC + 4, 24);
+      xlSetActiveSheet(i);
+      xlSetColumnWidth(40, 1, 1, 1, 1);
+      xlSetColumnWidth(20, 1, 11, 1, 24);
+      xlPasteAllFromBuff(1, 1, 1, 1);
+    } //_Loop  tfKsb
+    bSbytTTL := bErrAddSheet;
+  } //bSbytTTL
+  if bStateTTL {
+    _loop tfState {
+      i++;
+      if (i != tfState.wTab) {
+        message('Ошибка5 Excel лист: '+ string(i) +'. wtab: '+tfState.wTab, Error);
+        xlKillExcel;
+        exit;
+      }
+      if not xlSetActiveSheetByName('TTL_C') {
+        bErrAddSheet := false;
+        message('Ошибка Excel нет листа TTL_C' , Error);
+        break;
+      }
+      tSheetName := substr(tfState.State, 1, 3);
+      if not xlAddSheet  {
+        bErrAddSheet := false;
+        message('Ошибка вставки листа Excel 1:' +'I__'+ tSheetName, Error);
+        break;
+      }
+      if not xlSetSheetName(i, 'I__'+ tSheetName) {
+        bErrAddSheet := false;
+        message('Ошибка вставки листа Excel 2:' +'I__'+ tSheetName, Error);
+        break;
+      }
+      if not xlSetActiveSheetByName('TTL_Item') {
+        bErrAddSheet := false;
+        message('Ошибка Excel нет листа TTL_Item', Error);
+        break;
+      }
+      xlCopyToBuff(1, 1, lRepMC + 4, 24);
+      xlSetActiveSheet(i);
+      xlSetColumnWidth(40, 1, 1, 1, 1);
+      xlSetColumnWidth(20, 1, 11, 1, 24);
+      xlPasteAllFromBuff(1, 1, 1, 1);
+    }
+  } //bStateTTL
+ // выводим в Excel Итоги
+  if xlSetActiveSheetByName('TTL_C') {
+    restartVisual('Шаг 3 из 3: Выгрузка в Excel, лист TTL_C', 0);
+    xlCreateMatrix(lRepOrg + 1, 24);
+    j := 0;  // - xlClearMatrix;
+    _loop tfOrg ordered by tfOrg.sOrg { //(desc)
+      if not nextVisual break;
+      j++;
+      xlStWriteToMatrix(j, 1, tfOrg.sOrg);
+      xlStWriteToMatrix(j, 2, tfOrg.kodOrg);
+      xlStWriteToMatrix(j, 3, tfOrg.state);
+      if getFirst fastfirstrow tsTTLi where ((1 == wTab and tfOrg.nrec == cRec)) = tsOk
+        tsTTLiToExcel;
+    }  //loop tfOrg
+    xlWriteMatrixToExcel(4, 1);  /// вставляем с 4-й строки
+    xlFreeMatrix;
+    for (i := 11; i <= 24; i++) {
+      if (i != 12) and (i != 15) and (i != 18)
+        xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+ string(j+ 3)+ ']C)', 1, i, 1, i);
+    }
+  }  //xlSetActiveSheetByName('TTL_C')
+  if xlSetActiveSheetByName('TTL_Item') {
+    restartVisual('Шаг 3 из 3: Выгрузка в Excel, лист TTL_Item', 0);
+    xlCreateMatrix(lRepMc + 1 , 24);
+    j := 0;  // - xlClearMatrix;
+    _loop tfMC ordered by tfMc.sGrMc, tfMc.sMc { //(desc)   sGrMc + sMc
+      if not nextVisual() break;
+      j++;
+      xlStWriteToMatrix(j, 1, tfMC.sMC);
+      xlStWriteToMatrix(j, 2, tfMC.kodMC);
+      xlStWriteToMatrix(j, 3, tfMC.sGrMC);
+      if (getFirst fastfirstrow tsTTLi where ((2 == wTab and tfMc.nrec == cRec)) = tsOk)
+        tsTTLiToExcel;
+    }  //loop tfMc
+    xlWriteMatrixToExcel(4, 1);  /// вставляем с 4-й строки
+    xlFreeMatrix;
+    for (i := 11; i <= 24; i++) {
+      if (i != 12) and (i != 15) and (i != 18)
+        xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R[' + string(j+ 3)+ ']C)', 1, i ,1 ,i);
+    }
+  }  //xlSetActiveSheetByName('TTL_Item')
+  restartVisual('Шаг 3 из 3: Выгрузка в Excel' , 0);
+
+  if bSbytTTL
+    _loop  tfKsb {
+      if xlSetActiveSheet(tfKsb.wTabOrg) {
+        xlSetCellStringValue(tfKsb.kSbyt + ' - Итоги по Покупателям', 1, 7, 1, 7);
+        xlCreateMatrix(lRepOrg + 1, 24);
+        j := 0;  // - xlClearMatrix;
+        _loop tfOrg ordered by tfOrg.sOrg {//(desc)
+          if not nextVisual() break;
+          j++;
+          xlStWriteToMatrix(j, 1, tfOrg.sOrg);
+          xlStWriteToMatrix(j, 2, tfOrg.kodOrg);
+          xlStWriteToMatrix(j, 3, tfOrg.State);
+          if getFirst fastfirstrow tsTTLi where ((tfKsb.wTabOrg == wTab and tfOrg.nrec == cRec)) = tsOK {
+            tsTTLiToExcel;
+          }
+        }  //loop tfOrg
+        xlWriteMatrixToExcel(4,1);  /// вставляем с 4-й строки
+        xlFreeMatrix;
+        for (i := 11; i <= 24; i++ ) {
+          if (i != 12 and i != 15 and i != 18)
+            xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+ string(j+ 3)+ ']C)', 1, i, 1, i);
+        }
+      } //xlSetActiveSheet
+
+      if xlSetActiveSheet(tfKsb.wTabOrg+ 1) {
+        xlSetCellStringValue(tfKsb.kSbyt+ ' - Итоги по МЦ ', 1, 7, 1, 7);
+        xlCreateMatrix(lRepMc+ 1 , 24);
+        j := 0;  // - xlClearMatrix;
+        _loop tfMC ordered by tfMc.sGrMc, tfMc.sMc {//(desc)   sGrMc + sMc
+          if not nextVisual() break;
+          j++;
+          xlStWriteToMatrix(j, 1, tfMC.sMC);
+          xlStWriteToMatrix(j, 2, tfMC.kodMC);
+          xlStWriteToMatrix(j, 3, tfMC.sGrMC);
+          if (getFirst fastfirstrow tsTTLi where ((word(tfKsb.wTabOrg+ 1) == wTab and tfMc.nrec == cRec)) = tsOk) {
+            tsTTLiToExcel;
+          }
+        } //loop tfMc
+        xlWriteMatrixToExcel(4, 1);  // вставляем с 4-й строки
+        xlFreeMatrix;
+        for (i := 11; i <= 24; i++) {
+          if (i != 12 and i != 15 and i != 18)
+            xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R[' + string(j+ 3) + ']C)', 1, i, 1, i);
+        }
+      }  //xlSetActiveSheet2
+    } //bSbytTTL
+  if bStateTTL
+    _loop tfState {
+      if xlSetActiveSheet(tfState.wTab) {  //Итоги по МЦ
+        xlSetCellStringValue(tfState.State + ' - Итоги по МЦ ', 1, 7, 1, 7);
+        xlCreateMatrix(lRepMc + 1 , 24);
+        j := 0;  // - xlClearMatrix;
+        _loop tfMC ordered by tfMc.sGrMc, tfMc.sMc {//(desc)   sGrMc + sMc
+          if not nextVisual() break;
+          j++;
+          xlStWriteToMatrix(j, 1, tfMC.sMC);
+          xlStWriteToMatrix(j, 2, tfMC.kodMC);
+          xlStWriteToMatrix(j, 3, tfMC.sGrMC);
+          if (getFirst fastfirstrow tsTTLi where ((tfState.wTab == wTab and tfMc.nrec == cRec)) = tsOk)
+            tsTTLiToExcel;
+        }  //loop tfMc
+        xlWriteMatrixToExcel(4, 1);  /// вставляем с 4-й строки
+        xlFreeMatrix;
+        for (i := 11; i <= 24; i++) {
+          if (i != 12) and (i != 15) and (i != 18)
+            xlSetCellFormula('=ПРОМЕЖУТОЧНЫЕ.ИТОГИ(109; R[3]C:R['+ string(j+ 3)+ ']C)', 1, i, 1, i);
+        }
+      }  //xlSetActiveSheet
+    } //bSbytTTL
+ //------------ DISCONNECT EXCEL
+ //  xlSetCellStringValue('', R_iStroka,1,R_iStroka,3);
+  xlKillExcel;
+  message('Сформирован отчет: '+ Excel_WorkbookName);
+//          + if(r_iStr[1] > 65530, ''#13'подробный отчет не полностью Data: 65530 из '+ r_iStr[1], ''));
+  runRep := true;
+} //runrep
+
+function calcSalesRepTTL: boolean;
+{
+  result := false;
+  restartVisual('Шаг 2 из 3: распределение Премий', 100);
+  _loop tSTTLPr {
+    if not nextVisual() break;
+    if (tSTTLPr.bonus > 0) and (tSTTLPr.niv > 0) { // есть что распределять
+      iSum := tSTTLPr.bonus; // сумма к распределению
+      _loop tSTTL where ((tSTTLPr.cOrg == cOrg)) {
+        iKol := round(tSTTLPr.bonus* tSTTL.niv/ tSTTLPr.niv, 2); //часть премии на данный разрез Орг+Сбыт+МЦ
+        update current tSTTL set bonus = iKol;
+        iSum -= iKol;
+      } // loop tsTTL
+      if (iSum != 0) update current tSTTL set bonus = tSTTL.bonus+ iSum; //остаток округления на последнюю
+    } //есть что распределять
+    else
+    if (tSTTLPr.bonus > 0) { //есть только премия но нет реализации
+      insert tSTTL set
+        cSbyt = fExAttr.coGetAttrID(coKatOrg, tSTTLPr.cOrg, cSbAttrNam),   // cSbAttrNam - последний был по KatOrg
+        cOrg = tSTTLPr.cOrg,
+        bonus = tSTTLPr.bonus;
+      r_iStr[2]++;
+    }
+  } // loop tSTTLPr
+
+  _loop tSTTL { // пересчитываем Gross, Net1, с учетом Акций KolA
+    if (tSTTL.kol <> 0 and tSTTL.kolA <> 0)
+      update current tSTTL set
+        gross = round(tSTTL.kolTTL* tSTTL.gross/ tSTTL.kol, 2),
+        net1 = round(tSTTL.kolTTL* tSTTL.net1/ tSTTL.kol, 2);
+  }  // пересчитываем Gross, Net1, с учетом Акций
+
+  restartVisual('Шаг 2 из 3: Расчет итогов с учетом Премий', 100);
+// Cуммируем итоги по разрезам
+  i := 2; //последняя страница в шаблоне
+  if bSbytTTL
+    _loop tfKsb {
+      i++;
+      update current tfKsb set wTabOrg = i;
+      i++;
+    }
+
+  if bStateTTL
+    _loop tfState {
+      i++;
+      update current tfState set wTab = i;
+    }
+
+  _loop tSTTL { //// ---------------   рассчитываем итоги tsTTLi
+    if not nextVisual() break;
+    insTsTTLi(1, 1, tsTTL.cOrg); //(iwTab:word, ibOrg:byte, icOrg:=comp )  //1- Org
+    insTsTTLi(2, 2, tsTTL.cMc); //(iwTab:word, ibOrg:byte, icOrg:=comp )   //2- MC
+
+    if bSbytTTL {
+      if getFirst fastfirstrow tfKsb where ((tsTTL.cSbyt == nrec)) = tsOk {
+        insTsTTLi(tfKsb.wTabOrg, 1, tsTTL.cOrg);
+        insTsTTLi(tfKsb.wTabOrg+ 1, 2, tsTTL.cMc);
+      }
+    }
+    if bStateTTL {
+      if getFirst fastfirstrow tfOrg where ((tsTTL.cOrg == nrec)) = tsOk
+        if getFirst fastfirstrow tfState where ((tfOrg.cState == nrec)) = tsOk {
+          insTsTTLi(tfState.wTab, 2, tsTTL.cMc);
+        }
+    }
+  } // loop tSTTL
+  result := true;
+} // CalcSalesRepTTL
+
+procedure insTfState; // если новое государство
+{
+  if (getFirst fastfirstrow tfState where ((katOrg.cState == nrec)) <> tsOk) {
+    if (katOrg.cState > 0)
+      insert tfState set nrec = katOrg.cState, state = katState.name;
+    else
+      insert tfState set state = 'Undef';
+  }
+} //InsTfstate
+
+procedure insTfOrg(ccOrg: comp); //если новая Организация
+{
+  if getFirst fastfirstrow tfOrg where ((ccOrg == nrec)) <> tsOK {
+    lRepOrg++;
+    insert tfOrg set
+      nrec = ccOrg,
+      kodOrg = fExAttr.sGetAttrID(coKatOrg, ccOrg, cOrgAttrNam),
+      sOrg = katOrg.name,
+      state = if(ccOrg = 0, '', katState.name),
+      cState = katOrg.cState;
+    if bStateTTL insTfstate;
+  }
+}
+
+procedure insTfMC(compMc: comp); //если новая МЦ SpSopr.cMcUsl
+{
+  lrepMC++;
+  if (getFirst fastfirstrow katMC = tsOk) {
+    insert tfMc set
+      nrec = compMc,
+      kodMc = fExAttr.sGetAttrID(coKatMc, compMc, cMCAttrNam),
+      sMC = katMc.name,
+      sGrMC = groupMC.name,//kod
+      massa = katMC.massa;
+  } //KatMc
+  else {
+    insert tfMc set
+      nrec = compMc,
+      kodMc = 'Undef',
+      sMC = 'cMc: ' + string(compMc);
+  }
+} //InsTfMC
+
+function getKotpEd(ccOtped: comp): double;  //коэфф. пересчета в уч. ед. измерения
+{
+  if getFirst fastfirstrow katotped where ((ccOtped == nrec)) = tsOK {
+    getKotpEd := katotped.koef;
+  }
+  if getKotpEd = 0 getKOtpEd := 1;
+}
+
+function vRate(val: comp; dat: date): double;  //курс валюты
+{ 
+! можно только  vRate := PRate(ccVal, dat);   // работает для G_val.dll вер.выше 8.10.4.0
+// --- но для старой версии  как сейчас у Дрога
+  initGetCur;
+  vRate := pGetNatCurrency(val, 1, dat); //курс 1уе
+  doneGetCur;
+}

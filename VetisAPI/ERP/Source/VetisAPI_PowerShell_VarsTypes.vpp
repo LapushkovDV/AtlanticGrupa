@@ -1,0 +1,64 @@
+type rowRecord = record
+  def    : string;
+  column : byte;
+  value  : string;
+end;
+type VETISRQSTSPNEW = record
+  NAME              : string;
+  VOLUME            : double;
+  DATEOFPRODUCTION  : date;
+  EXPIRYDATE        : date;
+  PERISHABLE        : string;
+  QUANTITY2         : double;
+  QUANTITY4         : double;
+  PRODUCTTYPE       : string;
+  STATUS            : string;
+  PRODUCTGUID       : string;
+  SUBPRODUCTGUID    : string;
+  GLOBALID          : string;
+  BATCHID           : string;
+  PACKINGTYPEID_2   : string;
+  LEVEL4            : string;
+  LEVEL2            : string;
+  PACKINGTYPEID_4   : string;
+  PRODUCTMARKSEAN_2 : string;
+  PRODUCTMARKSEAN_4 : string;
+  PRODUCTMARKS_4    : string;
+  VETDOCUMENTUUID   : string;
+end;
+
+Type VetisDiscrepancy = record
+  StockUUID             : string;
+  productType           : string;
+  ProductGuid           : string;
+  subProductGuid        : string;
+  productItemGlobalGUID : string;
+  productItemNAME       : string;
+  volume                : string;
+  UnitGuid              : string;
+  FirstDateYear         : string;
+  FirstDateMonth        : string;
+  FirstDateDay          : string;
+  ExpiryDateYear        : string;
+  ExpiryDateMonth       : string;
+  ExpiryDateDay         : string;
+  batchID               : string;
+  perishable            : string;
+  countryGUID           : string;
+  producerGUID          : string;
+  producerROLE          : string;
+  LowGradeCargo         : string;
+  packageLevel4         : string;
+  packingTypeGUID4      : string;
+  Quantity4             : string;
+  EAN4128               : string;
+  EAN413                : string;
+  packageLevel2         : string;
+  packingTypeGUID2      : string;
+  Quantity2             : string;
+  EAN213                : string;
+  ReasonName            : string;
+end;
+
+var
+  _recArray: array [1..1] of rowRecord;

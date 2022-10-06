@@ -1,0 +1,39 @@
+////////////// подменяем обработчик событий
+#component "L_SKLREP"
+#include dSql.vih
+#include Query.vih
+
+alter interface Report_Sklad_Make;
+overload
+   function fillFiltFromPick(_pickConst: word): boolean;
+end;
+function fillFiltFromPick(_pickConst: word): boolean;
+{
+//  result := inherited::fillFiltFromPick(_pickConst);
+  result := false;
+
+  if (NOT NextVisual)
+    Exit;
+
+  var cntRec: longint;
+  cntRec := 0;
+
+  if getFirst pick = tsOk {
+    mtFlush(#Pick, mfFull);
+    mtRetrieve(#Pick, mfClear);
+
+    _loop pick where pick.wlist = _pickConst {
+       if (sqlExecDirect('insert into rsPick_' + string(_pickConst) + ' (nRec) ' +
+                      ' values (#comp('+pick.crec+'))') <> tsOk)
+         then {
+                 result := false;
+                 break;
+         }
+         else {
+          result := true;
+         }
+     }
+  }
+}
+
+end.

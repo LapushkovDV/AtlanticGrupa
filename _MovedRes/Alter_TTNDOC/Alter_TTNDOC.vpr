@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>alter_TTNDOC</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika_stend\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.36.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\Viper 5.5\bin\5.5.30.0\Source\*
+					\\10.2.1.151\Galaktika\res\src\inc\*
+					\\10.2.1.151\Galaktika\res\SourceGal\*
+					..\..\..\..\Galaktika_stend\FRM\AllGal.FrmSrc\*
+					..\MercuryPRJ\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_SoprBase.res
+					$[GalExe]\L_TTNDOC.res
+					$[GalExe]\L_Common.res
+				</ResourceList>
+				<OutputResource>..\..\alter_TTNDOC_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm_stend</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="Alter_TTNDOC.prj" PosX="22" PosY="26" OpenEditor="True"/>
+			<File Name="alter\Alter_TTNDOC.vip" PosX="60" PosY="10" OpenEditor="True" Active="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="Alter_TTNDOC.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\Alter_TTNDOC\Alter_TTNDOC.prj" DateTimeStart="43863,3665966435" DateTimeCompile="0,000648726847430225" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtEndCompile" MessageText="02.02.2020 8:48:50"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<MarkerList>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
+		</MarkerList>
+	</ProjectManager>
+</Viper>

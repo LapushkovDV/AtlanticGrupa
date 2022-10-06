@@ -1,0 +1,623 @@
+//********************************************************************************
+// Галактика 8.1 - Управление производственной логистикой
+// Описание экспортируемых интерфейсов компонента
+//********************************************************************************
+
+#ifdef ComponentVersion
+#component "M_UP"
+#end
+
+//OP
+VipInterface MnfSopr2Order
+   Licensed( FREE )
+   Parameters( paramVidSopr : Word;
+               paramProcess : Word;
+               cKatSopr : Comp);
+VipInterface MnfCheck_Order
+   Licensed( FREE )
+   Parameters (SkPr : Word);
+VipInterface iMnfInvBlank
+   Licensed( manufacture )
+   Parameters (cInvTab : comp);
+VipInterface iMnfInvNal
+   Licensed( manufacture );
+VipInterface iMnfSlicVed
+   Licensed( manufacture );
+VipInterface SlicVedInv
+   Licensed( manufacture );
+VipInterface MnfDefic
+   Licensed(manufacture)
+   Parameters( vVidSopr : Word;
+               Why : Word);
+VipInterface iTestRela
+   Licensed( manufacture );
+VipInterface iRecalcPr
+   Licensed( manufacture );
+VipInterface iConvertZakaz
+   Licensed( FREE )
+   Parameters (PFmode: Word);
+VipInterface iRunConvZakaz
+   Licensed( FREE );
+VipInterface ChanBasDocNak
+   Licensed( FREE )
+   Parameters( SwMode : Word;
+               w_Bas_Kat : Word;
+               c_Bas_Kat : Comp;
+               TypeD : Word;
+               wFlag : Word;
+               wReport : Word;
+               parOn_Date : Date);
+VipInterface ChangeBDStatus
+   Licensed( FREE )
+   Parameters( wVidDoc : Word );
+VipInterface iConvertXchange
+   Licensed( FREE );
+VipInterface Do2Nakl2OrderReport
+   Licensed( FREE )
+   Parameters( BaseDocFrom : Comp );
+
+//OT
+VipInterface RzOtchNkl
+   Licensed( manufacture )
+   Parameters( wVidRz : Word;
+               wVidSopr : Word);
+VipInterface mnotp
+   Licensed( manufacture );
+VipInterface doocenka
+   Licensed( manufacture );
+VipInterface OtLimit
+   Licensed( manufacture );
+VipInterface OstLimit
+   Licensed( manufacture )
+   Parameters( Requestdate : Date;
+               EndDate : Date;
+               parList_MC : Word;
+               parList_LimDoc : Word;
+               parList_OrgFrom : Word;
+               parList_OrgTo : Word;
+               prFlagDebug : Word);
+VipInterface OstLimNb
+   Licensed( manufacture )
+   Parameters( RequestDate : Date;
+               EndDate : Date;
+               parList_MC : Word;
+               parList_LimDoc : Word;
+               parList_OrgFrom : Word;
+               parList_OrgTo : Word;
+               prFlagDebug : Word);
+VipInterface VedLimit
+   Licensed( manufacture )
+   Parameters( RequestDate : Date;
+               EndDate : Date;
+               parList_MC : Word;
+               parList_LimDoc : Word;
+               parList_OrgFrom : Word;
+               parList_OrgTo : Word;
+               prFlagDebug : Word);
+VipInterface VedLimNb
+   Licensed( manufacture )
+   Parameters( RequestDate : Date;
+               EndDate : Date;
+               parList_MC : Word;
+               parList_LimDoc : Word;
+               parList_OrgFrom : Word;
+               parList_OrgTo : Word;
+               prFlagDebug : Word);
+VipInterface mnotpmol
+   Licensed( manufacture );
+VipInterface mnvozvpr
+   Licensed( manufacture );
+VipInterface motpmol
+   Licensed( manufacture );
+VipInterface Ved_TMC
+   Licensed( manufacture );
+VipInterface rasdo
+   Licensed( manufacture );
+VipInterface rasmc
+   Licensed( manufacture );
+VipInterface inmannaz
+   Licensed( manufacture );
+VipInterface inmanpod
+   Licensed( manufacture );
+VipInterface ObSaldoAll
+   Licensed( manufacture )
+   Parameters( TypeOt : Word );
+VipInterface mnfform
+   Licensed( manufacture )
+   Parameters( pwRazrez : Word );
+VipInterface GrOtZakz
+   Licensed( FREE )
+   Parameters( wVidOtch : Word;
+               cDocRec : Comp;
+               wSelType : Word);
+
+VipInterface In_Balan
+   Licensed( FREE )
+Parameters
+(
+  pGroup: boolean;    // групповой выбор или единичный выбор
+  pfixedKol: boolean; // давать ли вводить кол-во
+  pMCNonOst: boolean; // давать ли возможность выбирать МЦ, не имеющие текущих остатков
+  pWhatKol: word;     // При ед.выборе выбираем (1-МЦ; 2-Партия)
+  pPodr: comp;        // по Подр.
+  pMol: comp;         // по МОЛу
+  pMC: comp;          // по МЦ
+  pParty: comp;       // по Партии
+  pKol: double;       // кол-во для одиночного выбора
+  pNotEdRazr: word;   // режимы выбора
+  pSaldoTbl: word     // Используемый разрез
+);
+
+VipInterface EqBDNakl
+   Licensed( manufacture )
+   Parameters( wToBasSop : Word;
+               wVidBase : Word;
+               wVidSopr : Word);
+VipInterface HKSRstr
+   Licensed( FREE );
+Vipinterface PrConfig
+   Licensed( FREE );
+VipInterface iOtchZakaz1
+   Licensed( manufacture )
+   Parameters( cOtchet : Word;
+               cOtchet2 : Word;
+               vFilter : Word;
+               vid : Word );
+VipInterface Doocprn
+   Licensed( FREE )
+   Parameters( NoMOL : Word );
+VipInterface OtchMDoc
+   Licensed( FREE )
+   Parameters( cOtchet : Comp;
+               wVidDoc : Word;
+               wVidOtch : Word);
+VipInterface RepDiffUmpRun
+   Licensed( FREE )
+   Parameters( pcUserDeskRep : Comp;
+               pwType : Word;
+               sXLSFileName : String );
+
+//GET
+Vipinterface GetCompl
+   Licensed( FREE )
+   Parameters( p1 : Comp );
+Vipinterface InsDEIPar
+   Licensed( FREE )
+   Parameters( cKatSopr : Comp );
+Vipinterface GetLZK
+   Licensed( FREE )
+   Parameters( cBaseNRec : Comp;
+               wDOType : Word;
+               cStepNRec : Comp;
+               wPickType : Word;
+               wPickObj : Word);
+VipInterface GetMCSklManuf
+   Licensed( FREE )
+   Parameters( VNRecSkl : Comp;
+               PrMC : Word;
+               MC_NRec : Comp );
+VipInterface iSelectBaseDoc
+   Licensed( FREE )
+   Parameters( pcBDRec : Comp;
+               pwBDType : Word;
+               pcSDRec : Comp;
+               pwSelType : Word;
+               pwFlagType : Word);
+VipInterface VidBDoc_Pick
+   Licensed( FREE )
+   Parameters( RetPos : Word;
+               wFlagType : Word);
+VipInterface GetAnyNakl
+   Licensed( FREE )
+   Parameters( pwBDType : Word;
+               d1,d2 : Date;
+               pcBDRec : Comp;
+               pwSelType : Word);
+VipInterface VidSopr_Pick
+   Licensed( FREE )
+   Parameters( RetPos : Word);
+VipInterface Mnf_Pick
+   Licensed( FREE )
+   Parameters( TypeInDoc : Word;
+               InPos : Word;
+               RetPos : Word);
+VipInterface MarkerToPick
+   Licensed( FREE );
+VipInterface GetTekOst
+   Licensed( FREE )
+   Parameters( KodTov : Comp;
+               RKol : Double;
+               dForm : Date;
+               SpNrec : Comp;
+               NeOtg : Double;
+               wSkPr : Word;
+               wPrsPodr : Word;
+               wIspRzrVb : Word;
+               wDocIst : Word;
+               wKntrlRspd : Word;
+               cFpl : Comp );
+VipInterface GetSpObjAcc
+   Licensed( FREE )
+   Parameters( wTypeOwn : Word;
+               TypeSopr : Word;
+               OwnerNakl : Comp;
+               SpMNPlNrec : Comp;
+               SPObjAccNrec : Comp;
+               CurSpObjAcc : Comp;
+               CurTypePos : Word);
+VipInterface GetSomeLimit
+   Licensed( FREE );
+VipInterface iGetPozPZ1
+   Licensed( FREE );
+VipInterface GetPrBrak
+   Licensed( FREE )
+   Parameters( c1 : Comp );
+VipInterface GetPosDopOtpMnfDO
+   Licensed( FREE )
+   Parameters( pWorkMode : Word;
+               pWorkType : Word;
+               pWorkOwner : Comp;
+               pWorkKind : Word;
+               pWorkCode : Comp);
+VipInterface GetMnfKatSopr
+   Licensed( FREE )
+   Parameters( cKatSoprNRec : Comp;
+               wSoprType : Word;
+               wPickType : Word;
+               wPickObj : Word;
+               cMnPlan : Comp);
+VipInterface GetMCPodrManuf
+   Licensed( FREE )
+   Parameters( cNKatSopr : Comp;
+               cNSpSopr  : Comp;
+               wPrMc     : Word;
+               wATFlag   : Word);
+VipInterface GetDOTekSaldoParty
+   Licensed( FREE )
+   Parameters( pBaseDoc : Comp;
+               pGroup : Boolean;
+               pfixedKol : Boolean;
+               pWhatKol : Word;
+               cRetMC : Comp;
+               cRetKol : Double;
+               cRetParty : Comp;
+               pPodr : Comp;
+               pMol : Comp;
+               pMC : Comp;
+               pNotEdRazr : Word);
+VipInterface StLimit
+   Licensed( FREE )
+   Parameters( pBaseDoc : Comp );
+VipInterface LinkMCSklad
+   Licensed( FREE )
+   Parameters( pcSkladRec : Comp;
+               pwProcessType : Word);
+VipInterface LimCompl
+   Licensed( FREE )
+   Parameters( isFromMenu : Word;
+               cRec : Comp);
+VipInterface GetBD
+   Licensed( FREE )
+   Parameters( p1 : Comp;
+               w1 : Word;
+               w2 : Word;
+               d1 : Date;
+               d2 : Date;
+               isZakaz : Word;
+               cGroup : Comp);
+VipInterface iConvert532to504
+   Licensed( FREE );
+VipInterface GetSomePS
+   Licensed( FREE )
+   Parameters( wKsPs : Word;
+               wTypeIzd : Word;
+               cIzdPS : Comp;
+               wTypePodr : Word;
+               cPodrPS : Comp;
+               dbAmountQty : Double );
+VipInterface GetBrakSopr
+   Licensed( FREE )
+   Parameters( cRet : Comp;
+               wTypeDisc : Word;
+               wBType : Word );
+VipInterface GetLinkDocAB
+   Licensed( FREE )
+   Parameters( cAktBrk : Comp);
+VipInterface GTekOstDate
+   Licensed( FREE )
+   Parameters( pType : Word;
+               dStart : Date;
+               cpMc : Comp;
+               cpOtpEd : Comp;
+               PodrParam : Comp;
+               cpPodr : Comp;
+               cpMol : Comp;
+               cpParty : Comp );
+VipInterface Ras_MC
+   Licensed( FREE )
+   Parameters( pcObject : Comp;
+               pwTypeObj : Word;
+               pwEditRight : Word );
+
+//FNC
+VipInterface ViewOstMnf
+   Licensed( FREE )
+   Parameters( cpPodr, cpMol, cpParty, cpMc : Comp;
+               dStart : Date);
+VipInterface ReCalcOutMnfSetup
+   Licensed( FREE )
+   Parameters( cGAlg : Comp;
+               wGDoc : Word;
+               cGAdd : Comp);
+VipInterface iSelectReport
+   Licensed( FREE )
+   Parameters( cpZakaz : Comp );
+VipInterface KartProizv
+   Licensed( FREE );
+VipInterface Test_vmTabNDI
+   Licensed( FREE );
+VipInterface Test_vmTabRep
+   Licensed( FREE );
+VipInterface Test_vmMcUsl
+   Licensed( FREE );
+VipInterface Test_vmItg
+   Licensed( FREE );
+VipInterface Test_vmTabNorm
+   Licensed( FREE );
+VipInterface Test_vmTabDO
+   Licensed( FREE )
+   Parameters( wNumEtp : Word;
+               sNameEtp : String);
+VipInterface SpisPoNal_
+   Licensed( FREE )
+   Parameters( p1 : Comp );
+VipInterface AdjustSpMnPlOut
+   Licensed( FREE )
+   Parameters( wFormat : Word;
+               wFormat1 : Word);
+VipInterface Bind504
+   Licensed( FREE )
+   Parameters( p1 : Comp );
+VipInterface iBrakTune
+   Licensed( FREE )
+   Parameters( wTune : Word );
+VipInterface iMGCard
+   Licensed( FREE )
+   Parameters( pMode : Word;
+               pMGCard : Comp;
+               pMarker : String;
+               pMc : Comp);
+VipInterface SpZamParty
+   Licensed( FREE )
+   Parameters( parTitle : string;
+               parTypeDoc_tp : Word;
+               iDoc : Comp;
+               parData_Zam : Date;
+               parFlag_NotUsed_Party1_MC2 : Word;
+               parFlagUsed_AktZam0_ListZam1 : Word;
+               parFlagSort_SG0_F1_L2_P3 : Word;
+               parFlagWrk : LongInt;
+               parcSklad : comp;
+               prcMOL : comp;
+               parKolZnak_Kol : Word;
+               parKolZnak_Price : Word;
+               parKolZnakKol_Doc : Word;
+               parKolZnakPrice_Doc : Word;
+               parTypeED : word;
+               parRzlt : longint );
+VipInterface SpZamParty_Mlt
+   Licensed( FREE )
+   Parameters( parTitle : string;
+               parTypeDoc_tp : Word;
+               iDoc : Comp;
+               parData_Zam : Date;
+               parFlag_NotUsed_Party1_MC2 : Word;
+               parFlagUsed_AktZam0_ListZam1 : Word;
+               parFlagSort_SG0_F1_L2_P3 : Word;
+               parFlagWrk : LongInt;
+               parcSklad : comp;
+               prcMOL : comp;
+               parKolZnak_Kol : Word;
+               parKolZnak_Price : Word;
+               parKolZnakKol_Doc : Word;
+               parKolZnakPrice_Doc : Word;
+               parTypeED : word;
+               parRzlt : longint );
+
+VipInterface SpOperParty_Mlt
+   Licensed( FREE )
+   Parameters( parTypeDoc_tp : word;
+               iDoc : comp;
+               parData_Zam : date;
+               parFlagSort_SG0_F1_L2_P3 : word;
+               parFlagWrk : longint;
+               parKolZnak_Kol : word;
+               parKolZnak_Price : word;
+               parKolZnakKol_Doc : word;
+               parKolZnakPrice_Doc : word );
+
+VipInterface HistZam_EF
+   licensed (FREE)
+   Parameters( parModeLoad_Doc : word;
+               parTypeDoc : word;
+               parcDoc : comp;
+               parcBaseDoc : comp );
+// REP
+VipInterface RepDiffList
+   Licensed( FREE )
+   Parameters( nReport : Word );
+VipInterface SetCardSerialList
+   Licensed( FREE )
+   Parameters( cSpSoprRec : Comp;
+               bCreate, bReserved1 : Boolean;
+               lNumSel : LongInt );
+
+// Others
+VipInterface ComplMnf
+  Licensed(Free)
+  Parameters
+  (
+    pcSpisRec: comp;    // nRec перечня
+    pwProcessType: word // режим работы
+  );
+
+VipInterface TamRepMove
+  Licensed(Free)
+  Parameters
+  (
+    pwMode: word //
+  );
+
+VipInterface v_getKau
+  Licensed(Free);
+
+VipInterface SpAct
+  Licensed(Free)
+  Parameters
+  (
+    cOtchet: comp;   // ссылка на документ
+    pwTypeObj: word; // тип объекта(toKatSopr, BaseDoc, etc.)
+    wFlag: word      // флаг "на все случаи жизни"
+  );
+
+VipInterface RepKartProizvTune
+  Licensed(Free)
+  Parameters
+  (
+    pcUserDeskRep: comp //
+  );
+
+VipInterface RepKartProizvRun
+  Licensed(Free)
+  Parameters
+  (
+    pcUserDeskRep: comp; //
+    pwType: word;        // 0 - печать, 2 - создание шаблона
+    sXLSFileName: string //
+  );
+
+VipInterface RepDiffUmpTune
+  Licensed(Free)
+  Parameters
+  (
+    pcUserDeskRep: comp //
+  );
+
+VipInterface ObSaldo
+  Licensed(Free)
+  Parameters
+  (
+    TypeOt: word;   // вид отчета
+    dStart01: date; // дата начала отсчета
+    NoMol: word;    //
+    filterY: word   //
+  );
+
+VipInterface MnfRepStock
+  Licensed(Free);
+
+VipInterface iMnfFRM
+  Licensed(Free)
+  Parameters
+  (
+    dtBeg: date;    //
+    dtEnd: date;    //
+    pwRazrez: word; //
+    pwFlag: word;   //
+    pwHistZam: word //
+  );
+
+VipInterface iMnfFRMMol
+  Licensed(Free)
+  Parameters
+  (
+    dtBeg: date; //
+    dtEnd: date  //
+  );
+
+VipInterface kzMGD06
+  Licensed(Free);
+
+VipInterface MnfReport
+  Licensed(Free);
+
+VipInterface Getpodrz
+  Licensed(Free)
+  Parameters
+  (
+    cOwner: comp; //
+    wObjS: word;  //
+    dRsch: date;  //
+    cPosRec: comp //
+  );
+
+VipInterface EditMNFTunes
+  Licensed(Free)
+  Parameters
+  (
+    CurCode: word; // код формируемого отчета
+    pnRec: comp    // номер выбранной записи настройки
+  );
+
+VipInterface EditHKSTunes
+  Licensed(Free)
+  Parameters
+  (
+    CurCode: word; // код формируемого отчета
+    pVidDoc: word; // VidDoc BaseDoc
+    pnRec: comp    // номер выбранной записи настройки
+  );
+
+VipInterface XChangeMC
+  Licensed(Free)
+  Parameters
+  (
+    MCid: comp //
+  );
+
+VipInterface XChangeMC4Izd
+  Licensed(Free)
+  Parameters
+  (
+    XCid: comp //
+  );
+
+VipInterface WrkSpOrderExt
+  Licensed(Free)
+  Parameters
+  (
+    SkPr: word; //
+    pcMc: comp  //
+  );
+
+VipInterface MnSoprFill
+  Licensed(Free)
+  Parameters
+  (
+    pcKatSopr: comp //
+  );
+
+VipInterface GetSomeMCByType
+  Licensed(Free);
+
+VipInterface KartProizvSele
+  Licensed(Free)
+  Parameters
+  (
+    SkPr: word; //
+    pcMc: comp  // МЦ
+  );
+
+VipInterface GetCardSN
+  Licensed(Free)
+  Parameters
+  (
+    pMode: word;   // Режим:
+                   //   0 - просмотр
+                   //   1 - одиночный выбор
+                   //   2 - множественный выбор (предыдущая пометка сбрасывается)
+                   //   3 - одиночный выбор с автоматическим запуском окна редактирования
+                   //   4 - множественный выбор (без сброса пометки)
+    pCardSN: comp; //
+    pMc: comp      //
+  );

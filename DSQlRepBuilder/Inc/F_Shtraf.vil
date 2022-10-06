@@ -1,0 +1,17 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонентой F_Shtraf
+
+#ifdef ComponentVersion
+#component "F_Shtraf"
+#end
+
+// --- Имеются vih-файлы для интерфейсов
+
+// VipInterface iCalcDoShtraf  licensed ( FREE);
+
+// --- Экспортируемые интерфейсы
+
+VipInterface GetShtraf      licensed (FREE) Parameters ( c1 : Comp); // Интерфейс выбора штрафов
+VipInterface ShtrafCulc     licensed ( // Вызывается из меню
+                                       postpol
+                                     );

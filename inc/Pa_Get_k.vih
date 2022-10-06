@@ -1,0 +1,51 @@
+/*
+ ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+ บ                       (c) 2002 ชฎเฏฎเ ๆจ๏ €€’€                       บ
+ บ เฎฅชโ        : €€’€                                                 บ
+ บ ‘จแโฅฌ        : ฏฅเ โจขญ๋ฉ ชฎญโใเ                                        บ
+ บ ฅเแจ๏        : 5.84                                                      บ
+ บ  งญ ็ฅญจฅ    : ญฎฆฅแโขฅญญ๋ฉ ข๋กฎเ ชฎฌฏซฅชโฎข จ เ งเฅงฎข ๅเ ญฅญจ๏        บ
+ บ โขฅโแโขฅญญ๋ฉ : ขจญแชจฉ ‘ฅเฃฅฉ ฅฎญจคฎขจ็                                บ
+ ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+*/
+
+#ifndef __Pa_Get_K_vih__
+#define __Pa_Get_K_vih__
+
+#ifdef ComponentVersion
+#component "L_Sklad"
+#end
+
+#doc
+ญฎฆฅแโขฅญญ๋ฉ ข๋กฎเ ชฎฌฏซฅชโฎข จ เ งเฅงฎข ๅเ ญฅญจ๏ –
+#end
+
+ObjInterface tGetSomeKomplektsObjInt;
+end;
+
+VipInterface GetSomeKomplekts implements tGetSomeKomplektsObjInt licensed (FREE) parameters (ToDate :date; TypeVal :word);
+
+table struct TempMCList
+(
+  cRec     : comp    "TekSaldo",
+  IsKomp   : boolean "",
+  cKomp    : comp    "",
+  cKParty  : comp    "",
+  cPodr    : comp    "",
+  cMOL     : comp    "",
+  cMC      : comp    "",
+  cParty   : comp    "",
+  Price    : double  "",
+  Kol      : double  "",
+  Summ     : double  ""
+)
+with index
+(
+  TempMCList00 = cRec + cKomp + cKParty,
+  TempMCList01 = cKomp + cKParty,
+  TempMCList02 = IsKomp,
+  TempMCList03 = IsKomp + cKomp + cKParty + cMC + cPodr + cMOL + cParty,
+  TempMCList04 = IsKomp + cKomp + cKParty + cMC + cParty
+);
+
+#end // __Pa_GET_K_vih__

@@ -1,0 +1,35 @@
+
+
+////////////// подменяем обработчик событий
+#component "L_KATORG"
+alter interface KATORG;
+ExtendFormats SCKATORG;
+Window WKATORG;
+screen SCKATORG;
+Buttons
+ cmValue68 ,,,;
+<<
+                                                                                                                         <.Получить BusinessEntity.>
+
+
+
+>>
+end;
+handleevent
+cmValue68:
+{
+var _BusinessEntity :string = '';
+if iVetisAPI_PowerShell.GetRequestToAPIVetis_GetBusinessEntity(KATORGIMP.unn, _BusinessEntity)
+  {
+   extAttr.sSetAttr(coKatOrg, KATORGIMP.nrec, coAttrNam_BusinessEntity,_BusinessEntity);
+   Message('Установлен BusinessEntity = '+ _BusinessEntity)
+  }
+  else
+   {
+     Message(_BusinessEntity,error);
+   }
+
+}
+end;
+end;
+end. // interface

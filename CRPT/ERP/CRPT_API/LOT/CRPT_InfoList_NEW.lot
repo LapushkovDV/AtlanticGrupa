@@ -1,0 +1,33 @@
+Create table CRPT_InfoList "CRPT_InfoList"
+With table_Code = 31633
+with Replace
+with tableoptions Branched
+(
+  NRec                 : comp                          "Номер записи",
+  cis                  : string                        "SSCC-код паллеты",
+  cparent              : string                        "Ссылка на вышестоящую позицию",
+  emissionDate         : string                        "Дата эмиссии КИ",
+  producedDate         : string                        "Дата ввода товара с КИ в оборот",
+  ownerInn 			   : string						   "Текущий владелей КИТУ",
+  participantInn 	   : string						   "Текущий владелей КИГУ",
+  lastDocId 		   : string						   "Последний рег номер док. в ГИС МТ по КИ",
+  lastDocType          : string                        "Тип последнего документа",
+  gtin                 : string                        "Код товара",
+  sgtin                : string                        "Код товара и серийный номер КИ", 
+  emissionType         : string                        "Тип эмиссии",
+  status               : string                        "Статус КИ",
+  packType             : string                        "Тип упаковки",
+  uit                  : string                        "КИ",
+  uitu                 : string                        "КИТУ",
+  lastStatusChangeDate : string                        "Дата последнего изменения статуса",
+  productGroup         : string                        "Товарная группа"
+
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+)
+
+;
+
+

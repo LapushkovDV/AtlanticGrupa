@@ -1,0 +1,141 @@
+//------------------------------------------------------------------------------
+//                                                      (c) Корпорация ГАЛАКТИКА
+//------------------------------------------------------------------------------
+// Галактика 5.8 - Бухгалтерский контур
+// Обьектный интерфес выбора многих КАУ
+//------------------------------------------------------------------------------
+
+#ifndef _XGetKau_vih_Included
+#define _XGetKau_vih_Included
+
+#ifdef ComponentVersion
+#Component "F_GetAn"
+#end
+
+!-------------------------------------------------------------------------------
+#doc
+Обьектный интерфес выбора многих КАУ
+#end
+ObjInterface ObjXGetKau;
+!-------------------------------------------------------------------------------
+  #doc
+  Выбор КАУ 6-ти уровней. Функция САМА проверяет wKau[x] и возвращает только те,
+  у которых соответствующее cKau[x] = 0.<br>
+  Возвращает True, если выбрали и нажали ввод.
+  #end
+  function PickKauBuh
+                (     wIntMode  : word;     // режим выбора (см.GloConst.inc)
+                      PickNum   : word;     // номер элемента для выбора
+                      GetSchet  : tSchet3;  // счет
+                      GetSubSch : tSubSch;  // субсчет
+                  #ifdef Atl51
+                  var wKau      : tTabKau;  // коды КАУ (таблицы КАУ)
+                  var cKau      : tGetKau   // выбранные NRec
+                  #else
+                  var wKau1     : word;     // коды КАУ (таблицы КАУ)
+                  var wKau2     : word;
+                  var wKau3     : word;
+                  var wKau4     : word;
+                  var wKau5     : word;
+                  var wKau6     : word;
+                  var cKau1     : tKodKau;  // выбранные NRec
+                  var cKau2     : tKodKau;
+                  var cKau3     : tKodKau;
+                  var cKau4     : tKodKau;
+                  var cKau5     : tKodKau;
+                  var cKau6     : tKodKau
+                  #end
+                ) : boolean;
+!-------------------------------------------------------------------------------
+  #doc
+  Выбор ДАС. Работает аналогично PickKauBuh.<br>
+  Возвращает True, если выбрали и нажали ввод.
+  #end
+  function PickDas
+                (     wIntMode  : word;     // режим выбора (см.GloConst.inc)
+                      PickNum   : word;     // номер элемента для выбора
+                      cPlansSch : comp;     // план счетов
+                      GetSchet  : tSchet3;  // счет
+                      GetSubSch : tSubSch;  // субсчет
+                  #ifdef Atl51
+                  var wDas      : tTabKau;  // коды КАУ (таблицы КАУ)
+                  var cDas      : tGetKau   // выбранные NRec
+                  #else
+                  var wDas1     : word;     // коды КАУ (таблицы КАУ)
+                  var wDas2     : word;
+                  var wDas3     : word;
+                  var wDas4     : word;
+                  var wDas5     : word;
+                  var wDas6     : word;
+                  var cDas1     : tKodKau;  // выбранные NRec
+                  var cDas2     : tKodKau;
+                  var cDas3     : tKodKau;
+                  var cDas4     : tKodKau;
+                  var cDas5     : tKodKau;
+                  var cDas6     : tKodKau
+                  #end
+                ) : boolean;
+!-------------------------------------------------------------------------------
+  #doc
+  Выбор одного ДАС. Для отчетов. Выбирается и таблица Дас и конкретный ДАС.<br>
+  Возвращает номер выбранного уровня. Если ничего не выбрали, то возвращает 0.
+  #end
+  function PickOneDas
+                (     wIntMode  : word;     // режим выбора (см.GloConst.inc)
+                      cPlansSch : comp;     // план счетов
+                  var wPickDas  : word;     // таблица Дас
+                  var cPickDas  : tKodKau   // выбранный NRec
+                ) : word;
+!-------------------------------------------------------------------------------
+
+  #doc
+  Вернет подразделение для сотрудника, если wKau[x] = cgKau_Persons.<br>
+  Возвращает True, если нашел cPodr
+  #end
+  function GetPodrToPersons
+                (
+                  #ifdef Atl51
+                      wKau      : tTabKau;  // коды КАУ (таблицы КАУ)
+                      cKau      : tGetKau;  // выбранные NRec
+                  #else
+                      wKau1     : word;     // коды КАУ (таблицы КАУ)
+                      wKau2     : word;
+                      wKau3     : word;
+                      wKau4     : word;
+                      wKau5     : word;
+                      wKau6     : word;
+                      cKau1     : tKodKau;  // выбранные NRec
+                      cKau2     : tKodKau;
+                      cKau3     : tKodKau;
+                      cKau4     : tKodKau;
+                      cKau5     : tKodKau;
+                      cKau6     : tKodKau;
+                  #end
+                  var cPodr     : comp
+                ) : boolean;
+!-------------------------------------------------------------------------------
+  #doc
+  Проверит, введена ли аналитика согласно требования настройки Fin.Anal.Control<br>
+  Возвращает True, если все Ok!
+  #end
+  function CheckAnalitikByTune
+                (
+                      Schet     : tSchet3;
+                      SubSchet  : tSubSch;
+                    #ifdef Atl51
+                      cKau      : tGetKau
+                    #else
+                      cKau1     : tKodKau;
+                      cKau2     : tKodKau;
+                      cKau3     : tKodKau;
+                      cKau4     : tKodKau;
+                      cKau5     : tKodKau;
+                      cKau6     : tKodKau
+                    #end
+                ) : boolean;
+!-------------------------------------------------------------------------------
+end; //
+!-------------------------------------------------------------------------------
+VipInterface XGetKau implements ObjXGetKau #Licensed_Free;
+!-------------------------------------------------------------------------------
+#end // _XGetKau_vih_Included

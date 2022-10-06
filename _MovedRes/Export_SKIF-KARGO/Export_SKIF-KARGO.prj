@@ -1,0 +1,14 @@
+#param /linc:autoexec.vpp
+
+
+
+#define ComponentVersion // для vih
+#include ExtAttr.vih
+#include ExtClass.vih
+
+
+
+#component 'ATLANTIC'
+
+
+#make "source\Export_SKIF-KARGO.vip"

@@ -1,0 +1,42 @@
+// Галактика 8.10  2009 г.
+// Описание интерфейсов компонента C_TUNE
+
+#ifdef ComponentVersion
+#component "C_TUNE"
+#end
+
+VipInterface ChkTune        Licensed (FREE);
+VipInterface UserReestrTune Licensed (FREE) Parameters (wMode: word; TuneCode: string; CurIntrName: string);
+VipInterface AdmReestrTune  Licensed (FREE);
+VipInterface GrUserTn       Licensed (FREE);
+VipInterface RghUserGr      Licensed (FREE) Parameters (Obj: word; cRecObj: comp);
+VipInterface GetTune        Licensed (FREE) Parameters (Pick: word; codeTune: string);
+
+// внутренние
+VipInterface ClearOb           Licensed (FREE) Parameters (Checks: word);
+VipInterface GetUserTn         Licensed (FREE) Parameters (Pick: word; c1 : comp);
+VipInterface GetUsers          Licensed (FREE) Parameters (Pick: word; c1 : comp);
+VipInterface GetSomGroups      Licensed (FREE) Parameters (Pick: word; c1 : comp);
+VipInterface TuneUsersMessage  Licensed (FREE) Parameters (myTune: string; myCode: string; myValue: longint);
+VipInterface IntrUse           Licensed (FREE);
+VipInterface NastrAddrTune     Licensed (FREE) Parameters (sNastrView : string);
+VipInterface NastrKolSign      Licensed (FREE) Parameters (sStrKol : string);
+VipInterface NastrPrim         Licensed (FREE) Parameters (sNastrView : string);
+
+VipInterface LoadUsers         Licensed (FREE);
+VipInterface LoadFilials       Licensed (FREE);
+VipInterface GetTuneFilial     Licensed (FREE) Parameters (c1 : word);
+
+VipInterface ConvFilialTunes   Licensed (FREE);
+VipInterface ConvOfficeFilial_Filial    Licensed (FREE);
+
+VipInterface TunesStatistics   Licensed (FREE);
+VipInterface TunesProtocol     Licensed (FREE) Parameters (date1: date; time1: time; date2: date; time2: time);
+
+VipInterface AfterCreateTune   Licensed (FREE);
+VipInterface CopyTuneAQAUser    Licensed (FREE);
+VipInterface CopyTuneOfficeUser Licensed (FREE);
+
+
+
+

@@ -1,0 +1,801 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 8.1 - Логистика
+// Пересчет сальдовых остатков в разрезе объектов целевого назначения запасов МТР
+//******************************************************************************
+
+#ifndef __MTR_TO_SPEC__
+#include MtrCount_.vpp
+#else
+
+/*
+1. Из меню капстроя вызывается для пересчета сальдовых остатков (pwDoc = 0).
+2. С помощью RunInterface (pwDoc = coSpOrder) вызывается:
+     a) из ModifSal.vpp.
+     b) в функциях DelSaldoMtr и AddSaldoMtr (ModSaldoMtr.vpp), которые используются в:
+        MakePrih.vpp, MkrFun.vpp, OrdGen.vpp, Prih_Ord.vip, RashOrd.vip и zPrihOrd.vip.
+3. Из MtrAct.vip вызывается public-функция MakeMtrMove.
+*/
+
+#include oEdIzm.vih
+#include MtrCount.vih
+#include ModifErr.vih   // Формирование сообщения об ошибке модификации таблиц
+#include SaldTune.vih   // Настройка объектов учета целевого назначения запасов МТР
+#include SaldoMtr.vih   // Коррекция сальдовых остатков
+#include GetKau.vih     // Обьектный интерфес выбора КАУ
+#include Contexts.vih
+
+!--------------------------------------------------------------------------
+#define _CurInt VipMtrCount
+#doc
+Параметры пересчета сальдовых остатков запасов МТР.
+#end
+Interface VipMtrCount 'Параметры пересчета сальдовых остатков' EscClose, Gray;
+  Show at (,4,57,14);
+!--------------------------------------------------------------------------
+#include oEdIzm.var
+#include ServKau.vih
+!--------------------------------------------------------------------------
+Const
+! Константы режимов вызова интерфейса (pwDoc)
+  ciCount = 0; // Меню "Пересчет сальдовых остатков ..."
+  ciOrder = 1; // Вызывается при коррекции аналитик складского ордера
+  ciSopr  = 2; // Вызывается при коррекции аналитик акта ИЦНЗ (изменения целевого назначения запасов МТР)
+! Константы результата модификации DocsKau
+  ciIns = 1;
+  ciUpd = 2;
+  ciDel = 3;
+! Константы режимов коррекции сальдовых остатков
+  cbIns = false;
+  cbDel = true;
+! Нулевая дата
+  cgdEmpty : date = date(0, 0, 0);
+End;
+!--------------------------------------------------------------------------
+#include GetKau.var     // Переменная типа интерфейс GetKau
+Var
+  oTune  : VipSaldTune; // Настройка объектов учета целевого назначения запасов МТР
+  oSaldo : VipSaldoMtr; // Коррекция сальдовых остатков
+  vcFltr : array[0..4] of comp;
+  vlQnt  : array[0..4] of longint;
+!--------------------------------------------------------------------------
+ Function GetFltrName(aiNum : integer) : string; forward;
+!--------------------------------------------------------------------------
+Create view
+Var
+  pwDoc : word;
+  pcDoc : comp;
+  pwDir : word;    // 0 - приход, 1 - расход
+  pbDel : boolean; // true - при удалении позиции спецификации документа
+  vdDoc : date;
+  vcMC  : comp;
+  vcPod : comp;
+  vcMol : comp;
+  vcPar : comp;
+  vcObj : comp;
+  vcZtr : comp;
+  vcCO  : comp;
+  vcKit : comp;
+
+  vdStart : date;
+  viType  : word;
+
+  vcSaldTune : comp;
+  vlTotOper, vlTotOrd, vlTotSop, vlIns, vlUpd, vlDel, vlBadRef : longint;
+  vsRole1, vsRole2, vsRole3, vsRole4 : string;
+
+  (
+      vsFltrMC
+  )
+As select
+! vsFltrMC
+    if(vlQnt[0] = longint(0), '', if(vlQnt[0] = longint(1), KatMC.Name, 'выбрано: ' + string(vlQnt[0])))
+! vsFilter1..3
+From
+    SpOrder
+  , SpOrder SpOrder1
+  , MtrAct
+  , SpMtrAct
+  , DocsKau
+  , DocsKau DocsKau1
+  , Pick
+  , KatMC
+  , KatPodr
+  , KatMol
+  , KatParty
+  , SaldoRaz
+  , SaldoObj
+  , SaldTune
+  , SaldTune SaldTune1
+  , SaldTune SaldTune2
+#ifdef __SMETA__
+  , SpDocSmeta
+#end
+  , KatStroy
+  , SpecMTR
+  , KitKau
+  , KitKau KitKauOrd
+  , KitKau KitKauSrc
+  , KitKau KitKauDst
+
+Where ((
+! Статя затрат позиции спецификации ордера
+      SpOrder.nRec == SpecMTR.cSpec
+  and coSpOrder    == SpecMTR.coTable
+  and SpecMTR.cSaldTune == SaldTune2.nRec
+  and SpecMTR.cSaldTune == KitKauOrd.cSaldTune
+  and SpecMTR.cObj      == KitKauOrd.cObj
+  and SpecMTR.cKau[1]   == KitKauOrd.cKau[1]
+  and SpecMTR.cKau[2]   == KitKauOrd.cKau[2]
+  and SpecMTR.cKau[3]   == KitKauOrd.cKau[3]
+  and SpecMTR.cKau[4]   == KitKauOrd.cKau[4]
+  and SpecMTR.cKau[5]   == KitKauOrd.cKau[5]
+  and SpecMTR.cKau[6]   == KitKauOrd.cKau[6]
+  and SpecMTR.cKau[7]   == KitKauOrd.cKau[7]
+  and SpecMTR.cKau[8]   == KitKauOrd.cKau[8]
+  and SpecMTR.cKau[9]   == KitKauOrd.cKau[9]
+! Смета позиции спецификации ордера
+  and coSpOrder        == SpDocSmeta.coTable
+  and SpOrder.nRec     == SpDocSmeta.cSpec
+! Аналитики целевого назначения позиции спецификации документа
+  and pwDoc      == DocsKau.wDoc
+  and pwDir      == DocsKau.wDir
+  and pcDoc      == DocsKau.cDoc
+  and vcSaldTune == DocsKau.cSaldTune
+  and DocsKau.cKitKau == KitKau.nRec
+!-------------------------------------------
+  and SpMtrAct.cSopr == MtrAct.nRec
+
+  and MtrAct.cSaldSrc     == KitKauSrc.cSaldTune
+  and MtrAct.cObjSrc      == KitKauSrc.cObj
+  and MtrAct.cKauSrc[1]   == KitKauSrc.cKau[1]
+  and MtrAct.cKauSrc[2]   == KitKauSrc.cKau[2]
+  and MtrAct.cKauSrc[3]   == KitKauSrc.cKau[3]
+  and MtrAct.cKauSrc[4]   == KitKauSrc.cKau[4]
+  and MtrAct.cKauSrc[5]   == KitKauSrc.cKau[5]
+  and MtrAct.cKauSrc[6]   == KitKauSrc.cKau[6]
+  and MtrAct.cKauSrc[7]   == KitKauSrc.cKau[7]
+  and MtrAct.cKauSrc[8]   == KitKauSrc.cKau[8]
+  and MtrAct.cKauSrc[9]   == KitKauSrc.cKau[9]
+
+  and MtrAct.cSaldDst     == KitKauDst.cSaldTune
+  and MtrAct.cObjDst      == KitKauDst.cObj
+  and MtrAct.cKauDst[1]   == KitKauDst.cKau[1]
+  and MtrAct.cKauDst[2]   == KitKauDst.cKau[2]
+  and MtrAct.cKauDst[3]   == KitKauDst.cKau[3]
+  and MtrAct.cKauDst[4]   == KitKauDst.cKau[4]
+  and MtrAct.cKauDst[5]   == KitKauDst.cKau[5]
+  and MtrAct.cKauDst[6]   == KitKauDst.cKau[6]
+  and MtrAct.cKauDst[7]   == KitKauDst.cKau[7]
+  and MtrAct.cKauDst[8]   == KitKauDst.cKau[8]
+  and MtrAct.cKauDst[9]   == KitKauDst.cKau[9]
+!-------------------------------------------
+  and word(7)             == Pick.wList
+  and vcFltr[0]           == KatMC.nRec
+!-------------------------------------------
+  and DocsKau1.cDoc       == SpOrder1.nRec
+))
+!-------------------------------------------
+Bounds OnOrder
+      pcDoc     == SpOrder.nRec
+
+Bounds OnMC1
+      word(0)   == SpOrder.SP
+  and Pick.cRec == SpOrder.cMC
+  and vdStart  <<= SpOrder.dOrd
+
+Bounds OnAll1
+      vdStart <<= SpOrder.dOrd
+  and  (word(0) = SpOrder.SP)
+!-------------------------------------------
+Bounds OnMC2
+  word(cgDoc_0613) == SpMtrAct.VidSopr
+  and Pick.cRec    == SpMtrAct.cMc
+  and vdStart     <<= SpMtrAct.dOpr
+
+Bounds OnAll2
+  word(cgDoc_0613) == SpMtrAct.VidSopr
+  and vdStart     <<= SpMtrAct.dOpr
+;
+
+Parameters pwDoc, pcDoc, pwDir, pbDel;
+
+!▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+#include ModifErr.vpp // Формирование сообщения об ошибке модификации таблиц
+#include ShowKau.vpp  // Макроопределения для высветки КАУ, выбора КАУ
+
+Screen scParam ('', hcUKSPerechSaldOstat, sci13EnEsc);
+Show at (,,,);
+Table KatMC;
+  Bevel b1 {3, 5, 53, 8};
+Fields
+  viType    ('Тип пересчета: с заданной даты или с первого некорректного сальдо',, sci1EnEsc) : NoProtect;
+  vdStart   ('Пересчитать сальдовые остатки начиная с даты',, sci1EnEsc) : ['DD/MM/YYYY'], NoProtect;
+  vsFltrMC  ('Фильтр по МЦ',,) : Protect, QuickChoice;
+Buttons
+  cmYes, default,, 'Выполнить пересчет',, sci1EnEsc;
+  cmCancel,,, 'Отмена',, sci1EnEsc;
+<<
+
+        `Пересчитать сальдовые остатки`
+           (.) по всем складским ордерам`
+           (.) с заданной даты`        .@@@@@@@@@@
+
+     Фильтр
+   `МЦ:`.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+            <. Выполнить .>     <.  Отменить .>
+>>
+End; //screen
+!--------------------------------------------------------------------------
+! Значение заданной аналитики
+!--------------------------------------------------------------------------
+Function GetFltrName(aiNum : integer) : string;
+{
+  case vlQnt[aiNum] of
+    0 : GetFltrName := '';
+    1 : GetFltrName := #ShowKauAk(cgAkOther, oTune.GetGrKau(aiNum), vcFltr[aiNum]);
+   else GetFltrName := 'выбрано: ' + string(vlQnt[aiNum]);
+  end;
+}
+!--------------------------------------------------------------------------
+! Ссылка на заданную аналитику в DocsKau
+!--------------------------------------------------------------------------
+Function GetDocsKau : comp;
+{
+  GetDocsKau := DocsKau.cKitKau;
+}
+!--------------------------------------------------------------------------
+! Инициализация ссылки на заданную аналитику в DocsKau
+!--------------------------------------------------------------------------
+Procedure SetDocsKau;
+{
+  DocsKau.cObj := vcObj;
+  DocsKau.cKitKau := vcKit;
+}
+!--------------------------------------------------------------------------
+! Является ли заданная аналитика вводимой в спецификации документа (предопределенной)
+!--------------------------------------------------------------------------
+Function PreDefValue : boolean;
+{
+  PreDefValue := false;
+  var fcKau : comp;
+  fcKau := GetDocsKau;
+  if (fcKau <> vcKit)
+  {
+    SetDocsKau;
+    PreDefValue := true;
+  }
+}
+!--------------------------------------------------------------------------
+! Проверка возможности сохранения изменений
+!--------------------------------------------------------------------------
+Function CanChange : boolean;
+{
+  CanChange := false;
+  if (GetDocsKau <> 0)
+  {
+    CanChange := true;
+    Exit;
+  }
+}
+!--------------------------------------------------------------------------
+! Инициализация ссылок на складской разрез хранения
+!--------------------------------------------------------------------------
+Procedure SetDefDocsKau;
+{
+  DocsKau.wDoc   := pwDoc;
+  DocsKau.wDir   := pwDir;
+  DocsKau.cDoc   := pcDoc;
+  DocsKau.dOper  := vdDoc;
+  DocsKau.cMC    := vcMC;
+  DocsKau.cPodr  := vcPod;
+  DocsKau.cMol   := vcMol;
+  DocsKau.cParty := vcPar;
+  DocsKau.cObj   := vcObj;
+  DocsKau.cKitKau := vcKit;
+  DocsKau.cSaldTune := vcSaldTune;
+}
+!--------------------------------------------------------------------------
+! Коррекция сальдовых остатков
+!--------------------------------------------------------------------------
+Procedure CorrectSaldo(abModSaldo, abDel : boolean);
+{
+  if abModSaldo
+  {
+    if not isValid(#DocsKau)
+      DocsKau.nRec := 0;
+    case pwDoc of
+      coSpOrder  : oSaldo.CorrectBySpOrder(abDel,  TSpOrder(SpOrder.Buffer),  TDocsKau(DocsKau.Buffer));
+      coSpMtrAct : oSaldo.CorrectBySpMtrAct(abDel, TSpMtrAct(SpMtrAct.Buffer), TDocsKau(DocsKau.Buffer));
+    end;
+  }
+}
+!--------------------------------------------------------------------------
+! Вставка записи в таблицу аналитик целевого назначения документа
+!--------------------------------------------------------------------------
+Function InsertDocsKau(abModSaldo : boolean) : integer;
+{
+  InsertDocsKau := 0;
+  if CanChange
+    if __ins((insert current DocsKau), 'DocsKau', 'InsertDocsKau')
+    {
+      InsertDocsKau := ciIns;
+      CorrectSaldo(abModSaldo, cbIns);
+    }
+}
+!--------------------------------------------------------------------------
+! Изменение/удаление записи в таблице аналитик целевого назначения документа
+!--------------------------------------------------------------------------
+Function UpdateDocsKau(abModSaldo : boolean) : integer;
+{
+  UpdateDocsKau := 0;
+  if CanChange and not pbDel
+  {
+    CorrectSaldo(abModSaldo, cbDel);
+    if __upd((update current DocsKau), 'DocsKau', 'UpdateDocsKau')
+    {
+      UpdateDocsKau := ciUpd;
+      CorrectSaldo(abModSaldo, cbIns);
+    }
+  }
+  else
+  {
+    CorrectSaldo(abModSaldo, cbDel);
+    if __del((delete current DocsKau), 'DocsKau', 'UpdateDocsKau')
+      UpdateDocsKau := ciDel;
+  }
+}
+!--------------------------------------------------------------------------
+! Проверка актуальности ссылок на аналитики разреза
+!--------------------------------------------------------------------------
+Function CheckSaldTune : boolean;
+{
+  CheckSaldTune := false;
+  var fbDelAct : boolean;
+  fbDelAct := false;
+  if (pwDoc = coSpMtrAct)
+    if isValid(#MtrAct)
+      fbDelAct := (MtrAct.Status = 0);
+  if pbDel or fbDelAct
+    CheckSaldTune := true; // Чтобы скорректировать сальдовые остатки
+  else
+    if PreDefValue
+      CheckSaldTune := true;
+}
+!--------------------------------------------------------------------------
+! Проверяем корректность разреза хранения
+!--------------------------------------------------------------------------
+Function CheckSaldo(abModSaldo : boolean) : integer;
+{
+  CheckSaldo := 0;
+  // Проверяем корректность разреза хранения
+  // abModSaldo = true - корректировать сальдо только если модифицируется DocsKau,
+  //   иначе выполняется пересчет остатков, т.е. сначала проверяем корректность
+  //   DocsKau, а потом добавяем операцию движения в сальдовые остатки
+  if GetFirst FastFirstRow DocsKau = tsOk
+  {
+    if CheckSaldTune
+      CheckSaldo := UpdateDocsKau(abModSaldo);
+  }
+  else
+  {
+    if (not pbDel)
+    {
+      ClearBuffer(#DocsKau);
+      SetDefDocsKau;
+      CheckSaldo := InsertDocsKau(abModSaldo);
+    }
+  }
+  case CheckSaldo of
+    ciIns : inc(vlIns);
+    ciUpd : inc(vlUpd);
+    ciDel : inc(vlDel);
+  end;
+  if not abModSaldo
+    CorrectSaldo(true, cbIns);
+}
+!--------------------------------------------------------------------------
+! Инициализация параметров по текущему складскому ордеру
+!--------------------------------------------------------------------------
+Procedure CheckThisSpOrder(abModSaldo : boolean);
+{
+  vcKit := 0;
+  pwDoc := coSpOrder;
+  pcDoc := SpOrder.nRec;
+  vdDoc := SpOrder.dOrd;
+  vcMC  := SpOrder.cMC;
+  vcPod := SpOrder.ccPodr;
+  vcMol := SpOrder.ccMol;
+  vcPar := SpOrder.cParty;
+  pwDir := SpOrder.VidOrder;
+  if (IsValid(#SpecMTR) and KitKauOrd.cSaldTune = vcSaldTune)
+  {
+    vcKit := KitKauOrd.nRec;
+    vcObj := KitKauOrd.cObj;
+    CheckSaldo(abModSaldo);
+  }
+}
+!--------------------------------------------------------------------------
+! Инициализация параметров по текущему акту ИЦНЗ
+!--------------------------------------------------------------------------
+Procedure CheckThisSpMtrAct(abModSaldo : boolean; awDir : word); //; adForm : date);
+{
+  vcKit := 0;
+  pwDoc := coSpMtrAct;
+  pcDoc := SpMtrAct.nRec;
+  vdDoc := MtrAct.dOpr;
+  vcMC  := SpMtrAct.cMc;
+  vcPod := SpMtrAct.cPodr;
+  vcMol := SpMtrAct.cMol;
+  vcPar := SpMtrAct.cParty;
+  pwDir := awDir;
+  if (pwDir = 0)
+  {
+    if (IsValid(#KitKauDst) and KitKauDst.cSaldTune = vcSaldTune)
+    {
+      vcKit := KitKauDst.nRec;
+      vcObj := KitKauDst.cObj;
+      CheckSaldo(abModSaldo);
+    }
+  }
+  else
+    if (IsValid(#KitKauSrc) and KitKauSrc.cSaldTune = vcSaldTune)
+    {
+      vcKit := KitKauSrc.nRec;
+      vcObj := KitKauSrc.cObj;
+      CheckSaldo(abModSaldo);
+    }
+}
+!--------------------------------------------------------------------------
+! Проверка аналитик разреза целевого назначения для заданного документа
+!--------------------------------------------------------------------------
+Procedure CheckDocsKau;
+{
+  abort;
+  // Позиционируемся на документ
+  case pwDoc of
+    coSpOrder :
+    {
+      PushBounds(tbOnOrder);
+      if GetFirst FastFirstRow SpOrder = tsOk
+      {
+        pwDir := SpOrder.VidOrder;
+        vcSaldTune := 0;
+        if (IsValid(#SaldTune2))
+        {
+          vcSaldTune := oTune.GetTune(SaldTune2.wType);
+          oSaldo.InitIfc(SaldTune2.wType);
+          CheckThisSpOrder(true);
+        }
+      }
+      PopBounds(tbOnOrder);
+    }
+  end;
+}
+!--------------------------------------------------------------------------
+! Ссылка на заданную аналитику в DocsKau
+!--------------------------------------------------------------------------
+Function GetOrderKau(aiNum : integer) : comp;
+{
+  GetOrderKau := 0;
+  if isValid(#DocsKau)
+    GetOrderKau := GetDocsKau;
+}
+!--------------------------------------------------------------------------
+! Просмотр складских ордеров
+!--------------------------------------------------------------------------
+Function LoopOrder(asMess : string) : boolean;
+{
+  LoopOrder := true;
+  _loop SpOrder
+  {
+    if not iNextVisual(asMess + 'Просмотр складских ордеров: ' + dts(SpOrder.dOrd))
+    {
+      LoopOrder := false;
+      break;
+    }
+    if oSaldo.isValidRaz(0, 0, 0, 0, 0, 0, 0, 0)
+    {
+      inc(vlTotOrd);
+      CheckThisSpOrder(false);
+    }
+  }
+}
+!--------------------------------------------------------------------------
+! Просмотр актов изменения целевого назначения
+!--------------------------------------------------------------------------
+Function LoopSopr(asMess : string) : boolean;
+{
+  var i : word;
+  LoopSopr := true;
+  for(i := 0; i <= 1; inc(i))
+    _loop SpMtrAct
+      if GetFirst FastFirstRow MtrAct = tsOk
+      {
+        if (vcSaldTune <> if(i = 1, MtrAct.cSaldSrc, MtrAct.cSaldDst))
+          Continue;
+        if not iNextVisual(asMess + 'Просмотр актов изменения целевого назначения: ' + dts(SpMtrAct.dSopr))
+        {
+          LoopSopr := false;
+          break;
+        }
+        if (MtrAct.Status = 1)
+          if oSaldo.isValidRaz(0, 0, 0, 0, 0, 0, 0, 0)
+          {
+            inc(vlTotSop);
+            CheckThisSpMtrAct(false, i); //, MtrAct.dOpr);
+          }
+      }
+}
+!--------------------------------------------------------------------------
+! Пересчет сальдовых остатков
+!--------------------------------------------------------------------------
+Function RecalcSaldoObj : boolean;
+{
+  RecalcSaldoObj := true;
+  pbDel := false;
+  StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, '', 1);
+  SetVisualTitle('Пересчет сальдовых остатков');
+  oSaldo.InitFilterMarker(vcSaldTune, vlQnt[1], vlQnt[2], vlQnt[3]);
+  var fsMess : string;
+  fsMess := '';
+  if (vlQnt[0] <> longint(0))
+  {
+    fsMess := 'МЦ: "' + KatMC.Name + '"'#13;
+    PushBounds(tbOnMC1);
+    PushBounds(tbOnMC2);
+    _loop Pick
+      if not LoopOrder(fsMess) or not LoopSopr(fsMess)
+      {
+        RecalcSaldoObj := false;
+        break;
+      }
+    PopBounds(tbOnMC2);
+    PopBounds(tbOnMC1);
+  }
+  else
+  {
+    PushBounds(tbOnAll1);
+    RecalcSaldoObj := LoopOrder('');
+    PopBounds(tbOnAll1);
+    if RecalcSaldoObj
+    {
+      PushBounds(tbOnAll2);
+      RecalcSaldoObj := LoopSopr('');
+      PopBounds(tbOnAll2);
+    }
+  }
+  oSaldo.DoneFilterMarker(vlQnt[1], vlQnt[2], vlQnt[3]);
+  StopVisual('', 0);
+}
+
+!--------------------------------------------------------------------------
+! Выбор МЦ для фильтра
+!--------------------------------------------------------------------------
+Procedure onPickMC;
+{
+  vlQnt[0] := longint(0);
+  if (RunInterface('GetSomeMC', comp(-12345)) = cmDefault)
+    _loop Pick
+    {
+      vlQnt[0] := vlQnt[0] + longint(1);
+      if (vlQnt[0] = longint(1))
+        vcFltr[0] := comp(Pick.cRec);
+    }
+  ReReadRecord(#KatMC);
+}
+!--------------------------------------------------------------------------
+! Выбор заданной аналитики разреза целевого назначения для фильтра
+!--------------------------------------------------------------------------
+Procedure onPickKau(aiNum : integer);
+{
+  vlQnt[aiNum] := longint(iGetKau.GetCodeKau(cgiPickMult, oTune.GetGrKau(aiNum), vcFltr[aiNum]));
+  ReScanPanel(#KatMC);
+}
+!--------------------------------------------------------------------------
+! Удаление выбора МЦ для фильтра
+!--------------------------------------------------------------------------
+Procedure onDelMC;
+{
+  if (delete all Pick where (( word(7) == Pick.wList )) = tsOk)
+  {
+    vlQnt[0] := longint(0);
+    ReScanPanel(#KatMC);
+  }
+}
+!--------------------------------------------------------------------------
+!
+!--------------------------------------------------------------------------
+Procedure InitParam;
+{
+  vcSaldTune := oTune.GetTune(1);
+}
+!--------------------------------------------------------------------------
+! [PUBLIC] Выполнение перераспределения МТР между разрезами объектов учета целевого назначения
+!--------------------------------------------------------------------------
+Procedure MakeMtrMove(abDel : boolean; adForm : date; arMtrAct : TMtrAct; arSpMtrAct : TSpMtrAct);
+{
+  MtrAct.Buffer   := type$MtrAct(arMtrAct);
+  SpMtrAct.Buffer := type$SpMtrAct(arSpMtrAct);
+  ReReadRecord(#KitKauSrc);
+  ReReadRecord(#KitKauDst);
+  pbDel := abDel;
+  if not abDel
+  { // Изменяем статус акта на "исполнен", но дата и статус еще не изменены
+    MtrAct.dOpr := adForm;
+    MtrAct.Status := 1;
+  }
+  if (MtrAct.cSaldSrc <> 0)
+  {
+    if (GetFirst SaldTune1 where ((MtrAct.cSaldSrc == SaldTune1.nRec)) = tsOk)
+    {
+      vcSaldTune := oTune.GetTune(SaldTune1.wType);
+      CheckThisSpMtrAct(true, 1);
+    }
+  }
+  if (MtrAct.cSaldDst <> 0)
+  {
+    if (GetFirst SaldTune1 where ((MtrAct.cSaldDst == SaldTune1.nRec)) = tsOk)
+    {
+      vcSaldTune := oTune.GetTune(SaldTune1.wType);
+      CheckThisSpMtrAct(true, 0);
+    }
+  }
+}
+!--------------------------------------------------------------------------
+HandleEvent // Interface
+!--------------------------------------------------------------------------
+cmInit :
+{
+  InitParam;
+  if (pwDoc <> 0)
+    // Коррекция позиции спецификации документа, заданного pwDoc и pcDoc
+    CheckDocsKau
+  else
+  { // Пересчет сальдовых остатков
+    if (GetFirst SpOrder where (( word(0) == SpOrder.SP )) <> tsOk)
+    { // Акты не проверяем, т.к. их не будет при отсутствии ордеров
+      abort;
+      message('Нет складских ордеров и актов изменения целевого назначения запасов МТР.'#13#13 +
+              'Пересчет невозможен.', Information);
+    }
+    else
+    {
+      vdStart := SpOrder.dOrd;
+      viType := 0;
+      ClearFieldState(#vdStart, sfVisible);
+    }
+  }
+}
+!--------------------------------------------------------------------------
+cmYes :
+  if message('Произвести пересчет сальдовых остатков'#13 +
+             'в разрезе объектов учета запасов МТР?',
+              YesNo + mfSwapButtons + Confirmation) = cmYes
+    if message('Перед пересчетом необходимо проверить целостность ордеров.'#13#13 +
+               'При выполнении данной операции не должно производиться'#13 +
+               'никакого движения по складам, а также должны быть закрыты'#13 +
+               'все интерфейсы на Вашей машине.'#13#13 +
+               'Продолжить?', YesNo + mfSwapButtons + Confirmation) = cmYes
+    {
+      vlTotOper := 0; vlTotOrd := 0; vlTotSop := 0;
+      vlIns := 0; vlUpd := 0;  vlDel := 0; vlBadRef := 0;
+      if (viType = 0)
+        vdStart := cgdEmpty;
+      var fbOk : boolean;
+      var vlTotSt : longint;
+      vlTotSt := 0;
+      _Loop SaldTune
+      {
+        vcSaldTune := oTune.GetTune(SaldTune.wType);
+        oSaldo.InitIfc(SaldTune.wType);
+        inc(vlTotSt);
+
+        if (vcSaldTune <> 0)
+          delete all SaldoObj where ((comp(0) == SaldoObj.cSaldTune));
+
+        fbOk := oSaldo.DelSaldo(vcSaldTune, vlQnt[0], vlQnt[1], vlQnt[2], vlQnt[3], vdStart);
+
+        if fbOk
+          fbOk := RecalcSaldoObj;
+
+        if (not fbOk)
+          Break;
+
+        if (SaldTune.wType = 1) // Для УКСа удаление разрезов невалидных объектов
+        {
+          _Loop DocsKau1 where ((SaldTune.nRec == DocsKau1.cSaldTune))
+            if (GetFirst KatStroy where ((DocsKau1.cObj == KatStroy.nRec)) <> tsOk)
+            {
+              delete SaldoRaz where ((SaldTune.nRec == SaldoRaz.cSaldTune and
+                                      word(0)       == SaldoRaz.wMode     and
+                                      DocsKau1.cObj == SaldoRaz.cObj));
+              delete SaldoRaz where ((SaldTune.nRec == SaldoRaz.cSaldTune and
+                                      word(1)       == SaldoRaz.wMode     and
+                                      DocsKau1.cObj == SaldoRaz.cObj));
+              delete SaldoRaz where ((SaldTune.nRec == SaldoRaz.cSaldTune and
+                                      word(2)       == SaldoRaz.wMode     and
+                                      DocsKau1.cObj == SaldoRaz.cObj));
+              delete SaldoObj where ((SaldTune.nRec == SaldoObj.cSaldTune and
+                                      word(0)       == SaldoObj.wMode     and
+                                      DocsKau1.cObj == SaldoObj.cObj));
+              delete SaldoObj where ((SaldTune.nRec == SaldoObj.cSaldTune and
+                                      word(1)       == SaldoObj.wMode     and
+                                      DocsKau1.cObj == SaldoObj.cObj));
+              delete SaldoObj where ((SaldTune.nRec == SaldoObj.cSaldTune and
+                                      word(2)       == SaldoObj.wMode     and
+                                      DocsKau1.cObj == SaldoObj.cObj));
+
+              if (delete current DocsKau1 = tsOk)
+                inc(vlDel);
+            }
+            else
+            {
+              if (DocsKau1.wDoc = coSpOrder)
+                if (not IsValid(#SpOrder1))
+                  if (delete current DocsKau1 = tsOk)
+                    inc(vlDel);
+            }
+        }
+        else
+          _Loop DocsKau1 where ((SaldTune.nRec == DocsKau1.cSaldTune))
+            if (DocsKau1.wDoc = coSpOrder)
+              if (not IsValid(#SpOrder1))
+                if (delete current DocsKau1 = tsOk)
+                  inc(vlDel);
+      }
+      var fsMess : string;
+      fsMess := 'Пересчет сальдовых остатков МЦ в разрезе'#13 +
+                'объектов учета запасов МТР (' + string(vlTotST);
+      if not fbOk
+        message(fsMess + 'прерван или выполнен с ошибками.'#13#13 +
+                         'Сальдовые остатки не корректны.', Error);
+      else
+      {
+        fsMess := fsMess + ') завершен успешно.'#13#13 +
+                 'Обработано позиций спецификаций:'#13 +
+                 '    складских ордеров: ' + string(vlTotOrd div vlTotSt);
+        if (vlTotSop <> 0)
+          fsMess := fsMess + ''#13 + '    актов ИЦНЗ: ' + string(vlTotSop);
+        if (vlIns <> 0) or (vlUpd <> 0) or (vlDel <> 0)
+          fsMess := fsMess + ''#13'Модифицированы ссылки на разрезы целевого назначения:'#13 +
+                    if(vlIns <> 0, 'Добавлено: ' + string(vlIns) + ''#13, '') +
+                    if(vlUpd <> 0, 'Исправлено некорректных: ' + string(vlUpd) + ''#13, '') +
+                    if(vlDel <> 0, 'Удалено лишних: ' + string(vlDel), '');
+        message(fsMess, Information);
+      }
+      CloseInterface(cmCancel);
+    }
+!--------------------------------------------------------------------------
+cmOpenSearch :
+  if (CurField = #vsFltrMC)
+  {
+    QuickChoiceName := 'qcNameMCUsl';
+    onPickMC;
+  }
+!--------------------------------------------------------------------------
+cmPick :
+  if (CurField = #vsFltrMC)
+    onPickMC;
+!--------------------------------------------------------------------------
+cmDelOnProtect :
+  if (CurField = #vsFltrMC)
+    onDelMC;
+
+cmCheckField:
+  if CurField = #viType
+    if (viType = 1)
+      SetFieldState(#vdStart, sfVisible);
+    else
+    {
+      ClearFieldState(#vdStart, sfVisible);
+      vdStart := SpOrder.dOrd;
+    }
+!--------------------------------------------------------------------------
+End; // HandleEvent Interface
+!--------------------------------------------------------------------------
+End.
+!--------------------------------------------------------------------------
+#undef _CurInt // VipMtrCount
+#end // __MTR_TO_SPEC__

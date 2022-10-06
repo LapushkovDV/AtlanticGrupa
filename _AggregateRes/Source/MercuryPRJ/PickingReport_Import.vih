@@ -1,0 +1,13 @@
+#ifndef _included_PickingReport_Importvih_
+#define _included_PickingReport_Importvih_
+#component "ATLANTIC"
+objInterface objPickingReport_Import;
+  procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
+end;
+
+vipInterface CRPT_PickingReport_import implements objPickingReport_Import
+  licensed(free);
+
+
+var iPickingReport_Import : CRPT_PickingReport_import;
+#end

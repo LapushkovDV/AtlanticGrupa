@@ -1,0 +1,100 @@
+/*
+ ╔═══════════════════════════════════════════════════════════════════════════╗
+ ║                     (c) 1994,2002 корпорация ГАЛАКТИКА                    ║
+ ║ Проект        : ГАЛАКТИКА                                                 ║
+ ║ Система       : Общая функциональность                                    ║
+ ║ Версия        : 5.8                                                       ║
+ ║ Назначение    : Функции для работы с внешними класификаторами документов  ║
+ ║ Ответственный : Пстыга Михаил Васильевич                                  ║
+ ╚═══════════════════════════════════════════════════════════════════════════╝
+  Параметры:
+    __wTable     - co-код Таблицы
+    _ClassName   - наименование классификации
+    _ClassCode   - код классификации
+    _cRec        - ссылка на запись в таблице
+    _NeedMessage - выдавать сообщение об ошибке
+
+  Могут пригодиться:
+    aAttrCm.vpp - обработка событий cmPickAttr, cmPickClass
+    aAttrMn.vpp - пункты локального меню
+*/
+
+
+#ifndef _ExtClass_Func
+#define _ExtClass_Func
+
+#ifdef ComponentVersion
+#component "C_ExtClass"
+#end
+
+
+ObjInterface objExtClass;
+
+//------------------------------------------------------------------------------
+//   Набор функций для создания, получения кода, показа ошибки
+
+ // возвращает Код Класса по названию класса для указанной таблицы
+  Function GetClassCode ( _wTable: word;  _ClassName: string ) : word;
+ // Формирует классификацию для таблицы _wTable по названию; Возвращает код классификации. 0 - ошибка
+  Function CreateClass(_wTable: word; _ClassName: string; _UniqFeat : word) : word;
+ // Добавляет сегмент в вн. классификацию. Возвращает nRec сегмента, иначе 0
+  Function AddSegClass(_ClassCode : word; _SegName: string;  _SegCode: string; _cGroup: comp) : comp;
+
+ // Установить требование автоматического выдачи сообщения при ошибке; Возвращает предыдущее значение
+  Function SetNeedMessage ( _NeedMessage : boolean ) : boolean;
+ // Выдать сообщение об ошибке
+  Procedure ShowError (_err : word);
+ // получить номер последней ошибки
+  Function LastError : word ;
+
+
+!------------------------------------------------------------------------------
+!   Набор функций для извлечения Названия и кода сегмента вн. классификации
+ // возвращает Название сегмента класса по коду класса для указанной таблицы с номером записи
+  Function GetSegName ( _ClassCode : word; _cRec : comp ) : string ;
+ // возвращает Код сегмента класса по коду класса для указанной таблицы с номером записи
+  Function GetSegCode ( _ClassCode : word; _cRec : comp ) : string ;
+
+
+!------------------------------------------------------------------------------
+!   Набор функций для удаления, перемещения и копирования классификации
+//  копирование
+ Function CopyAllClassVal (_wTable: word;  _cRecFrom: comp;  _cRecTo : comp ) : boolean;
+
+//  копирование  в другую таблицу   и создание если ее не существует для другой таблицы
+ Function CopyAllClassValEx (_wTableFrom: word;  _cRecFrom: comp;  _wTableTo: word; _cRecTo : comp ) : boolean;
+
+// Копирует классификацию (ClassName, ClassSeg, ClassIer) из классификации с кодом _ClassCode в таблицу _wTable;
+// Возвращает код классификации. 0 - ошибка
+PUBLIC Function CopyClassEx (_CodeFrom: word; _wTableTo: word) : word;
+
+// удаление всех значений (при удалении записи в таблице)
+ Function DeleteAllClassVal (_wTable: word; _cRec: comp) : boolean;
+
+// перенос от старой записи к новой (откуда-куда)
+ Function MoveAllClassVal (_wTable: word; _cRecFrom: comp; _cRecTo: comp): boolean;
+
+// просмотр/редактирование значения в интерфейсе
+ Function Pick(_CanEdit: boolean; _wTable: word;  _cRec: comp): boolean;
+
+End;
+
+
+ObjInterface objExtClass2;
+
+//  копирование c проверкой на уникальность. 
+//  Если классификация уникальная, то при_bZam = true - заменять старое значение на новое,
+//                                               false - пропустить.
+ Function CopyAllClassValUniq (_wTable: word;  _cRecFrom: comp;  _cRecTo : comp; _bZam : boolean ) : boolean;
+
+
+End; 
+
+
+VipInterface iExtClass implements objExtClass, objExtClass2
+#ifdef ATL51     
+  licensed (FREE)    
+#end     
+;
+
+#end

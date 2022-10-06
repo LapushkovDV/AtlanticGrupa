@@ -1,0 +1,42 @@
+#ifdef ComponentVersion
+#component "L_REPBASEDOC"
+#end
+
+vipinterface BasNakl  licensed (postpol) 
+                      Parameters (doc_direct: word);
+vipinterface DebList  licensed (
+                                 #include DebList.lih
+                               );
+vipinterface DebListV licensed (
+                                 #include DebListV.lih
+                               )
+                      Parameters(cValOt: comp;
+                                OtDate, BOtDate, LOtDate : date;
+                                KolPers, AllKontr, Prod, Zakup, KonsP, KonsZ,
+                                RubD, RubValD, RubValRub, ValD, FValut: word;
+                                NaklOnlyWas, NaklDat, UchVozvr, UchVozvr2: boolean;
+                                BOtDatePer, LOtDatePer : date;
+                                Per0, Per1, Per2, Per9, PerA : word;
+                                OtDatIn, OtDatCurrent: word;
+                                LenPer, TipLen, AlignDay, Align : word
+                               );
+
+vipinterface DebPasV      licensed (FREE);
+
+vipinterface GrSchVsz     licensed (postpol);
+vipinterface IspBarterDO_Exec licensed 
+                                   (
+                                     #include IspBarterDO_Exec.lih
+                                   );
+vipinterface IspDO_Exec   licensed (FREE) 
+                          Parameters(TipOt:byte; NaprOt:word;DoClose:boolean);
+vipinterface IspGrDO_Exec licensed (postpol);
+vipinterface FutureNalog  licensed (postpol);
+
+vipinterface DebPasN      licensed (                  
+                                     #include DebPasN.lih
+                                   );
+
+
+vipinterface IerDebPas  licensed (FREE)
+                        Parameters(NRecRep: comp);

@@ -1,0 +1,30 @@
+/*
+ ษอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออป
+ บ                     (c) 1994,97 ชฎเฏฎเ ๆจ๏ €€’€                      บ
+ บ เฎฅชโ        : €€’€                                                 บ
+ บ ‘จแโฅฌ        : เฎจงขฎคแโขฅญญฎฅ ฏซ ญจเฎข ญจฅ                             บ
+ บ ฅเแจ๏        : 7.10                                                      บ
+ บ  งญ ็ฅญจฅ    : ญโฅเไฅฉแ๋  ซฃฎเจโฌฎข                                     บ
+ บ โขฅโแโขฅญญ๋ฉ :                                                           บ
+ บ  เ ฌฅโเ๋     : ฅแโ์                                                      บ
+ ศอออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออออผ
+*/
+
+#ifdef ComponentVersion
+#component "M_Scripts"
+#endif
+
+//******************************************************************************
+// ObjInterface oRegScript
+#ifndef __Def_RegScript__
+#define __Def_RegScript__
+ObjInterface oRegScript;
+End; // ObjInterface oFldOfMnPlan_RB
+
+VipInterface RegScript implements oRegScript #Licensed_Free
+#ifdef Atl51
+Parameters (pForce  : boolean)
+#endif
+;
+#endif
+

@@ -1,0 +1,226 @@
+//#include MercuryPRJ_View.vih
+Interface MercuryPRJ_View 'Просмотр загруженных данных от Меркурия по накладной';
+  show at (,, 91, 23);
+create view
+var _cSoprMain : comp;
+as select
+  KatSopr.nrec
+, if(MercLog.State = 0, 'Черновик'
+     ,If(MercLog.State = 1,'Готово к отправке на E-MAIL'
+        ,if(MercLog.State = 2,'Отправлено на E-MAIL'
+            ,if(MercLog.State = 3,'Отправка на не требуется'
+             ,'!!!!ОШИБОЧНОЕ СОСТОЯНИЕ!!! обратитесь к разработчику!!!'
+               )
+           )
+        )
+    ) (FieldName = StateLog)
+from
+   KatSopr
+ , ATL_MERCURY_HEAD MercH
+ , ATL_MERCURY_LOG MercLog
+ , SpSopr SpSopr1
+ , ATL_MERCURY_Spec MercSp1
+ , KatMc KatMC1
+ , SpSopr SpSopr2
+ , ATL_MERCURY_Spec MercSp2
+ , KatMc KatMc2
+
+ where ((
+       _cSoprMain == KatSopr.Nrec
+  and KatSopr.Nrec == MercH.cSopr
+  and MercH.cMercuryLog == MercLog.nrec
+  // from SpSopr
+  and   KatSopr.Nrec == SpSopr1.cSopr
+  and   SpSopr1.Nrec == MercSp1.cSpSopr
+  and SpSopr1.cMcUsl == KatMc1.Nrec
+  // from Mercury
+  and      MercH.nrec == MercSp2.cHead
+  and MercSp2.cSpsopr == SpSopr2.nrec
+  and  SpSopr2.cMcUsl == KatMc2.Nrec
+ ))
+;
+
+Window winShowLogImport;
+Screen scrShowLogImport (,,sci1Esc);
+show at (,,,3);
+table MercLog  ;
+fields
+ MercLog.LogDate   : protect;
+ MercLog.timeSend  : protect;
+ StateLog : protect;
+ MercLog.Email     :protect;
+ MercLog.cEmail    : protect;
+<<
+ Дата-время запуска задания .@@@@@@@@@@@@@@@  Дата-время посылки на почту .@@@@@@@@@@@@@@@
+ Статус лога .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ E_mails .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ copy E-MAILS .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+>>
+end;
+Panel pnShowLogImport ;
+show at (,4,,);
+  Table MercLog;
+ Text
+   MemoID = mlog MercLog.Log 'Лог импорта файла WMS'  :Protect ;
+end; // Panel
+end;
+Window winShowMercuryData 'Просмотр загруженных данных WMS по накладной', cyan;
+Screen scrShowMercuryDataKatSopr  (,,sci1Esc);
+show at (,,,4);
+Fields
+ KatSopr.NSopr + ' от ' + DateToStr(KatSopr.dSopr, 'DD/MM/YYYY') : protect;
+ DateToStr(MercH.Atl_lastDate, 'DD/MM/YYYY')  + ' ' + timeToStr(MercH.Atl_lastTime,'HH:MM:SS'): Protect;
+ MercH.DO_Num    : Protect;
+ MercH.Relevant   : Protect;
+ MercH.PalletCnt  : Protect;
+ MercH.filename   : Protect;
+ MercH.ExportedDesadv : Protect;
+ MercH.ExportedDESMER : Protect;
+ MercH.ExportedDESSCC : Protect;
+ MercH.ExportedInvoic : Protect;
+ MercH.ErrDescr   : Protect;
+buttons
+  cmValue2,default,,'Посмотреть лог импорта',,;
+  cmValue1,,,'Удалить загруженные данные',,;
+<<
+       Накладная .@@@@@@@@@@@@@@@@@@@@@@@@@@@ Дата, время загрузки данных WMS .@@@@@@@@@@@@@@@@@@@@   <.    LOG импорта   .>
+  Данные из файла WMS
+        Номер ДО .@@@@@@@@@@@@@  Relevant .@@@@@@@@@@@@@ Количество паллет .@@@@@@@@@@@@@
+            Файл .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+        Exported  [.] -Desadv` [.] -DESMER` [.] -DESSCC` [.] -Invoice`
+ Описание ошибки .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@         <.Удалить данные WMS.>
+>>
+end;
+Handleevent
+cmInit :
+{
+  if BoGetTune('USERTUNE.MercuryPRJ.CantDeleteWMSDATA')
+  then disablecommand(cmValue1)
+  else EnableCommand(cmValue1);
+  var isProtectUUID : boolean;
+  if BoGetTune('USERTUNE.MercuryPRJ.CantUpdateUUID')
+  then isProtectUUID := true
+  else isProtectUUID := false;
+   cfsSetProp('c_BRSHOWMERCURYDATAMERCSP2_MERCSP2.UUID_UUID','PROTECT',isProtectUUID);
+}
+cmValue1:
+ {
+   if BoGetTune('USERTUNE.MercuryPRJ.CantDeleteWMSDATA')
+    {
+      Message('Вам запрещено удалять загруженные данные WMS',error);
+      stop; abort; exit;
+    }
+   if message('Будьте внимательны!!!'+
+      +''#13''+'Вы уверены, что хотите удалить загруженные данные?', warning+ Confirmation + YesNo) = cmYes
+    {
+      var _cHeadMerc : comp = MercH.nrec;
+      Delete MercSp2 where ((_cHeadMerc == MercSp2.cHead));
+      Delete MercH where ((_cHeadMerc == MercH.nrec));
+      Message('Данные удалены') ;
+
+      rescanPanel(tnKatSopr);
+      rescanPanel(tnMercH);
+      rescanPanel(tnSpSopr1);
+      rescanPanel(tnMercSp1);
+      rescanPanel(tnSpSopr2);
+      rescanPanel(tnMercSp2);
+    }
+ }
+cmValue2:
+ {
+   runwindowModal(winShowLogImport);
+ }
+end;
+
+Screen scrShowMercuryDataSpSopr1 (,,sci1Esc);
+show at (,5,57,5);
+<<
+   Данные от позиций накладной
+>>
+end;
+  Browse brShowMercuryDataSpSopr1 (,,sci1Esc);
+   Show at (,6,57,10);
+   table SpSopr1;
+   fields
+    SpSopr1.npp    '№ пп'('Номер по порядку в накладной'):[2],protect;
+    KatMC1.Name    'Наименование МЦ'('Наименование МЦ'):[20], protect;
+    KatMc1.Barkod2 'SAP CODE'('SAP CODE'):[6], protect;
+    SpSopr1.KolFact 'кол-во'('количество по позиции накладной'): [5,'\2p[|-]3666`666`666`666`666.88'], Protect;
+    SpSopr1.KolFact * SpSopr1.price + if(KatSopr.VhodNal <> 1, SpSopr1.SumNDS,0) 'Стоимость позиции'('Стоимость позиции накладной'):[7,'\2p[|-]3666`666`666`666`666.88'], Protect;
+  end  // Browse brShowMercuryData1SpSopr
+Screen scrShowMercuryData1(,,sci1Esc);
+show at (,11,57,11);
+<<
+   Данные из файла WMS
+>>
+end;
+   Browse brShowMercuryDataMercSp1(,,sci1Esc);
+   Show at (,12,57,) ;
+   table MercSp1;
+   fields
+    MercSp1.SAP_CODE   'SAP Code'('SAP Code'): [5],protect;
+    MercSp1.CNT        'Кол-во'('Количество'): [3],protect ;
+    MercSp1.ED         'Ед. Изм'('Единица измерения'): [3],protect ;
+    MercSp1.DateExpire 'DateExpire'('DateExpire'): [10],protect ;
+    MercSp1.DateCreate 'DateCreate'('DateCreate'): [10],protect ;
+    MercSp1.UUID       'UUID'('UUID'): [20],protect       ;
+    MercSp1.PalletSSCC 'PalletSSCC'('PalletSSCC'): [20],protect ;
+    MercSp1.ErrDescr   'Описание ошибки'('Описание ошибки, если пусто, значит все ОК'): [20],protect;
+  end  // Browse brShowMercuryData1SpSopr
+Screen scrShowMercuryDataSpSopr2(,,sci1Esc);
+show at (61,5,,5);
+<<
+   Данные от позиций загруженного файла
+>>
+end;
+   Browse brShowMercuryDataMercSp2(,,sci1Esc);
+   Show at (61,6,,10);
+   table MercSp2;
+   fields
+    MercSp2.SAP_CODE   'SAP Code'('SAP Code'): [5],protect;
+    MercSp2.CNT        'Кол-во'('Количество'): [3],protect ;
+    MercSp2.ED         'Ед. Изм'('Единица измерения'): [3],protect ;
+    MercSp2.DateExpire 'DateExpire'('DateExpire'): [10],protect ;
+    MercSp2.DateCreate 'DateCreate'('DateCreate'): [10],protect ;
+    MercSp2.UUID       'UUID'('UUID'): [20],protect       ;
+    MercSp2.PalletSSCC 'PalletSSCC'('PalletSSCC'): [20],protect ;
+    MercSp2.ErrDescr   'Описание ошибки'('Описание ошибки, если пусто, значит все ОК'): [20],protect;
+  end  // Browse brShowMercuryData1SpSopr
+tableevent table MercSp2 ;
+ cmUpdateRecord:
+  {
+    update current MercSp2;
+  }
+end;
+Screen scrShowMercuryData2(,,sci1Esc);
+show at (61,11,,11);
+<<
+   Позиции накладной
+>>
+end;
+  Browse brShowMercuryDataSpSopr2(,,sci1Esc);
+   Show at (61,12,,) ;
+   table SpSopr2;
+   fields
+    SpSopr2.npp    '№ пп'('Номер по порядку в накладной'):[2],protect;
+    KatMC2.Name    'Наименование МЦ'('Наименование МЦ'):[20], protect;
+    KatMc2.Barkod2 'SAP CODE'('SAP CODE'):[6], protect;
+    SpSopr2.KolFact 'кол-во'('количество по позиции накладной'): [5,'\2p[|-]3666`666`666`666`666.88'], Protect;
+    SpSopr2.KolFact * SpSopr2.price + if(KatSopr.VhodNal <> 1, SpSopr2.SumNDS,0) 'Стоимость позиции'('Стоимость позиции накладной'):[7,'\2p[|-]3666`666`666`666`666.88'], Protect;
+  end  // Browse brShowMercuryData1SpSopr
+end; // Window
+Procedure ShowMercuryData(_cSopr : comp) ;
+{
+  Set _cSoprMain := _cSopr;
+  If getfirst KatSopr <> tsOK
+  {
+    message('Не найдена накладная ' + string(_cSoprMain,0,0),error);
+    exit;
+  }
+  If Getfirst MercH <> tsOK
+  {
+    message('У данной накладной '+KatSopr.nSopr +' от '+ DateToStr(KatSopr.dSopr,'Dd/MM/YYYY')+' нет загруженных данных WMS ', warning);
+    exit;
+  }
+  runWindowModal(winShowMercuryData);
+}
+End.//Interface

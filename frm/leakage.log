@@ -1,0 +1,21 @@
+
+▓ Программа: "vip.exe"  Время запуска: 20:53:44 25/07/2018
+▓ Исполняемый модуль: "c:\Galaktika\exe\vip.exe"
+▓ Система: Windows NT  Логин: "dmitry.lapushkov"  Станция: "RUMOW-VMGAL01"
+
+Класс окна "Atlantis Font Window" не был разрегистрирован: 1411
+(Класс не существует)
+ 04FCFCC0: 03905297 vision_w.dll.1:00004297
+ 04FCFCC4: 039C0A08 vision_w.dll.2:00000A08
+ 04FCFCD4: 03904ADB vision_w.dll.1:00003ADB
+ 04FCFCD8: 007914C2 atlantis.rtl.1:000304C2
+ 04FCFCE4: 03901000 vision_w.dll.1:00000000
+ 04FCFCF0: 039010BE vision_w.dll.1:000000BE
+ 04FCFCF8: 03901020 vision_w.dll.1:00000020
+ 04FCFD00: 03901000 vision_w.dll.1:00000000
+ 04FCFD20: 03901000 vision_w.dll.1:00000000
+ 04FCFD30: 03901000 vision_w.dll.1:00000000
+
+Менеджер динамической памяти ".SysUserHeap(.SysUser)"
+Потеряно блоков: 8939, байтов: 277320
+

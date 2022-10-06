@@ -1,0 +1,278 @@
+//------------------------------------------------------------------------------
+//                                                      (c) Корпорация ГАЛАКТИКА
+//------------------------------------------------------------------------------
+// Галактика 8.1 - Бухгалтерский контур
+// Функции форматов и преобразования чисел к форматам
+//------------------------------------------------------------------------------
+
+#ifndef __ExcelFormat__
+#define __ExcelFormat__
+
+#ifdef ComponentVersion
+#Component "F_Common"
+#end
+
+// Формат для вывода сумм
+// #define  SumFormatExcel  '\2p[|-]3666666666666666.88'
+// #define  SumFormatRep    '\2p[|-]3666''666''666''666''666.88'
+// Формат для вывода Количественных чисел
+// #define  KolFormatExcel  '\0p[|-]3666666666666666666'
+// Формат для вывода дат 'DD/MM/YYYY'
+// #define  DateFormatRep  'DD/MM/YYYY'
+// Формат для вывода коэффициента
+// #define   KoefFormatExcel  '\6p[|-]3666666666666.888888'
+// Формат для вывода массы драгоценных металлов
+// #define   MassDragMetFormatExcel  '\12p[|-]366666.888888888888'
+
+
+#doc
+Функции форматов и преобразования чисел к форматам.
+Для использования функций в форме необходимо подключить файл <b>ExcelFormat.var</b>.
+#end
+ObjInterface ObjExcelFormat;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция удаляет все типы разделителя из строки
+  и заменяет запятую на точку.
+  #end
+  function EraseSeparator (NumberInString : string) : string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция удаляет все типы разделителя из строки,
+  заменяет запятую на точку,
+  и преобразует полученную строку к типу double
+  #end
+  function NumInStrToDouble (NumberInString : string) : double;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция удаляет все типы разделителя из строки,
+  заменяет запятую на точку,
+  Функция выполняет те же действия, что и EraseSeparator, просто имеет такое название
+  для аналогии с NumInStrEraseSeparatorNotNul
+  #end
+  function NumInStrEraseSeparator (NumberInString : string) : string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция удаляет все типы разделителя из строки,
+  заменяет запятую на точку,
+  а если строка преобразованная к числу = 0, то выводится пустая строка
+  #end
+  function NumInStrEraseSeparatorNotNul (NumberInString : string) : string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция возвращает формат для вывода чисел с количеством знаков после запятой
+  указанным в принимаемом параметре ColDecimalDigit. <br>
+  Например: efFormatExcel(2) = '\<b>2</b>p[|-]3666666666666666666<b>.88</b>'
+  #end
+  function efFormatExcel (ColDecimalDigit : word ) : string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует число формата double к строке формата efFormatExcel
+  с указанным количеством знаков после запятой
+  #end
+!   Sum             - преобразуемое число
+!   ColDecimalDigit - количество знаков после запятой
+  function DoubleToStrFormatExcel (Sum : double; ColDecimalDigit : word) : string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует число формата double к строке заданного формата
+  И в отличии от DoubleToStr, если результат нулю возвращает не ноль
+  по формату, а пустую строку!
+  #end
+!   Sum     - преобразуемое число
+!   _Format - Формат
+  function DoubleToStrFormatNotNul (Sum : double; _Format : string) : string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует число формата double к строке формата efFormatExcel
+  с указанным количеством знаков после запятой
+  И в отличии от DoubleToStrFormatExcel если результат нулю возвращает не ноль
+  по формату, а пустую строку!
+  #end
+!   Sum             - преобразуемое число
+!   ColDecimalDigit - количество знаков после запятой
+  function DoubleToStrFormatExcelNotNul (Sum : double; ColDecimalDigit : word) : string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция удаляет все типы разделителя из строки,
+  заменяет запятую на точку,
+  и преобразует полученную строку к строке формата efFormatExcel
+  #end
+!   NumberInString  - преобразуемое число в виде строки с разделителями
+!   ColDecimalDigit - количество знаков после запятой
+  function NumInStrToFormatExcel (NumberInString : string; ColDecimalDigit : word ) : string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция удаляет все типы разделителя из строки,
+  заменяет запятую на точку,
+  и преобразует полученную строку к строке формата efFormatExcel,
+  а если строка преобразованная к числу = 0, то выводится пустая строка
+  #end
+!   NumberInString  - преобразуемое число в виде строки с разделителями
+!   ColDecimalDigit - количество знаков после запятой
+  function NumInStrToFormatExcelNotNul (NumberInString : string; ColDecimalDigit : word ) : string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует дату в строку в формате задоваемом формате,
+  сделана только для того чтобы быть в паре с DateToFormatNotNul
+  #end
+  function DateToFormat (_Date : date; _Format : string): string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует дату в строку в формате задоваемом формате,
+  а если дата нулевая возвращается пустая строка
+  #end
+  function DateToFormatNotNul (_Date : date; _Format : string): string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция возвращает формат для вывода дат = 'DD.MM.YYYY'
+  #end
+  function efDateFormatExcel : string; // efFormatExcelDate
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует дату в строку в формате = 'DD.MM.YYYY'
+  #end
+  function DateToStrFormatExcel (_Date : date ): string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует дату в строку в формате = 'DD.MM.YYYY',
+  а если дата нулевая возвращается пустая строка
+  #end
+  function DateToStrFormatExcelNotNul (_Date : date ): string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция возвращает стандартный для Галактики формат для вывода дат = 'DD/MM/YYYY'
+  #end
+  function efDateStandartFormatExcel : string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует дату в строку в формате = 'DD.MM.YYYY'
+  #end
+  function DateStandartToStrFormatExcel (_Date : date ): string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует дату в строку в формате = 'DD.MM.YYYY',
+  а если дата нулевая возвращается пустая строка
+  #end
+  function DateStandartToStrFormatExcelNotNul (_Date : date ): string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция возвращает формат для вывода месяцев в формате дата (период) = 'MM.YYYY'
+  #end
+  function efPeriodFormatExcel : string; // efFormatExcelPeriod
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует дату в строку в формате = 'MM.YYYY'
+  #end
+  function PeriodToStrFormatExcel (_Date : date ): string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует дату в строку в формате = 'MM.YYYY',
+  а если дата нулевая возвращается пустая строка
+  #end
+  function PeriodToStrFormatExcelNotNul (_Date : date ): string;
+
+  //----------------------------------------------------------------------------
+  #doc
+  Функция возвращает срок использования в формате X лет X мес
+  #end
+! Параметры:
+!   SrokIspNumber - количество единиц (лет или месяцев)
+!   In_EdIzm      - тип единиц принимаемого значения
+!                   0 - в месяцах
+!                   1 - в годах
+!                   2 - использовать настройку OS.SrokIspEdIzm
+!   Out_EdIzm     - тип единиц принимаемого значения
+!                   0 - В годах и месяцах
+!                   1 - В месяцах
+!                   2 - В годах
+!                   3 - использовать настройку OS.PrintSrokIsp
+  function SrokIspEdIzm (SrokIspNumber : double;
+                         In_EdIzm      : word;
+                         Out_EdIzm     : word
+                        ) : string;
+
+  //----------------------------------------------------------------------------
+end;
+
+
+//----------------------------------------------------------------------------
+ObjInterface ObjExcelFormat1;
+  //----------------------------------------------------------------------------
+  #doc
+  Функция преобразует число формата double к строке заданного формата
+  И в отличии от DoubleToStr, если результат нулю возвращает не ноль по формату, а пустую строку!
+  #end
+//  _Sum     - преобразуемое число
+//  _Format - Формат
+  function DoubleToStrExel (_Sum : double; _Format : string = SumFormatExcel) : string;
+  function DoubleToStrRep  (_Sum : double; _Format : string = SumFormatRep)   : string;
+  function DateToStrRep    (_Date : date;  _Format : string = DateFormatRep ) : string;
+
+end;
+
+
+//----------------------------------------------------------------------------
+ObjInterface ObjExcelFormat2;
+  function DoubleToStrExcel (_Sum : double; _Format : string = SumFormatExcel) : string;
+
+! Функция преобразует Количество к строке заданного формата
+! Если форматне задан, то число знаков после запятой определяется по настройке 'OS.RazrKol'
+! Число выводится всегда
+  function KolOsToStrRep    (_Kol : double; _Format : string = '') : string;
+  function KolOsToStrExcel  (_Kol : double; _Format : string = '') : string;
+
+end;
+
+//----------------------------------------------------------------------------
+ObjInterface ObjExcelFormat3;
+// AbbreviateInitials - "Фамилия Имя Отчество" в "Фамилия И.О."
+  Function AbbreviateInitials(_sFIO: string) : string;
+// Функция возвращает тип переоценки
+  function GetPerType(_pKind : word) : string;
+// Функция возвращает True, если _Srok1 = _Srok2
+  function SrokEquality (_Srok1, _Srok2 : double) : boolean;
+// Функция возвращает срок использования в формате X лет X мес
+  function SrokIspEdIzmWord (_SrokIsp : double) : string;
+end;
+
+//----------------------------------------------------------------------------
+ObjInterface ObjExcelFormat4;
+  // Функция преобразует число формата double к строке заданного формата
+  // Число печатается всегда. Даже если равно нулю.
+  function SumToStrRep    (_Sum : double; _Format : string = SumFormatRep)    : string;
+  function SumToStrExcel  (_Sum : double; _Format : string = SumFormatExcel)  : string;
+  // Печатает массу драгмкталла в формате efMassOfPreciousMetalsFormatExcel = '\12p[|-]366666.888888888888';
+  function DragMToStr     (_Sum : double; _Format : string = efMassOfPreciousMetalsFormatExcel)  : string;
+  // Печатает коэффициент в формате efCoefficientFormatExcel = '\6p[|-]3666666666666.888888';
+  function KoefToStr      (_Sum : double; _Format : string = efCoefficientFormatExcel)           : string;
+
+end;
+
+
+//----------------------------------------------------------------------------
+VipInterface ExcelFormat    Implements ObjExcelFormat, ObjExcelFormat1, ObjExcelFormat2, ObjExcelFormat3, ObjExcelFormat4
+  Licensed (Free);
+
+#end // __ExcelFormat__

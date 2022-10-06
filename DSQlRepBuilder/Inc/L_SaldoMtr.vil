@@ -1,0 +1,29 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Целевой учет запасов
+// Описание экспортируемых интерфейсов компонента L_SaldoMtr
+//------------------------------------------------------------------------------
+
+#component "L_SaldoMtr"
+
+VipInterface UksRepMove      licensed(CEL_UCH) Parameters(pwMode : word);
+VipInterface UksRepMove1     licensed(CEL_UCH);
+VipInterface UksRepSaldo     licensed(CEL_UCH);
+VipInterface UksRepStock     licensed(CEL_UCH);
+VipInterface UksExpSaldo     licensed(FREE);
+VipInterface IKontrObj       licensed(FREE);
+VipInterface MtrFormDO       licensed(FREE) Parameters(piMode :integer; pdOper : date; pcObj : comp; pcSaldoRaz : comp; pwSaldTune : word);
+VipInterface MtrForming      licensed(FREE) Parameters(piMode :integer; pdOper : date; pcSaldoRaz : comp; pwSaldTune : word);
+VipInterface UksNalT         licensed(FREE) Parameters(pdDate : date; pcObj : comp; pcMC : comp; pcPodr : comp; pcMol : comp; pcParty : comp; pfObjNal : double);
+VipInterface Convert613      licensed(FREE) Parameters(pNRec : comp; pNRecNew : comp);
+VipInterface FormDOForZakaz  licensed(FREE);
+VipInterface AllMtr          licensed(CEL_UCH);
+VipInterface VipMaskICN      licensed(FREE) Parameters(pcMask : comp);
+VipInterface GetMaskICN      licensed(FREE) Parameters(cSrc : comp; cDst : comp);
+VipInterface GetSaldTune     licensed(FREE) Parameters(pcType : comp; pwType : word);
+VipInterface GetSpDocsMTR    licensed(CEL_UCH) Parameters(pTable : word; pDoc : comp);
+VipInterface UKS2MTR         licensed(FREE) Parameters(pbRez : boolean);
+VipInterface TORO2MTR        licensed(FREE);
+VipInterface ChKAUbyAttr     licensed(FREE) Parameters(plMarker: longint; pwPick, pwTable: word);
+VipInterface ReCalcMTRsaldo1 licensed(FREE);
+VipInterface EditMtr2Spec    licensed(CEL_UCH) Parameters(pwMode, pwField, pwTable: word; pcSpec: comp);

@@ -1,0 +1,12 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компоненты
+
+#ifdef ComponentVersion
+#component "L_GrSch"
+#end
+
+VipInterface GroupSch    licensed (FREE) Parameters (c1 : comp);
+VipInterface GrSchNdc    licensed (FREE) Parameters (wVidDoc : word);
+VipInterface GetGroupSch licensed (FREE) Parameters (wMode, wTitle, wCurFrmt : word; wSome : boolean; wGSch : comp; wIsPicGr : boolean);
+VipInterface VDogToGrSch licensed (FREE) Parameters (pGrSch : comp);
+!#include iGrpSch.vih

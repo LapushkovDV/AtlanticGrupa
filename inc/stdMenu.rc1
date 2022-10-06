@@ -1,0 +1,172 @@
+!{ ╔═════════════════════════════════════════════════════════════════════╗ }
+!{ ║              Атлантис "TOP SOFT Ltd.", АО "НОВЫЙ АТЛАНТ"            ║ }
+!{ ║                                                                     ║ }
+!{ ║  Разработал:  Володько В.Г. & K°                                    ║ }
+!{ ║  Назначение:  Стандартная системная менюха                          ║ }
+!{ ║  Изменения :                                                        ║ }
+!{ ║                                                                     ║ }
+!{ ╚═════════════════════════════════════════════════════════════════════╝ }
+
+Vspom Menu
+{
+ = Information, '~И~нформация', 'Дополнительная информация о системе', hcInformation;
+----------------;
+ = Lovely, 'Нави~г~атор', 'Система прямых вызовов всех функций системы',hcLovMNavigator;
+ - 'Г~л~авное меню', cmDeskMenuBookmark,'Список модулей главного меню', hcSmMMainMenu;
+----------------;
+ = LovelyProgs, 'Прило~ж~ения', 'Запуск внешних приложений', hcsmMLovelyProgs;
+ - 'На~с~тройка приложений', cmRunInterface('TuneLovelyProgs'), 'Настройка внешних приложений', hcsmMLovelyProgsTuning;
+----------------;
+ = Setup, '~Н~астройка', 'Настройка параметров системы', hcSetup;
+ = Configurator, '~К~онфигуратор', 'Конфигурирование визуальных объектов системы', hcSysMCnf;
+ = Editor,   '~Р~едактор',  'Редактирование файлов и отчетов', hcatMEditor;
+ = Utilities,'~У~тилиты',   'Различные утилиты',hcUtilities;
+----------------;
+ = Windows, '~О~кна',     'Операции с окнами',        hcWindow;
+ = Help,    '~П~одсказки','Операции со справочником', hcHelp;
+#include hotk.rc1
+----------------;
+ - 'Запуск Главного ~м~еню',cmExitToDesk,'Отображение главного меню системы поверх открытых окон',hcQuitDesk,'Shift+F10',kbShiftF10,,,,, TB_MMENU;
+ - '~В~ыход',cmQuit,'Выход из системы',hcQuit,'Alt+X',kbAltX,,,,, TB_EXIT;
+}
+
+Information Menu
+{
+ - 'О ~р~азработчиках',    cmExecView('Dialog about'),'Краткая информация о разработчиках системы', hcatMAboutDeveloper;
+ - 'О ~л~ицензии',         cmViewLicFile,   'Информация о лицензионном файле',hcmViewLicFile;
+ - 'О рабочей ~с~танции',  cmGetInfoGeather,'Информация о рабочей станции',   hcInfMAboutWorkStation;
+ = 'О ~к~омпонентах',                       'Информация о версиях компонентов', hcInfMAboutVerCompon;
+ {
+   - '~С~водный отчет',    cmShowSystemAbout,   'Информация о системе', hcInfMVerComponCompleteReport;
+   ----------------;
+   - '~П~олный отчет',   cmGetComponentVersionInfo ,     'Информация о версиях компонентов', hcInfMVerComponFullReport;
+   - '~Т~олько различия',cmGetComponentVersionInfo('1'), 'Информация о версиях компонентов', hcInfMVerComponOnlyDiff;
+   - 'Различия с ~р~епозитарием',cmCheckRepositoryReport,'Информация о различиях между регистрацией и инсталляцией', hcinfMVerComponReposDiff;
+   ----------------;
+   - '~И~нформация для технической поддержки',cmInfoForVendor,'Информация о конфигурации системы для технической поддержки', hcinfMVerComponForSupport;
+ }
+ - 'О конфликтах в ~ф~ормах', cmRunInterface('FormsDifferenceReport'), 'Информация о конфликтах в формах', hcInfMAboutFormCollision;
+ - 'О загруженных ~и~нтерфейсах', cmRunInterface('InfoRunResource'), 'Информация о загруженных интерфейсах', hcInfMAboutLoadInterface;
+}
+
+Setup Menu
+{
+ - '~Э~кран',         cmChangeMonitorOptions,'Режимы монитора',hcScreenDeal;
+ - '~О~тчеты',        cmfTune,               'Настройка отчетов',hcTuneMReports;
+ - 'По~ч~та',         cmfGlobMail,           'Настройка почты',hcTuneWGlobMail;
+ - '~В~изуальные схемы',  cmRunInterface('LayoutsManager'),'Настройка визуальных схем', hcMVisualScheme;
+ - 'Отла~д~чик интерфейсов', cmShowDebuggerOptionsWindow,'Настройка отладчика интерфейсов', hcCompiMDebug;
+ - 'Р~а~бочее место', cmTuneArmResource,     'Настройка рабочего места',hcArmConfig;
+ - '~Ф~илиальность',  cmRunInterface('SelectFilial'),'Настройка текущего филиала',hcFiliality;
+ - 'Взаимосвязи ~т~аблиц',   cmRunInterface('TabRefMain'),'Настройка взаимосвязей между таблицами', hcTabReferences;
+#include newdata.rc1
+ = Printer, '~П~ринтеры', 'Выбор принтера, настройка параметров печати',hcPrinterOptionsDeal;
+----------------;
+ - '~Р~едактор',             cmRdTuneDefDialog,'Настройка параметров по умолчанию',hcedTuning_Editor;
+ - 'Редакторы ~м~емо-полей', cmExtViewers, 'Задание внешних редакторов мемо-полей', hcExtViewers;
+----------------;
+ - '~С~охранить настройку',  cmSaveConfiguration, 'Сохранить настройку в файле конфигурации пользователя', hcSaveConfiguration;
+}
+
+Configurator Menu
+{
+ - '~К~онфигурирование меню', cmEditMenuBar,'Настройка меню приложения',hcCnfMConfMenu;
+----------------;
+ - '~У~правление Конфигуратором', cmConfRunInterface ('cfgServiceFunctions'), 'Функции настройки Конфигуратора, загрузки и записи скриптов',hcCnfMAdmConf;
+----------------;
+ - 'Список конфигурируемых ~о~бъектов', cmConfRunInterface ('cfgObjects'),    'Иерархический перечень объектов конфигурации',hcCnfMListConf;
+ - '~Р~едактор свойств', cmConfRunInterface ('cfgObjectInspector(true,0,true)'), 'Редактор свойств объектов конфигурации',hcCnfMEditorProperty;
+ - '~П~араметры', cmRunInterface ('cfgParameters'), 'Параметры',hcCnfMParameters;
+}
+
+Printer Menu
+{
+ - '~Н~астройка принтера',cmRdPrinterDialog, 'Установка типа принтера для печати',hcPrinterConfig   ,,,,,,, TB_PRSET;
+ - '~П~араметры печати',  cmRdPrintOptDialog,'Установка параметров печати',       hcPrintOptionsDeal,,,,,,, TB_PROPT;
+}
+
+Utilities Menu
+{
+ - 'Вызов ~A~RD-отчетов', cmRunReport(''),'Вызов отчетов, построенных программой ARD', hcARDReport;
+ - 'Вызов DSQL ~O~LAP-отчетов', cmSqlOlapReport,'Вызов OLAP-отчетов, построенных по запросу DSQL', hcARDReport;
+ - 'Компиляция ~п~рисоединенных форм', cmCompileLinkFormsFromTo,
+    'Компиляция присоединенных форм из указанной директории в указанный ресурс по маске', hcCompileLinkFormsFromTo;
+------------;
+ - 'Запуск внешнего ~и~нтерфейса', cmRunEveryInterface,
+    'Запуск заданного интерфейса из заданного ресурса', hcRunEveryInterface;
+ - 'Система ~т~естирования AQA', cmAqaToDo,
+    'Вход в контрольную панель системы тестирования AQA', hcAqa,'Ctrl+F12',kbCtrlF12;
+ = AtlLogSystem, 'Система ~л~огирования', 'Настройка и запуск логирования, просмотр логов';
+ - 'Редактор ~D~SK-файлов', cmRunInterface('DSKEditor'), 'Редактор DSK-файлов';
+------------;
+ - 'В~ы~числения', cmEvaluateAndModify,'Вычисление выражений',hcEvaluate,'Ctrl+F4',kbCtrlF4 ,,,,, TB_EVAL;
+ - '~К~алькулятор',cmCalculator,       'Вызов калькулятора'  ,hcCalculator ,,               ,,,,, TB_CALC;
+------------;
+ - 'Изменение парол~я~',cmChangePassword,'Изменение пароля',hcChangePassword;
+------------;
+ - 'Файлы с ~с~ервера...',cmGetNewFilesFrom,'Получение новых файлов с сервера',hcFilesFromServer;
+}
+
+AtlLogSystem Menu
+{
+ - '~Н~астройка логирования',  cmRunInterface('AtlLogTune'), 'Настройка процедуры логирования и запуск';
+ - '~П~росмотр лог-файлов',    cmRunInterface('AtlLogView'), 'Просмотр лог-файлов';
+------------;
+ - 'Запуск ~л~огирования',     cmRunInterface('AtlLogQuickStart(false)'), 'Запуск логирования с предустановленными настройками',,,,,,,, tbbAtlLogStart;
+ - '~З~авершение логирования', cmRunInterface('AtlLogQuickStart(true)'),  'Завершение логирования',,,,,,,, tbbAtlLogStop;
+}
+
+Windows menu
+{
+ - '~С~ледующее',cmNext,'Переход в следующее окно',hcNextWindow,'F6',kbF6;
+ - '~П~редыдущее',cmPrev,'Переход в предыдущее окно',hcBackWindow,'Shift+F6',kbShiftF6;
+ - '~М~асштаб',cmZoom,'Раскрытие окна на весь экран',hcZoom,'F5',kbF5;
+ - '~Р~азмер',cmResize,'Изменение размеров окна',hcDragging,'Ctrl+F5',kbCtrlF5;
+ - '~З~акрыть',cmClose,'Закрытие окна',hcClose,'Alt+F3',kbAltF3;
+ - '~К~аскад',cmCascade,'Расположение окон каскадом',hcCascade, 'Shift+F4', kbShiftF4;
+ - '~Ч~ерепица',cmTile,'Расположение окон черепицей',hcTile, 'Shift+F5', kbShiftF5;
+------------;
+ - 'Сп~и~сок окон', cmRdListFiles, 'Просмотр списка открытых окон', hcListFiles, 'Alt+0', kbAlt0;
+------------;
+ - 'П~о~каз буфера',cmRDShowClipboard, 'Просмотр буфера обмена', hcedMShowBuffer;
+}
+
+Editor Menu
+{
+ - '~Р~едактор файлов...', cmProcessText,'Редактор файлов',       hcedMEditFile ,,,,,,, TB_DEDIT;
+ - '~П~росмотр файлов...', cmViewFile,   'Просмотр файлов',       hcedMViewFile ,,,,,,, TB_DVIEW;
+ - 'Р~е~дактор отчетов...',cmEditReport, 'Редактирование отчетов',hcatMEditorReport;
+}
+
+Help menu
+{
+ - '~П~одсказка', cmHELP,'Вызов справочника',hcatMHelpContext,'F1', kbF1 ,,,,, TB_HELP;
+ - 'П~р~едыдущая подсказка',cmLastHelp, 'Вызов предыдущей справки',hcLastHelp, 'Alt+F1', kbAltF1;
+}
+
+Lovely menu
+{
+ - '~В~се функции системы',          cmRunAllFunctionsList,   'Список функций меню для всех компонентов системы',
+                                   hcLovMAllFunc, 'Shift+F8',kbShiftF8 ,,,,, TB_PRCAL;
+ - '~Л~юбимые функции пользователя', cmRunUsersFunctionsList, 'Список функций системы, отобранный пользователем для быстрого вызова',
+                                   hcLovMLovFunc, 'Shift+F9',kbShiftF9 ,,,,, TB_PRLOV;
+ - '~И~стория вызовов функций',      cmRunHistoryCallsList,   'Список функций, вызванных пользователем в ходе работы',
+                                   hcLovMHistory, 'Alt+F8',  kbAltF8   ,,,,, TB_PRHIS;
+ }
+
+ExpToFormats Menu
+{                                                                                     
+ - 'Excel (XLSX)',         cmXlsxBrowse,    'Выгрузка в формате XLSX',hcExpiMExpi,,,,,,,picFormatExcel;
+ - 'XML',                  cmXMLBrowse,     'Выгрузка в формате XML', hcExpiMExpi,,,,,,,picFormatXML;
+ - 'JSON',                 cmJsonBrowse,    'Выгрузка в формате JSON',hcExpiMExpi,,,,,,,picFormatJSON;
+ - 'CSV',                  cmCsvBrowse,     'Выгрузка в формате CSV' ,hcExpiMExpi,,,,,,,picFormatCSV;
+}
+
+BrowseColumnsFilterMenu Menu
+{
+  - 'Фильтр по значению', cmFindWithValue,'Фильтр по колонкам со значением текущего поля',,,,,,,,imgColfilter;
+}
+
+#include filters.rc2
+#include AQA.rc
+#include sh.rc

@@ -1,0 +1,131 @@
+////////////// подменяем обработчик событий 
+#component "L_PRNSOPR"
+alter interface PrnTovnForFastRep;
+Overload
+ DataStream fr_prndata;
+end;
+create view
+var _cKsSrc : comp;
+as select
+SpSoprPrint_MC.cmcUsl
+from
+spsopr SpSoprPrint_MC
+, KatMc KatMc_Print
+, KatSopr KatSoprPrint
+, STEPDOC STEPDOCPrint
+, KatSopr KsSrc1
+, KatSopr KsSrc
+, SchFact SFSRC
+, SchFact SFCur
+, BaseDoc BaseDocPrint
+, SpSopr SpSoprPrint
+, katOrg GruzTo
+where
+((
+fr_docspecif.SpSoprNRec == SpSoprPrint_MC.Nrec
+and (SpSoprPrint_MC.prMc = 1)
+and SpSoprPrint_MC.cMcUsl == KatMc_Print.nrec
+and fr_dochead.KatSoprNRec == KatSoprPrint.nrec
+and fr_dochead.KatSoprNRec == SpSoprPrint.csopr
+and                      0 << SpSoprPrint.npp(noindex)
+and KatSoprPrint.cStepDoc == StepDocPrint.nrec
+and StepDocPrint.cBaseDoc == BaseDocPrint.nrec
+// для исправлений, т.к. стандарт левые значения дает
+    and _cKsSrc == KsSrc1.nrec
+    and KsSrc1.cschfact == SfSrc.nrec
+and fr_dochead.SchFact_NRec    ==  SFCur.nrec
+
+and KatSoprPrint.CGRUZTO == GruzTo.nrec
+))
+;
+function GetKsSrc(_cRec: comp): comp;
+{
+  result := 0h;
+  if getfirst fastfirstrow KsSrc where ((_cRec == KsSrc.nrec)) = tsOK
+   then
+   {
+     if KsSrc.cADoc <> 0h
+      then result := GetKsSrc(KsSrc.cAdoc)
+      else result := KsSrc.nrec
+   }
+}
+function getAllNpp : string;
+{
+  result := '';
+  var _prevnpp : word = 65534;
+  var _tmpStr : string = '';
+  var _kolpodryad : word = 0;
+ _loop SpSoprPrint
+  {
+    logstrtofile('c:\temp\printfr.txt','---------------');
+    logstrtofile('c:\temp\printfr.txt','SpSopr.npp  = '+SpSoprPrint.npp);
+    logstrtofile('c:\temp\printfr.txt','_prevnpp    = '+ _prevnpp);
+    logstrtofile('c:\temp\printfr.txt','_kolpodryad = '+ _kolpodryad);
+    logstrtofile('c:\temp\printfr.txt','_tmpStr     = '+ _tmpStr);
+
+   // if _tmpStr = '' then _tmpStr := SpSoprPrint.npp;
+
+     if _prevnpp <> SpSoprPrint.npp - 1
+     {
+       logstrtofile('c:\temp\printfr.txt','if _prevnpp <> SpSoprPrint.npp - 1');
+       if _prevnpp <> 65534 then _tmpStr := _tmpStr + if(_tmpStr = '','',if(_kolpodryad >0,'-',',')) + string(_prevnpp);
+        result := result + _tmpStr;
+        _kolpodryad := 1;
+        _tmpStr := string(SpSoprPrint.npp);
+       logstrtofile('c:\temp\printfr.txt',' result = ' + result);
+     }
+     else{
+        logstrtofile('c:\temp\printfr.txt','else if _prevnpp <> SpSoprPrint.npp ');
+//        if _kolpodryad = 1 then _tmpStr := SpSoprPrint.npp ;
+        _kolpodryad++;
+     }
+   _prevnpp := SpSoprPrint.npp;
+  }
+    _tmpStr := _tmpStr + if(_kolpodryad >0,'-',',') + string(SpSoprPrint.npp);
+     result := result + _tmpStr;
+}
+
+Function InitScrDoc: boolean;
+{
+  if KatSoprPrint.cAdoc <> 0h
+  then  set _cKsSrc := GetKsSrc(KatSoprPrint.cAdoc);
+  if getfirst KsSrc1 = tsOK {var _empty : boolean; _empty:= false;} //чтобы компилятор ничего не говорил
+  result := true;
+}
+DataStream fr_prndata
+(
+   Table Inherited::fr_dochead
+    (
+      [AttrOrg_NumMetroStore] extAttr.sGetAttr(1418,KatSoprPrint.CGRUZTO ,'Номер магазина МЕТРО');
+      [AttrOrg_GLNMetroStore] extAttr.sGetAttr(1418,KatSoprPrint.CGRUZTO ,'GLN магазина');
+      [AttrOrg_CodeByBuyer]   extAttr.sGetAttr(1418,KatSoprPrint.cOrg ,'CodeByBuyer');
+
+      [AttrOrg_GLNGRUZFROM] extAttr.sGetAttr(1418,KatSoprPrint.CGRUZFROM ,'GLN магазина');
+
+      [AttrOrg_NumZakaz]     STEPDOCPrint.NKONT;
+      [GruzTo_Code]          GruzTo.code;
+
+      [Atlantic_initSrcDoc]  InitScrDoc;
+      [Atlantic_SFSRC_NUM]   if(_cKsSrc <> 0h, SfSrc.NUM, SFCur.num) ;
+      [Atlantic_SFSRC_DAT]   if(_cKsSrc <> 0h, datetostr(SfSrc.dFact,'"DD" Mon YYYY г.'),datetostr(SFCur.dFact,'"DD" Mon YYYY г.'));
+      [Atlantic_NomIspr]     if(_cKsSrc <> 0h, replace(SFCur.num,SfSrc.num+'_',''),'-') ;
+      [Atlantic_BaseDocNoDoc]   if(isvalid(tnBasedocPrint),basedocPrint.NoDoc ,'-') ;
+      [Atlantic_StepDoc_dZabor] if(isvalid(tnStepdocPrint),datetostr(StepDocPrint.dZabor,'DD.MM.YYYY'),'-') ;
+      [Atlantic_StepDoc_dOtgr]  if(isvalid(tnStepdocPrint),datetostr(StepDocPrint.dOtgr ,'DD.MM.YYYY'),'-') ;
+      [Atlantic_NPPSTRING]  getAllNpp;
+    );
+
+  table Inherited::fr_docSpecif
+  (
+    [AttrMC_MetroKod]     extAttr.sGetAttr(coKatMc,SpSoprPrint_MC.cmcusl,'Код МЕТРО' );
+    [AttrMC_MetroArtikul] extAttr.sGetAttr(coKatMc,SpSoprPrint_MC.cmcusl,'Артикул МЕТРО (13-значный)');
+    [AttrMC_MetroArtikulMGB] extAttr.sGetAttr(coKatMc,SpSoprPrint_MC.cmcusl,'MGB артикул МЕТРО');
+
+    [AttrMC_AUSHANKod]     extAttr.sGetAttr(coKatMc,SpSoprPrint_MC.cmcusl,'Код Ашана' );
+    [AttrMC_BarKod] if(isvalid(tnKatMc_Print), KatMc_Print.BarKod, '');
+    [TNVED_TMP]         if(isvalid(tnKatMc_Print), KatMc_Print.TNVED, '');  // Накосячила Галактика... лять
+  );
+)
+end;
+
+end. // interface

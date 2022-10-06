@@ -1,0 +1,436 @@
+////////////// подменяем обработчик событий
+#component "L_DOGOVOR"
+table struct tDolgDog
+(
+  BDnDoc      : string
+ ,BDdDoc  : date
+ ,SumOtrg : double
+ ,SumOpl  : double
+ ,dOpr    : date
+ ,KS      : string
+ ,DayPLanPeriod : double
+ ,DayAfterOtrg  : double
+ ,DayAfterSchet : double
+ , MAXDOLGRUB : double
+ , MAXDEBTSAGE : double
+)
+with Index
+(
+ ind1 = BDnDoc + BDdDoc
+);
+alter interface CalcDolgDG;
+overload
+Function CalcDolgDGObjV2.ControlDolg_DG_4BaseDocEx(BDbuf : type$BaseDoc;
+                                   _wMode: word
+                                  ): boolean;
+end;
+create view
+var _Bufddoc : date;
+from
+  tDolgDog
+, tDolgDog tDolgDogBR
+, KatOrg KatOrgAtl
+where
+((
+ '' << tDolgDogBR.BDnDoc
+ and(     tDolgDogBR.SumOtrg - tDolgDogBR.SumOpl > 10
+              and add_day(tDolgDogBR.dOpr,tDolgDogBR.MAXDEBTSAGE) < _Bufddoc
+              and tDolgDogBR.dOpr <> 0
+              and tDolgDogBR.MAXDEBTSAGE > 0
+    )
+ ))
+;
+window wnBaseDocProsr
+browse brwnBaseDocProsr;
+table tDolgDogBR;
+fields
+ tDolgDogBR.BDnDoc  'ДО номер' ('ДО номер',,):[20], Protect;
+ tDolgDogBR.BDdDoc  'ДО дата' ('ДО дата',,):[10], Protect;
+ tDolgDogBR.SumOtrg 'Отгрузки' ('Отгрузки',,):[8], Protect;
+ tDolgDogBR.SumOpl  'Оплата' ('Оплата',,):[8], Protect;
+ tDolgDogBR.KS      'Накладная' ('Накадная',,):[20], Protect;
+ tDolgDogBR.dOpr    'Дата списания','накладной' ('Дата списания накладной',,):[10], Protect;
+// tDolgDogBR.DayPLanPeriod
+// tDolgDogBR.DayAfterOtrg
+// tDolgDogBR.DayAfterSchet
+// tDolgDogBR.MAXDOLGRUB
+ tDolgDogBR.MAXDEBTSAGE 'Макс срок','задолженности' ('Макс срок задолженности',,):[20], Protect;
+ end;
+end;
+Procedure FillTableDObyDog(_cDogovor,_cAppDogovor: comp);
+{
+  delete all tDolgDog;
+  _try
+  {
+  sql
+ select
+     t.BDNodoc
+    ,t.BDdDoc
+    ,sum(t.sumOtrg) as sumOtrg
+  //  ,sum(t.sumrekl) as SumRekl
+    ,sum(t.SumOpl) as SumOpl
+    ,max(t.dOpr ) as dOpr
+    ,max(t.KS  ) as KS
+    ,t.DayPLanPeriod
+    ,t.DayAfterOtrg
+    ,t.DayAfterSchet
+    ,t.MAXDOLGRUB
+    ,t.MAXDEBTSAGE
+        from
+       (
+            select
+             BD.NoDOc as BDNodoc
+            ,BD.DDoc  as BDdDoc
+            //Sum(case when KS.vidsopr = 106 then 0 else SpNakl.Kofact * SpNakl.price + case when KS.VhodNal <> 1 then SpNakl.SumNDS else 0 end end ) as sumOtrg
+            ,SpNakl2Sum.sumOtrg - coalesce(trekl.sumRekl,0) as sumOtrg
+      //      ,coalesce(trekl.sumRekl,0) as SumRekl
+            ,Sum(case when KS.vidsopr = 106 then (SpNakl.KolFact * SpNakl.price + case when KS.VhodNal <> 1 then SpNakl.SumNDS else 0 end )
+                                                   else Coalesce(RasprSum.Summa,0)  end
+                ) as SumOpl
+            , max(KS.dOpr) as dOpr
+            , max(KS.Nsopr + ' ' +date2str('%DD/%MM/%YYYY',KS.dSopr)) as KS
+            , max(case PlanDog.VidPlat when 1 then PlanDog.DayPlat else 0 end) as DayPLanPeriod
+            , max(case PlanDog.VidPlat when 2 then PlanDog.DayPlat else 0 end) as DayAfterOtrg
+            , max(case PlanDog.VidPlat when 3 then PlanDog.DayPlat else 0 end) as DayAfterSchet
+            , Max(Org.MAXDOLGRUB)  as MAXDOLGRUB
+            , max(Coalesce(AppDog.MAXDEBTSAGE,DOG.MAXDEBTSAGE)) as  MAXDEBTSAGE
+            from KatOrg Org
+                 join Dogovor Dog on DOG.CORG = org.nrec
+            left join Dogovor AppDog on AppDog.cDogovor = DOG.nrec
+                                        and AppDog.nrec = :(_cAppDogovor)
+            left join PlanDog on PlanDog.cDogovor = Dog.nrec
+                 join BaseDoc BD on BD.cDogovor = Dog.nrec
+                 join StepDoc StDO on StDo.cBaseDoc = BD.Nrec
+            left join KatSopr KS on KS.cStepDoc = StDO.nrec and KS.dOpr <> 0
+            left join spsopr SpNakl on (SpNakl.cSopr = KS.Nrec)
+            left join SpSopHoz RasprSum on (RasprSum.cSpSopr = SpNakl.nrec)
+            left join SoprHoz SoprH on SoprH.nRec = RasprSum.cSoprHoz
+            left join (
+                     select   Sum(case when KS.vidsopr = 106 then 0 else SpNakl.KolFact * SpNakl.price + case when KS.VhodNal <> 1 then SpNakl.SumNDS else 0 end end ) as sumOtrg
+                            ,case when ks.cAdoc = #comp(0) then ks.nrec else ks.cAdoc end as cSopr
+                     from KatSopr KS
+                       join SpSopr SpNakl on SpNakl.cSopr = KS.Nrec
+                       where KS.dOpr <> 0
+                       group by case when ks.cAdoc = #comp(0) then ks.nrec else ks.cAdoc end
+             ) spNakl2Sum on SpNakl2Sum.cSopr = ks.nrec
+ left join (
+     select sum(SpsR.KolFact * SpsR.price + case when KSR.VhodNal <> 1 then SpsR.SumNDS else 0 end ) as SumRekl
+            ,ks.nrec as cSoprSrc
+     from katsopr ks
+     join stepdoc st on st.nrec = ks.cstepdoc
+     join basedoc bd on bd.nrec = st.cbasedoc
+     join spsopr sps on sps.csopr = ks.nrec
+     left join spsopr spsR on spsR.cspsopr = sps.nrec and spsR.vidsopr in (102, 106, 203, 206)
+     left join katsopr ksR on ksR.nrec = spsR.cSopr
+     group by  ks.nrec
+     ) tRekl on tRekl.cSoprSrc = ks.nrec
+            where
+                Dog.nrec = :(_cDogovor)
+            and BD.STATUS = 2
+           // and BD.nodoc = '718432'
+            group by BD.NoDOc
+             ,BD.DDoc
+             ,SpNakl2Sum.sumOtrg - coalesce(trekl.sumRekl,0)
+             ,coalesce(trekl.sumRekl,0)
+         ) t
+         group by  t.BDNodoc
+        ,t.BDdDoc
+
+        ,t.DayPLanPeriod
+        ,t.DayAfterOtrg
+        ,t.DayAfterSchet
+        ,t.MAXDOLGRUB
+        ,t.MAXDEBTSAGE
+   into tDolgDog;
+/* тут по допсоглашениям
+ sql
+    select
+     BD.NoDOc as BDNodoc
+    ,BD.DDoc  as BDdDoc
+    ,Sum(case when KS.vidsopr = 106 then 0 else SpNakl.KolFact * SpNakl.price + case when KS.VhodNal <> 1 then SpNakl.SumNDS else 0 end end ) as sumOtrg
+    ,Sum(case when KS.vidsopr = 106 then (SpNakl.KolFact * SpNakl.price + case when KS.VhodNal <> 1 then SpNakl.SumNDS else 0 end )
+                                           else Coalesce(RasprSum.Summa,0)  end
+        ) as SumOpl
+    , KS.dOpr as dOpr
+    , KS.Nsopr + ' ' +date2str('%DD/%MM/%YYYY',KS.dSopr) as KS
+    , max(case PlanDog.VidPlat when 1 then PlanDog.DayPlat else 0 end) as DayPLanPeriod
+    , max(case PlanDog.VidPlat when 2 then PlanDog.DayPlat else 0 end) as DayAfterOtrg
+    , max(case PlanDog.VidPlat when 3 then PlanDog.DayPlat else 0 end) as DayAfterSchet
+    , Max(Org.MAXDOLGRUB)  as MAXDOLGRUB
+    , max(Coalesce(AppDOG.MAXDEBTSAGE,DOG.MAXDEBTSAGE)) as  MAXDEBTSAGE
+    from KatOrg Org
+         join Dogovor Dog on DOG.CORG = org.nrec
+    left join Dogovor AppDog on AppDog.cDogovor = DOG.nrec
+                            and AppDog.nrec = :(_cAppDogovor)
+    left join PlanDog on PlanDog.cDogovor = coalesce(AppDog.nRec,Dog.nrec)
+         join BaseDoc BD on BD.cDogovor = Dog.nrec
+                        and BD.cappDogovor = coalesce(appDog.nrec,#comp(0))
+         join StepDoc StDO on StDo.cBaseDoc = BD.Nrec
+    left join KatSopr KS on KS.cStepDoc = StDO.nrec and KS.dOpr <> 0
+    left join spsopr SpNakl on (SpNakl.cSopr = KS.Nrec)
+    left join SpSopHoz RasprSum on (RasprSum.cSpSopr = SpNakl.nrec)
+    eleft join SoprHoz SoprH on SoprH.nRec = RasprSum.cSoprHoz
+    where
+        Dog.nrec = :(_cDogovor)
+    and BD.STATUS = 2
+    //and BD.nodoc = '818095'
+    group by BD.NoDOc
+     ,BD.DDoc
+     ,KS.dOpr
+     ,KS.Nsopr + ' ' +date2str('%DD/%MM/%YYYY',KS.dSopr)
+   into tDolgDog;
+*/
+ }
+ _Except
+  else {}
+ // _finally {}
+}
+Function GetSumDOisStatus2byOrg(_cOrg : comp): double;
+{
+  var _result : double = 0;
+  _try
+  {
+    sql
+      select
+       Sum(Bdoc.totalNDE)
+      from KatOrg Org
+      join basedoc Bdoc on bDoc.cOrg = Org.nrec and bDoc.status = 2 and bdoc.viddoc = 201// исполянемые
+      join stepdoc stDoc on stdoc.cBasedoc = Bdoc.nrec
+      left join katsopr ks on ks.cstepdoc = stdoc.nrec
+      where  org.nrec = :(_cOrg)
+      //org.name like '%малютка%'
+      and bDoc.ddoc >= #date(01,01,2019)
+      and ks.nrec is null
+     into (_result)
+     ;
+ }
+ _Except
+  else {}
+  //_finally {}
+
+//org.name like '%малютка%'
+
+  result := _result;
+
+}
+Function GetSaldoOrgOnDate (_cOrg: comp; _dateSal : date) : double;
+{
+  var _result : double = 0;
+_try
+ {
+      sql
+      select
+         //  Org.name   as OrgName     ,
+         Coalesce(SaldoOtgruz.Summa,0) + Coalesce(SaldoOtgruzPP.Summa,0) - Coalesce(SaldoOplBeg.summa,0) - coalesce(SaldoOplBegRekl.Summa,0) as Saldo
+      from KatOrg Org
+      left join ( Select  sum(case when KatSopr.tipsopr =1 then -1 when KatSopr.tipsopr =2  then 1 else 0 end *KatSopr.summa) as Summa
+                        , KatSopr.cOrg as cOrg
+                     from katsopr where KatSopr.dopr < :(_dateSal) //#date(01,12,2018)
+                     and KatSopr.tipsopr =2 // оставляем только сбыт
+                     group by KatSopr.cOrg
+                ) SaldoOtgruz on SaldoOtgruz.cOrg = Org.nrec
+      left join (select Sum(case when BITAND(PlP_Sopr.ModeDoc,2048) <> 0  then -1 when BITAND(PlP_Sopr.ModeDoc,1024)<> 0 then 1 else 0 end * PlP_Sopr.SumPlat) as Summa
+                       , case when PlP_Sopr.TiDkGal = 10 then PlP_Sopr.cPlat else cPlatNew end as cOrg
+                  from PlPor PlP_Sopr
+                  where PlP_Sopr.DatVip < :(_dateSal) //#date(01,12,2018)
+                  and PlP_Sopr.TiDkGal in (10,21,22)
+                  and ( BITAND(PlP_Sopr.ModeDoc, 4) <> 0 and         // тип - "сопроводительный"
+                        BITAND(PlP_Sopr.ModeDoc, 2) = 0          // во взаиморасчетах участвует
+                       )
+                  group by case when PlP_Sopr.TiDkGal = 10 then PlP_Sopr.cPlat else cPlatNew end
+                ) SaldoOtgruzPP  on SaldoOtgruzPP.cOrg = Org.nrec
+      Left join (Select Sum(case when BaseFin.TiDkGal = 92 then -1 else 1 end *case when BaseFin.Direct = 1 then 1 when BaseFin.Direct = 2 then -1 else 0 end * BaseFin.Summa) as Summa
+                       , BaseFin.cOrg as cOrg
+                       from BaseFin
+                      where //BaseFin.Direct in(1,2)
+                          BaseFin.Direct = 1
+                        and BaseFin.dDoc  <= :(cur_date) //:(_dateSal) //#date(01,12,2018)
+                     group by BaseFin.cOrg
+                ) as SaldoOplBeg on SaldoOplBeg.cOrg = Org.Nrec
+      left join (Select  sum(KatSopr.summa) as Summa
+                        , KatSopr.cOrg as cOrg
+                     from katsopr where KatSopr.dSopr < :(_dateSal) //#date(01,12,2018)
+                     and KatSopr.vidsopr =106 //рекламация оставляем только сбыт
+                     group by KatSopr.cOrg
+                ) SaldoOplBegRekl on SaldoOplBegRekl.cOrg = Org.Nrec
+      where  org.nrec  = :(_cOrg)
+      into (_result);
+ }
+ _Except
+  else {}
+ // _finally {}
+
+//org.name like '%малютка%'
+
+  result := _result;
+}
+Function CanSetStatusDO201(BDbuf : type$BaseDoc): boolean;
+{
+  StartNewVisual( vtRotateVisual, vfTimer, 'Расчет просрочки по договору', 1);
+ result := true;
+var _NeedUseAtlanticFunc : boolean = false;
+var _NeedCalcSrokForOrg : boolean = true;
+ if Getfirst fastfirstrow KatOrgAtl where (( BDbuf.cOrg == KatOrgAtl.nrec)) = tsOK
+  {
+   if KatOrgAtl.UNN = '7705442152'  //"СТЭЛМАС - Д"   ИНН 7705442152
+   or KatOrgAtl.UNN = '4401060075'//"Тинка"   ИНН 4401060075
+    then _NeedCalcSrokForOrg := false;
+  }
+
+  if  BDbuf.Desgr <> 'ECOD' // Пропускаем закачанные
+    and BDbuf.viddoc = 201
+    then _NeedUseAtlanticFunc := true;
+
+ if _NeedUseAtlanticFunc
+    {
+     FillTableDObyDog(BDbuf.cDogovor,BDbuf.cAppDogovor);
+
+         var _MAXDOLGRUB, _sumCurrDolg, _SumDoinStatus2 : double = 0;
+
+         _try
+          {
+            sql
+            select
+            MAXDOLGRUB
+            from katorg
+            where nrec= :(bdbuf.corg) //281474976710656944
+            into (_MAXDOLGRUB)
+            ;
+          }
+         _Except
+          else {}
+        //  _finally {}
+
+
+//         message('_MAXDOLGRUB = '+_MAXDOLGRUB)
+        var _MAXDEBTSAGE : double = if(getfirst tDolgDog = tsOK ,tDolgDog.MAXDEBTSAGE,0);
+
+/*
+           _loop tDolgDog where tDolgDog.SumOtrg - tDolgDog.SumOpl > 10
+              and add_day(tDolgDog.dOpr,tDolgDog.MAXDEBTSAGE) < BDbuf.ddoc
+              and tDolgDog.dOpr <> 0
+              and tDolgDog.MAXDEBTSAGE > 0
+                  {
+                    LogStrToFile('c:\temp\log.log','ДО ' + tDolgDog.BDnDoc +' от '+tDolgDog.BDdDoc+ ' отгружено: ' + tDolgDog.SumOtrg +' Оплачено: '+tDolgDog.SumOpl+ '. Условия договора: '
+                         + if(tDolgDog.MAXDEBTSAGE >  0, 'Максимальный срок задолженности ' + doubletostr(tDolgDog.MAXDEBTSAGE,'6666')+ ' дней','') //Если стоит в договоре максимальный срок задолженности и дата текущего ДО больше                 MAXDEBTSAGE
+                            + ' cur doc date = ' +BDbuf.ddoc+' spisanie'+tDolgDog.dOpr
+                               );
+                  }
+*/
+
+      if(getfirst tDolgDog where tDolgDog.SumOtrg - tDolgDog.SumOpl > 10
+              and add_day(tDolgDog.dOpr,tDolgDog.MAXDEBTSAGE) < BDbuf.ddoc
+              and tDolgDog.dOpr <> 0
+              and tDolgDog.MAXDEBTSAGE > 0
+//          and if(tDolgDog.MAXDEBTSAGE >  0, add_day(tDolgDog.dOpr,tDolgDog.MAXDEBTSAGE) < BDbuf.ddoc,true) //Если стоит условие в договоре максимальный возраст задолженности
+//          and if(tDolgDog.DayAfterOtrg >  0, add_day(tDolgDog.dOpr,tDolgDog.DayAfterOtrg) < BDbuf.ddoc,true) //Если стоит условие "`в течение.@@@@ дней после каждой отгрузки " и дата текущего ДО больше
+//          and if(tDolgDog.DayAfterSchet > 0, add_day(tDolgDog.BDdDoc,tDolgDog.DayAfterSchet) < BDbuf.ddoc,true) //Если стоит условие "`в течение.@@@@ дней после выставления счета " и дата текущего ДО больше
+//      and DayPLanPeriod "`в течение.@@@@ дней с начала планового периода" это не знаю как обрабатывать, оставляем пока что
+        ) = tsOK
+        and ( bogettune('USERTUNE.DOLGCONTROL.CALLCDATEPROSR') = true) // расчет сроков задолженности
+         then
+          {
+/*
+            var _log : string;
+             _LOG := GetStringParameter('Files','OutputFilesDirectory',0)+'!CalcDolgDog_'+UserName+'_'+datetostr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HH-MM-SS')+'.log';
+           deletefile(_log);
+
+           Logstrtofile(_LOG,'По данному клиенту и договору имеется просроченная задолженность по ДО');
+           _loop tDolgDog where tDolgDog.SumOtrg - tDolgDog.SumOpl > 10
+              and add_day(tDolgDog.dOpr,tDolgDog.MAXDEBTSAGE) < BDbuf.ddoc
+              and tDolgDog.dOpr <> 0
+              and tDolgDog.MAXDEBTSAGE > 0
+
+//          and if(tDolgDog.MAXDEBTSAGE >  0, add_day(tDolgDog.dOpr,tDolgDog.MAXDEBTSAGE) < BDbuf.ddoc,true) //Если стоит условие в договоре максимальный возраст задолженности
+//          and if(tDolgDog.DayAfterOtrg >  0, add_day(tDolgDog.dOpr,tDolgDog.DayAfterOtrg) < BDbuf.ddoc,true) //Если стоит условие "`в течение.@@@@ дней после каждой отгрузки " и дата текущего ДО больше
+//          and if(tDolgDog.DayAfterSchet > 0, add_day(tDolgDog.BDdDoc,tDolgDog.DayAfterSchet) < BDbuf.ddoc,true) //Если стоит условие "`в течение.@@@@ дней после выставления счета " и дата текущего ДО больше
+//      and DayPLanPeriod "`в течение.@@@@ дней с начала планового периода" это не знаю как обрабатывать, оставляем пока что
+                  {
+                    LogStrToFile(_log,'ДО ' + tDolgDog.BDnDoc +' от '+tDolgDog.BDdDoc+ ' отгружено: ' + tDolgDog.SumOtrg +' Оплачено: '+tDolgDog.SumOpl+ '. Условия договора: '
+                         + if(tDolgDog.MAXDEBTSAGE >  0, 'Максимальный срок задолженности ' + doubletostr(tDolgDog.MAXDEBTSAGE,'6666')+ ' дней','') //Если стоит в договоре максимальный срок задолженности и дата текущего ДО больше                 MAXDEBTSAGE
+                       //  + if(tDolgDog.DayAfterOtrg >  0, 'в течение '+tDolgDog.DayAfterOtrg+' дней после каждой отгрузки','') //Если стоит условие "`в течение.@@@@ дней после каждой отгрузки " и дата текущего ДО больше
+                       //  + if(tDolgDog.DayAfterSchet > 0, 'в течение '+tDolgDog.DayAfterSchet+' дней после выставления счета','')  //Если стоит условие "`в течение.@@@@ дней после выставления счета " и дата текущего ДО больше
+                               );
+                  }
+           Logstrtofile(_LOG,'Смена статуса текущего ДО будет возможна после погашения задолженности');
+*/
+            set _Bufddoc := BDbuf.ddoc ;
+           if    bogettune('USERTUNE.DOLGCONTROL.ISSUPERUSER') = false
+             and _NeedCalcSrokForOrg = true
+            {
+             message('По данному договору/УС возраст задолженности более ' + doubletostr(_MAXDEBTSAGE,'6666') +' дней'
+                +''#13''+'Отгрузка запрещена!', error);
+             if message('Показать документы с просрочкой?', Confirmation + YesNo) = cmYes
+              {
+                RunWindowModal(wnBaseDocProsr);
+              }
+             result := false;
+            }
+            else
+             {
+                if message('По данному договору/УС возраст задолженности более ' + doubletostr(_MAXDEBTSAGE,'6666') +' дней'
+                +''#13''+'Разрешить перевод ДО в статус исполняемый?', warning+ Confirmation + YesNo) <> cmYes
+                then
+                {
+                  result := false ;
+                if message('Показать документы с просрочкой?', Confirmation + YesNo) = cmYes
+                 {
+                   RunWindowModal(wnBaseDocProsr);
+                 }
+                }
+                else result := true;
+             }
+           if VisualizationActive then StopVisual('', 0);
+//           ProcessText(_LOG,vfEscable or vfNewTitle or vfMacroSize,'Протокол расчета задолженности по договору');
+          }
+
+         if result
+          {
+/*            _sumCurrDolg := 0;
+           _loop tDolgDog where tDolgDog.SumOtrg > tDolgDog.SumOpl {_sumCurrDolg := _sumCurrDolg + tDolgDog.SumOtrg - tDolgDog.SumOpl}
+            if _sumCurrDolg - _MAXDOLGRUB > 10 // так погрешность предполагаемую убираем
+            {
+             if message('Текущий долг по отгрузкам '+_sumCurrDolg+
+                 +''#13''+'превышает разрешенную максимальную задолженность '+_MAXDOLGRUB+
+                 +''#13''+'Разрешить перевод ДО в статус исполняемый?', warning+ Confirmation + YesNo) <> cmYes
+             then result := false;
+
+
+*/
+               _sumCurrDolg := GetSaldoOrgOnDate(BDbuf.cOrg,BDbuf.ddoc);
+              _SumDoinStatus2 := GetSumDOisStatus2byOrg(BDbuf.cOrg);
+                  if VisualizationActive then StopVisual('', 0);
+//                 message('else  _sumCurrDolg = ' + _sumCurrDolg
+//                  + ''#13'' + '_SumDoinStatus2 = ' + _SumDoinStatus2);
+               if _sumCurrDolg  + _SumDoinStatus2 + BDbuf.totalNDE - _MAXDOLGRUB > 10
+               {
+                 if message('Текущий долг:'+
+                 +''#13''+ ' - по отгрузкам: '+doubletostr(_sumCurrDolg,'\2p[|-]3666`666`666`666`666.88')+
+                 +''#13''+ ' - исполняемых ДО без накладных : ' + doubletostr(_SumDoinStatus2,'\2p[|-]3666`666`666`666`666.88') +
+                 +''#13''+ ' - текущий ДО ' + doubletostr(BDbuf.totalNDE,'\2p[|-]3666`666`666`666`666.88')+
+                 +''#13''+'В сумме превышает разрешенную максимальную задолженность '+doubletostr(_MAXDOLGRUB,'\2p[|-]3666`666`666`666`666.88')+
+                 + ''#13'' + 'на ' + doubletostr(_sumCurrDolg  + _SumDoinStatus2 + BDbuf.totalNDE - _MAXDOLGRUB,'\2p[|-]3666`666`666`666`666.88')
+                 +''#13''+'Разрешить перевод ДО в статус исполняемый?', warning+ Confirmation + YesNo) <> cmYes
+                then result := false;
+               }
+            }
+
+    }
+   if VisualizationActive then StopVisual('', 0);
+}
+Function CalcDolgDGObjV2.ControlDolg_DG_4BaseDocEx(BDbuf : type$BaseDoc;
+                                   _wMode: word
+                                  ): boolean;
+{
+var _NeedUseAtlanticFunc : boolean = false;
+    if  BDbuf.Desgr <> 'ECOD' // Пропускаем закачанные
+    and BDbuf.viddoc = 201
+    and _wMode = 1
+    then _NeedUseAtlanticFunc := true;
+// pRecDoc := BDbuf.nRec; wDoc := coBaseDoc;
+  if    _NeedUseAtlanticFunc
+    then result := CanSetStatusDO201(BDbuf)
+    else result := Inherited::ControlDolg_DG_4BaseDocEx(BDbuf,_wMode);
+  //bNotEditAttribute := bogettune('USERTUNE.ACCESSDATA.CantEditAllAttr');
+}
+end. // interface

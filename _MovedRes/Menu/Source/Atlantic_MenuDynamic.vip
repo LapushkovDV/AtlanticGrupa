@@ -1,0 +1,213 @@
+/*************************************************************************************************\
+* Наименование: Регистрация дополнительных пунктов меню                                           *
+* Контур/Модуль: *                                                                                *
+* Примечание:                                                                                     *
+*                                                                                                 *
+* Вид работы  |Номер         |Дата    |Исполнитель              |Проект                           *
+* ----------------------------------------------------------------------------------------------- *
+\*************************************************************************************************/
+#component "ATLANTIC"
+#Include Atlantic_menu.mnu
+interface Atlantic_MenuDynamic 'Регистрация дополнительных пунктов меню' Gray;
+show(20,10,80,15);
+
+screen ScrParam(,,sci1Esc);
+fields
+  'добавляем новые пункты в меню',skip,{Font={bold=true}};
+buttons
+  cmAddMenu,default,,'Добавить',,;
+  cmDelMenu,,,'Удалить',,;
+  cmCancel,,,'Выход',,;
+<<
+
+  .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+ <. Добавить .>     <. Удалить .>       <. ~О~тмена  .>
+>>
+end;
+
+exception ExStoreMenuHowDynamics;
+procedure logging(_log : string);
+{
+  logstrtofile('menu.log',timetostr(cur_time,'HH:MM:SS')+ ' '+ _log);
+}
+HandleEvent
+cmInit:{
+
+  if (not pr_CurUserAdmin) {
+    message('Вы не администратор',error);
+    abort;     exit;
+  }
+}
+cmAddMenu:{
+  StartNewVisual(vtRotateVisual, vfTimer+vfBreak+vfConfirm,'Добавление новых пунктов в меню...', 0);
+  var MenuID:longint=0;
+  var MenuID1:longint=0;
+  var MenuID2:longint=0;
+  var MenuID3:longint=0;
+  var MenuID4:longint=0;
+  _try {
+    //Меню модуля "Настройка"
+    logging('Пытаемся загрузить меню nastr_admin');
+    MenuID:=LoadMenuEx('C_Common::Nastr_Admin',false,true);
+    logging('OK');
+
+    AddMenuItem(MenuID,'separator',1);
+    AddMenuItemEx2(MenuID,'Регистрация дополнительных пунктов меню',
+                          'Регистрация дополнительных пунктов меню','',cmRunInterface,0,'ATLANTIC::Atlantic_MenuDynamic');
+
+    logging('записываем меню настр_админ');
+
+    if (not StoreMenuHowDynamics(MenuID,'C_Common::Nastr_Admin'))
+      _raise ExStoreMenuHowDynamics;
+    logging('ОК');
+    logging('пытаемся загрзить меню селл_опер');
+
+    MenuID1:=LoadMenuEx('L_BASEDOC::SELL_OPER',false,true);
+    logging('ок MenuID1 =' + MenuID1);
+
+    AddMenuItem(MenuID1,'separator',1);
+//    AddSubMenuDynamic(MenuID1, 'ATLANTIC GRUPA', 'ATLANTIC GRUPA', '', '');
+    AddMenuItemEx2(MenuID1, '1. Импорт заказов. Order ECOD Comarch (ver.1.01)'                , '', '', cmRunInterface, 0, 'droga::ecod_import(order_*,0)');
+    AddMenuItemEx2(MenuID1, '2. Импорт подтверждений приемки. RecAdv ECOD Comarch (ver. 1.01)', '', '', cmRunInterface, 0, 'droga::ecod_import(recadv_*,0)');
+    AddMenuItem(MenuID1,'separator',1);
+    AddMenuItemEx2(MenuID1, 'Загрузка заказов', '', '', cmRunInterface, 0, 'ATLANTIC::LoadOrders');
+    AddMenuItem(MenuID1,'separator',1);
+    AddMenuItemEx2(MenuID1, 'VETIS. Просмотр cтока', '', '', cmRunInterface, 0, 'Atlantic::VetisAPIViewer');
+    AddMenuItemEx2(MenuID1, 'VETIS. Просмотр каталога', '', '', cmRunInterface, 0, 'Atlantic::VetisAPIProduct');
+
+
+//    AddMenuItem(MenuID1,'separator',1);
+//  убираем Pradata по письму Николая Тополова
+//    AddMenuItemEx2(MenuID1, 'PRADATA. Выгрузка документов по дистрибьютору', '', '', cmRunInterface, 0, 'ATLANTIC::PRADATAEXPORT(FALSE)');
+/*
+   if (not AddSubMenuDynamic(MenuID1,'ATLANTIC::AtlanticSellOperVetisAPI','VetisAPI','',''))
+    {
+      _raise ExAddMenuItemError;
+    }
+*/
+    logging('записываем меню селл_опер');
+
+    if (not StoreMenuHowDynamics(MenuID1,'L_BASEDOC::SELL_OPER'))
+      _raise ExStoreMenuHowDynamics;
+    logging('ок');
+    logging('загружаем селл_реп');
+
+    MenuID2:=LoadMenuEx('L_BASEDOC::SELL_REP',false,true);
+    AddMenuItem(MenuID2,'separator',1);
+    AddMenuItemEx2(MenuID2, 'Отчеты на DSQL запросах', '', '', cmRunInterface, 0, 'ATLANTIC_COMMON::SQLVIEWREPORT');
+
+
+
+/*
+   if (not AddSubMenuDynamic(MenuID2,'ATLANTIC::AtlanticSellReport','ATLANTIC GRUPA','',''))
+    {
+      _raise ExAddMenuItemError;
+    }
+*/
+    logging('ок');
+    logging('записываем селл_реп');
+
+    if (not StoreMenuHowDynamics(MenuID2,'L_BASEDOC::SELL_REP'))
+      _raise ExStoreMenuHowDynamics;
+    logging('ок');
+
+    logging('реинит хедерменю');
+
+    ReinitHeaderMenu;
+    logging('ок');
+
+
+  //------------------------------------------------------------
+  //Добавление подменю в модуле управление сбытом - счета на пролажу - локальное меню
+  //------------------------------------------------------------
+        MenuID3:=0;
+    logging('загружаем меню в ДО на продажу');
+
+          MenuID3:=LoadMenuEx('L_BASEDOC::MNUVSCHET2',false,true);
+    logging('ок');
+
+          if MenuID3=0
+          {
+            _raise ExAddMenuItemError;
+          }
+          if not AddSubMenuDynamic(MenuID3,'ATLANTIC::Atlantic_SBIT_DO_HotKeys','ATLANTIC GRUPA','','')
+          {
+            _raise ExAddMenuItemError;
+          }
+    logging('записываем меню в ДО на продажу');
+
+          if (not StoreMenuHowDynamics(MenuID3,'L_BASEDOC::MNUVSCHET2'))
+            _raise ExAddMenuItemError;
+    logging('ок');
+
+  //------------------------------------------------------------
+  //Добавление подменю в модуле управление сбытом - накладные на отпуск - локальное меню
+  //------------------------------------------------------------
+        MenuID4:=0;
+    logging('загружаем меню в накл сбыта');
+
+          MenuID4:=LoadMenuEx('L_SOPRDOC::mnuSD201',false,true);
+    logging('ок');
+
+          if MenuID4=0
+          {
+            _raise ExAddMenuItemError;
+          }
+          if not AddSubMenuDynamic(MenuID4,'ATLANTIC::Atlantic_SBIT_Nakl_HotKeys','ATLANTIC GRUPA','','')
+          {
+            _raise ExAddMenuItemError;
+          }
+    logging('записываем меню в накл сбыта');
+
+          if (not StoreMenuHowDynamics(MenuID4,'L_SOPRDOC::mnuSD201'))
+            _raise ExAddMenuItemError;
+    logging('ок');
+
+
+
+
+
+    Message('Дополнительные пункты меню добавлены');
+  }
+  _except
+    on ExStoreMenuHowDynamics:
+    {  message('Ошибка выполнения StoreMenuHowDynamics',error);
+    }
+    on ExVip:
+    {  message(ExploreException,error);
+    }
+  _finally {
+    if (MenuID<>0) DisposeLoadMenu(MenuID);
+    if (MenuID1<>0) DisposeLoadMenu(MenuID1);
+    if (MenuID2<>0) DisposeLoadMenu(MenuID2);
+    if (MenuID3<>0) DisposeLoadMenu(MenuID3);
+    if (MenuID4<>0) DisposeLoadMenu(MenuID4);
+  }
+
+  StopVisual;
+}
+cmDelMenu:{
+  StartNewVisual(vtRotateVisual, vfTimer+vfBreak+vfConfirm,'Удаление новых пунктов в меню...', 0);
+
+  _try {
+    //Меню модуля "Настройка"
+    DeleteMenuHowDynamics('C_Common::Nastr_Admin');
+    DeleteMenuHowDynamics('L_BASEDOC::SELL_REP');
+    DeleteMenuHowDynamics('L_BASEDOC::SELL_OPER');
+    DeleteMenuHowDynamics('L_BASEDOC::MNUVSCHET2');
+    DeleteMenuHowDynamics('L_SOPRDOC::mnuSD201');
+
+    ReinitHeaderMenu;
+
+    Message('Дополнительные пункты меню удалены')
+  }
+  _except
+    on ExVip:
+      message(ExploreException,error);
+
+  StopVisual;
+}
+end;
+
+end.

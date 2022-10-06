@@ -1,0 +1,154 @@
+////////////// подменяем обработчик событий
+#component "L_SF"
+
+alter interface BookPrZkPrint;
+overload
+   function SvPokProd    (_Node: Comp) : Comp;
+end;
+function SvPokProd    (_Node: Comp) : Comp;
+var
+  sNameRefSvPokProd, sNameRefOrg, sNameAttrNumSF, sNameRefNumTD : String;
+{
+  sNameRefOrg := '';
+
+  if (g_Direct = cwDirect_Sell)
+  {
+    sNameRefSvPokProd := 'СвПродаж';
+    sNameRefOrg := 'НаимПок';
+  }
+  else
+  {
+    sNameRefSvPokProd := 'СвПокупка';
+    sNameRefOrg := 'НаимПрод';
+  }
+
+  sNameAttrNumSF := 'НомерСчФ';
+  sNameRefNumTD := 'НомерТД';
+
+  if (g_Direct = cwDirect_Buy and g_RegDoc = cwBook_Dop)
+  {
+    sNameAttrNumSF := 'НомСчФ';
+    sNameRefNumTD := 'НомТД';
+  }
+
+  Result := AddNode(_Node, sNameRefSvPokProd);
+
+  npp++;
+
+  // Номер по порядку (Графа 1)
+  if (bIsPrintNumPP_FromOne)
+    AttribRequired(Result, 'НомПП', String(npp));
+  else
+    AttribRequired(Result, 'НомПП', if (g_NumParam = 0, String(BookPrZk.ls[1]), String(npp)));
+
+  AttribRequired(Result, sNameAttrNumSF, gen_NumSF);                                                  // Номер счета-фактуры продавца (Графа 3)
+  AttribRequired(Result, 'ДатаСчФ'     , Dat(GetDateFact_ForPrint));                                          // Дата счета-фактуры продавца (Графа 3), формат 'DD.MM.YYYY'
+  AttribOptional(Result, 'НомИспрСчФ'  , LTrim(Trim(gen_NumIsprSF), '0'));                            // Номер исправления счета-фактуры (Графа 4)
+  AttribOptional(Result, 'ДатаИспрСчФ' , if (gen_DateIsprSF <> 0, Dat(gen_DateIsprSF), ''));   // Дата исправления счета-фактуры (Графа 4)
+  AttribOptional(Result, 'НомерКСчФ'   , gen_NumKSF);                                                 // Номер корректировочного счета-фактуры (Графа 5)
+  AttribOptional(Result, 'ДатаКСчФ'    , if (gen_DateKSF <> 0, Dat(gen_DateKSF), ''));         // Дата корректировочного счета-фактуры (Графа 5)
+  AttribOptional(Result, 'НомИспрКСчФ' , LTrim(Trim(gen_NumKIsprSF), '0'));                           // Номер исправления корректировочного счета-фактуры (Графа 6)
+  AttribOptional(Result, 'ДатаИспрКСчФ', if (gen_DateKIsprSF <> 0, Dat(gen_DateKIsprSF), '')); // Дата исправления корректировочного счета-фактуры  (Графа 6)
+
+  // Наименование продавца   (Графа 9)
+  // Наименование покупателя (Графа 7)
+  AttribRequired(Result, sNameRefOrg, gen_OrgName);
+
+  if (Length(gen_UNN) = 12) // ИП, 12-значный ИНН
+  {
+    // ИНН продавца   - индивидуального предпринимателя (Графа 10)
+    // ИНН покупателя - индивидуального предпринимателя (Графа 8)
+    if (oFuncsSF.IsRussiaINN(gen_UNN, gen_NRecKatOrg_BK))
+      AttribOptional(Result, 'ИННФЛ', gen_UNN);
+  }
+  else  // Юр.лицо
+  {
+    // ИНН продавца   - организации (Графа 10)
+    // ИНН покупателя - организации (Графа 8)
+    if (oFuncsSF.IsRussiaINN(gen_UNN, gen_NRecKatOrg_BK))
+    {
+      AttribOptional(Result, 'ИННЮЛ', gen_UNN);
+
+      // КПП продавца (Графа 10)
+      // КПП покупателя (Графа 8)
+      AttribOptional(Result, 'КПП',   gen_KPP);
+    }
+  }
+
+  if ( IsValid(tnKlVal_BK) )
+    AttribRequired(Result, 'КодОКВ', KlVal_BK.ISO);  // [Н] Код валюты (Графа 14)
+
+  // Стоимость покупок по счету-фактуре, разница стоимости по корректировочному счету-фактуре (включая НДС) в валюте счета-фактуры (Графа 15)
+  // Стоимость продаж  по счету-фактуре, разница стоимости по корректировочному счету-фактуре (включая НДС) в валюте счета-фактуры (Графа 13а)
+  AttribRequired(Result, 'СтТовУчНалВсего', Num_17_2(arrSum[18]));
+
+  if (g_Direct = cwDirect_Sell)
+  {
+    // Стоимость продаж по счету-фактуре, разница стоимости по корректировочному счету-фактуре (включая НДС) в рублях и копейках  (Графа 13б)
+    AttribOptional(Result, 'СтТовУчНалРубКоп', Num_17_2(arrSum[1]));
+
+    // Стоимость продаж, облагаемых налогом, по счету-фактуре, разница стоимости по корректировочному счету-фактуре (без НДС) в рублях и копейках
+
+// lapuskov_dv Галктика в своем реперутаре: нихера не сделала, типа а зачем нам это надо!??!
+    AttribOptional(Result, 'СтТовРубКоп20', Num_17_2(arrSum[20])); // по ставке 20 процентов
+// // lapuskov_dv end
+
+    AttribOptional(Result, 'СтТовРубКоп18', Num_17_2(arrSum[2])); // по ставке 18 процентов (Графа 14)
+    AttribOptional(Result, 'СтТовРубКоп10', Num_17_2(arrSum[5])); // по ставке 10 процентов (Графа 15)
+    AttribOptional(Result, 'СтТовРубКоп0', Num_17_2(arrSum[10])); // по ставке  0 процентов (Графа 16)
+
+    // Сумма НДС по счету-фактуре, разница стоимости по корректировочному счету-фактуре в рублях и копейках
+// lapuskov_dv Галктика в своем реперутаре: нихера не сделала, типа а зачем нам это надо!??!
+    AttribOptional(Result, 'СумНДСРубКоп20', Num_17_2(arrSum[21])); // по ставке 20 процентов
+// // lapuskov_dv end
+    AttribOptional(Result, 'СумНДСРубКоп18', Num_17_2(arrSum[3])); // по ставке 18 процентов (Графа 17)
+    AttribOptional(Result, 'СумНДСРубКоп10', Num_17_2(arrSum[6])); // по ставке 10 процентов (Графа 18)
+
+    // Стоимость продаж, освобождаемых от налога, по счету-фактуре, разница стоимости по корректировочному счету-фактуре в рублях и копейках (Графа 19)
+    AttribOptional(Result, 'СтПродОсвНДСРубКоп', Num_17_2(arrSum[8] - arrSum[10]));
+  }
+
+  // Код вида операции (Графа 2)
+  AddNode(Result, 'КодВидОпер', tmpBook.sKodOp);
+
+  if (g_Direct = cwDirect_Buy)
+  {
+    SvDocYplNal(Result, 'СвДокУплНал'); // [НМ] Сведения о документе, подтверждающем уплату налога (Графа 7)
+
+    // [НМ] Дата принятия на учет товаров (работ, услуг), имущественных прав (Графа 8)
+    if ((BookPrZk.dOpr <> 0) and
+        not (isPrintDateOprForStornoVozvrAvans))
+      AddNode(Result, 'ДатаПринУчет', Dat(BookPrZk.dOpr));
+  }
+  else
+  {
+    if (VidReport = 1)
+    {
+      // Номер таможенной декларации (Графа 3а)
+      NumGTD_xml(Result, sNameRefNumTD);
+
+      // Код вида товара (Графа 3б)
+      var lKolRec : longint = RecordsInTable(tntmpTNVED);
+      if (lKolRec > 0)
+        _loop tmpTNVED
+          if (tmpTNVED.sCode <> '')
+            AddNode(Result, 'ВидТов', tmpTNVED.sCode);
+    }
+  }
+
+  // Посредник
+  if (IsExist_KO_Med)
+    SvPosredn(Result, 'СвПосредн'); // Сведения о посреднике, (комиссионере, агенте. экспедиторе, застройщике) (Графы 11, 12)
+
+  if (g_Direct = cwDirect_Buy)
+  {
+    // Номер таможенной декларации (Графа 13)
+    NumGTD_xml(Result, sNameRefNumTD);
+
+    SumNDSTip(Result, 'СумНДСВыч', arrSum[19], (abs(arrSum[19]) >= 0.001));
+  }
+  else
+    SvDocYplNal(Result, 'СвДокПдтвОпл'); // [НМ] Сведения о документе, подтверждающем оплату (Графа 11)
+}
+
+end.

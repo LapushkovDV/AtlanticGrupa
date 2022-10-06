@@ -1,0 +1,415 @@
+procedure fillrecArray_GetInformation; {
+
+  var _npp: byte;
+  _npp := 1;
+
+  SetLimit(_recArray, 0);
+  SetLimit(_recArray, 1);
+
+  _recArray[_npp].def := coPS1_IdntToolsInf_cis                  ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_cparent              ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_emissionDate         ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_producedDate         ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+
+  _recArray[_npp].def := coPS1_IdntToolsInf_ownerInn             ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_participantInn       ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_lastDocId            ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_gtin                 ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_sgtin                ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+
+  _recArray[_npp].def := coPS1_IdntToolsInf_lastDocType          ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_emissionType         ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_status               ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_packType             ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_uit                  ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_uitu                 ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_lastStatusChangeDate ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_IdntToolsInf_productGroup;
+
+}
+
+procedure InsertInfoList; {
+
+
+  var _i: byte;
+  var
+    _cis,
+    _cparent,
+    _lastDocType,
+    _emissionType,
+    _status,
+    _packType,
+    _uit,
+    _uitu,
+    _lastStatusChangeDate,
+    _productGroup,
+
+    _emissionDate,
+    _producedDate,
+    _ownerInn,
+    _participantInn,
+    _lastDocId,
+    _gtin,
+    _sgtin  : string = '';
+  //var
+    //_emissionDate,
+    //_producedDate : date = 0;
+
+  for( _i:= 1; _i <= getLimit(_recArray); _i++) {
+
+    case upcase(_recArray[_i].def) of
+      upcase(coPS1_IdntToolsInf_cis                 ) : _cis                  := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_cparent             ) : _cparent              := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_emissionDate        ) : _emissionDate         := Trim(_recArray[_i].value); //StrToDate(_recArray[_i].value, 'DD.MM.YYYY');
+      upcase(coPS1_IdntToolsInf_producedDate        ) : _producedDate         := Trim(_recArray[_i].value); //StrToDate(_recArray[_i].value, 'DD.MM.YYYY');
+      upcase(coPS1_IdntToolsInf_lastDocType         ) : _lastDocType          := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_emissionType        ) : _emissionType         := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_status              ) : _status               := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_packType            ) : _packType             := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_uit                 ) : _uit                  := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_uitu                ) : _uitu                 := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_lastStatusChangeDate) : _lastStatusChangeDate := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_productGroup        ) : _productGroup         := Trim(_recArray[_i].value);
+
+      upcase(coPS1_IdntToolsInf_ownerInn            ) : _ownerInn             := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_participantInn      ) : _participantInn       := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_lastDocId           ) : _lastDocId            := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_gtin                ) : _gtin                 := Trim(_recArray[_i].value);
+      upcase(coPS1_IdntToolsInf_sgtin               ) : _sgtin                := Trim(_recArray[_i].value);
+    end;
+  }
+
+  if _cis = '' then exit;
+
+  var hstr : longint = 0;
+  delete all tCRPT_InfoList;
+
+  MysqlAddStr(hstr, 'select                   ');
+  MysqlAddStr(hstr, '  cr.cis                 ');
+  MysqlAddStr(hstr, '  ,cr.cparent             ');
+  MysqlAddStr(hstr, '  ,cr.emissionDate        ');
+  MysqlAddStr(hstr, '  ,cr.producedDate        ');
+  MysqlAddStr(hstr, '  ,cr.lastDocType         ');
+  MysqlAddStr(hstr, '  ,cr.emissionType        ');
+  MysqlAddStr(hstr, '  ,cr.status              ');
+  MysqlAddStr(hstr, '  ,cr.packType            ');
+  MysqlAddStr(hstr, '  ,cr.uit                 ');
+  MysqlAddStr(hstr, '  ,cr.uitu                ');
+  MysqlAddStr(hstr, '  ,cr.lastStatusChangeDate');
+  MysqlAddStr(hstr, '  ,cr.productGroup        ');
+
+  MysqlAddStr(hstr, '  ,cr.ownerInn          ');
+  MysqlAddStr(hstr, '  ,cr.participantInn    ');
+  MysqlAddStr(hstr, '  ,cr.lastDocId         ');
+  MysqlAddStr(hstr, '  ,cr.gtin              ');
+  MysqlAddStr(hstr, '  ,cr.sgtin             ');
+
+
+
+
+  MysqlAddStr(hstr, 'from CRPT_InfoList cr    ');
+  MysqlAddStr(hstr, ' ');
+  MysqlAddStr(hstr, ' ');
+  MysqlAddStr(hstr, ' ');
+  MysqlAddStr(hstr, 'where cr.cis = '''+ replace(_cis,'''','''''') +''' ');
+  MysqlAddStr(hstr, ' ');
+  MysqlAddStr(hstr, ' ');
+  MysqlAddStr(hstr, ' ');
+  MysqlAddStr(hstr, ' ');
+
+  var objQuery: iQuery;
+  objQuery := queryManager.createQuery(hstr);
+  if (objQuery.execute.errorCode != tsOk) {
+    MyLog('Ошибка выполнения запроса ' + objQuery.errorCode);
+    exit;
+  } else {
+    sqlCopyInto(objQuery, tntCRPT_InfoList, true);
+  }
+
+  var _needInsert : boolean = true;
+
+  if (getfirst tCRPT_InfoList = tsOk) {
+    if (getfirst fastfirstrow CRPT_InfoList where ((tCRPT_InfoList.cis == CRPT_InfoList.cis (noindex))) = tsOk ) {
+      _needInsert := false;
+      //  if( CRPT_InfoList.lastStatusChangeDate <> _lastStatusChangeDate ) { // Update
+          if (CRPT_InfoList.emissionDate <> _emissionDate) {
+            MyLog('"'+ CRPT_InfoList.emissionDate +'" Update emissionDate: "'+ CRPT_InfoList.emissionDate +'"->"' + _emissionDate + '"');
+            CRPT_InfoList.emissionDate := _emissionDate;
+          }
+          if (CRPT_InfoList.producedDate <> _producedDate) {
+            MyLog('"'+ CRPT_InfoList.producedDate +'" Update producedDate: "'+ CRPT_InfoList.producedDate +'"->"' + _producedDate + '"');
+            CRPT_InfoList.producedDate := _producedDate;
+          }
+          if (CRPT_InfoList.lastDocId <> _lastDocId) {
+            MyLog('"'+ CRPT_InfoList.lastDocId +'" Update lastDocId: "'+ CRPT_InfoList.lastDocId +'"->"' + _lastDocId + '"');
+            CRPT_InfoList.lastDocId := _lastDocId;
+          }
+          if (CRPT_InfoList.lastStatusChangeDate <> _lastStatusChangeDate) {
+            MyLog('"'+ CRPT_InfoList.lastStatusChangeDate +'" Update lastStatusChangeDate: "'+ CRPT_InfoList.lastStatusChangeDate +'"->"' + _lastStatusChangeDate + '"');
+            CRPT_InfoList.lastStatusChangeDate := _lastStatusChangeDate;
+          }
+          if (CRPT_InfoList.lastDocType <> _lastDocType) {
+            MyLog('"'+ CRPT_InfoList.lastDocType +'" Update lastDocType: "'+ CRPT_InfoList.lastDocType +'"->"' + _lastDocType + '"');
+            CRPT_InfoList.lastDocType := _lastDocType;
+          }
+          if (CRPT_InfoList.Status <> _status) {
+            MyLog('"'+ CRPT_InfoList.Status +'" Update Status: "'+ CRPT_InfoList.Status +'"->"' + _status + '"');
+            CRPT_InfoList.Status := _status;
+          }
+
+
+                    if (CRPT_InfoList.emissionType <> _emissionType) {
+            MyLog('"'+ CRPT_InfoList.emissionType +'" Update emissionType: "'+ CRPT_InfoList.emissionType +'"->"' + _emissionType + '"');
+            CRPT_InfoList.emissionType := _emissionType;
+          }
+                    if (CRPT_InfoList.packType <> _packType) {
+            MyLog('"'+ CRPT_InfoList.packType +'" Update packType: "'+ CRPT_InfoList.packType +'"->"' + _packType + '"');
+            CRPT_InfoList.packType := _packType;
+          }
+                    if (CRPT_InfoList.productGroup <> _productGroup) {
+            MyLog('"'+ CRPT_InfoList.productGroup +'" Update productGroup: "'+ CRPT_InfoList.productGroup +'"->"' + _productGroup + '"');
+            CRPT_InfoList.productGroup := _productGroup;
+          }
+                    if (CRPT_InfoList.gtin <> _gtin) {
+            MyLog('"'+ CRPT_InfoList.gtin +'" Update gtin: "'+ CRPT_InfoList.gtin +'"->"' + _gtin + '"');
+            CRPT_InfoList.gtin := _gtin;
+          }
+                    if (CRPT_InfoList.sgtin <> _sgtin) {
+            MyLog('"'+ CRPT_InfoList.sgtin +'" Update sgtin: "'+ CRPT_InfoList.sgtin +'"->"' + _sgtin + '"');
+            CRPT_InfoList.sgtin := _sgtin;
+          }
+                    if (CRPT_InfoList.uit <> _uit) {
+            MyLog('"'+ CRPT_InfoList.uit +'" Update uit: "'+ CRPT_InfoList.uit +'"->"' + _uit + '"');
+            CRPT_InfoList.uit := _uit;
+          }
+                    if (CRPT_InfoList.uitu <> _uitu) {
+            MyLog('"'+ CRPT_InfoList.uitu +'" Update uitu: "'+ CRPT_InfoList.uitu +'"->"' + _uitu + '"');
+            CRPT_InfoList.uitu := _uitu;
+          }
+
+
+          update current CRPT_InfoList;
+     // }
+    }
+  }
+
+  if (_needInsert) {
+    insert CRPT_InfoList set
+       CRPT_InfoList.cis                  := _cis
+      ,CRPT_InfoList.cparent              := _cparent
+      ,CRPT_InfoList.emissionDate         := _emissionDate
+      ,CRPT_InfoList.producedDate         := _producedDate
+      ,CRPT_InfoList.lastDocType          := _lastDocType
+      ,CRPT_InfoList.emissionType         := _emissionType
+      ,CRPT_InfoList.status               := _status
+      ,CRPT_InfoList.packType             := _packType
+      ,CRPT_InfoList.uit                  := _uit
+      ,CRPT_InfoList.uit                  := _uitu
+      ,CRPT_InfoList.lastStatusChangeDate := _lastStatusChangeDate
+      ,CRPT_InfoList.productGroup         := _productGroup
+      ,CRPT_InfoList.ownerInn             := _ownerInn
+      ,CRPT_InfoList.participantInn       := _participantInn
+      ,CRPT_InfoList.lastDocId            := _lastDocId
+      ,CRPT_InfoList.gtin                 := _gtin
+      ,CRPT_InfoList.sgtin                := _sgtin
+
+
+
+    ;
+    MyLog('Создаем новую: cis ' + _cis + '| _cparent ' + _cparent);
+  }
+}
+
+Procedure FillPS1_CrptAPI_GetInformation(_OleGenerateGUID: string; _cis : string); {
+    MyWriteLN('[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12');
+    MyWriteLN('');
+    MyWriteLN('$circuitserviceID= "CRPT_identifyTools/info"                                                        ');
+    MyWriteLN('$RQST_GUID = "'+_OleGenerateGUID+'"                                                     ');
+    MyWriteLN('$scriptPath = $MyInvocation.MyCommand.Path | Split-Path -Parent                         ');
+    MyWriteLN('$tokenPath = '''+GetTokenPath+''';                 ');
+    MyWriteLN('$conStrinGal  = '''+GetConnString+'''                                                   ');
+    MyWriteLN('function Invoke-DatabaseQuery {                                                         ');
+    MyWriteLN('        [CmdletBinding()]                                                               ');
+    MyWriteLN('        param (                                                                         ');
+    MyWriteLN('                [string]$connectionString,                                              ');
+    MyWriteLN('                [string]$query,                                                         ');
+    MyWriteLN('                [switch]$isSQLServer                                                    ');
+    MyWriteLN('        )                                                                               ');
+    MyWriteLN('        if ($isSQLServer) {                                                             ');
+    MyWriteLN('                Write-Verbose ''in SQL Server mode''                                    ');
+    MyWriteLN('                $connection = New-Object -TypeName System.Data.SqlClient.SqlConnection  ');
+    MyWriteLN('        } else {                                                                        ');
+    MyWriteLN('                Write-Verbose ''in OleDB mode''                                         ');
+    MyWriteLN('                $connection = New-Object -TypeName System.Data.OleDb.OleDbConnection    ');
+    MyWriteLN('        }                                                                               ');
+    MyWriteLN('        $connection.ConnectionString = $connectionString                                ');
+    MyWriteLN('        $command = $connection.CreateCommand()                                          ');
+    MyWriteLN('        $command.CommandText = $query                                                   ');
+    MyWriteLN('        $connection.Open()                                                              ');
+    MyWriteLN('        $command.ExecuteNonQuery()                                                      ');
+    MyWriteLN('        $connection.close()                                                             ');
+    MyWriteLN('}                                                                                       ');
+    MyWriteLN('Function GetResponse() {                                                                ');
+    MyWriteLN(' try {                                                                                  ');
+    MyWriteLN('    $token = Get-Content -Path $tokenPath                                               ');
+    MyWriteLN('    $headers = @{ Authorization = "Bearer " + $token}                                   ');
+
+    if (_cis = ''){
+      MyWriteLN('    $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/listV2?pg=water&packs=PACK&packageTypes=LEVEL2" -Headers $headers | ConvertFrom-Json ');
+    } else {
+      MyWriteLN('    $_cis = "'+_cis+'";                                                               ');
+      MyWriteLN('    $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/info?cis=$_cis&pg=water" -Headers $headers | ConvertFrom-Json ');
+    }
+
+    MyWriteLN('    If ( $response -ne $null) {                                                                ');
+    MyWriteLN('       [int]$npp = 0                                                                           ');
+
+
+
+    if (_cis = ''){
+       MyWriteLN('       foreach ($row in $response.results ) {                                          ');
+    } else {
+       MyWriteLN('       foreach ($row in $response ) {                                          ');
+    }
+
+    MyWriteLN('          $npp = $npp + 1                                                              ');
+    MyWriteLN('          $gtin = "";                                                                  ');
+
+    MyWriteLN('        foreach($group in $row.Children) {                                              ');
+    MyWriteLN('            if ($gtin -eq "") { $gtin = $group.gtin };                                  ');
+    MyWriteLN('        }                                                                               ');
+
+
+
+    MyWriteLN('        #write-host $response.content                                                          ');
+    MyWriteLN('                                                                                               ');
+    MyWriteLN('        $hItem = New-Object PSObject                                                           ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_cis+                 '" -Value $row.cis                   ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_cparent+             '" -Value ""                         ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_emissionDate+        '" -Value $row.emissionDate          ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_producedDate+        '" -Value $row.producedDate          ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_lastDocType+         '" -Value $row.lastDocType           ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_emissionType+        '" -Value $row.emissionType          ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_status+              '" -Value $row.status                ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_packType+            '" -Value $row.packType              ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_uit+                 '" -Value $row.uit                   ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_uitu+                '" -Value $row.uitu                  ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_lastStatusChangeDate+'" -Value $row.lastStatusChangeDate  ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_productGroup+        '" -Value $row.productGroup          ');
+
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_ownerInn+            '" -Value $row.ownerInn              ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_participantInn+      '" -Value ""                         ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_lastDocId+           '" -Value $row.lastDocId             ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_gtin           +      '" -Value $gtin             ');
+    MyWriteLN('        $hItem | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_sgtin          +      '" -Value ""            ');
+
+
+    MyWriteLN('                                                                                               ');
+    MyWriteLN('                                                                                               ');
+    MyWriteLN('        Write-Host $hItem -ForegroundColor Cyan                                                ');
+    MyWriteLN('                                                                                               ');
+    MyWriteLN('        Write-Host "Запрос информации о КИ. Запись в буферную таблицу"                         ');
+    MyWriteLN('        foreach( $property in $hItem.psObject.Properties.name ) {                               ');
+    MyWriteLN('            if ($hItem.$property -eq $null) {                                                   ');
+    MyWriteLN('                $itemProperty = "";                                                            ');
+    MyWriteLN('            } else {                                                                           ');
+    MyWriteLN('                $itemProperty = $hItem.$property;                                               ');
+    MyWriteLN('            }                                                                                  ');
+    MyWriteLN('                                                                                               ');
+    MyWriteLN('                   $sqlQuery = ''Insert t$ATL_RQSTAPIVALUES (f$RQST_GUID, f$RSQT_PROVIDER, f$NROW, f$COLUMNNAME, f$VALUE)  ');
+    MyWriteLN('                   values (''''''+$RQST_GUID+'''''',''''''+$circuitserviceID+'''''',''+$npp.tostring()+'',''''''+$property.Replace("''","''''")+'''''',''''''+$itemproperty.Replace("''","''''")+'''''')''   ');
+    MyWriteLN('                                                                                                           ');
+    MyWriteLN('            $res = Invoke-DatabaseQuery -connectionString $conStrinGal -query $sqlQuery -isSQLServer      ');
+    MyWriteLN('        }                                                                                                  ');
+    MyWriteLN('                                                                                                           ');
+    MyWriteLN('        if ($row.cisChildren -ne $null) {                                                             ');
+    MyWriteLN('                                                                                                           ');
+    MyWriteLN('            [System.Collections.ArrayList] $childl1 = @();                                                 ');
+    MyWriteLN('            $lschd = "";                                                                                   ');
+    MyWriteLN('                                                                                                           ');
+    MyWriteLN('            foreach($ch in $row.Children) {                                                                ');
+
+    MyWriteLN('               foreach($unit in $ch.Children) {                                              ');
+    MyWriteLN('                  if ($lschd -eq "") { $lschd = $unit.lastStatusChangeDate };                ');
+    MyWriteLN('               }                                                                             ');
+
+    MyWriteLN('                $npp = $npp + 1                                                                          ');
+    MyWriteLN('                Write-Host "Запрос информации о КИ(Child1). Запись в буферную таблицу";   ');
+    MyWriteLN('                                                                                                           ');
+    MyWriteLN('                #$ch =  Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/info?cis=$child&pg=water" -Headers $headers | ConvertFrom-Json   ');
+    MyWriteLN('                                                                                                      ');
+    MyWriteLN('                $item = New-Object psobject                                                           ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_cis+                  '" -Value $ch.cis                   ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_cparent+              '" -Value $row.cis             ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_emissionDate+         '" -Value $ch.emissionDate          ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_producedDate+         '" -Value $ch.producedDate          ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_lastDocType+          '" -Value $ch.lastDocType           ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_emissionType+         '" -Value $ch.emissionType          ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_status+               '" -Value $ch.status                ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_packType+             '" -Value $ch.packType              ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_uit+                  '" -Value $ch.uit                   ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_uitu+                 '" -Value $ch.uitu                  ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_lastStatusChangeDate+ '" -Value $lschd                    ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_productGroup+         '" -Value $ch.productGroup          ');
+
+    MyWriteLN('                $Item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_participantInn +      '" -Value $ch.participantInn   ');
+    MyWriteLN('                $Item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_ownerInn+            '" -Value ""              ');
+    MyWriteLN('                $Item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_lastDocId      +      '" -Value $ch.lastDocId        ');
+    MyWriteLN('                $Item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_gtin           +      '" -Value $gtin              ');
+    MyWriteLN('                $Item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_sgtin          +      '" -Value $ch.sgtin            ');
+
+    MyWriteLN('                                                                              ');
+    MyWriteLN('                $childl1 +=,$item                                             ');
+    MyWriteLN('                                                                              ');
+    MyWriteLN('                foreach( $property in $item.psObject.Properties.name ) {      ');
+    MyWriteLN('                    if ($item.$property -eq $null) {                          ');
+    MyWriteLN('                        $itemProperty = "";                                   ');
+    MyWriteLN('                    } else {                                                  ');
+    MyWriteLN('                        $itemProperty = $item.$property;                      ');
+    MyWriteLN('                    }                                                         ');
+    MyWriteLN('                                                                              ');
+    MyWriteLN('                   $sqlQuery = ''Insert t$ATL_RQSTAPIVALUES (f$RQST_GUID, f$RSQT_PROVIDER, f$NROW, f$COLUMNNAME, f$VALUE)    ');
+    MyWriteLN('                   values (''''''+$RQST_GUID+'''''',''''''+$circuitserviceID+'''''',''+$npp.tostring()+'',''''''+$property.Replace("''","''''")+'''''',''''''+$itemproperty.Replace("''","''''")+'''''')'' ');
+    MyWriteLN('                                                                                                                ');
+    MyWriteLN('                   $res = Invoke-DatabaseQuery -connectionString $conStrinGal -query $sqlQuery -isSQLServer     ');
+    MyWriteLN('                                                                                                          ');
+    MyWriteLN('                }                                                                                                 ');
+    MyWriteLN('                                                                                                                ');
+    MyWriteLN('                Write-Host $item -ForegroundColor Yellow                                                          ');
+
+    MyWriteLN('                }                                                                                                        ');
+    MyWriteLN('            }                                                                                                            ');
+    MyWriteLN('        }                                                                                                                ');
+    MyWriteLN('    }                                                                                                                    ');
+    MyWriteLN('    else {                                                                                                               ');
+    MyWriteLN('        $null                                                                                                            ');
+    MyWriteLN('    }                                                                                                                    ');
+    MyWriteLN('} catch {              ');
+       MyWriteLN(' $exp = $_ | ConvertFrom-Json                                                                          ');
+       MyWriteLN(' if ($exp.code -eq 404) {                                                                              ');
+       MyWriteLN(' Write-Host $exp.error_message -Fore Green | ConvertFrom-Json                                          ');
+
+       MyWriteLN('  $sqlQuery = ''Insert t$CRPT_Errors (f$errorDate, f$message, f$sender)    ');
+       MyWriteLN('  values (''''''+$RQST_GUID+'''''',''''''+$exp.error_message+'''''',''''''+$circuitserviceID+'''''')'' ');
+       MyWriteLN('                                                                                                                ');
+       MyWriteLN('  $res = Invoke-DatabaseQuery -connectionString $conStrinGal -query $sqlQuery -isSQLServer     ');
+
+       MyWriteLN(' }                                                                                                     ');
+
+    MyWriteLN('    if ($response.errorCode -eq 401) {                                                                               ');
+    MyWriteLN('                                                                                                                         ');
+    MyWriteLN('    }                                                                                                                ');
+    MyWriteLN('    Write-Host $_ -Fore Yellow                                                                                       ');
+    MyWriteLN('}                                                                                                                    ');
+    MyWriteLN('}                                                                                                                     ');
+    MyWriteLN('GetResponse;              ');
+
+}
+
+
+
+
+Function GetRequestToAPIInfoList(_cis: string) : boolean;
+{
+  #BodyProcedureGetRqst(GetInformation,_cis)
+}

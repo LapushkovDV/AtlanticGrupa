@@ -1,0 +1,98 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Версия      : 9.10
+// Назначение  : Статические функции для работы с внешними атрибутами и классификаторами документов
+//------------------------------------------------------------------------------
+
+#ifndef _ExtAttrClassInfo_vih
+#define _ExtAttrClassInfo_vih
+
+#ifdef ComponentVersion
+#component "C_ExtClass"
+#end
+
+#doc
+Функции для работы с внешними атрибутами и классификаторами документов
+#end
+VipInterface iExtAttrClassInfo licensed (FREE);
+  Static:
+    // ExtAttr.Vih
+    Function  ExtAttr_Create(_wTable : word; _Name : string; _Type : word): comp;
+    Function  ExtAttr_ID    (_wTable : word; _Name : string): comp;
+    Function  ExtAttr_Type  (_wTable : word; _Name : string): word;
+    Function  ExtAttr_Name(_cRec: comp): string;
+    Function  ExtAttr_ValueExists  (_wTable : word; _cRec: comp; _Name: string): boolean;
+    Function  ExtAttr_ValueExistsID(_wTable : word; _cRec: comp; _cAttrNam: comp): boolean;
+    Function  ExtAttr_DeleteValue  (_wTable : word; _cRec: comp; _Name: string): integer;
+    Function  ExtAttr_DeleteValueID(_wTable : word; _cRec: comp; _cAttrNam: comp): integer;
+    Function  ExtAttr_SetNeedMessage (_NeedMessage : boolean) : boolean;
+    Procedure ExtAttr_ShowError (_err : word);
+    Function  ExtAttr_LastError : word;
+    Function  ExtAttr_CreateComp   (_wTable : word; _Name : string; _Type, _SysNumKau, _KodKau : word) : comp;
+    Function  ExtAttr_CompKodKau   (_cAttrNam: comp) : word;
+    Function  ExtAttr_CompSysNumKau(_cAttrNam: comp) : word;
+    Function  sGetAttr   (_wTable : word; _cRec : comp; _Name : string) : string;
+    Function  doGetAttr  (_wTable : word; _cRec : comp; _Name : string) : double;
+    Function  dGetAttr   (_wTable : word; _cRec : comp; _Name : string) : date;
+    Function  tGetAttr   (_wTable : word; _cRec : comp; _Name : string) : time;
+    Function  mGetAttr   (_wTable : word; _cRec : comp; _Name : string) : string;
+    Function  coGetAttr  (_wTable : word; _cRec : comp; _Name : string) : comp;
+    Function  sGetAttrID (_wTable : word; _cRec : comp; _cAttrNam : comp) : string;
+    Function  doGetAttrID(_wTable : word; _cRec : comp; _cAttrNam : comp) : double;
+    Function  dGetAttrID (_wTable : word; _cRec : comp; _cAttrNam : comp) : date;
+    Function  tGetAttrID (_wTable : word; _cRec : comp; _cAttrNam : comp) : time;
+    Function  mGetAttrID (_wTable : word; _cRec : comp; _cAttrNam : comp) : string;
+    Function  coGetAttrID(_wTable : word; _cRec : comp; _cAttrNam : comp) : comp;
+    Function  sSetAttr   (_wTable : word; _cRec : comp; _Name, _Val : string) : boolean;
+    Function  doSetAttr  (_wTable : word; _cRec : comp; _Name : string; _Val : double) : boolean;
+    Function  dSetAttr   (_wTable : word; _cRec : comp; _Name : string; _Val : date)   : boolean;
+    Function  tSetAttr   (_wTable : word; _cRec : comp; _Name : string; _Val : time)   : boolean;
+    Function  mSetAttr   (_wTable : word; _cRec : comp; _Name, _Val : string) : boolean;
+    Function  coSetAttr  (_wTable : word; _cRec : comp; _Name : string; _Val : comp; _ValStr : string) : boolean;
+    Function  sSetAttrID (_wTable : word; _cRec : comp; _cAttrNam : comp; _Val : string) : boolean;
+    Function  doSetAttrID(_wTable : word; _cRec : comp; _cAttrNam : comp; _Val : double) : boolean;
+    Function  dSetAttrID (_wTable : word; _cRec : comp; _cAttrNam : comp; _Val : date)   : boolean;
+    Function  tSetAttrID (_wTable : word; _cRec : comp; _cAttrNam : comp; _Val : time)   : boolean;
+    Function  mSetAttrID (_wTable : word; _cRec : comp; _cAttrNam : comp; _Val : string) : boolean;
+    Function  coSetAttrID(_wTable : word; _cRec : comp; _cAttrNam : comp; _Val : comp; _ValStr : string) : boolean;
+    Function  CopyAllAttr  (_wTableFrom: word; _cRecFrom: comp; _cRecTo: comp) : boolean;
+    Function  CopyAllAttrEx(_wTableFrom: word; _cRecFrom: comp; _wTableTo: word; _cRecTo: comp) : boolean;
+    Function  DeleteAllAttr(_wTable: word; _cRec: comp) : boolean;
+    Function  MoveAllAttr  (_wTable: word; _cRecFrom: comp; _cRecTo : comp): boolean;
+    Function  ExtAttr_Pick (_CanEdit: boolean; _wTable: word; _cRec: comp): boolean;
+    Function  ReNameAttr   (_wTable: word; _Name : string; _Type, _SysNumKau, _KodKau : word; _NameNew : string; _isCreateAttr : boolean) : comp;
+    Function  DeleteAttr   (_wTable: word; _Name : string; _Type : word) : boolean;
+    Function  CopyAttrPick (_wTable: word; _cRecFrom: comp; _cRecTo: comp) : boolean;
+    Function  CopyAttrName (_wTable: word; _cRecFrom: comp; _cRecTo: comp; _Name     : string) : boolean;
+    Function  CopyAttrID   (_wTable: word; _cRecFrom: comp; _cRecTo: comp; _cAttrNam : comp  ) : boolean;
+    Function  GetAttrValueStr  (_wTable : word; _cRec : comp; _Name     : string) : string;
+    Function  GetAttrValueStrID(_wTable : word; _cRec : comp; _cAttrNam : comp  ) : string;
+    // ExClass.Vih
+    Function  GetClassCode (_wTable: word; _ClassName: string) : word;
+    Function  CreateClass  (_wTable: word; _ClassName: string; _UniqFeat : word) : word;
+    Function  AddSegClass(_ClassCode : word; _SegName: string; _SegCode: string; _cGroup: comp) : comp;
+    Function  LinkSegClass (_wTable : word; _cRec : comp; _ClassName: string; _SegName: string) : boolean;
+    Function  ExtClass_SetNeedMessage (_NeedMessage : boolean) : boolean;
+    Procedure ExtClass_ShowError (_err : word);
+    Function  ExtClass_LastError : word;
+    Function  GetSegName (_ClassCode : word; _cRec : comp) : string;
+    Function  GetSegCode (_ClassCode : word; _cRec : comp) : string;
+    Function  CopyAllClassVal   (_wTable    : word; _cRecFrom: comp; _cRecTo: comp) : boolean;
+    Function  CopyAllClassValEx (_wTableFrom: word; _cRecFrom: comp; _wTableTo: word; _cRecTo: comp) : boolean;
+    Function  CopyClassEx (_CodeFrom: word; _wTableTo: word) : word;
+    Function  DeleteAllClassVal   (_wTable: word; _cRec: comp) : boolean;
+    Function  MoveAllClassVal     (_wTable: word; _cRecFrom: comp; _cRecTo: comp): boolean;
+    Function  ExtClass_Pick(_CanEdit: boolean; _wTable: word; _cRec: comp): boolean;
+    Function  CopyAllClassValUniq (_wTable: word; _cRecFrom: comp; _cRecTo: comp; _bZam : boolean) : boolean;
+    Function  CopyClassValPick    (_wTable: word; _cRecFrom: comp; _cRecTo: comp) : boolean;
+    // ExtAttrClass.vih
+    Function  ExtAttrClass_CopyAll  (_wTableFrom: word; _cRecFrom: comp; _cRecTo: comp): boolean;
+    Function  ExtAttrClass_CopyAllEx(_wTableFrom: word; _cRecFrom: comp; _wTableTo: word; _cRecTo: comp): boolean;
+    Function  ExtAttrClass_DeleteAll(_wTable: word; _cRec    : comp): boolean;
+    Function  ExtAttrClass_MoveAll  (_wTable: word; _cRecFrom: comp; _cRecTo: comp): boolean;
+    Function  ExtAttrClass_SetNeedMessage(_NeedMessage : boolean) : boolean;
+    Procedure ExtAttrClass_ShowError(_err : word);
+    Function  ExtAttrClass_LastError : word;
+end; 
+
+#end // _ExtAttrClassInfo_vih

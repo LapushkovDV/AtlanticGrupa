@@ -1,0 +1,134 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - Логистика
+// Формирование ордеров
+//********************************************************************************
+#ifndef _MAKEORDER_VIH
+#define _MAKEORDER_VIH
+
+#ifdef ComponentVersion
+#component "L_SKLAD"
+#end
+
+//******************************************************************************
+#doc
+  Функции для формирования ордеров
+#end
+//******************************************************************************
+
+ObjInterface objMakeOrder;
+
+//------------------------------------------------------------------------------
+#doc
+  Формирование приходного ордера
+#end
+Function MakePrihOrder (pKatSopr: comp; showMess: boolean; var firstRozn: boolean; var prRozn: boolean;
+                        wSkPr, wMode, wParam: word): boolean;
+
+//------------------------------------------------------------------------------
+#doc
+  удаление ордеров по настройке
+#end
+Function IsDelOrder (pKatSopr: comp): boolean;
+
+//------------------------------------------------------------------------------
+#doc
+  проверка возможности удаления ордера
+#end
+Function CanDelOrdEx(pKatSopr: comp; mesPrmt, checkTune: boolean; wMode: word): boolean;
+
+//------------------------------------------------------------------------------
+#doc
+  формирование приходного складского ордера
+#end
+Function DeleteOrders (pKatSopr: comp; MesPrmt, make_prih, make_rash: boolean; wMode, wParam: word): boolean;
+
+//------------------------------------------------------------------------------
+#doc
+  Перерасчет средних цен в накладной
+#end
+Procedure CalcSrPriceInNakl(pKatSopr: comp);
+
+//------------------------------------------------------------------------------
+#doc
+  Проверка наличия МЦ
+#end
+Function CheckNalTov(pKatSopr: comp; Dat: Date; var Counts: integer; wMode, wParam: word; frmProt: longint): word;
+
+//------------------------------------------------------------------------------
+#doc
+  Пересчет кол-ва с учетом дискретности
+#end
+Function Divide_SpSopr_by_SpOrder(pKatSopr: comp): boolean;
+
+//------------------------------------------------------------------------------
+#doc
+  формирование расходного складского ордера
+#end
+Function MakeRashOrder( pKatSopr: comp; dForm: date; Counts: integer; doDoocen, nDescr: boolean;
+                        frmHandle: longint; var wMsgForm: word; wSkPr, wMode, wParam: word): boolean;
+
+//------------------------------------------------------------------------------
+#doc
+  формирование расходного складского ордера (общая)
+#end
+Function MakeRashOrd (pKatSopr: comp; NeedMsg: boolean; pDateOrd: date; wSkPr, wMode, wParam: word; frmProt: longint): Boolean;
+
+//------------------------------------------------------------------------------
+#doc
+  Установка даты формирования ордера
+#end
+event Function CanMakeOrder: Date;
+
+end;
+
+#doc
+  Расширение №1 объектного интерфейса objMakeOrder
+#end
+ObjInterface objMakeOrder_Ex1;
+
+#doc
+  Вид учета ордера, формируемого по сопроводительному документу заданного вида
+#end
+Function GetVidUch(awVidSopr, awDirect: word): word;
+
+end;
+
+//******************************************************************************
+VipInterface MakeOrder_Release
+  implements objMakeOrder, objMakeOrder_Ex1
+  Licensed (FREE);
+  Public:
+    // пользовательская функция выполняется перед удалением ордера False - прервать удаление
+    Function  OnBeforeDeleteOrder: boolean;
+    // пользовательская процедура выполняется после удаления ордера
+    Procedure OnAfterDeleteOrder;
+    // пользовательская функция выполняется перед формированием приходного ордера False - прервать формирование
+    Function  OnBeforeMakePrihOrder: boolean;
+    // пользовательская процедура выполняется после формирование приходного ордера
+    Procedure OnAfterMakePrihOrder;
+    // пользовательская функция выполняется перед формированием расходного ордера False - прервать формирование
+    Function  OnBeforeMakeRashOrder: boolean;
+    // пользовательская процедура выполняется после формирование расходного ордера
+    Procedure OnAfterMakeRashOrder;
+  end
+;
+
+VipInterface MakeOrder(MakeOrder_Release)
+  Licensed (FREE);
+  Public:
+    // пользовательская функция выполняется перед удалением ордера False - прервать удаление
+    Function  OnBeforeDeleteOrder: boolean;
+    // пользовательская процедура выполняется после удаления ордера
+    Procedure OnAfterDeleteOrder;
+    // пользовательская функция выполняется перед формированием приходного ордера False - прервать формирование
+    Function  OnBeforeMakePrihOrder: boolean;
+    // пользовательская процедура выполняется после формирование приходного ордера
+    Procedure OnAfterMakePrihOrder;
+    // пользовательская функция выполняется перед формированием расходного ордера False - прервать формирование
+    Function  OnBeforeMakeRashOrder: boolean;
+    // пользовательская процедура выполняется после формирование расходного ордера
+    Procedure OnAfterMakeRashOrder;
+  end
+;
+#end

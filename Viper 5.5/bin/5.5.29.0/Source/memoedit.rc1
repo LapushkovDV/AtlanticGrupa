@@ -1,0 +1,25 @@
+         '~F1~ Справка',cmHelp,kbF1;
+         '~F2~ Записать',cmRdSave,kbF2;
+         '',cmRdCopyFile,kbAltF2;
+         '~Ctrl+P~ Печать', cmRdPrint, kbCtrlP;
+         '~F4~ Импорт' , cmMemoImport ,kbF4;
+         '~F5~ Экспорт'  , cmMemoExport ,kbF5;
+         '~Alt+P~ Расширение'   , cmPrefix     ,kbAltP;
+         '~Alt+C~ Удаление'     , cmMemoClear  ,kbAltC;
+         '~Alt+Enter~ Раскрыть' , cmProcessExtViewer, kbAltEnter;
+         '~Ctrl+O~ Настройки',    cmMemoHintSetup,    kbCtrlO;
+         '', cmClose,             kbEsc;
+         '', cmCalculator,        kbShiftF2;
+         '', cmResize,            kbCtrlF5;
+         '', cmZoom,              kbF5;
+         '', cmNext,              kbF6;
+         '', cmLastHelp,          kbAltF1;
+         '', cmEvaluateAndModify, kbCtrlF4;
+         '', cmSysMenu,           kbCtrlF10;
+//         '', cmCallIndex,         kbShiftF1;
+         '', cmFindTopic,         kbCtrlF1;
+         '', cmToggleStretch,     kbCtrlI;
+         
+         '', cmQuit,              kbAltX;
+         '', cmMenu,              kbF10;
+

@@ -1,0 +1,71 @@
+function getStrStatus(_status : string) : string; {
+  var _result: string = '';
+
+  case _status of
+  'EMITTED'     : _result := 'Эмитирован. Выпущен';
+  'APPLIED'     : _result := 'Эмитирован. Получен';
+  'INTRODUCED'  : _result := 'Введён в оборот';
+  'WRITTEN_OFF' : _result := 'Списан';
+  'RETIRED'     : _result := 'Выведен из оборота';
+  else _result := _status;
+  end;
+
+  result := _result;
+}
+function getStrPackType(_packType : string) : string; {
+  var _result: string = '';
+
+  case _packType of
+  'UNIT'   : _result := 'Единица товара';
+  'LEVEL1' : _result := 'Упаковка 1-го уровня';
+  'LEVEL2' : _result := 'Упаковка 2-го уровня';
+  'LEVEL3' : _result := 'Упаковка 3-го уровня';
+  'LEVEL4' : _result := 'Упаковка 4-го уровня';
+  'LEVEL5' : _result := 'Упаковка 5-го уровня';
+  'BUNDLE' : _result := 'Комплект';
+  'АТК'    : _result := 'Агрегированный таможенный код';
+  'SET'    : _result := 'Набор';
+  else _result := _packType;
+  end;
+
+  result := _result;
+}
+Window winKituInfo 'Информация о КИТУ', cyan;
+  show at (,,60,12);
+  screen scKituInfo;
+    noTableNavigation;
+    fields
+     // kituCis : noProtect;
+      kituForSt : noProtect;
+      getStrStatus(kituStatus) : skip;
+      getStrPackType(kituPackType) : skip;
+
+  buttons
+    cmGetStatus;
+    cmOk;
+  <<
+     КИ/КИТУ: .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+     Статус: .@@@@@@@@@@@@@@@@@@@@
+
+     Уровень упаковки : .@@@@@@@@@@@@@@@@@@@@
+
+
+
+     <.Проверить статус.>                    <. Закрыть .>
+  >>
+  end; //scKituInfo
+
+  handleevent
+    cmOk: {
+      closeWindowEx(winKituInfo, cmDefault);
+    }
+    cmGetStatus: {
+      set kituForSt := kituForSt;
+      RunInterface('ATLANTIC::CRPT_API_PowerShell','GetToken');
+      RunInterface('ATLANTIC::CRPT_API_PowerShell','GetKituInfo', kituForSt);
+      RereadRecord(#kituInfo);
+      RedrawPanel(#kituInfo);
+    }
+  end; //handleevent
+end; //winKituInfo

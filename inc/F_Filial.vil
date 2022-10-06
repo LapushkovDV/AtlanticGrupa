@@ -1,0 +1,10 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_Filial
+
+#ifdef ComponentVersion
+#component "F_Filial"
+#end
+
+VipInterface Filial    Licensed(Free) Parameters(myFil : longint; wMode: word);
+VipInterface GetFilial Licensed(Free) Parameters(myc : comp; myFil : longint);
+VipInterface ImportStructureEnterpriseFromKatPodr Licensed(Free);

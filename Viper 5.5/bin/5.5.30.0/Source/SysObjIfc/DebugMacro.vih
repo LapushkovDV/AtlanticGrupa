@@ -1,0 +1,44 @@
+#ifndef __DebugMacro_vih__
+#define __DebugMacro_vih__
+
+#ifdef DEBUG
+ #ifndef TRACE
+ #define TRACE(aMsg) Debug (#aMsg);
+ #endif
+ #ifndef ASSERTDB
+ #define ASSERTDB(aErr,aFile,aLine) { if (#aErr) <> tsOk _raise ExDebugAssertion ('DB Assertion ' + String(#aErr) + ' at #aFile #aLine'); }
+ #endif
+ #ifndef VERIFYDB
+ #define VERIFYDB(aErr,aFile,aLine) { if (#aErr) <> tsOk _raise ExDebugAssertion ('DB Verify Assertion ' + String(#aErr) + ' at #aFile #aLine'); }
+ #endif
+ #ifndef ASSERT
+ #define ASSERT(bErr,aFile,aLine) { if (not (#bErr)) _raise ExDebugAssertion ('Assertion at #aFile #aLine'); }
+ #endif
+ #ifndef VERIFY
+ #define VERIFY(bErr,aFile,aLine) { if (not (#bErr)) _raise ExDebugAssertion ('Verify Assertion at #aFile #aLine'); }
+ #endif
+ #ifndef CFGVERIFY
+ #define CFGVERIFY(aErr,aFile,aLine) { if (#aErr) <> 0 _raise ExDebugAssertion ('CFG Verify Assertion ' + String(#aErr) + ' at #aFile #aLine'#13 + cfsExploreError); }
+ #endif
+#else
+ #ifndef TRACE
+ #define TRACE(aMsg) //
+ #endif
+ #ifndef ASSERTDB
+ #define ASSERTDB(aErr,aFile,aLine) //
+ #endif
+ #ifndef VERIFYDB
+ #define VERIFYDB(aErr,aFile,aLine) #aErr;
+ #endif
+ #ifndef ASSERT
+ #define ASSERT(aErr,aFile,aLine) //
+ #endif
+ #ifndef VERIFY
+ #define VERIFY(aErr,aFile,aLine) #aErr;
+ #endif
+ #ifndef CFGVERIFY
+ #define CFGVERIFY(aErr,aFile,aLine) #aErr;
+ #endif
+#endif
+
+#endif

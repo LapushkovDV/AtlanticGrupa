@@ -1,0 +1,35 @@
+Create table CRPT_AggrDocs "ЦРПТ Документы Агрегации"
+With table_Code = 31637
+with Replace
+(
+  NRec                 : comp                      "Номер записи",
+  npp                  : word					   "Номер по порядку",
+  pack_code            : string                    "Код склада ",
+  operation_date_time  : string                    "Время транзакции",
+  document_number      : string                    "Номер транзакции",
+  docType			   : word					   "Тип документа",
+  CRPT_Oid			   : string 				   "Oid документа в системе ЦРПТ",
+  docDateTime		   : string 				   "Дата документа в ЦРПТ",
+  status			   : string 				   "Статус документа в ЦРПТ",
+  statusDescr		   : string 				   "Описание статуса в ЦРПТ",
+  sender			   : string 				   "Отправитель документа в ЦРПТ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+
+Create table CRPT_SpAggrDocs "ЦРПТ Спецификация документов агрегации"
+With table_Code = 31638
+with Replace
+(
+  NRec                 : comp                        "Номер записи",
+  cDoc				   : ref(CRPT_AggrDocs)      		 "Ссылка на документ",
+  kitu                 : string                      "SSCC-код паллеты",
+  cKatMc			   : comp 						 "Ссылка на кат МЦ"
+)
+With index
+(
+ i_nrec = NRec(Unique, Surrogate, Journal)
+);
+

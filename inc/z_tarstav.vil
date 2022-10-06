@@ -1,0 +1,10 @@
+#ifdef ComponentVersion
+#component "z_tarstav"
+#end
+
+vipinterface PickRazr licensed(free) parameters(Summa: double);
+vipinterface MinRazr licensed(free) parameters(p1: comp);
+vipinterface PickStav licensed(free);
+vipinterface minstav licensed(free) parameters(p1: comp);
+vipinterface TariffRatesReport licensed(free) parameters(ChangeDate: date);
+vipinterface tarStav licensed(free) parameters(sis: word; p1: comp; p2: double);

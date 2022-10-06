@@ -1,0 +1,4 @@
+
+// Переменная типа интерфейс PickBuh
+var iPickBuh : PickBuh;
+

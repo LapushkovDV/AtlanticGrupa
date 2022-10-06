@@ -1,0 +1,46 @@
+const CryptDateMask = 7FDB9Fh;
+end;
+
+HandleEvent 
+  cmInit: 
+        if (not DemoMode) then
+        {
+           var __ax1, __ax2: Longint;
+           __ax1 := InitMarker('_axMarker_', 8, 1, 1, false);
+           __ax2 := SortedContainer_Init('_axContainer_', 8, 1, 1, false);
+           if (__ax1 <> ((__ax1 or __ax2) xor (__ax2 and (not __ax1)))) while(true) {};
+           DoneMarker(__ax1, '');
+           SortedContainer_Done(__ax2, '');
+           if ((#__CryptDate__ xor CryptDateMask) > LIC_EndSupportDateAsLongint) then
+           {
+                Message(FormatStr_3('Запускаемый интерфейс "%s"'^M+
+                 'был выпущен %s, т.е. после окончания '^M+
+                 'Вашего абонентского обслуживания (%s)!'^M+
+                 'Обратитесь в отдел технической поддержки'^M+
+                 'для продления обслуживания.',
+                 #__InterfaceName__ , '#__DATE__' , String(LIC_EndSupportDate)), Error+OkButton); 
+                abort;
+           }
+        };
+  cmOnVipLoad: 
+        if (not DemoMode) then
+        {
+           var __ax1, __ax2: Longint;
+           __ax1 := InitMarker('_axMarker_', 8, 1, 1, false);
+           __ax2 := SortedContainer_Init('_axContainer_', 8, 1, 1, false);
+           if (__ax1 <> ((__ax1 or __ax2) xor (__ax2 and (not __ax1)))) while(true) {};
+           DoneMarker(__ax1, '');
+           SortedContainer_Done(__ax2, '');
+           if ((#__CryptDate__ xor CryptDateMask) > LIC_EndSupportDateAsLongint) then
+           {
+                Message(FormatStr_3('Загружаемый интерфейс "%s"'^M+
+                 'был выпущен %s, т.е. после окончания '^M+
+                 'Вашего абонентского обслуживания (%s)!'^M+
+                 'Обратитесь в отдел технической поддержки'^M+
+                 'для продления обслуживания.',
+                 #__InterfaceName__ , '#__DATE__' , String(LIC_EndSupportDate)), Error+OkButton); 
+                abort;
+           }
+        };
+end;
+

@@ -1,0 +1,249 @@
+//-------------------------------------------------------------------
+//--- Copyright(c) 2001 by Galaktika Corporation                  ---
+//--- Этот файл автоматически генерируется для использования      ---
+//--- COM интерфейсов из Атлантиса. Править этот файл запрещается ---
+//--- так как это может привести к неработоспособности системы    ---
+//-------------------------------------------------------------------
+#ifndef __atlcom__
+#define __atlcom__
+
+#Component ""
+
+#include IDynamicCast.vih
+
+//--- Forwards declarations --------------
+
+ObjInterface comIUnknown; forward;
+ObjInterface comIDispatch; forward;
+ObjInterface comIEnumVARIANT; forward;
+ObjInterface comIFont; forward;
+ObjInterface comFont; forward;
+ObjInterface comIPicture; forward;
+ObjInterface comPicture; forward;
+ObjInterface comFontEvents; forward;
+
+//--- Types definition  ------------------
+
+type HRESULT    // #docl Результат работы функции. </brief>
+                = longint;
+
+type GUID // #docl Глобальный Уникальный Идентификатор. </brief> <br> В Com-модели - основной идентификатор интерфейса. 
+    = record 
+      Data1 : longint;
+      Data2 : word;
+      Data3 : word;
+      Data4 : comp;
+end;
+
+type DISPPARAMS // #docl В COM-модели используется IDispatch::Invoke для хранения аргументов, передаваемых в метод или свойство. </brief>
+    = record
+      rgvarg : pointer;            // VARIANT*
+      rgdispidNamedArgs : pointer; // longint* 
+      cArgs : longint; 
+      cNamedArgs : longint; 
+end;
+
+type EXCEPINFO // #docl Содержит информацию об исключении работы метода COM-модели IDispatch::Invoke. </brief>
+    = record
+      wCode : word;
+      wReserved : word;
+      bstrSource : string;
+      bstrDescription : string;
+      bstrHelpFile : string;
+      dwHelpContext : longint;
+      pvReserved : pointer; // void*
+      pfnDeferredFillIn : pointer; // void*
+      scode : HRESULT;
+end;
+
+type OLE_TRISTATE // #docl True -1, False  0, UseDefault -2. </brief>
+                  = longint;
+
+const
+  Unchecked = -1; 
+  Checked = 0; 
+  Gray = 1; 
+end;
+
+type LoadPictureConstants   // #docl Документация отсутствует. </brief>
+                            = longint;
+const
+  Default = -1; 
+  Monochrome = 0; 
+  VgaColor = 1; 
+  Color = 2; 
+end;
+
+type OLE_COLOR  // #docl  Дополнительная информация отсутствует. </brief> 
+                = longint;
+
+type OLE_XPOS_PIXELS    // #docl  Положение по горизонтали в пикселях. </brief> 
+                        = longint;
+
+type OLE_YPOS_PIXELS    // #docl  Положение по вертикали в пикселях. </brief> 
+                        = longint;
+
+type OLE_XSIZE_PIXELS   // #docl  Размер по горизонтали в пикселях. </brief> 
+                        = longint;
+
+type OLE_YSIZE_PIXELS   // #docl  Размер по вертикали в пикселях. </brief> 
+                        = longint;
+
+type OLE_XPOS_HIMETRIC  // #docl  Векторное положение по горизонтали. </brief> 
+                        = longint;
+
+type OLE_YPOS_HIMETRIC  // #docl  Векторное положение по вертикали. </brief> 
+                        = longint;
+
+type OLE_XSIZE_HIMETRIC // #docl  Векторный размер по горизонтали. </brief> 
+                        = longint;
+
+type OLE_YSIZE_HIMETRIC // #docl  Векторный размер по вертикали. </brief> 
+                        = longint;
+
+type OLE_XPOS_CONTAINER // #docl  Дополнительная информация отсутствует. </brief> 
+                        = single;
+
+type OLE_YPOS_CONTAINER // #docl  Дополнительная информация отсутствует. </brief> 
+                        = single;
+
+type OLE_XSIZE_CONTAINER// #docl  Дополнительная информация отсутствует. </brief>  
+                        = single;
+
+type OLE_YSIZE_CONTAINER// #docl  Дополнительная информация отсутствует. </brief>  
+                        = single;
+
+type OLE_HANDLE         // #docl  Handle объекта. </brief> 
+                        = longint;
+
+type OLE_OPTEXCLUSIVE   // #docl  Эксклюзивная работа с объектом. </brief> 
+                        = boolean;
+
+type OLE_CANCELBOOL     // #docl  Дополнительная информация отсутствует. </brief>  
+                        = boolean;
+
+type OLE_ENABLEDEFAULTBOOL // #docl  Дополнительная информация отсутствует. </brief>  
+                        = boolean;
+
+type FONTNAME           // #docl  Имя шрифта. </brief>  
+                        = string;
+
+type CURRENCY           // #docl  Единица измерения. </brief>
+                        = comp;
+
+type FONTSIZE           // #docl  Размер шрифта. </brief>
+                        = CURRENCY;
+
+type FONTBOLD           // #docl  Признак жирного шрифта. </brief>  
+                        = boolean;
+
+type FONTITALIC         // #docl  Признак курсивного шрифта. </brief>  
+                        = boolean;
+
+type FONTUNDERSCORE     // #docl  Признак подчеркнутого шрифта. </brief>  
+                        = boolean;
+
+type FONTSTRIKETHROUGH  // #docl  Признак перечеркнутого шрифта. </brief>  
+                        = boolean;
+
+ObjInterface IFontDisp; forward;
+ObjInterface IPictureDisp; forward;
+ObjInterface IFontEventsDisp; forward;
+
+//--- Object Interfaces ------------------
+
+/*============================================================================================================*/
+ObjInterface comIUnknown;
+// #docl Базовый интерфейс IUnknown. </brief> <br> Предоставляет доступ к базовым функциям наследников интерфейса.
+  function OpenInWindow // #docl Активизация объекта в окне. </brief> <br> Используется автоматически формируемый заголовок (например, 'Excel - Document1'). При закрытии окна объект получает фокус.
+                        : Boolean; // #docl Возвращает true в случае успешного завершения. </brief>
+  property COMOptions   // #docl Получить флаги. </brief>
+                        : LongInt Read Write; // #docl Возвращает текущие значения флагов. </brief>
+  property COMHandle    // #docl Получить handle объекта. </brief>
+                        : LongInt Read; // #docl Возвращает handle объекта. </brief>
+  property COMDispatch  // #docl Возвращает handle интерфейса IDispatch. </brief>
+                        : LongInt Read;  // #docl Handle интерфейса IDispatch. </brief>
+end;                                        
+
+VipInterface vcomIUnknown implements comIUnknown, IDynamicCast licensed(free);
+// #docl Интерфейс, реализующий comIUnknown. </brief> Служебный объект, создавать запрещается !!! 
+public:
+  constructor CreateQI// #docl Создает экземпляр интерфейса. </brief>
+                      ( iComHandle       // #docl Код экземпляра. </brief>
+                      : longint; flags   // #docl Свойства экземпляра. </brief>
+                      : word );
+  destructor  Done // #docl Выполняет работу по завершению работы интерфейса. </brief>
+                 ;
+end;
+/*============================================================================================================*/
+ObjInterface comIDispatch( comIUnknown );
+// #docl Интерфейс IDispatch. </brief>
+end;
+
+VipInterface vcomIDispatch( vcomIUnknown ) implements comIDispatch;
+// #docl Интерфейс, реализующий comIDispatch. </brief> Служебный объект, создавать запрещается !!! 
+/*============================================================================================================*/
+ObjInterface comIEnumVARIANT( comIUnknown );
+// #docl Интерфейс IEnumVARIANT. </brief>
+end;
+
+VipInterface vcomIEnumVARIANT( vcomIUnknown ) implements comIEnumVARIANT;
+// #docl Интерфейс, реализующий comIEnumVARIANT. </brief> Служебный объект, создавать запрещается !!! 
+/*============================================================================================================*/
+ObjInterface comIFont( comIUnknown );
+// #docl Font Object. </brief>
+end;
+
+VipInterface vcomIFont( vcomIUnknown ) implements comIFont;
+// #docl Интерфейс, реализующий comIFont. </brief> Служебный объект, создавать запрещается !!! 
+/*============================================================================================================*/
+ObjInterface comFont( comIDispatch );
+// #docl Интерфейс comFont. </brief>
+end;
+
+VipInterface vcomFont( vcomIDispatch ) implements comFont;
+// #docl Интерфейс, реализующий comFont. </brief> Служебный объект, создавать запрещается !!! 
+/*============================================================================================================*/
+ObjInterface comIPicture( comIUnknown );
+// #docl Picture Object. </brief>
+end;
+
+VipInterface vcomIPicture( vcomIUnknown ) implements comIPicture;
+// #docl Интерфейс, реализующий comIPicture. </brief> Служебный объект, создавать запрещается !!! 
+/*============================================================================================================*/
+ObjInterface comPicture( comIDispatch );
+// #docl Интерфейс comFont. </brief>
+end;
+
+VipInterface vcomPicture( vcomIDispatch ) implements comPicture;
+// #docl Интерфейс, реализующий comPicture. </brief> Служебный объект, создавать запрещается !!! 
+/*============================================================================================================*/
+ObjInterface comFontEvents( comIDispatch );
+// #docl Event interface for the Font object </brief>
+end;
+
+VipInterface vcomFontEvents( vcomIDispatch ) implements comFontEvents;
+// #docl Интерфейс, реализующий comFontEvents. </brief> Служебный объект, создавать запрещается !!! 
+/*============================================================================================================*/
+ObjInterface IFontDisp( comFont );
+// #docl Display interface for the Font interface. </brief>
+end;
+
+VipInterface vIFontDisp( vcomFont ) implements IFontDisp;
+// #docl Интерфейс, реализующий IFontDisp. </brief> Служебный объект, создавать запрещается !!! 
+/*============================================================================================================*/
+ObjInterface IPictureDisp( comPicture );
+// #docl Интерфейс IPictureDisp. </brief>
+end;
+
+VipInterface vIPictureDisp( vcomPicture ) implements IPictureDisp;
+// #docl Интерфейс, реализующий IPictureDisp. </brief> Служебный объект, создавать запрещается !!! 
+/*============================================================================================================*/
+ObjInterface IFontEventsDisp( comFontEvents );
+// #docl Интерфейс IFontEventsDisp. </brief>
+end;
+
+VipInterface vIFontEventsDisp( vcomFontEvents ) implements IFontEventsDisp;
+// #docl Интерфейс, реализующий IFontEventsDisp. </brief> Служебный объект, создавать запрещается !!! 
+/*============================================================================================================*/
+#endif

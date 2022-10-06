@@ -1,0 +1,34 @@
+#include PreDefs.inc;
+const
+#include GloConst.inc;
+#include Galnet.csc;
+#include Galnet.ccm;
+#include Money.ccm
+#include Money.csc //без Galnet.inc надо
+#include fldcolor.inc
+
+end;
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include DicTypes.def
+#include GloDefs.inc
+#include StatDefs.inc
+
+#define ComponentVersion
+
+#make "Source\EmtyFace.vip"
+#make "cnf\F_PLPOR_BRPLPORPLAT2.cnf"
+#make "cnf\L_MCU_GTSPARTY2KATSOPR.cnf"
+#make "cnf\L_SKLAD_GETPRICE.cnf"
+#make "cnf\L_SKLAD_PRIHORD.cnf"
+#make "cnf\L_SKLAD_RASHORD.cnf"
+#make "cnf\L_SKLAD_SOPINMOV.cnf"
+#make "cnf\L_SOPRDOC_SOPRDOCB.cnf"
+#make "cnf\M_TRANSP_GET_DOR.cnf"
+#make "cnf\L_SKLAD_KARTSTORAGE.cnf"
+#make "cnf\L_PRICES_PRICELS.cnf"
+#make "cnf\F_GETAN_GTCGKAU_KATMC.cnf"
+#make "cnf\l_katorg.cnf"

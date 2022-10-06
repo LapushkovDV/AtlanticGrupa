@@ -1,0 +1,44 @@
+//------------------------------------------------------------------------------
+//                                                      (c) Корпорация ГАЛАКТИКА
+//------------------------------------------------------------------------------
+// Галактика 8.1 - Бухгалтерский контур
+// Редактирование проводок - объект
+//------------------------------------------------------------------------------
+
+#ifndef __Oborot__vih__
+#define __Oborot__vih__
+
+#include D:\Compile\8.1\Inc\OborotAbstract.vih
+
+#ifdef ComponentVersion
+#Component "F_Oborot"
+#end
+
+//------------------------------------------------------------------------------
+// Заведен временно, до полной замены Oborot на EditOborot
+//------------------------------------------------------------------------------
+
+#doc
+Редактирование бухгалтерских проводок.<br>
+<i>Внимание! Объектный интерфейс временный, для аналогичных целей следует использовать
+интерфейс <link ObjInterface F_OBOROT::iObjOborot>iObjOborot</link></i>
+#end
+ObjInterface ObjOborot
+  #ifdef Gal8_1
+  (ObjOborotAbstract)
+  #end
+  ;
+end;
+
+VipInterface Oborot
+  #ifdef Gal8_1
+  (OborotAbstract)
+  #end
+  implements ObjOborot
+  #ifdef Atl51
+  Parameters (cGetRec : comp)
+  #end
+;
+
+#end // __Oborot__vih__
+

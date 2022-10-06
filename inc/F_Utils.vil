@@ -1,0 +1,14 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_Utils
+
+#ifdef ComponentVersion
+#component "F_Utils"
+#end
+
+VipInterface CheckBuh        Licensed (Free);
+VipInterface CopyPlans       Licensed (B_Finans,B_Balans,B_Konsol,NalogReg);
+VipInterface DataCompression Licensed (Free);
+VipInterface GoNewMon        Licensed (B_Balans,B_Finans)  Parameters (NewOld : word);
+
+VipInterface Check001        Licensed (Free);     // Округление сумм
+VipInterface CheckHoz        Licensed (Free);     // Контроль SoprHoz от документов

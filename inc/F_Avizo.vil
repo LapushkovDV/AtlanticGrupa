@@ -1,0 +1,8 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_Avizo
+
+#ifdef ComponentVersion
+#component "F_Avizo"
+#end
+
+

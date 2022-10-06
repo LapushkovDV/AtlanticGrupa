@@ -1,0 +1,43 @@
+#ifdef ComponentVersion
+#component "L_KONTRBAL"
+#end
+
+vipinterface iEditNastrDK      licensed (FREE)
+                               Parameters (cSysKau:comp; lUseKau:longint; dSaldoFrom: date);
+vipinterface iGetKauDK         licensed (FREE)
+                               Parameters (cSoprHoz:comp; cOrgDoc:comp; cValDoc: comp);
+
+vipinterface ReCalcSaldoKontr  licensed (FREE)
+                               Parameters (wParam   : word);
+
+vipinterface Kontr_Balance     licensed (FREE)
+                               Parameters (WriteBalance:boolean);
+
+vipinterface CurrentOperBalans
+  licensed (postpol);
+
+vipinterface RasKontrBalance   licensed (FREE);
+
+vipinterface Rep_plV
+  licensed (postpol)
+  Parameters (P : word);
+
+vipinterface TrRepBalCuts
+  licensed (postpol);
+
+vipinterface GSaldKon          licensed (FREE)
+                               Parameters (c1 : comp; d1 : date; TipBal : word);
+vipinterface Rep_plv_ByDO
+  licensed (postpol);
+
+vipinterface Rep_plv_ByDgv
+  licensed (postpol);
+
+
+vipinterface EditSaldoKAUCuts  licensed (FREE)
+                               Parameters (pOrg : comp; dCalcSaldo : date);
+
+vipinterface OperClientCard
+  licensed (postpol);
+
+vipinterface OperClientCardDop licensed (FREE) Parameters (aOrg : Comp);

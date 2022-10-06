@@ -1,0 +1,11 @@
+
+#ifdef ComponentVersion
+#component "L_SST"
+#end
+
+#include SoprType.vpp
+
+VipInterface SoprZamenBase2Sell licensed (FREE) Parameters (pKatSopr: comp);
+VipInterface PeresortMC         licensed (FREE) Parameters (cFormPl: comp; pKatSopr: comp);
+VipInterface ReformOrd          licensed (FREE);
+VipInterface MakeMirrorDoc      licensed (FREE);

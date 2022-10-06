@@ -1,0 +1,250 @@
+.fields
+ Ean13ToEanGnivcTTF(GenerateBarCodeEx(coKatSopr, накладная_нрек))
+ oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 1) + oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 2)
+ oPrnSoprFun.GetOrgFields12(накладная_нрек, Грузоотправитель, ГрузоотправительУНН, ГрузоотправительКПП, Грузоотправитель_Адрес, Грузоотправитель_ЮрАдрес, Грузоотправитель_ТЕЛ, 1)
+ oPrnSoprFun.GetOrgFieldsBank(Грузоотправитель_СТАРАНА_КОД, Грузоотправитель_БАНК_Имя, Грузоотправитель_БАНК_Счет, Грузоотправитель_БАНК_Мфо, Грузоотправитель_БАНК_Счет_Ркц, Грузоотправитель_БАНК_Ркц)
+ Грузоотправитель_ОКПО
+#ifdef _TTN_PRIH_
+ Склад_Пол
+ Получатель_ОКОНХ
+#else
+ Склад
+ Поставщик_ОКОНХ               // KatOrg.OKONH
+#end
+
+ oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 1) + oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 2)
+ oPrnSoprFun.GetOrgFields12(накладная_нрек, Грузополучатель, ГрузополучательУНН, ГрузополучательКПП, Грузополучатель_Адрес, Грузополучатель_ЮрАдрес, Грузополучатель_ТЕЛ, 2)
+ oPrnSoprFun.GetOrgFieldsBank(Грузополучатель_СТАРАНА_КОД, Грузополучатель_БАНК_Имя, Грузополучатель_БАНК_Счет, Грузополучатель_БАНК_Мфо, Грузополучатель_БАНК_Счет_Ркц, Грузополучатель_БАНК_Ркц)
+ Грузополучатель_ОКПО
+
+ Поставщик_ОКПО
+ oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 1) + oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 2)
+ #AdrFieldsUr12(Поставщик,Поставщик_СТАРАНА_КОД)
+ oPrnSoprFun.GetOrgFieldsBank(Поставщик_СТАРАНА_КОД, Поставщик_БАНК_Имя, Поставщик_БАНК_Счет, Поставщик_БАНК_Мфо, Поставщик_БАНК_Счет_Ркц, Поставщик_БАНК_Ркц)
+
+ Плательщик_ОКПО
+ oPrnSoprFun.GetOrgFullName(накладная_нрек, 4, 1) + oPrnSoprFun.GetOrgFullName(накладная_нрек, 4, 2)
+ #AdrFieldsUr12(Плательщик,Плательщик_СТАРАНА_КОД)
+ oPrnSoprFun.GetOrgFieldsBank(Плательщик_СТАРАНА_КОД, Плательщик_БАНК_Имя, Плательщик_БАНК_Счет, Плательщик_БАНК_Мфо, Плательщик_БАНК_Счет_Ркц, Плательщик_БАНК_Ркц)
+
+!if (Номер_Договора <> '', Номер_Договора,
+!  if (НарядЗаказНомер <> '', НарядЗаказНомер,
+     if (Основание <> '', Основание, '')
+!))
+
+!if (Номер_Договора <> '', 'Договор',
+!  if (НарядЗаказНомер <> '', 'Заказ-наряд',
+!    if (Основание <> '', 'Счет', '')))
+ ОснованиеПримечание
+
+ cust_no //Номер магазина Метро
+
+!if (Номер_Договора <> '', DateToStr(Дата_Договора, 'DD.MM.YYYY'),
+!  if (НарядЗаказНомер <> '', DateToStr(НарядЗаказДата, 'DD.MM.YYYY'),
+     if (Основание <> '', DateToStr(ДатаОснования, 'DD.MM.YYYY'), '')
+!))
+
+ номер
+ if (Дата=Date(0,0,0),'',DateToStr(Дата,'DD.MM.YYYY'))
+if(pos('ЗАКАЗ №',upcase(НАЗВАН_НАКЛАДНОЙ)) <> 0
+   ,substr(НАЗВАН_НАКЛАДНОЙ,pos('ЗАКАЗ №',upcase(НАЗВАН_НАКЛАДНОЙ))+7,pos(' ',substr(НАЗВАН_НАКЛАДНОЙ,pos('ЗАКАЗ №',upcase(НАЗВАН_НАКЛАДНОЙ))+7,50)))
+   ,'') // if(pos('ЗАКАЗ №',upcase(katsopr.name)) <> 0 ,substr(KATSOPR.NAME,pos('ЗАКАЗ №',upcase(katsopr.name))+7,8),'')
+!oPrnSoprFun.GetwRoundMass2StrTTN
+!if (wFillCol10 = 0, oPrnSoprFun.GetwRoundMass2StrTTN, '')
+
+//code_name - название колонки код МЦ
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол НакСимвол НакСимвол
+#else
+  НацСимвол НацСимвол НацСимвол НацСимвол
+#end
+
+ номер
+ if (Дата=Date(0,0,0),'',DateToStr(Дата,'DD.MM.YYYY'))
+
+!oPrnSoprFun.GetwRoundMass2StrTTN
+!if (wFillCol10 = 0, oPrnSoprFun.GetwRoundMass2StrTTN, '')
+
+#ifdef _IN_VAL_DOC_
+  НакСимвол НакСимвол НакСимвол НакСимвол
+#else
+  НацСимвол НацСимвол НацСимвол НацСимвол
+#end
+
+ doubleToStr(KolItog, RoundGrm)
+ oPrnSoprFun.GetMassaBrTTN (1, MassaBrItog)
+ if (wFillCol10 = 0, oPrnSoprFun.GetMassaBrTTN (1, MassaNetItog), '')
+
+ DoubleToStr(Sum1Itog, Cena_Pr0)
+ DoubleToStr(Sum2Itog, Cena_Pr0)
+ DoubleToStr(Sum3Itog, Cena_Pr0)
+
+!oPrnSoprFun.GetwRoundMass2StrTTN
+!if (wFillCol10 = 0, oPrnSoprFun.GetwRoundMass2StrTTN, '')
+
+ номер
+ if (Дата=Date(0,0,0),'',DateToStr(Дата,'DD.MM.YYYY'))
+
+#ifdef _IN_VAL_DOC_
+ НакСимвол НакСимвол НакСимвол НакСимвол
+#else
+ НацСимвол НацСимвол НацСимвол НацСимвол
+#end
+  
+ Nom // Графа 1. Номер п/п
+ Название // Графа 2. Наименование МЦ
+ codeEd // Графа 3. Код МЕТРО
+ codeOtpEd // Графа 4. 13-ти значный код
+ КодМЦ // Графа 5. Код
+ '1' // Графа 6. Содержание МЕТРО единицы  ???
+!oPrnSoprFun.NastrEdIzm(УчЕд, ОтпЕд) // Графа 4. Наименование единицы измерения
+!oPrnSoprFun.NastrEdIzm(CodeEd, CodeOtpEd) // Графа 5. Код по ОКЕИ
+ if(ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ <> '', ЕД_ИЗМЕРЕНИЯ_ГРУЗОВЫХ_МЕСТ, ОтпЕд) // Графа 7. Вид упаковки
+ KolOneGrM // Графа 8. Количество в одной упаковке
+ KolGrM // Графа 9. Количество грузовых мест
+ // Графа 10. Масса брутто
+ if(oPrnSoprFun.GetDMassaBrTTN(Признак_МЦ, ((МассаМЦ + МассаТарыМЦ) * КолУч)) <> 0, oPrnSoprFun.GetMassaBrTTN(Признак_МЦ, ((МассаМЦ + МассаТарыМЦ) * КолУч)), sGetTune('Doc.SD.AbbrField.MassaZero'))
+ oPrnSoprFun.NastrEdIzm(DoubleToStr(КолУч, Kol_Pr), DoubleToStr(КолФ, Kol_Pr)) // Графа 11. Количество штук
+
+#ifdef _IN_VAL_DOC_
+  doubleToStr(oPrnSoprFun.NastrEdIzmP(спецификацияМЦ_нрек, 0, Признак_МЦ, ЦНакСН, ЦНакБН, ЦНакСН, ЦНакБН, ЦНакСНУч, ЦНакБНУч, ЦНакСНУч, ЦНакБНУч), if (GetPrecisionGroup('brForSoprTTN_RVPrice')<> 5, Cena_PrTTN, Cena_Pr0))
+#else
+  doubleToStr(oPrnSoprFun.NastrEdIzmP(спецификацияМЦ_нрек, 0, Признак_МЦ, ЦНацСН, ЦНацБН, ЦНацСН, ЦНацБН, ЦНацСНУч, ЦНацБНУч, ЦНацСНУч, ЦНацБНУч), if (GetPrecisionGroup('brForSoprTTN_Price')<> 5, Cena_PrRTTN, Cena_Pr0))
+#end
+
+  doubleToStr(СтНацБН , Cena_Pr0)
+  if(ПризнакНДС = word(0), sGetTune('Doc.SD.AbbrField.NoNDSStZero'), if (ставка_первого_налога = 0, sGetTune('Doc.SD.AbbrField.NDSStZero'), DoubleToStr(ставка_первого_налога, NDS_St)))
+  if(ПризнакНДС = word(0), sGetTune('Doc.SD.AbbrField.NoNDSSummZero'), if (СтНДСНац = 0, sGetTune('Doc.SD.AbbrField.NDSSummZero'), DoubleToStr(СтНДСНац, Cena_Pr0)))
+  doubleToStr(СтНацСН, Cena_Pr0)
+
+  tSpec.tSrcCountry tSpec.tGtdNumber
+
+  doubleToStr(KolItog, RoundGrm)
+
+  if(oPrnSoprFun.GetMassaBrTTN_(1, MassaBrItog) <> 0, oPrnSoprFun.GetMassaBrTTN(1, MassaBrItog), sGetTune('Doc.SD.AbbrField.MassaZero'))
+  '' // масса нетто по странице
+
+  doubleToStr(Sum1Itog, Cena_Pr0)
+  doubleToStr(Sum2Itog, Cena_Pr0)
+  doubleToStr(Sum3Itog, Cena_Pr0)
+
+  doubleToStr(KolItog, RoundGrm)
+
+  if(oPrnSoprFun.GetMassaBrTTN_(1, MassaBrItog) <> 0, oPrnSoprFun.GetMassaBrTTN(1, MassaBrItog), sGetTune('Doc.SD.AbbrField.MassaZero'))
+  '' // масса нетто по странице
+
+  doubleToStr(Sum1Itog, Cena_Pr0)
+  doubleToStr(Sum2Itog, Cena_Pr0)
+  doubleToStr(Sum3Itog, Cena_Pr0)
+
+!droga
+  if(noNDS10 > 0, doubleToStr(noNDS10, Cena_Pr0), '')
+  if(NDS10 > 0, doubleToStr(NDS10, Cena_Pr0), '')
+  if(allNDS10 > 0, doubleToStr(allNDS10, Cena_Pr0), '')
+  if(noNDS18 > 0, doubleToStr(noNDS18, Cena_Pr0), '')
+  if (NDS18 > 0, doubleToStr(NDS18, Cena_Pr0), '')
+  if (allNDS18 > 0, doubleToStr(allNDS18, Cena_Pr0), '')
+!droga
+
+  doubleToStr(KolItogFull, RoundGrm)
+
+  if(oPrnSoprFun.GetMassaBrTTN_(1, MassaBrItogFull) <> 0, oPrnSoprFun.GetMassaBrTTN(1, MassaBrItogFull), sGetTune('Doc.SD.AbbrField.MassaZero'))
+  '' // масса нетто всего
+
+  doubleToStr(Sum1ItogFull, Cena_Pr0)
+  doubleToStr(Sum2ItogFull, Cena_Pr0)
+  doubleToStr(Sum3ItogFull, Cena_Pr0)
+
+  doubleToStr(NomFull, '4\m')
+
+  if(oPrnSoprFun.GetMassaBrTTN_(1, MassaNetItogFull) <> 0, oPrnSoprFun.GetMassaBrTTN(1, MassaNetItogFull), sGetTune('Doc.SD.AbbrField.MassaZero'))
+
+  doubleToStr(Round(KolItogFull, KolZn), strDr)
+
+  if(MassaNetItogFull = 0, '',
+    MassaInWords (MassaNetItogFull, wRoundMass2))
+
+  if(oPrnSoprFun.GetMassaBrTTN(1, MassaBrItogFull) <> 0, oPrnSoprFun.GetMassaBrTTN(1, MassaBrItogFull), sGetTune('Doc.SD.AbbrField.MassaZero'))
+
+  if(MassaBrItogFull = 0, '',
+    MassaInWords (MassaBrItogFull, wRoundMass2))
+
+  НомерДовер
+  if(LongInt(ДатаДовер) <> LongInt(0), DateToStr(ДатаДовер, 'DD mon YYYY'), '')
+
+#ifdef _IN_VAL_DOC_
+  doubleToString(Валюта_нрек, Round(Sum3ItogFull, GetPrecisionGroup('brForSopr_RVPrice')))
+#else
+  doubleToString(0, Round(Sum3ItogFull, GetPrecisionGroup('brForSopr_Price')))
+#end
+
+  oPrnSoprFun.GetOrgFullName(накладная_нрек, 6, 0)
+
+!droga sign
+ Osn
+ ''//Podp_dol_01
+ ''//Podp_fio_01
+ ''//Podp_dol_02
+ ''//Podp_fio_02
+/*
+ Podp_dol_03
+ Podp_fio_03
+ Podp_dol_04
+ Podp_fio_04
+ Podp_dol_05
+ Podp_fio_05
+ Podp_dol_06
+ Podp_fio_06
+ Podp_dol_07
+ Podp_fio_07
+ Podp_dol_08
+ Podp_fio_08
+ Podp_dol_09
+ Podp_fio_09
+ Podp_dol_10
+ Podp_fio_10
+ Podp_dol_11
+ Podp_fio_11
+ */
+//
+  ДовЛицоДолжность + if (ДовЛицоДолжность <> '', ' ', '')
+  + ФИОДовер
+
+#ifdef _TTN_PRIH_
+  strEmpty strEmpty
+  strEmpty strEmpty
+
+#else
+  strEmpty strEmpty
+  strEmpty strEmpty
+#end
+ номер
+ if (Дата=date(0,0,0),'',DateToStr(Дата,'DD.MM.YYYY'))
+ Podp_fio_12
+ Osn
+ ''//Podp_dol_02
+ ''//Podp_fio_02
+ Podp_dol_03
+ Podp_fio_03
+/*
+ Podp_dol_04
+ Podp_fio_04
+ Podp_dol_05
+ Podp_fio_05
+ Podp_dol_06
+ Podp_fio_06
+ Podp_dol_07
+ Podp_fio_07
+ Podp_dol_08
+ Podp_fio_08
+ Podp_dol_09
+ Podp_fio_09
+ Podp_dol_10
+ Podp_fio_10
+ Podp_dol_11
+ Podp_fio_11
+ Podp_dol_09
+ Podp_fio_09
+*/
+ Спецсимвол
+.endfields

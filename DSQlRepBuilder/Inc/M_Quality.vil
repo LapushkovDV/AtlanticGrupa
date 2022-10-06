@@ -1,0 +1,33 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компоненты
+
+#ifdef ComponentVersion
+#component "M_QUALITY"
+#end
+
+VipInterface Bind2Pr      licensed (FREE)  Parameters (wTestType : word; liMarker : longint);
+VipInterface GetSortMC    licensed (FREE)  Parameters (p_cGroupMC : comp; p_cMC : comp; p_wMode : word; p_cSpSortMC : comp; p_cKatSort : comp);
+VipInterface GetStatusMC  licensed (FREE)  Parameters (p_cGroupMC : comp; p_cMC : comp; p_wMode : word; p_cSpStatMC : comp; p_cKatStats : comp);
+VipInterface GrPokaz      licensed (FREE)  Parameters (c1 : comp; GetEdt : word);
+VipInterface EditValPokaz licensed (FREE)  Parameters (pOwner : comp; pTable : word);
+VipInterface ExKachvo     licensed (FREE)  Parameters (pOwner : comp; pTable : word);
+VipInterface JSSoprRun    licensed (FREE)  Parameters (pwTable : word; pcOwner : comp; pwContext : word);
+VipInterface KatPokaz     licensed (FREE)  Parameters (c1 : comp; GetEdt : word; pwMode: Word);
+VipInterface KatSortMC    licensed (Quality) ;
+VipInterface KatStatusMC  licensed (Quality) ;
+VipInterface KatQualMC    licensed (Quality) ;
+VipInterface KatQP                         Parameters (pMode : word; pQPHead : comp; pKodGr : word; pAnVal : comp);
+VipInterface PartyTreeRun licensed (FREE)  Parameters (pcUserDeskRep : comp;  pwType: word; sXLSFileName : string);
+VipInterface PartyTreeTune licensed (FREE) Parameters (pcUserDeskRep : comp);
+VipInterface PrnPassp     licensed (FREE)  Parameters (wType : word; cOwner : comp);
+VipInterface ProbeAtt     licensed (FREE)  Parameters (pwVidAtt, pwTypeOwn : word; pcOwner : comp; pwTypeObj : word; pcObject : comp; pwCrPassp, pwTypeOut : word);
+VipInterface QPAtt        licensed (FREE)  Parameters (pwVidAtt, pwTypeOwn : word; pcOwner : comp; pwTypeObj : word; pcObject : comp);
+VipInterface RunQualAlg   licensed (FREE)  Parameters (DocNRec : comp; DocSpNRec : comp; VidSopr : word; dOpr: date; TypeAc : word);
+VipInterface RepProbeTreeRun licensed (FREE)  Parameters (pcUserDeskRep : comp;  pwType: word; sXLSFileName : string);
+VipInterface RepProbeTreeTune licensed (FREE) Parameters (pcUserDeskRep : comp);
+VipInterface ValNac       licensed (FREE)  Parameters (pOwner : comp; pTable : word);
+
+/*
+//---чисто-объектные интерфейсы ч/з vih-подключения---
+//----------------------------------------------------
+*/

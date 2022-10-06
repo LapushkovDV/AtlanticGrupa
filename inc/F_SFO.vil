@@ -1,0 +1,96 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонентой F_SFO
+
+#ifdef ComponentVersion
+#component "F_SFO"
+#end
+
+#include reptypes.vpp
+
+// --- Имеются vih-файлы для интерфейсов
+
+// VipInterface MBPAvtoNum         licensed (FREE);
+// VipInterface iPers_SFO          licensed (FREE);
+// VipInterface iSFONalog          licensed (FREE);
+
+
+// --- Локальные интерфейсы
+
+VipInterface getNormSFO            licensed (FREE) Parameters (c1 : comp; s1 : string[20]);
+VipInterface GetPersInUse          licensed (FREE) Parameters (pDocDate : Date; pPersCard : Comp; pCommand : Word);
+VipInterface GetPersNorm           licensed (FREE) Parameters (pCardN : Comp; pNormN : Comp; pPrevN : Comp; pNormD : Date; pEndD : Date; pSpFl : Word; pOnFl : Word; pSelN : Comp);
+VipInterface getPriceIndex         licensed (FREE) Parameters (c1 : Comp);
+VipInterface getReqSFO             licensed (FREE) Parameters (pPersCrd : Comp; c2 : Comp);
+VipInterface InsertNewReq          licensed (FREE) Parameters (dForm : date; marker : longint; isReplace : boolean; isShow : boolean);
+VipInterface isSFOInStock          licensed (FREE) Parameters (c1 : Comp; c2 : Comp; c3 : Comp; c4 : Comp; pDate : Date; pMode : word);
+VipInterface InTekSaldo            licensed (FREE) Parameters (c1 : Comp; c2 : Comp; c3 : Comp; c4 : Comp; pDate : Date);
+VipInterface moveSFOParams         licensed (FREE) Parameters (c1 : Comp; c2 : Comp; c3 : Comp; DocDate : Date; DocNum : String; wParam : Word);
+VipInterface moveSFOParamsGroup    licensed (FREE) Parameters (pcKatPodr : Comp; pcKatMOL : Comp; pcKatMOLOld : Comp; docDate : Date; persCardMarker : LongInt; pcKatPodrOld : Comp; pwMode, pwParam : Word);
+VipInterface nachHistory           licensed (FREE) Parameters (c1 : comp);
+VipInterface OldPersSFO            licensed (FREE) Parameters (p1 : Comp);
+VipInterface PersNorms             licensed (FREE) Parameters (pCommand : Word; c1 : Comp; c2 : Comp);
+VipInterface ReqAddSpec            licensed (FREE) Parameters (pC1 : Comp);
+VipInterface ReqSFO_M11            licensed (FREE) Parameters (pReqDoc : Comp);
+VipInterface spExtInform           licensed (FREE) Parameters (c1 : Comp; polCntDate : Date);
+VipInterface PersBreakEd           licensed (FREE) Parameters (vcPersCard: comp);
+VipInterface NormSFOZam            licensed (FREE) Parameters (NormNrec : Comp; NormDateSFO_frDate : date; NormDateSFO_toDate : date);
+VipInterface EditMaterials         licensed (FREE) Parameters (pNormGrSFO : Comp);
+VipInterface isMBPInStock          licensed (FREE) Parameters (c1 : Comp; c2 : Comp; c3 : Comp; c4 : Comp; pDate : Date; pMode : word);
+VipInterface InTekMBPSaldo         licensed (FREE) Parameters (c1 : Comp; c2 : Comp; c3 : Comp; c4 : Comp; pDate : Date);
+VipInterface GetAnyNorm            licensed (FREE) ;
+VipInterface ReLinkFurnSFO         licensed (Custom) Parameters(wMode : word; SFOMainNRec, SFOFurnNRec : comp);
+VipInterface StatRepSFO            licensed (Custom) Parameters(wMode : word);
+VipInterface StatNeedsSFO          licensed (Custom);
+VipInterface SFO_Spis              licensed (FREE) Parameters (pCommand : word);
+VipInterface MovPsSFO              licensed (FREE) Parameters (pwMode : word; pcPrsCrd : comp);
+VipInterface ChgNorms              licensed (FREE) Parameters (wMode : word; cPrsCard, cCurNorm : comp; wCurType : word);
+VipInterface GrSFOInStock          licensed (FREE) Parameters (pReqSFO : comp);
+
+// --- Экспортируемые интерфейсы
+
+VipInterface Attestat2MBP          licensed (FREE) ; // Меню
+VipInterface editGroupSFO          licensed (FREE) Parameters (c1 : comp); // Меню
+VipInterface editNormSFO           licensed (FREE) Parameters (c1 : Comp); // Меню
+VipInterface editPriceIndex        licensed (FREE) Parameters (c1 : Comp); // Меню
+VipInterface GetGrpSFO             licensed (FREE) Parameters (c1 : comp; s1 : string[20]); // F_MBPPub
+VipInterface getPersCard           licensed ( // Меню 
+                                              #include getPersCard.lih
+                                            ) Parameters (c1 : Comp);
+VipInterface GetSomCd              licensed (FREE) ; // F_MBPPub
+VipInterface GetSomSO              licensed (FREE) ; // F_MBPPub
+VipInterface Pers_MBP              licensed (        // F_MBP
+                                              #include Pers_MBP.lih
+                                            ) Parameters (pCommand : Word; c1 : Comp; lPodr : Comp);
+VipInterface ReqSFOVed             licensed (sfo,custom);  // Меню.
+VipInterface selPersCard           licensed (FREE) Parameters (pCommand : Word; lPodr : Comp; c1 : Comp; pCol : Word); // Меню, F_MBP
+VipInterface SFOAttest             licensed (
+                                              #include SFOAttest.lih
+                                            ) Parameters (pCommand : Word; pDocType : Word; pPersCrd : Comp; pNRec : Comp);
+VipInterface SFODocsReest          licensed (sfo,custom) Parameters (pTypeDoc : Word);  // Меню
+VipInterface SFOReglSpis           licensed ( // Меню
+                                              #include SFOReglSpis.lih
+                                            ) Parameters (pCommand : Word; pNRec : Comp);
+VipInterface SFO_NAL               licensed (sfo,custom) Parameters (pCommand : word; vRepTunes : TRepParamsRec);  // Меню
+VipInterface SFO_REGISTRY          licensed (sfo,custom) Parameters (pCommand : Word);  // Меню
+VipInterface SFO_RostVed           licensed (sfo,custom);  // Меню
+VipInterface SincPersMBP           licensed (FREE) ; // Меню
+VipInterface Ree_SpecDoc           licensed (sfo,custom);  // Меню
+VipInterface SizeByGrSFO           licensed (FREE) Parameters (pwMode : Word; pcGrMC : Comp; psDopInfo : String);
+VipInterface FillRanks             licensed (FREE);
+VipInterface RepairNormDate        licensed (FREE);
+VipInterface RepSrok_SFO           licensed (Custom) Parameters (pCommand : word; vRepTunes : TRepParamsRec);
+VipInterface Provision_SFO         licensed (Custom) Parameters (pCommand : word; vRepTunes : TRepParamsRec);
+VipInterface Mismatch_SFO          licensed (Custom) Parameters (pCommand : word; vRepTunes : TRepParamsRec);
+VipInterface Nakl434               licensed (Custom) Parameters (pcReqSFO: comp; isPrSz : word);
+VipInterface PrCompens             licensed (Custom);
+VipInterface ExplNote              licensed (Custom);
+VipInterface FillPosts             licensed (FREE);
+VipInterface GoToCustom            licensed (Custom);
+VipInterface SFO_GrpOut            licensed ( // Меню
+                                              #include SFOActOfOut.lih
+                                            ) Parameters (pCommand : word; pDocNRec : comp);
+VipInterface SetAlign              licensed (FREE);
+
+// --- Экспортируемые меню
+
+Menu SFO;

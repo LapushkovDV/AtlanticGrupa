@@ -1,0 +1,8 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_ValutDoc
+
+#ifdef ComponentVersion
+#component "F_ValutDoc"
+#end
+
+VipInterface ReeValutDoc licensed (b_Finans) Parameters (myGetDoc : word);

@@ -1,0 +1,49 @@
+#statusline "statgal"
+//#include PreDefs.inc;
+#include galnet.inc end;
+
+const
+#include GloConst.inc;
+#include Galnet.csc;
+#include Galnet.ccm;
+#include Money.ccm
+#include Money.csc //без Galnet.inc надо
+#include fldcolor.inc
+#include TUNES.INC
+
+end;
+type TPtr = longint;
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include DicTypes.def
+#include GloDefs.inc
+#include StatDefs.inc
+
+#define ComponentVersion  
+#include ExtAttr.vih
+#include DocProtector.vih
+
+#include ExtClass.vih
+#include ExtClass.var  // piExtClass
+#include countsal.vih
+#include NalogFun.vih
+#include DOfuns.vih
+#include DOfuns.var
+#include SpNext.vih
+#include SpNext.var
+#include GetKau.vih
+#include GetKau.var
+#include CreateTune.vih
+#include marker.vih
+#include UKSfuns.VIH
+#include SDfuns.VIH
+#include MSview.VIH
+#include AdrFunc.vih         // Функции работы с адресами
+
+
+
+
+#make "alter\Alter_GoNewMon.vip"

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>alter_Attribute</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.31.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\inc\*
+					..\..\SourceGal\*
+					..\..\..\FRM\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_SoprBase.res
+					$[GalExe]\L_SoprDoc.res
+					$[GalExe]\C_EXTCLASS.res
+				</ResourceList>
+				<OutputResource>..\..\alter_Attribute_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:RUMOW-VMGAL01.atlantic.grupa[1997]</SqlServerParameters>
+					<HwKeyDirectory>\\srv-dc2\HWKey</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="alter_makeSoprByBuf.prj" PosX="23" PosY="27" OpenEditor="True"/>
+			<File Name="alter\alter_makeSoprByBuf.vip" PosX="63" PosY="12" OpenEditor="True" Active="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="alter_makeSoprByBuf.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\Alter_Attribute\alter_Attribute.prj" DateTimeStart="43521,6540212616" DateTimeCompile="0,000342164355970453" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;ATTRIBUTE.doInit&quot;, объявленный в alter_Attribute.vip, не был использован" SourceFileName="C:\Galaktika\res\src\Alter_Attribute\ALTER\alter_Attribute.vip" SourceLine="12" SourceColumn="5"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Описание типа C_EXTCLASS::iExtAttr в файле EXTATTR.VIH не совпадает с описанием в файле EXTATTR.VIH." SourceFileName="C:\Galaktika\res\src\Alter_Attribute\alter_Attribute.prj" SourceLine="30" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Описание типа C_EXTCLASS::iExtAttr в файле EXTATTR.VIH не совпадает с описанием в файле EXTATTR.VIH." SourceFileName="C:\Galaktika\res\src\Alter_Attribute\alter_Attribute.prj" SourceLine="30" SourceColumn="1"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="25.02.2019 15:42:17"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<MarkerList>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
+		</MarkerList>
+	</ProjectManager>
+</Viper>

@@ -1,0 +1,18 @@
+<withdrawal action_id="15" version="4">
+<trade_participant_inn>7709191580</trade_participant_inn>
+<withdrawal_type>ENTERPRISE_USE</withdrawal_type>
+<withdrawal_date>18.12.2020</withdrawal_date>
+<primary_document_type>OTHER</primary_document_type>
+<primary_document_number>222222VP</primary_document_number>
+<primary_document_date>18.12.2020</primary_document_date>
+<primary_document_custom_name>Накладная на внутренее перемещение</primary_document_custom_name>
+<products_list>
+<product>
+<ki><![CDATA[010383860004118821Oohi7*UNGkALH]]></ki>
+<primary_document_type>OTHER</primary_document_type>
+<primary_document_number>222222VP</primary_document_number>
+<primary_document_date>18.12.2020</primary_document_date>
+<primary_document_custom_name>Накладная на внутренее перемещение</primary_document_custom_name>
+</product>
+</products_list>
+</withdrawal>

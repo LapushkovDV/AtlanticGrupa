@@ -1,0 +1,31 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компоненты
+
+#ifdef ComponentVersion
+#component "F_An"
+#end
+
+!#include ChkAn.vih
+!#include GetCont.vih
+VipInterface KatKAU_Enum         licensed (FREE)  Parameters (pRezim : word; pKAU : word);
+VipInterface gtEnumKAU           licensed (FREE)  Parameters (wIntMode : word; pIsDelPick : boolean; pKodGroup : word; pUpGroup : word; pAtomGr : word; myGetRec : comp);
+VipInterface EditOneFilterKAU    licensed (FREE)  Parameters (pRezim : word; pList : word; pFiltAn : Comp);
+VipInterface GetFilterKAU        licensed (FREE)  Parameters (pList : word; pFiltAn : Comp);
+!#include oFlAn.vih
+VipInterface KlGrKAU             licensed (FREE)  Parameters (pRezim : word; pRazdel : word; pSloj : comp);
+!#include OneGrKAU.vih
+VipInterface gtInterval          licensed (FREE)  Parameters (wIntMode : word; myTable : word; myGetRec : comp);
+VipInterface KatKau_Interval     licensed (FREE)  Parameters (pRezim : word; pKAU : word);
+!#include pack_int.vih
+!#include GtHashAn.VIH
+!#include oKatKAU.vih
+!#include Razdel.vih
+!#include EditRole.vih
+VipInterface GetRoleKAU          licensed (FREE)  Parameters (pRezim : word; pIsRoleKAU : word; pRole : comp; pKAU : word);
+VipInterface vKatalRole          licensed (FREE)  Parameters (pRezim : word; pKatRole : comp);
+!#include oRoleKAU.vih
+VipInterface vKatRoleKAU         licensed (FREE)  Parameters (pRezim : word; pRole : comp; pKAU : word);
+!#include oSetKAU.vih
+VipInterface KatKau_Set          licensed (FREE)  Parameters (pRezim : word; pKAU : word; pSpKAU : comp; pRezimSp : word);
+VipInterface AnSynonym           licensed (FREE)  Parameters (wKau : word);
+!#include UserKAU.vih

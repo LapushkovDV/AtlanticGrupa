@@ -1,0 +1,46 @@
+////////////// подменяем обработчик событий 
+#component "L_SOPRDOC"
+alter interface SoprDoc;
+create view
+      as select    if(isValidAll(tnATL_MERCURY_HEAD)
+             , if(ATL_MERCURY_HEAD.ISOK, 'Собран', 'Есть ошибки')
+             ,'Не собран') (Fieldname = MercuryField)
+from
+ ATL_MERCURY_HEAD
+where
+((
+ katsopr.nrec == ATL_MERCURY_HEAD.CSOPR
+))
+;
+Handleevent
+cmValue61:
+{
+  var tmpKM : TPtr = InitMarker('', 8, 100, 10);
+    pMarker.ExportTo(tmpKM);
+   RunInterface('ATLANTIC::ReportMassa_DO_NAKL'
+                    , 1
+                    , tmpKM
+               )
+}
+cmValue62:
+{
+  var tmpKM : TPtr = InitMarker('', 8, 100, 10);
+    pMarker.ExportTo(tmpKM);
+   RunInterface('ATLANTIC::ExportReestrCertifPDF'
+                    , tmpKM
+               )
+}
+cmValue63:
+{
+  var tmpKM : TPtr = InitMarker('', 8, 100, 10);
+    pMarker.ExportTo(tmpKM);
+   RunInterface('ATLANTIC::Export_SKIF_KARGO'
+                    , tmpKM
+               )
+}
+cmValue64:
+{
+  _MercuryPRJ_View.ShowMercuryData(KatSopr.Nrec)  ;
+}
+end;
+end. // interface

@@ -1,0 +1,21 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_SoprHoz
+
+#ifdef ComponentVersion
+#component "F_SoprHoz"
+#end
+
+VipInterface BaseFin                        licensed (POSTPOL) Parameters (myDirect : integer);
+VipInterface BaseFinP                       licensed (POSTPOL) Parameters (myVidDoc : word);
+VipInterface GetBaseF                       licensed (POSTPOL) Parameters (myDirect : word; myOrg : comp; DateDoc : date; NRecBF : comp);
+VipInterface CheckBaseFin                   licensed (FREE)    Parameters (cBF : comp; wMode : word);
+VipInterface CheckFin                       licensed (FREE);
+VipInterface CheckMagOper                   licensed (FREE)    Parameters (wMode : word);
+VipInterface CulcBaseFin                    licensed (FREE)    Parameters (wInitTable : integer; wTip : word; cDoc : comp; dOplaty : date; StavNal : double; SumNalog : double; sNamePl1, sNamePl2, sNamePl3, sNamePl4, sNamePl5 : string[76]);
+VipInterface Rescue_DB1                     licensed (FREE);
+VipInterface Rescue_DB2                     licensed (FREE)    Parameters (RunMode : word);
+VipInterface Rescue_DB3                     licensed (FREE);
+VipInterface Rescue_DB4                     licensed (FREE)    Parameters (RunAnalys : boolean; FilterMode : word; cPlPor : comp; TiDkGal : word; d1 : date; d2 : date);
+VipInterface iUtil                          licensed (FREE);
+VipInterface SHmanagerTest                  licensed (FREE);
+VipInterface Rescue_BF_Dog                  licensed (FREE);

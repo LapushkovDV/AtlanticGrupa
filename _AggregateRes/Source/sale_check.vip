@@ -1,0 +1,134 @@
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  предприятие: Дрога Колинска                                               //
+//  название: Проверка пересечения срока действия прайс-листов                //
+//  разработка: Самусенко А.В.                                                //
+//  апрель 2014                                                               //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+vipInterface checkPrice licensed(free);
+
+interface checkPrice 'Проверка пересечения срока действия прайс-листов' escClose;
+show at (,,44,7);
+
+var fExAttr: iExtAttr;
+
+create view v01
+var
+  d1, d2, d3: date;
+  channel, channel_attribute: comp;
+  channel_name: string;
+as select * from check_tbl,
+  klprice, klprice check_price, grprice, grprice chkgroup, attrval, attrval check_attrval, spkau
+where ((
+     d1 <<= klprice.dend and (d2 >= klprice.dbeg)
+ and klprice.cgrprice /== grprice.nrec and (pos('ОСНОВН', grprice.name) = 1)
+ and klprice.dbeg <<= check_price.dend and (klprice.dend >= check_price.dbeg)
+ and check_price.cgrprice /== chkgroup.nrec and (pos('ОСНОВН', chkgroup.name) = 1)
+ and word(1113) == check_attrval.wTable
+ and check_price.nrec /== check_attrval.crec
+ and channel_attribute == check_attrval.cattrnam
+ and ( check_attrval.vcomp = attrval.vcomp )
+))
+bounds _channel_soft = word(1113)==attrval.wtable and klprice.nrec == attrval.crec
+ and channel_attribute == attrval.cattrnam
+bounds _channel_strong = word(1113)==attrval.wtable and klprice.nrec /== attrval.crec
+ and channel_attribute == attrval.cattrnam and ( attrval.vcomp = channel );
+
+function doCheck: boolean;
+var bad_price: boolean;
+{
+  if (channel > 0) {
+    pushbounds(tb_channel_strong);
+  }
+  else pushbounds(tb_channel_soft);
+  _loop klprice {
+    bad_price := false;
+  	_loop check_price {
+      if (klprice.nrec = check_price.nrec) continue;
+      if (klprice.dend >= check_price.dbeg) {
+        bad_price := true;
+        break;
+      }
+    }
+    if bad_price
+      insert check_tbl set
+        nrec = klprice.nrec,
+        name = klprice.name,
+        dbeg = klprice.dbeg,
+        dend = klprice.dend,
+        group = grprice.name,
+        channel = attrval.vstring;
+
+  }
+  result := (recordsintable(#check_tbl) > 0);
+}
+
+screen scr01 (,,sci13Esc);
+noTableNavigation;
+fields
+  d1: ['DD.MM.YYYY'], noProtect, {font = {backColor = if(longint(d1) = 0, colorNeed, 0);
+                                             color = if(d1 > d2, colorError, 0)}};
+  d2: ['DD.MM.YYYY'], noProtect, {font = {backColor = if(longint(d2) = 0, colorNeed, 0);}};
+  channel_name: protect, pickButton ; //hcBKatalFSaldKAU = 14182//, {Font = {BackColor = GetBackColor(#DlgKauD#Num)}};
+buttons
+  cmOK, default, ,,;
+  cmCancel,,,,;
+<<
+
+ `За период с`.@@@@@@@@@@ `по`.@@@@@@@@@@
+
+ `Канал сбыта`.@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  <.    Ok    .>             <.  Cancel  .>
+>>
+end; //screen
+
+handleEvent
+cmInit: {
+  channel_attribute := fExAttr.AttrID(coklPrice, #channel);
+  var bTemp: boolean; // var dateChanged если дата записи переменной не равна текущей-true
+  if not readMyDsk(d1, 'dStart_GetSome_Any', bTemp) or d1 = date(0,0,0)
+    d1 := date(1, 1, year(cur_date));
+  if not readMyDsk(d2, 'dStop_GetSome_Any', bTemp) or d2 = date(0,0,0)
+    d2 := cur_date;
+  channel := 0;
+  d3 := date(1,8,2014);
+  channel_name := #undefined;
+  delete all check_tbl;
+}
+cmOk: {
+  if doCheck {//and (d2 < d3) {
+    runform('check_price', d1, d2);
+  }
+  else message('За указанный период пересечений срока действия прайс-листов не обнаружено!', warning);
+} //cmOK
+cmPick: {
+  case curField of
+  #d1,
+  #d2: if (d2 < d1) message(''#13'Начальная дата не может быть больше конечной!', warning);
+  #channel_name: {
+    var tempMarker: longint;  // врем. маркер для выбора пользовательской аналитики
+     // RunInterface('GtKodGroup',wIntMode,wKau_Real,cKau,TempMarker,wKau_Pick) wKAU := word(10022) Код аналитики   wKau_Pick := wKau;
+    tempMarker := initMarker('', 8, 100, 50, false);
+    if runInterface('F_GETAN::GTKODGROUP', word(1), word(10022), channel, tempMarker, word(10022)) <> cmCancel { //,wKau_Pick
+      //  message( 'cRec:'+string(cfSbyt) + ''#13+'TempMarker:'+string(TempMarker) );
+      if getFirst fastfirstrow spkau where ((channel == nrec)) = tsOK {
+        set channel_name := spkau.name;
+      }
+      else set channel_name := '-- ошибка выбора канала сбыта ' + string(channel);
+    }
+    doneMarker(tempMarker,'');
+  }
+  end;
+} // cmPick
+cmDelOnProtect: {
+  case curField of
+  #channel_name: {
+    set channel_name := #undefined;
+    channel := 0;
+  }
+  end;//case
+}
+end;
+end.

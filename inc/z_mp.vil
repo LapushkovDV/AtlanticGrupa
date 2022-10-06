@@ -1,0 +1,205 @@
+#ifdef ComponentVersion
+#component "z_mp"
+#end
+
+vipinterface AVANSR
+  licensed (menuzarp,menuzarp2);
+
+vipinterface AgreementParams licensed(free)
+  parameters(
+    TM: word;
+    AgreementNumber: string[20];
+    PaymentKind: longint;
+    RetentionKind: word;
+    PaymentSum: double;
+    BeginningDate, EndingDate: date;
+    AccountingSource: word;
+    cTXO: comp;
+    paramTXO: string[20];
+    ShowEmployeeFilter: boolean);
+
+vipinterface bon_ras licensed(free) parameters(TM: word);
+vipinterface BON_VKT licensed(free) parameters(p1: word);
+vipinterface BrigadeDuties licensed(free);
+vipinterface BrigadeDutyCalculation licensed(free) parameters(CurrentDepartment: comp; CurrentBrigade: integer; Flags: word);
+vipinterface BrigadeDutyCalculationSetup licensed(free) parameters(ResourcePrefix: string);
+vipinterface BrigadeDutyLis licensed(free) parameters(CurrentDepartment: comp; CurrentBrigade: integer; markers: longint; Flags: word);
+vipinterface BrigadeDutyPacketInput licensed(free);
+vipinterface BrigadeMemberList licensed(free) parameters(Title: string; MultipleSelection: Boolean; BrigadeNumber: Integer; Markers: LongInt);
+
+vipinterface Brigades
+  licensed
+  (
+    #include Brigades.lih
+  )
+  parameters(BrigadeMarkers: longint; Options: word);
+
+vipinterface ChangeJobCostsAssignment licensed(free);
+vipinterface PickChild licensed(free) parameters(Par: comp; var cPsnLinks: comp);
+vipinterface childone licensed(free);
+vipinterface choisdog licensed(free);
+vipinterface choisnar licensed(free) parameters(TM: word; Markers: longint);
+vipinterface CursZar licensed(free) parameters(p1: comp);
+
+vipinterface DayPayParams licensed(free)
+  parameters(
+    PaymentKind: longint;
+    KTU: double;
+    AccountingSource: word;
+    cTXO: comp;
+    paramTXO: string[20];
+    ShowEmployeeFilter: boolean);
+
+vipinterface dogarx licensed(free) parameters(p1: comp; cPersonalAccount: comp; p2: double);
+vipinterface dogpodr licensed(free) parameters(Agreement: comp; Options: word);
+vipinterface dogsvod licensed(free);
+vipinterface dress licensed(free);
+vipinterface DutyOutputControlForm licensed(free) parameters(Department: comp; Markers: longint);
+
+vipinterface DutySetup licensed(free)
+  parameters(
+    Duty: comp;
+    PaymentKind, PremiumKind: longint;
+    StandardTime, Tariff: double;
+    Quantity, ActualHours, KTU, PremiumPercent: double;
+    EmployeeMarkers: longint);
+
+vipinterface EmployeeList licensed(free) parameters(Department, DepartmentKind: comp; AccountMarkers: longint; Options: word);
+
+vipinterface fam1 licensed(free)
+  parameters(
+    prCex: comp;
+    prKassir: word;
+    prmnrec: comp;
+    prnmnem: string[40];
+    prvidop: longint;
+    prvidud: word;
+    prsum: double;
+    prproc1: double;
+    prkau: word;
+    prSummanc: double;
+    prschetv: tSchet19;
+    prsubschv: tSubSch;
+    prTbl1, prTbl2, prTbl3, prTbl4, prTbl5, prTbl6: word;
+    prkauv1, prkauv2, prkauv3, prkauv4, prkauv5, prkauv6: comp;
+    prcTXO: comp;
+    prParam: string[20];
+    prchoice: word;
+    prnodoc, prnoved: String[20];
+    prdataf, prdatan, prdatok: date);
+
+vipinterface FormGaz licensed(free);
+vipinterface formsnr licensed(free) parameters(JobSheet: comp);
+vipinterface FormTmpTable licensed(free) parameters(prnkau: word; Glub, TMv: word);
+vipinterface FormTmpTableTXO licensed(free) parameters(prnkau: word; Glub, TMv: word);
+vipinterface FrmGazNac licensed(free) parameters(prnkau: comp;UderNachisl: word);
+vipinterface FrmGazNacTXO licensed(free) parameters(prnkau: word; UderNachisl: word);
+vipinterface GetValZr licensed(free) parameters(p1: comp);
+vipinterface JobsCostsAssignmentReport licensed (free) parameters(JobSheetList: longint);
+vipinterface JobSheetForms licensed(free) parameters(FormType: word; CurrentDepartment: comp; CurrentBrigade: word; Markers: longint);
+vipinterface JobSheetInfo licensed(free) parameters(JobSheet: comp);
+vipinterface JobSheetMismatches licensed(free) parameters(JobSheetList: longint);
+vipinterface JobSheetOUTImport licensed(free);
+vipinterface InsReestr licensed(free) parameters(DataF: date; InsForm: integer);
+vipinterface InsVedom licensed(free) parameters(DataF: date; InsForm: integer);
+vipinterface klchild licensed(free);
+vipinterface klchildForView licensed(free);
+vipinterface klChildm licensed(free);
+vipinterface klChildmForView licensed(free);
+vipinterface klchildn licensed(free);
+vipinterface klchildnForView licensed(free);
+vipinterface megotch licensed(free);
+vipinterface megparm licensed(free) parameters(tpved: word);
+vipinterface PaymentImportOptions licensed(free) parameters(prmnrec: comp);
+vipinterface PaymentParams licensed(free) parameters(TM: word; PP: ObjRef; PAF: ObjRef; ShowPersonalAccountFilter: boolean);
+
+vipinterface PayRoll licensed(free)
+  parameters(
+    TM: word;
+    DefaultPaymentSum: double;
+    BeginningDate: date;
+    Cashier: word;
+    MultipleSelection: boolean;
+    AutoWelFareFilter: word);
+
+vipinterface pCHILD licensed(free) parameters(TM: integer; cPersonalAccount: comp);
+vipinterface PersonJobsReport licensed (free) parameters(DepartmentType: word; Department: comp; JobSheetType: word; ZarAlgorithm: longint);
+vipinterface PersonJobsReportParameters licensed (free) parameters(JobSheetType: word);
+vipinterface prbonus licensed(free) parameters(prmnrec: comp);
+
+vipinterface PremiumParams licensed(free)
+  parameters(
+    PaymentKind: longint;
+    RetentionKind: word;
+    KTU: double;
+    AccountingSource: word;
+    cTXO: comp;
+    paramTXO: string[20];
+    PAF: ObjRef;
+    ShowEmployeeFilter: boolean);
+
+vipinterface prform licensed(free) parameters(tm: word);
+vipinterface prllkau licensed(free) parameters(prmnrec : comp);
+vipinterface prnkau licensed(free) parameters(prmnrec: comp);
+vipinterface ProcessAddPayments licensed(free);
+vipinterface prvidopl1 licensed(free) parameters(tm: word; prmnrec: comp);
+vipinterface Prvidopl2 licensed(free) parameters(tm: word; prmnrec: comp; sys_m: word);
+vipinterface prvidoplu licensed(free) parameters(tm: word; prmnrec: comp; sys_m: word);
+vipinterface Put_Sal licensed(free) parameters(prmnrec: comp);
+vipinterface ras_sal licensed(free) parameters(prmnrec: comp);
+vipinterface ras_salo licensed(free);
+vipinterface RoutingPacketProcessing licensed(free);
+vipinterface Sal_day licensed(free);
+vipinterface Sal_Ved licensed(free);
+vipinterface SAL_ZAR licensed(free) parameters(prmnrec: comp);
+vipinterface SummaryGroupingCard licensed(free);
+vipinterface Sys_Dog licensed(free);
+vipinterface TariffMultiplier licensed(free);
+vipinterface ValZar licensed(free) parameters(p1: comp);
+vipinterface VedBon licensed(free) parameters(TpVed: word);
+vipinterface vedgaz licensed(free);
+vipinterface vednkau licensed(free) parameters(UderNachisl: word);
+vipinterface vednkauTXO licensed(free) parameters(UderNachisl: word);
+vipinterface vedmix licensed(free) parameters(Tpved: word);
+vipinterface vednar licensed(free) parameters(TM: word; Markers: longint);
+vipinterface vednnew licensed(free) parameters(Glub, TMv: word);
+vipinterface vednnewTXO licensed(free) parameters(Glub, TMv: word);
+vipinterface vidopl licensed(free) parameters(PaymentKind: longint; PRnvidop: string[40]);
+vipinterface VidOplU licensed(free) parameters(PaymentKind: longint);
+vipinterface VidUderU licensed(free) parameters(var VIDUD: word);
+vipinterface View_norm licensed(free) parameters(WorkCode: longint; OperationNumber: integer; Options: word);
+
+vipinterface vvodsu licensed(free)
+  parameters(
+    PaymentKind: longint;
+    RetentionKind: word;
+    RetentionSum, RetentionPercent: double;
+    BeginningDate, EndingDate: date;
+    AccountingSource: word;
+    cTXO: comp;
+    paramTXO: string[20];
+    Cashier: word;
+    PAF: ObjRef;
+    ShowEmployeeFilter: boolean);
+
+vipinterface Zdogarx licensed(free) parameters(cPersonalAccount: comp);
+vipinterface ZNormTMR licensed(free) parameters(WorkCode: longint; OperationNumber: integer);
+
+vipinterface sys_mbf
+  licensed
+  (
+    #include sys_mbf.lih
+  )
+  parameters(TM: word; Options: word; Marker: longint);
+
+vipinterface sys_nar
+  licensed (ManufPlan,menuzarp,menuzarp2) Parameters(TM: word);
+
+vipinterface sys_uder
+  licensed
+  (
+    #include sys_uder.lih
+  );
+vipinterface CheckChildSredn licensed(free);
+vipinterface ConvertChildAllow licensed(free);
+vipinterface SVODNACHCHILD licensed(free);

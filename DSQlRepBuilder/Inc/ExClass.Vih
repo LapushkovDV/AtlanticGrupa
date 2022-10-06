@@ -1,0 +1,133 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Версия      : 8.10
+// Назначение  : Функции для встраивания интерфейса с внешней классификацией в документ
+//------------------------------------------------------------------------------
+
+#ifndef _ExClassifier
+#define _ExClassifier
+
+#ifdef ComponentVersion
+#component "C_ExtClass"
+#end
+
+#doc
+Функции для встраивания интерфейса с внешней классификацией в документ.
+</brief>
+<H5>Пример</H5>
+<PRE class=example>
+Чтобы встроить интерфейс внешней классификации в другой интерфейс необходимо:
+1) подключить объектный интерфейс
+  ##include ExClass.vih
+2) объявить переменную для встроенного интерфейса
+  var refExClassifier : ExClassifier;
+3) описание области встроенного интерфейса
+Embedded brExClassifier interface;
+  show at (,???,,);
+end;
+4) Встроить интерфейс внешних атрибутов
+HandleEvent
+cmInit:
+{
+   if NullvipRef (refExClassifier)
+     LoadVipInterface (refExClassifier);
+//  вставляет окно редактирования
+   BindEmbeddedInterface(brExClassifier, refExClassifier,'WinEditClass');
+//  вставляет окно просмотра (главное окно интерфейса)
+//   BindEmbeddedInterface(brExClassifier, refExClassifier);
+// вызвать функция перерисовки, указав код таблицы и нрек текущей записи
+  либо refExClassifier.reDraw(coTable, Table.nRec); - если классификацию всегда можно редактировать
+  либо refExClassifier.reDrawEx(coTable, Table.nRec, bRight); - если классификацию нужно редактировать согласно логике
+}
+5) обязательно при смене позиции
+cmPositionChanged:
+  либо refExClassifier.reDraw(coTable, Table.nRec); - если классификацию всегда можно редактировать
+  либо refExClassifier.reDrawEx(coTable, Table.nRec, bRight); - если классификацию нужно редактировать согласно логике
+
+6) выгрузить интерфейс при выходе
+cmDone:
+  FreeVipInterface (refExClassifier);
+
+  Пример встраивания внешних атрибутов и внешней классификации можно увидеть в интерфейсе C_EXTCLASS::TESTEMBINTS
+</PRE>
+#end
+
+ObjInterface objExClassifier;
+
+  #doc
+  Функция отображает внешнюю классификацию.
+  #end
+  Function ReDraw (
+  #doc
+  Код таблицы, к которой привязан внешняя классификация
+  #end
+                   _wTable : word;
+  #doc
+  Nrec записи, к которой привязан внешняя классификация
+  #end
+                   _cRec : comp
+  #doc
+  <p>true - если запись exCalassVal существует;
+  <p>false - в противном случае;
+  #end
+                  ) : boolean;
+end;
+
+ObjInterface objExClassifierV2;
+  #doc
+  Расширение функции ReDraw. Функция позволяет задать право на редактирование внешней классификации.
+  #end
+  Function ReDrawEx (
+  #doc
+  Код таблицы, к которой привязан внешняя классификация
+  #end
+                   _wTable : word;
+  #doc
+  Nrec записи, к которой привязан внешняя классификация
+  #end
+                   _cRec : comp;
+  #doc
+  Возможность создания/редактирования/удаление внешней классификации. False - все операции с классификацией запрещены, иначе разрешены.
+  #end
+                   _Enable: boolean
+  #doc
+  <p>true - если запись exCalassVal существует;
+  <p>false - в противном случае;
+  #end
+                     ) : boolean;
+  #doc
+   <brief>Функция запускает модально интерфейс Внешняя классификация.</brief>
+   Данная Функция должна быть использована вместо обычного запуска RunInterface(ExClassifier, ...) и сохранение прав в dsk.
+  #end
+  Function RunModal(
+  #doc
+  Код таблицы, к которой привязан внешняя классификация
+  #end
+                   _wTable : word;
+  #doc
+  Nrec записи, к которой привязан внешняя классификация
+  #end
+                   _cRec : comp;
+  #doc
+  Возможность создания/редактирования/удаление внешней классификации. false - все операции с классификацией запрещены, иначе разрешены.
+  Значение по умолчанию true.
+  #end
+                   _Enable: boolean = true
+  #doc
+  Возвращает команду, с которой завершился запуск.
+  #end
+                     ) : word;
+End;
+
+ObjInterface objExClassifierProp;
+  property isPutPick : boolean read write;
+end;
+
+VipInterface ExClassifier implements objExClassifier, objExClassifierProp
+                                   , objExClassifierV2
+  licensed (FREE) Parameters (TableCode: word; RecordNumber : comp; bNotEditClassifier : boolean = false)
+;
+VipInterface ExClassifierV2(ExClassifier)
+  licensed (FREE) Parameters (AttrRec : comp = 0);
+
+#end

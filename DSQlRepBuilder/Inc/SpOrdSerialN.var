@@ -1,0 +1,12 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 9.1 - Логистика
+//
+//********************************************************************************
+#ifndef __SpOrdSerialN_var__
+#define __SpOrdSerialN_var__
+
+var oSpOrdSerialN  : SpOrdSerialN new;
+var oSpOrdSerialN2 : SpOrdSerialN new;
+
+#end // __SpOrdSerialN_var__

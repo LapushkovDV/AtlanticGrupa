@@ -1,0 +1,8 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента
+
+#ifdef ComponentVersion
+#component "M_Scripts"
+#end
+
+VipInterface RegScript               Licensed (Free)                                                 Parameters (pForce : boolean);

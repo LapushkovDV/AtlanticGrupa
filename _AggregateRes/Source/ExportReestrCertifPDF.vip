@@ -1,0 +1,285 @@
+#define _Update_20190308_
+#include FRRecordDefinition.vih
+
+#component 'ATLANTIC'
+
+Interface ExportReestrCertifPDF
+table struct tReestrCerrtif
+(
+   ID_EDI : string
+ , NSopr  : string
+ , SpNpp  : string
+ , NoDO   : string
+ , NoKontrakt : string
+ , dSopr  : string
+ , dSoprXML : string
+ , Mcname : string
+ , strana : string
+ , NomerCertif : string
+ , OrganCertif : string
+ , DataVydachi : string
+ , SrokDeystviya : string
+ , DataPodtvergdeniaya : string
+ , NomerPred : string
+)
+with index
+(
+ ind0 = Mcname
+)
+;
+
+create view
+var _markerDocs : longint;
+_npp : word;
+_LOG : string;
+from
+  tReestrCerrtif
+  ,KatSopr
+;
+parameters
+  _markerDocs
+;
+DataStream dtsPrint_ReestrCertificates
+(
+  //данные <нулевого> уровня - общие переменные отчета, заголовок и т. п.
+   [ID_EDI] tReestrCerrtif.ID_EDI;
+   [NSopr]  tReestrCerrtif.NSopr;
+   [NoDO]   tReestrCerrtif.NoDO;
+   [dSopr]  tReestrCerrtif.dSopr;
+  //Данные логической таблицы.
+  //Вложенность таблиц определяется логической таблицей интерфейса,
+  //и задает структуру FR-отчета (MasterData, DetailData)
+  Table tReestrCerrtif
+  (
+   [npp]                 _npp;
+   [Mcname]              tReestrCerrtif.Mcname;
+   [strana]              tReestrCerrtif.strana;
+   [NomerCertif]         tReestrCerrtif.NomerCertif ;
+   [OrganCertif]         tReestrCerrtif.OrganCertif ;
+   [DataVydachi]         tReestrCerrtif.DataVydachi ;
+   [SrokDeystviya]       tReestrCerrtif.SrokDeystviya ;
+   [DataPodtvergdeniaya] tReestrCerrtif.DataPodtvergdeniaya ;
+   [NomerPred]           tReestrCerrtif.NomerPred ;
+  );
+)
+end;// end DataStream
+procedure FillReestrCertificate(_cRec: comp);
+{
+  delete all tReestrCerrtif;
+ _try
+  {
+        sql
+        select
+           coalesce(ID_EDIAV.vString,'') as ID_EDI
+         , KatSopr.Nsopr as NSopr
+         , SPSOPR.NPP as SpNpp
+         , coalesce(BaseDoc.noDoc,'') as NoDO
+         , STEPDOC.NKONT as NoKontrakt
+         , date2str('%dd%MM%yyyy',KatSopr.dSopr) as dSopr
+         , date2str('%yyyy-%MM-%dd',KatSopr.dSopr) as dSoprXML
+         , KatMc.name as Mcname
+         , coalesce(ExClassSeg.Name,'')  as strana
+         , coalesce(sertific.name,'') +' ' + coalesce(CertNomAv.vString,sertific.nreg,'') as NomerCertif
+         , coalesce(Organ.name,'') as OrganCertif
+         , case when coalesce(sertific.ddoc,#date(0,0,0)) = #date(0,0,0) then '' else date2str('%dd.%MM.%yyyy',sertific.ddoc) end  as DataVydachi
+         , case when coalesce(sertific.dend,#date(0,0,0)) = #date(0,0,0) then '' else case when sertific.dend>=#date(31,12,2100) then 'бессрочно' else date2str('%dd.%MM.%yyyy',sertific.dend) end end  as SrokDeystviya
+         , case when coalesce(sertific.ddoc,#date(0,0,0)) = #date(0,0,0) then '' else date2str('%dd.%MM.%yyyy',sertific.ddoc) end as DataPodtvergdeniaya
+         , case when coalesce(sertific.tu,'')  = '' then '-' else sertific.tu end as NomerPred
+        from KatSopr
+        Join KatOrg on KatOrg.nrec = katSopr.cOrg
+        join StepDoc on KatSopr.cstepDoc = StepDoc.Nrec
+        left join BaseDoc on BaseDoc.Nrec = StepDoc.cBaseDoc
+        left join AttrNam ID_EDIAn on ID_EDIAn.Wtable = 1418
+                                and ID_EDIAn.name = 'ИД ЭДО'
+        left join AttrVal ID_EDIAV on ID_EDIAV.Wtable = ID_EDIAN.wTable
+                                and ID_EDIAV.cattrnam = ID_EDIAN.nrec
+                                and ID_EDIAV.crec = KatOrg.Nrec
+        join spSopr on SpSopr.cSopr = katsopr.Nrec
+                         and spSopr.PrMC = 1
+        join KatMc on  katmc.nrec = SpSopr.cmCUsl
+        left join sertific on sertific.cmc = katmc.nrec
+                       and katsopr.dSopr>=sertific.ddoc
+                       and katsopr.dSopr<=sertific.dend
+                       and sertific.status = 1
+        left join KatOrg Organ on Organ.nRec = sertific.ctasteorg
+        left join ExClassVal on ExClassVal.ClassCode = 20
+                            and ExClassVal.wtable = 1430
+                            and ExClassVal.crec = SpSopr.cParty
+        left join ExClassSeg on ExClassSeg.nrec = ExClassVal.cClassSeg
+        left join attrnam CertNomAm on CertNomAm.wTable = 4901
+                         and CertNomAm.name = 'Номер'
+        left join attrval CertNomAv on  CertNomAv.wTable = CertNomAm.wTable
+                          and CertNomAv.crec = sertific.nrec
+                          and CertNomAv.cAttrnam = CertNomAm.nrec
+        where katsopr.nrec = :(_crec)
+        into tReestrCerrtif;
+  }
+ _Except
+  else {var _empty : boolean; _empty:= false;} //чтобы компилятор ничего не говорил
+
+}
+function CheckDataCertificates : boolean;
+{
+  var _result : boolean = True;
+  If GetFirst tReestrCerrtif <> tsOK
+   then
+    {
+     LogStrToFile(_LOG, 'ОШИБКА! У накладной нет спецификации');
+     _result :=  False;
+    }
+    var _firstIter : boolean = true;
+
+   _loop tReestrCerrtif
+    {
+     if trim(tReestrCerrtif.ID_EDI) = '' and _firstIter = true then
+       {
+        LogStrToFile(_LOG, 'ОШИБКА! У организации не заполнен ИД ЭДО. Выгрузка накладной прекращена.');
+        _result :=  False;
+       }
+     if trim(tReestrCerrtif.NoKontrakt) = '' and _firstIter = true then
+       {
+        LogStrToFile(_LOG, 'ОШИБКА! У ДО не заполнен контракт.');
+        _result :=  False;
+       }
+     if trim(tReestrCerrtif.strana) = '' then
+       {
+        LogStrToFile(_LOG, 'Предупреждение! Строка ' + tReestrCerrtif.SpNpp +' не указана страна у партии');
+       }
+     if trim(tReestrCerrtif.NomerCertif) = '' then
+       {
+        LogStrToFile(_LOG, 'ОШИБКА! Строка ' + tReestrCerrtif.SpNpp +' не указан/нет номера сертификата.');
+        _result :=  False;
+       }
+     if trim(tReestrCerrtif.OrganCertif) = '' then
+       {
+        LogStrToFile(_LOG, 'Предупреждение! Строка ' + tReestrCerrtif.SpNpp +' не указан орган, выдавший сертификат.');
+       }
+     if trim(tReestrCerrtif.DataVydachi) = '' then
+       {
+        LogStrToFile(_LOG, 'Предупреждение! Строка ' + tReestrCerrtif.SpNpp +' не указана дата выдачи сертификата.');
+       }
+     if trim(tReestrCerrtif.SrokDeystviya) = '' then
+       {
+        LogStrToFile(_LOG, 'Предупреждение! Строка ' + tReestrCerrtif.SpNpp +' не указан срок действия сертификата.');
+       }
+     if trim(tReestrCerrtif.DataPodtvergdeniaya) = '' then
+       {
+        LogStrToFile(_LOG, 'Предупреждение! Строка ' + tReestrCerrtif.SpNpp +' не указана дата подтверждения сертификата.');
+       }
+     _firstIter := false;
+    }
+  result :=  _result;
+}
+function toUtf8(_str : string) : string;
+{
+  var _strUTF8 : string = '';
+  ConvertOemToUtf8(_str, _strUTF8);
+  result := _strUTF8;
+}
+Procedure CreateXml(FileNamePDF,_ID_EDI,_nSopr,_dateXML : string);
+{
+
+ var _fileNameXML : string = '\\rumoedi\NotStructByCard\'+'card_'+FileNamePDF + '.xml';
+ deletefile(_fileNameXML);
+ LogStrToFile(_fileNameXML,toUtf8('<?xml version="1.0" encoding="utf-8"?>'));
+ LogStrToFile(_fileNameXML,toUtf8('<DocumentCard>'));
+ LogStrToFile(_fileNameXML,toUtf8('<ReceiverIuedo>'+_ID_EDI+'</ReceiverIuedo>'));
+ LogStrToFile(_fileNameXML,toUtf8('<Number>'+_nSopr+'</Number>'));
+ LogStrToFile(_fileNameXML,toUtf8('<Date>'+_dateXML+'</Date>'));
+ LogStrToFile(_fileNameXML,toUtf8('<TypeCode>Document_DOP</TypeCode>'));
+ LogStrToFile(_fileNameXML,toUtf8('<Content>'));
+ LogStrToFile(_fileNameXML,toUtf8('<Filename>'+FileNamePDF+'.pdf</Filename>'));
+ LogStrToFile(_fileNameXML,toUtf8('</Content>'));
+ LogStrToFile(_fileNameXML,toUtf8('</DocumentCard>'));
+
+ LogStrToFile(_LOG, 'Карточка XML выгружена в файл ' + _fileNameXML);
+ LogStrToFile(_LOG, '');
+}
+Procedure  CreatePDF_Xml;
+{
+var    FReport: LongInt;
+var    ReportNames: array [0..0] of String;
+
+
+#IFDEF _Update_20190308_
+var ExportParam: String;
+#else
+var ExportParam:frxPDFExportParam;
+#end
+  if not CheckDataCertificates then
+   {
+    LogStrToFile(_LOG, 'НАКЛАДНАЯ НЕ ВЫГРУЖЕНА');
+    exit;
+   }
+
+ var _fileNamePDF : string = tReestrCerrtif.NoKontrakt+'_'+tReestrCerrtif.NSopr + '_' + tReestrCerrtif.dSOpr ;
+ // RunFReport(dtsPrint_ReestrCertificates, '', False);
+   _npp := 0;
+  FReport := FRCreate(dtsPrint_ReestrCertificates);
+    FRGetReportNames(FReport, ReportNames);
+    if (count(ReportNames)>0)
+    { if (FROpenReport(FReport, ReportNames[0]))
+      {
+#ifdef  _Update_20190308_
+        ExportParam:='ShowDialog=False;OpenAfterExport=True';
+#else
+        ClearAdvRecord(ExportParam);
+        FRGetDefaultParameters(frExportPDF, ExportParam);
+        ExportParam.Pages:='';
+        ExportParam.ShowDialog := False;
+        ExportParam.OpenAfterExport := True;
+#end
+        if (FRSetParameters(FReport, frExportPDF, ExportParam))
+        if FRExportReport(FReport, frExportPDF, '\\rumoedi\NotStructByCard\'+_fileNamePDF)
+          then
+          {
+           LogStrToFile(_LOG, 'Сертификаты по накладной выгружены в файл ' + '\\rumoedi\NotStructByCard\'+ _fileNamePDF + '.pdf');
+           CreateXml(_fileNamePDF, tReestrCerrtif.ID_EDI,tReestrCerrtif.nSopr,dSoprXML);
+          }
+          else
+          {
+           LogStrToFile(_LOG, 'Ошибка выгрузки файла по пути '+_fileNamePDF + '.pdf, проверьте наличие прав на запись в папку и существование папки');
+          }
+      } //if (FROpenReport(FReport, ReportNames[0]))
+    }
+    else
+    {
+      Message('Нет настроенных отчетов')
+    }
+    FRDestroy(FReport);
+}
+Procedure CreateFiles(_cRec: comp);
+{
+  if _cRec = 0h then exit;
+If getfirst fastfirstrow KatSopr where ((_cRec ==  KatSopr.Nrec)) <> tsOK then exit;
+  LogStrToFile(_log,'--------------------------------------------------------------------------') ;
+  LogStrToFile(_log,'Накладная ' + KatSopr.nsopr + ' от ' +datetostr(KatSopr.dSopr,'DD/MM/YYYY'));
+  FillReestrCertificate(_cRec);
+  CreatePDF_Xml;
+}
+handleevent
+cminit:
+{
+//  Message(if(_TypeDO = 0,'ПО ДО','ПО НАКЛАДНЫМ')+getMarKerCount(_markerDocs));
+if getMarKerCount(_markerDocs) = 0
+ {
+  message('Пометьте документы',error);
+  stop; abort; exit;
+ }
+StartNewVisual (vtIndicatorVisual, vfTimer, 'Формирование файлов', 1);
+ _LOG := GetStringParameter('Files','OutputFilesDirectory',0)+'!ExportNaklToPDFXMLLog_'+UserName+'_'+datetostr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HH-MM-SS')+'.log';
+  deletefile(_LOG);
+  Logstrtofile(_LOG,'Выгрузка накладных в PDF/XML ' + UserName+' '+datetostr(cur_date,'YYYY.MM.DD')+' '+timetostr(cur_time,'HH-MM-SS')) ;
+//  delete Pick where ((22 == Pick.wList));
+  var i: longint;
+  var _crec : comp;
+   for(i := 0; i < GetMarkerCount(_markerDocs); i++)
+    if GetMarker(_markerDocs, i, _cRec)
+    {
+     CreateFiles(_cRec)
+    }
+StopVisual ('', 0);
+ProcessText(_LOG,vfEscable or vfNewTitle or vfMacroSize,'Протокол экспорта накладных');
+}
+end;
+end.

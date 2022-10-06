@@ -1,0 +1,431 @@
+Const
+ coTuneAttrPraDataID        = 'USERTUNE.PraDataExport.OrgAttrCodeID';
+ coTuneAttrPraDataIsOK      = 'USERTUNE.PraDataExport.OrgAttrCodeIsOk';
+ coTuneAttrPraDataTypeDistr = 'USERTUNE.PraDataExport.OrgAttrCodeTypeDistr';
+ coTuneDaysCount        = 'USERTUNE.PraDataExport.DayCount';
+ coTunePathTo           = 'USERTUNE.PraDataExport.pathto';
+ coTunePathToManual     = 'USERTUNE.PraDataExport.pathtoManual';
+ coTuneDateFormat       = 'USERTUNE.PraDataExport.DateFormat';
+end;
+Interface PraDataExport 'Выгрузка накладных для PraData';
+  show at (,, 91, 23);
+Table struct tSelectDistributor
+(
+  name : string
+ ,ID   : double
+ ,typeDistr : string
+)
+with index
+(
+ ind0 = name
+)
+;
+Table Struct tNaklExport
+(
+   IDDistr    : double // id дистрибьютора	Integer	Код дистрибьютора в системе SPOT 2D PraData Distr ID
+ , NaklDate   : date // Дата	Date	фактическая дата отгрузки товара со склада производителя или дата возврата на склад производителя в одном из указанных форматов: dd.mm.yy, dd-mm-yy, dd.m.yy, dd-mm-yyyy, dd.mm.yyyy, dd-m-yyyy, yyyy.mm.dd, yyyy-mm-dd, yyyy-m-dd, yyyy-m-d, yyyy-mm-d Какой удобнее для галактики
+ , MCName     : string // Для файла выгрузки не надо, а типа для проверки
+ , McSapCode  : string // Код продукта производителя	String (128)	Внутренний код продукта из УС производителя. SAP код
+ , McKol      : double // Количество	Float	Размер отгрузки или возврата в штуках. Возвраты со знаком минус.
+ , NaklNumber : string // Номер накладной	String (128)	Номер расходной накладной или номер возвратной накладной
+ , McSum      : double // Сумма в закупочных ценах	Float	Стоимость всего объема продукции в закупочных ценах в национальной валюте без НДС. Сумма возврата со знаком минус.
+ , McGTD      : string // Номер партии	String (128)	Номер партии ГТД
+)
+with index
+(
+ ind0 = IDDistr + NaklDate
+)
+;
+
+create view
+var
+  _cAttrPraDataID
+ ,_cAttrPraDataIsOK
+ ,_cAttrPraDataTypeDistr : comp ;
+  _logFile
+ ,_PathTo
+ ,_DateFormat : String;
+  _DaysCount : word;
+  _dateBeg : date;
+  _dateEnd : Date;
+  isRunAuto : boolean = true;
+  _Distributor : string;
+  _cDistributor : double;
+as select
+ tNaklExport.IDDistr
+from
+    tNaklExport
+   ,tSelectDistributor
+   ,Attrnam
+;
+Parameters
+       isRunAuto
+;
+PROCEdURE ClearAll;
+{
+ delete all tNaklExport;
+} // PROCEdURE ClearAll;
+Function isExistTune(_tuneCode : string) : boolean;
+{
+
+ if not ExistTune(_tuneCode)
+  then {
+     message('Нет настройки "'+_tuneCode+'"' + ''#13'' + 'Выполните проверку реестра настроек', error);
+     result := false
+   }
+   else Result := true;
+}
+function IsExistTuneGetcAttr(_tuneCode: string; var _cAttr : comp): boolean;
+{
+  result := false;
+ if not isExistTune(_tuneCode)
+   then {exit }
+   else { _cAttr := cogettune(_tuneCode);
+          if getfirst fastfirstrow AttrNam where (( _cAttr == AttrNam.nrec)) <> tsOK
+           {
+             Message('В настройке "'+_tuneCode+'" выбран несуществующий атрибут',error);
+             exit;
+           }
+        }
+  result := true;
+}
+window winSelectDistributor, doAccept;
+Browse rbSelectDistributor;
+table tSelectDistributor;
+fields
+   tSelectDistributor.name  'Наименование'   ('Наименование дистрибьютора'):[15], protect;
+   tSelectDistributor.ID    'ID' ('ID дистрибьютора'):[ 6], protect;
+end;
+handleevent
+cmInit:
+{
+  _try
+  {
+    delete all tSelectDistributor;
+    sql
+      select
+               org.name        as name
+              ,AVDistID.vDouble as ID //id дистрибьютора
+              ,case when  coalesce(AVDistType.vDouble,1) = 1 then 'Плательщик' else 'Грузополучатель' end as typeDistr
+             from KatOrg org
+             join AttrVal AVisOk on AvIsOk.cAttrnam = :(_cAttrPraDataIsOK) //#comp(281474976710729677)
+                                and AvIsOk.crec = Org.Nrec
+                                and AvIsOk.VLONGINT = 1
+             left join AttrVal AVDistType on  AVDistType.cAttrnam = :(_cAttrPraDataTypeDistr) //#comp(281474976710729678)
+                                       and AVDistType.crec = Org.Nrec
+             join AttrVal AVDistID on AVDistID.cAttrnam = :(_cAttrPraDataID) //#comp(281474976710729679)
+                          and AVDistID.crec = org.nrec
+        into tSelectDistributor
+        ;
+  }
+  _except else {}
+  if getfirst tSelectDistributor = tsOK{}
+  rereadrecord;
+}
+end;
+end;
+window winSetParamsManual;
+Screen ScrSetParamsManual;
+fields
+  _dateBeg : NoProtect;
+  _dateEnd : NoProtect;
+  _Distributor : Protect, PickButton;
+Buttons
+    cmOK,,,;
+    cmCancel,,,;
+<<
+PRADATA. Параметры формирования файлов в ручном режиме
+
+Период с  .@@@@@@@@@@ по .@@@@@@@@@@
+
+Дистрибьютор .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+<.Сформировать.>                 <.Отмена.>
+>>
+end;
+Handleevent
+cmInit:
+{
+  _dateBeg := sub_day(Cur_date, _DaysCount);
+  _dateEnd := Cur_date;
+  _Distributor  :='';
+  _cDistributor := 0;
+}
+CmPick:
+{
+  Case curField of
+   #_Distributor: {
+     if RunWindowModal(winSelectDistributor) = cmDefault
+     {
+      _Distributor  := tSelectDistributor.name;
+      _cDistributor := tSelectDistributor.id;
+     }
+     else
+     {
+      _Distributor := '';
+      _cDistributor := 0h;
+     }
+   }
+   end;
+   rereadrecord;
+}
+CmOK:
+{
+  closewindow(winSetParamsManual);
+}
+end;
+end;
+Function InitParams : boolean;
+{
+ result := false;
+ if not IsExistTuneGetcAttr(coTuneAttrPraDataID,_cAttrPraDataID) then exit;
+ if not IsExistTuneGetcAttr(coTuneAttrPraDataIsOK,_cAttrPraDataIsOK) then exit;
+ if not IsExistTuneGetcAttr(coTuneAttrPraDataTypeDistr,_cAttrPraDataTypeDistr) then exit;
+
+ if not isExistTune(coTuneDaysCount)
+  then {exit}
+  else { _DaysCount := wgettune(coTuneDaysCount) }
+
+ if not isExistTune(coTunePathTo)
+  then {exit}
+  else { _PathTo := sgettune(coTunePathTo) }
+
+
+  if Trim(_PathTo)= ''
+   {
+     Message('Значение настройки "'+coTunePathTo+'" пустое',error);
+     exit;
+   }
+
+ if not isExistTune(coTuneDateFormat)
+  then {exit}
+  else { _DateFormat := sgettune(coTuneDateFormat) }
+
+  _try
+  {
+    if StrToDate(datetostr(cur_date,_DateFormat),_DateFormat) <> cur_date
+     {
+       Message('Формат даты, указанный в настройке "'+coTuneDateFormat+'", неправильный:'
+           + ''#13'' + 'Не удалось преобразовать дату в строку и обратно',error);
+       exit;
+     }
+  }
+  _except else
+   {
+       Message('Формат даты, указанный в настройке "'+coTuneDateFormat+'", неправильный:'
+           + ''#13'' + 'Не удалось преобразовать дату в строку и обратно',error);
+       exit;
+   }
+
+  if not isRunAuto
+  {
+    if not isExistTune(coTunePathToManual)
+    then {exit}
+    else { _PathTo := sgettune(coTunePathToManual) }
+
+    runWindowModal(winSetParamsManual);
+    if _cDistributor  = 0
+     then
+     {
+      result := false;
+      exit;
+     }
+  }
+  else
+  {
+      _dateBeg := sub_day(Cur_date, _DaysCount);
+      _dateEnd := Cur_date;
+  }
+ result := true;
+}
+procedure LoadTableForExport;
+{
+ ClearAll;
+  _try
+  {
+    sql
+      select
+        coalesce( AVDistID.vDouble,0) as IDDistr //id дистрибьютора
+       , KS.DSopr   as NaklDate //Дата
+       , Mc.Name as McName
+       , Mc.Barkod2 as McSapCode //Код продукта производителя
+       , SpKS.kolFact*coalesce(OtpEd.Koef,1) as McKol //Количество
+       , Ks.nSopr as NaklNumber //Номер накладной
+       , coalesce(OtpEd.Koef,1)*SpKS.KOLFACT * SpKs.Price - Case when KS.VhodNal = 2 then 0 else SpKs.SumNDS end as McSum //Сумма в закупочных ценах
+       , coalesce(AVGTD.vString,'') as McGTD //Номер партии
+       from KatOrg org
+       join AttrVal AVisOk on AvIsOk.cAttrnam = :(_cAttrPraDataIsOK) //#comp(281474976710729677)
+                          and AvIsOk.crec = Org.Nrec
+                          and AvIsOk.VLONGINT = 1
+       left join AttrVal AVDistType on  AVDistType.cAttrnam = :(_cAttrPraDataTypeDistr) //#comp(281474976710729678)
+                                 and AVDistType.crec = Org.Nrec
+       join KatSopr KS on Ks.cOrg = Org.Nrec
+       left join AttrVal AVDistID on AVDistID.cAttrnam = :(_cAttrPraDataID) //#comp(281474976710729679)
+                    and AVDistID.crec = case when  coalesce(AVDistType.vDouble,1) = 1 then Ks.cOrg else Ks.CGRUZTO end
+       join SpSopr SpKs on SpKs.cSopr = Ks.Nrec and SpKs.PrMc = 1
+       left join KatOtpEd OtpEd on OtpEd.nrec = SpKs.cotped
+       join KatMc Mc on Mc.nrec = SpKS.cMcUsl
+       left join AttrVal AVGTD on AVGTD.cAttrNam = #comp(281474976710656012) // GTD party
+                              and AVGTD.cRec = SpKs.cParty
+       where ks.vidsopr = 201
+         and Ks.dSopr >= :(_dateBeg)//#date(01,01,2019)
+         and ks.dSopr <= :(_dateEnd) //#date(24,03,2019)
+         and ks.dOpr <> 0
+         into tNaklExport
+       ;
+  }
+  _except else {}
+}
+procedure ExportToFilesell_in;
+{
+var _fileExport : string = _PathTo + if(substr(_PathTo,length(_PathTo),1) <> '\','\','') + 'sell_in.csv' ;
+if not isRunAuto then
+ {
+  _fileExport := _PathTo + if(substr(_PathTo,length(_PathTo),1) <> '\','\','') + 'sell_in_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName+'.csv' ;
+ }
+deletefile(_fileExport);
+var _rowString : string;
+_rowString := 'id дистрибьютора' + ';' + 'Дата'+';'+'Код продукта производителя'+';'+'Количество'+';'+'Номер накладной'+';'+'Сумма в закупочных ценах'+';'+'Номер партии'+';';
+LogStrToFile(_fileExport,ShortStrToWin(_rowString));
+  _loop tNaklExport
+  {
+     if not isRunauto
+    {
+      if _cDistributor <>  tNaklExport.IDDistr then continue;
+    }
+    update current tNaklExport set
+        tNaklExport.NaklNumber := '"'+replace(tNaklExport.NaklNumber,'"','""') +'"'
+       ,tNaklExport.McGTD      := '"'+replace(tNaklExport.McGtd,'"','""') +'"'
+    ;
+    _rowString := '';
+    _rowString := _rowString + doubletostr(tNaklExport.IDDistr,'6666666') +';';
+    _rowString := _rowString + DateToStr(tNaklExport.NaklDate,_dateFormat) +';';
+    _rowString := _rowString + tNaklExport.McSapCode +';';
+    _rowString := _rowString + doubletostr(tNaklExport.McKol,'\3p[|-]3666666666666666.88') +';';
+    _rowString := _rowString + tNaklExport.NaklNumber +';';
+    _rowString := _rowString + doubletostr(tNaklExport.McSum,'\3p[|-]3666666666666666.88') +';';
+    _rowString := _rowString + tNaklExport.McGTD+';';
+    LogStrToFile(_logFile,' Выгружаем строку '+ _rowString);
+    LogStrToFile(_fileExport,ShortStrToWin(_rowString));
+  }
+}
+function CreateExcel (FExcelName : string) : boolean;
+{
+  StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Инициализация EXCEL', 1);
+    result := true;
+
+    DeleteFile(FExcelName);
+
+    if (not xlCreateExcel(FExcelName, false))
+    {
+      message('ОШИБКА! Не удалось инициализировать сессию Excel', Error);
+      xlKillExcel;
+      result := false;
+      exit;
+    }
+
+    if (not xlIsExcelValid)
+    {
+      message('ОШИБКА! Не удалось инициализировать сессию Excel', Error);
+      xlKillExcel;
+      result := false;
+      exit
+    }
+  var xlCount : word;
+  xlCount := 0;
+   Do
+   {
+    xlGetSheetsCount(xlCount);
+    xlDeleteSheet(xlCount);
+   } while xlCount > 1
+
+    xlSetActiveSheet(1);
+    xlSetSheetName(1, 'OTCHET');
+
+   StopVisual('',0);
+}
+
+Procedure PrintReport_Matrix;
+{
+  StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Формирование отчета', 1);
+  xlCreateMatrix(recordsIntable(tntNaklExport)+5,11);
+
+  var Nrow0,nrow0FrameBold, Nrow, column, nrowreal : longint;
+ nrowreal := 1;
+ Nrow := column := 1;
+
+ xlSetFontStyle(1,nrow,1,nrow,10);
+ xlsetcolumnWidth(30,1,4,1,5);
+
+ XlStWriteToMatrix(Nrow, 1,'Дистрибьютор id');
+ XlStWriteToMatrix(Nrow, 2,'Дата отгрузки продукта');
+ XlStWriteToMatrix(Nrow, 3,'Номер накладной');
+ XlStWriteToMatrix(Nrow, 4,'Название продукта');
+ XlStWriteToMatrix(Nrow, 5,'Код продукта');
+ XlStWriteToMatrix(Nrow, 6,'Отгрузка, шт');
+ XlStWriteToMatrix(Nrow, 7,'Сумма в закупочных ценах');
+ XlStWriteToMatrix(Nrow, 8,'Партия ГТД');
+
+
+ Nrow++;
+ _Loop tNaklExport
+ {
+   if not isRunauto
+    {
+      if _cDistributor <>  tNaklExport.IDDistr then continue;
+    }
+  XlStWriteToMatrix(Nrow, 1,chr(39)+doubletostr(tNaklExport.IDDistr,'6666666'));
+  XlStWriteToMatrix(Nrow, 2,chr(39)+DateToStr(tNaklExport.NaklDate,_dateFormat));
+  XlStWriteToMatrix(Nrow, 3,chr(39)+tNaklExport.NaklNumber );
+  XlStWriteToMatrix(Nrow, 4,tNaklExport.MCName);
+  XlStWriteToMatrix(Nrow, 5,chr(39)+tNaklExport.McSapCode);
+  XlStWriteToMatrix(Nrow, 6,chr(39)+doubletostr(tNaklExport.McKol,'\3p[|-]3666666666666666.88'));
+  XlStWriteToMatrix(Nrow, 7,chr(39)+doubletostr(tNaklExport.McSum,'\3p[|-]3666666666666666.88'));
+  XlStWriteToMatrix(Nrow, 8,chr(39)+tNaklExport.McGTD);
+  //MyPrintMatrixToExcel(Nrow,NrowReal);
+  Nrow++;
+ }
+ xlWriteMatrixToExcel(NrowReal,1);
+ xlSaveWorkBook(1);
+ xlKillExcel;
+ StopVisual('',0);
+}
+procedure ExportToFileOtchet_xls;
+{
+ var _fileExport : string = _PathTo + if(substr(_PathTo,length(_PathTo),1) <> '\','\','') + 'Otchet'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName+'.xls' ;
+ deletefile(_fileExport);
+ LogStrToFile(_logFile, DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS')+' Init EXCEL');
+ if not CreateExcel(_fileExport) then exit;
+ LogStrToFile(_logFile, DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS')+' Запустили EXCEL');
+ PrintReport_Matrix
+}
+handleevent
+cminit:{
+ _logFile := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'PraData_ExportNAkl_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+ deletefile(_logFile);
+ LogStrToFile(_logFile, 'Выгрузка накладных для PraData ');
+ LogStrToFile(_logFile, DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName);
+ if not InitParams then {stop;abort;exit}
+ startnewvisual(vtRotateVisual,vftimer+vfbreak+vfconfirm,'Формирование файлов',0);
+ LogStrToFile(_logFile, DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + ' начали бор накладных ');
+ LoadTableForExport;
+ LogStrToFile(_logFile, DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') +  ' закончили сбор накладных ');
+ ExportToFileSell_in;
+ LogStrToFile(_logFile, DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + 'Закончили выгрузку в файл sell_in.csv');
+ if not isRunAuto then  // в автоматическом режиме не надо формировать данный файл
+  {
+     ExportToFileOtchet_xls;
+     LogStrToFile(_logFile, DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + 'Закончили выгрузку в файл Otchet.xls');
+     Stopvisual();
+     message('Файлы выгружены в папку "'+_PathTo+'"');
+  }
+  else
+   {
+
+     Stopvisual();
+   }
+    abort;
+ //closeInterface(cmDone);
+}
+End;//HandleEvent
+End.//Interface

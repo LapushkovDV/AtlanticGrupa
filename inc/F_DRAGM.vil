@@ -1,0 +1,23 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента
+
+#ifdef ComponentVersion
+#component "F_DRAGM"
+#end
+//------------------------------------------------------------------------------
+VipInterface DragMet        Licensed (FREE)        Parameters (myTiDk : word);
+//------------------------------------------------------------------------------
+VipInterface ChkDrag        Licensed (FREE);
+//------------------------------------------------------------------------------
+VipInterface GetDrag        Licensed (FREE)        Parameters (c1, oldp : comp; sort : word);
+//------------------------------------------------------------------------------
+VipInterface KatDragMet     Licensed (FREE)        Parameters (c1 : comp; c2 : word);
+//------------------------------------------------------------------------------
+VipInterface RepMoveDragOS
+Licensed (mbp,NalogReg,B_Act,B_Osn)
+Parameters (CurCode, pTidk : word; pCurLine : comp; pStatus : word);
+//------------------------------------------------------------------------------
+VipInterface RepNalDragOS
+Licensed (mbp,NalogReg,B_Act,B_Osn)
+Parameters (CurCode, pTidk : word; pCurLine : comp; pStatus : word);
+//------------------------------------------------------------------------------

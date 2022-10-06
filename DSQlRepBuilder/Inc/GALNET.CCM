@@ -1,0 +1,905 @@
+const
+  cmValue1         = 2221;
+  cmValue2         = 2222;
+  cmValue3         = 2223;
+  cmValue4         = 2224;
+  cmValue5         = 2225;
+  cmValue6         = 2226;
+  cmValue7         = 2227;
+  cmValue8         = 2228;
+  cmValue9         = 2229;
+  cmValue10        = 2230;
+  cmValue11        = 2231;
+  cmValue12        = 2232;
+  cmValue13        = 2233;
+  cmValue14        = 2234;
+  cmValue15        = 2235;
+  cmValue16        = 2236;
+  cmValue17        = 2237;
+  cmValue18        = 2238;
+  cmValue19        = 2239;
+  cmValue20        = 2240;
+  cmAddNewRec      = 2241;
+  cmEdit           = 2242;
+
+  cmAltInsert      = 2246;
+  cmChangeViewMode = 2248;
+
+  cmEditSopr       = 2250;
+  cmExtendetInfo   = 2251;
+  cmDoSelField     = 2252;
+  cmCheckSumma     = 2253;
+
+  cmAltEqual       = 2254;
+  cmAltMinus       = 2255;
+  cmAltIns         = 2256;
+  cmAltGrayPlus    = 2257;
+
+  cmMyAccept       = 2300;
+  cmCheckInBox     = 2301;
+  cmAplan          = 2302;
+  cmCalcPRes       = 2303;
+  cmDepFin         = 2304;
+  cmDel            = 2305;
+  cmPeriod         = 2306;
+  cmReport         = 2307;
+  cmConect         = 2308;
+  cmDep            = 2309;
+  cmSpApFin        = 2310;
+  cmResAp          = 2311;
+  cmDelCondition   = 2312;
+  cmSpFp           = 2313;
+  cmRes            = 2314;
+  cmMoveOne        = 2315;
+  cmMoveAll        = 2316;
+  cmReMoveOne      = 2317;
+  cmReMoveAll      = 2318;
+  cmMoveUp         = 2319;
+  cmMoveDown       = 2320;
+  cmRemove         = 2321;
+  cmUp             = 2322;
+  cmDown           = 2323;
+  cmRunBatchDistr  = 2324;
+  cmUndoDistr      = 2325;
+  cmOpenMainWindow = 2326;
+  cmOkToMakeCheckInb=2327;
+  cmOkToMakeCheckOut=2328;
+  cmObrab          = 2329;
+  cmDejDone        = 2330;
+  cmDejCanNotDone  = 2331;
+  cmDejClear       = 2332;
+  cmShowListSoglInVhod=2333;
+  cmPaketDetachInbPaket=2334;
+  cmPaketEndObrabot= 2335;
+  cmDo             = 2336;
+  cmTextWind       = 2337;
+  cmDef            = 2338;
+  cmRegetOborot    = 2339;
+  cmLoadFromFile   = 2340;
+  cmCompare        = 2341;
+  cmPrintRep       = 2342;
+  cmSaveToFile     = 2343;
+  cmRunCheck       = 2344;
+  cmOkNot0         = 2345;
+  cmVnKlass        = 2346;
+  cmPusk           = 2347;
+  cmDelLog         = 2348;
+  cmPrintJour      = 2349;
+  cmOtkatSelected  = 2350;
+  cmUpLeaf         = 2351;
+  cmJour           = 2352;
+  cmDelAllLog      = 2353;
+  cmPrintJourBad   = 2354;
+  cmOtkatCurrent   = 2355;
+  cmDownLeaf       = 2356;
+  cmOtkat          = 2357;
+  cmObed           = 2358;
+  cmClearError     = 2359;
+  cmViewLog        = 2360;
+  cmViewParams     = 2361;
+  cmSetTuneFilter  = 2362;
+  cmValueCancel    = 2363;
+  cmValue111       = 2364;
+  cmRaspred        = 2365;
+  cmViewRaspred    = 2366;
+  cmPerform        = 2367;
+  cmLevelDn        = 2368;
+  cmHeap           = 2369;
+  cmOk1            = 2370;
+  cmEnd1           = 2371;
+  cmVCompiler      = 2372;
+  cmLoadDef        = 2373;
+  cmRunTemplate    = 2374;
+  cmUse            = 2375;
+  cmVImport        = 2376;
+  cmDataManagement = 2377;
+  cmMakeTable      = 2378;
+  cmSchema         = 2379;
+  cmCancelAll      = 2380;
+  cmShowPer        = 2381;
+  cmMakeNakl       = 2382;
+  cmSopUslEdit     = 2383;
+  cmSourceVolumeOutput=2384;
+  cmSaveSource     = 2385;
+  cmFinish_Form    = 2386;
+  cmParamPrice     = 2387;
+  cmPerNastr       = 2388;
+  cmListPeriodAccum= 2389;
+  cmSourceVolumeExclusion=2390;
+  cmSave_PrintSource=2391;
+  cmChange_Form    = 2392;
+  cmNoSave_PrintSource=2393;
+  cmNot_Form       = 2394;
+  cmNoSaveSource   = 2395;
+  cmForm_Tune      = 2396;
+  cmOpr1Sk         = 2397;
+  cmValue222       = 2398;
+  cmSdvig          = 2399;
+  cmCalcIR         = 2401;
+  cmNewSosto       = 2402;
+  cmCalcInt        = 2403;
+  cmPeriodPlan     = 2404;
+  cmPrintReport    = 2405;
+  cmUstanov        = 2406;
+  cmSaveLink       = 2407;
+  cmRezerv         = 2408;
+  cmCreateLinks    = 2409;
+  cmSavePart       = 2410;
+  cmNewStatus      = 2411;
+  cmCancel1        = 2412;
+  cmSniat          = 2413;
+  cmEscLink        = 2414;
+  cmCalcPlanPart   = 2415;
+  cmCalcPlanFact   = 2416;
+  cmSavePlanFact   = 2417;
+  cmCalcPlanSt     = 2418;
+  cmSavePlanSt     = 2419;
+  cmYesYes         = 2420;
+  cmGsmDvi         = 2421;
+  cmShin           = 2422;
+  cmStaffDocsAppendix=2423;
+  cmYesAll         = 2424;
+  cmKnopka         = 2425;
+  cmPutev          = 2426;
+  cmFormTab        = 2427;
+  cmGsmAvt         = 2428;
+  cmNoAll          = 2429;
+  cmKompl          = 2430;
+  cmShina          = 2431;
+  cmChangeShin     = 2432;
+  cmSupp           = 2433;
+  cmZakPunkt       = 2434;
+  cmGsmSp          = 2435;
+  cmChangeShin_One = 2436;
+  cmZakazUsl       = 2437;
+  cmGsmAll         = 2438;
+  cmViewSp         = 2439;
+  cmOther          = 2440;
+  cmGruz           = 2441;
+  cmAllLoadItem    = 2442;
+  cmZakrShin       = 2443;
+  cmHealth         = 2444;
+  cmLoadItem       = 2445;
+  cmZakrComp       = 2446;
+  cmRash           = 2447;
+  cmWinRem         = 2448;
+  cmPerson         = 2449;
+  cmKarShina       = 2450;
+  cmRasHod         = 2451;
+  cmInvKar         = 2452;
+  cmGsm            = 2453;
+  cmKarAkkum       = 2454;
+  cmTab1           = 2455;
+  cmAgr            = 2456;
+  cmKnopka_Komp    = 2457;
+  cmTranspmor      = 2458;
+  cmSheet          = 2459;
+  cmMarItem        = 2460;
+  cmMarchrut       = 2461;
+  cmZakaz          = 2462;
+  cmRasSal1        = 2463;
+  cmRasVir         = 2464;
+  cmprich          = 2465;
+  cmFormTTN        = 2466;
+  cmRas_usl        = 2467;
+  cmTrl            = 2468;
+  cmRasZakaz       = 2469;
+  cmXarTC          = 2470;
+  cmKor_Tab        = 2471;
+  cmUdal_Tab       = 2472;
+  cmLoadTc         = 2473;
+  cmHealthTc       = 2474;
+  cmCopy_          = 2475;
+  cmCancelFiltr    = 2476;
+  cmDel_           = 2477;
+  cmGetStr         = 2478;
+  cmExcelFormat    = 2479;
+  cmAbort          = 2480;
+  cmSetupPayModelChange=2481;
+  cmSaveRecord     = 2482;
+  cmBaseNalog      = 2483;
+  cmLgotSet        = 2484;
+  cmSHIFTF10       = 2485;
+  cmVidopl         = 2486;
+  cmCalcFormuls    = 2487;
+  cmUdMarker       = 2488;
+  cmorB            = 2489;
+  cmFillCategAndDoc= 2490;
+  cmNachislVz      = 2491;
+  cmSortUplach     = 2492;
+  cmZadolgEnd      = 2493;
+  cmPensParams     = 2494;
+  cmChooseStaj     = 2495;
+  cmPachk          = 2496;
+  cmCurOtpusk      = 2497;
+  cmStaffSLStart   = 2498;
+  cmStaffAllDep    = 2499;
+  cmStaffVacancyFree=2501;
+  cmLgot           = 2502;
+  cmStaffFIODecl   = 2503;
+  cmStaffT2Raise   = 2504;
+  cmStaffT2Vactns12= 2505;
+  cmStaffWordDoc   = 2506;
+  cmViewAdvance1   = 2507;
+  cmStaffSLStop    = 2508;
+  cmStaffRepBuild  = 2509;
+  cmStaffT2Photo   = 2510;
+  cmSetTbl         = 2511;
+  cmStaffSetDep    = 2512;
+  cmStaffT2Archive = 2513;
+  cmStaffT2MainApp = 2514;
+  cmStaffSLRecount = 2515;
+  cmSetRec         = 2516;
+  cmStaffT2Prof    = 2518;
+  cmNastr          = 2519;
+  cmStaffAllDept   = 2520;
+  cmReCalc         = 2521;
+  cmFieldMark      = 2522;
+  cmDelCopSOP      = 2523;
+  cmDelCopNeNa     = 2524;
+  cmDelCopPer      = 2525;
+  cmDelCopSUD      = 2526;
+  cmAllPodr        = 2527;
+  cmSaveNastr      = 2528;
+  cmNachMarker     = 2529;
+  cmTuneColumns    = 2530;
+  cmSaveLoadNastr  = 2531;
+  cmNFile          = 2532;
+  cmMonthKoeff     = 2533;
+  cmFOTN           = 2534;
+
+
+
+
+
+
+
+
+
+
+
+
+
+  cmSetFlag        = 3000;
+  cmSaveDoc        = 3001;
+  cmRestoreDoc     = 3002;
+  cmDebet          = 3003;
+  cmKredit         = 3004;
+  cmAkt            = 3005;
+  cmPas            = 3006;
+  cmAktPas         = 3007;
+  cmVrem           = 3008;
+  cmDoRazdEdit     = 3009;
+  cmDoRazdPage     = 3010;
+  cmDoRazdRasch    = 3011;
+  cmDoPageRasch    = 3012;
+  cmDoPageEdit     = 3013;
+  cmDoPageFile     = 3014;
+  cmKAU1           = 3015;
+  cmKAU2           = 3016;
+  cmKAU3           = 3017;
+  cmKAU4           = 3018;
+  cmKau5           = 3019;
+  cmDoPage         = 3020;
+  cmDoRaschet      = 3021;
+  cmDoRedakt       = 3022;
+  cmIzn            = 3023;
+  cmTirag          = 3024;
+  cmZamena         = 3025;
+  cmGoods          = 3026;
+  cmUslug          = 3027;
+  cmKasse          = 3028;
+  cmDaNal          = 3029;
+  cmNetNal         = 3030;
+  cmResetFlag      = 3031;
+  cmCloseCheck     = 3032;
+  cmdoins          = 3033;
+  cmOpenLevel      = 3034;
+  cmCompressLevel  = 3035;
+  cmShowAll        = 3036;
+  cmDoNothing      = 3037;
+  cmClientCategory = 3038;
+  cmClientStates   = 3039;
+  cmContactCategory= 3040;
+  cmGetName        = 3041;
+  cmGetKau         = 3042;
+  cmGetKastr       = 3043;
+  cmGetCurVal      = 3044;
+  cmGetDoc         = 3045;
+  cmMAKEPRIH       = 3046;
+  cmMAKEORDER      = 3047;
+  cmSETGRNAL       = 3048;
+  cmAdverTypes     = 3054;
+  cmAdverTarg      = 3055;
+  cmSaleTarg       = 3056;
+  cmSaleMethod     = 3057;
+  cmMarkSeg        = 3058;
+  cmSaleChannels   = 3059;
+  cmRubliValuta    = 3060;
+  cmInsertBaseFin  = 3061;
+  cmInsertSoprHoz  = 3062;
+  cmOborot         = 3063;
+  cmSeeDopInfo     = 3064;
+  cmDocTypes       = 3065;
+  cmPayDrop        = 3066;
+  cmPayRise        = 3067;
+  cmGoodType1      = 3068;
+  cmGoodType2      = 3069;
+  cmGoodLiveCircle1= 3070;
+  cmGoodLiveCircle2= 3071;
+  cmGoodLiveCircle3= 3072;
+  cmGoodLiveCircle4= 3073;
+  cmGoodLiveCircle5= 3074;
+  cmGoodLiveCircle6= 3075;
+  cmGoodMarkPie1   = 3076;
+  cmGoodMarkPie2   = 3077;
+  cmGoodMarkPie3   = 3078;
+  cmGoodMarkPie4   = 3079;
+  cmTimeRange1     = 3080;
+  cmTimeRange2     = 3081;
+  cmTimeRange3     = 3082;
+  cmTimeRange4     = 3083;
+  cmHideAll        = 3106;
+  cmInsLevel       = 3085;
+  cmOpenFile       = 3086;
+  cmSaveFile       = 3087;
+
+  cmVal1           = 3088;
+  cmVal2           = 3049;
+  cmVal3           = 3050;
+  cmVal4           = 3051;
+  cmVal5           = 3052;
+  cmVal6           = 3053;
+  cmVal7           = 3084;
+  cmVal8           = 3085;
+  cmSortMC         = 3086;
+  cmDublSopr       = 3087;
+
+  cmInsLowLevel    = 3089;
+
+  cmDocType1       = 12289;
+  cmDocType3       = 12291;
+  cmDocType8       = 12296;
+  cmDocType9       = 12297;
+  cmDocType11      = 12299;
+  cmDocType31      = 12319;
+
+  cmLinkType1      = 3090;
+  cmLinkType2      = 3091;
+  cmRunInterfase   = 3092;
+  cmView           = 3093;
+  cmPickGoodGroup1 = 3094;
+  cmPickGoodGroup2 = 3095;
+  cmPickUtilGroup1 = 3096;
+  cmPickUtilGroup2 = 3097;
+  cmPickGood1      = 3098;
+  cmPickGood2      = 3099;
+  cmPickUtil1      = 3100;
+  cmPickUtil2      = 3101;
+  cmReturn         = 3102;
+  cmPickAttr       = 3103;
+  cmNal            = 3104;
+  cmInvAddTovars   = 3105;
+  cmUpLimit        = 3121;
+  cmValFld1        = 3201;
+  cmValFld2        = 3202;
+  cmValFld3        = 3203;
+  cmValFld4        = 3204;
+  cmValFld5        = 3205;
+  cmValFld6        = 3206;
+  cmValFld7        = 3207;
+  cmValFld8        = 3208;
+  cmValFld9        = 3209;
+  cmValFld10       = 3210;
+  cmValFld11       = 3211;
+  cmValFld12       = 3212;
+  cmValFld13       = 3213;
+  cmValFld14       = 3214;
+  cmValFld15       = 3215;
+  cmValFld16       = 3216;
+  cmValFld17       = 3217;
+  cmValFld18       = 3218;
+  cmValFld19       = 3219;
+  cmValFld20       = 3220;
+  cmOrgDef1        = 3221;
+  cmOrgDef2        = 3222;
+  cmOrgDef3        = 3223;
+  cmOrgDef4        = 3224;
+  cmOrgDef5        = 3225;
+  cmBDF1           = 3226;
+  cmBDF2           = 3227;
+  cmBDF3           = 3228;
+  cmBDF4           = 3229;
+  cmBDF5           = 3230;
+  cmBDF6           = 3231;
+  cmBDF7           = 3232;
+  cmBDF8           = 3233;
+  cmBDF9           = 3234;
+  cmBDF10          = 3235;
+  cmBDF11          = 3236;
+  cmBDF12          = 3237;
+  cmBDF13          = 3238;
+  cmBDF14          = 3239;
+  cmBDF15          = 3240;
+  cmBDF16          = 3241;
+  cmBDF17          = 3242;
+  cmBDF18          = 3243;
+  cmBDF19          = 3244;
+  cmBDF20          = 3245;
+  cmBDF21          = 3246;
+  cmBDF22          = 3247;
+  cmSetupReport    = 3439;
+  cmPrintDoc       = 3440;
+  cmGraphReport    = 3441;
+  cmGraphByLevel   = 3442;
+  cmGraphByGroup   = 3443;
+  cmRepRoom        = 3444;
+  cmRepPodr        = 3445;
+
+  cmAvtVal1        = 3730;
+  cmAvtVal2        = 3731;
+  cmAvtVal3        = 3732;
+  cmAvtVal4        = 3733;
+  cmTpnkl1         = 3734;
+  cmTpnkl2         = 3735;
+  cmAvtVod1        = 3740;
+  cmAvtVod2        = 3741;
+  cmAvtVod3        = 3742;
+  cmAvtVod4        = 3743;
+  cmAvtVod5        = 3744;
+  cmAvtVod6        = 3745;
+  cmAvtVod7        = 3746;
+  cmAvtTran1       = 3750;
+  cmAvtTran2       = 3751;
+  cmAvtTran3       = 3752;
+  cmAvtTran4       = 3753;
+  cmAvtTran5       = 3754;
+  cmAvtTran6       = 3755;
+  cmAvtTran7       = 3756;
+  cmAllAvt         = 3760;
+  cmAllUnAvt       = 3761;
+  cmAvtCtrlT       = 3762;
+  cmRasAll         = 3763;
+  cmSeePutLst      = 3764;
+  cmValFld21       = 3765;
+
+  cmNIOKR01        = 3766;
+  cmNIOKR02        = 3767;
+  cmNIOKR03        = 3768;
+  cmNIOKR04        = 3769;
+  cmNIOKR05        = 3770;
+  cmNIOKR06        = 3771;
+  cmNIOKR07        = 3772;
+  cmNIOKR08        = 3773;
+  cmNIOKR09        = 3774;
+  cmNIOKR10        = 3775;
+  cmNIOKR11        = 3776;
+  cmNIOKR12        = 3777;
+  cmNIOKR13        = 3778;
+  cmNIOKR14        = 3779;
+  cmNIOKR15        = 3780;
+  cmNIOKR16        = 3781;
+  cmNIOKR17        = 3782;
+  cmNIOKR18        = 3783;
+  cmNIOKR19        = 3784;
+  cmNIOKR20        = 3785;
+
+  cmValFld22       = 3821;
+  cmValFld23       = 3822;
+  cmValFld24       = 3823;
+  cmValFld25       = 3824;
+
+  cmRubl           = 4001;
+  cmValRubl        = 4002;
+  cmValut          = 4003;
+  cmTovar          = 4004;
+  cmUsl            = 4005;
+  cmOform          = 4006;
+  cmIspoln         = 4007;
+  cmZakryt         = 4008;
+  cmNullStep       = 4009;
+  cmPerSumma       = 4010;
+  cmAttrib         = 4011;
+  cmLevelDown      = 4012;
+  cmLevelUp        = 4013;
+  cmPickClass      = 4014;
+  cmAll            = 4015;
+  cmProcessAll     = 4016;
+  cmAllInv         = 4017;
+  cmAllMol         = 4018;
+  cmAllStr         = 4019;
+  cmAllVos         = 4020;
+  cmAllIn          = 4021;
+  cmAllMo          = 4022;
+  cmAllSt          = 4023;
+  cmAllVo          = 4024;
+  cmAllVosM        = 4025;
+  cmAllVosV        = 4026;
+  cmPickKod        = 4027;
+  cmSetKol         = 4030;
+  cmCheckTovar     = 4032;
+  cmCountOstatki   = 4033;
+  cmMoveAllTovars  = 4035;
+  cmCalcAuto       = 4050;
+  cmCalcConst      = 4051;
+  cmCalcHand       = 4052;
+  cmManagerId      = 4060;
+  cmFilialNo       = 4061;
+  cmPlansNo        = 4062;
+  cmFilterSave     = 4070;
+  cmAltG           = 4072;
+  cmAltH           = 4073;
+  cmMPrice         = 4074;
+  cmPFormat        = 4075;
+  cmEndJob         = 5020;
+  cmTKol           = 5021;
+  cmOneRec         = 5051;
+  cmDeleteOrder    = 5052;
+  cmMakePrihOrd    = 5053;
+  cmMakeRashOrd    = 5054;
+  cmDocBas         = 5055;
+  cmPlPor01        = 6041;
+  cmPlPor02        = 6042;
+  cmPlPor03        = 6043;
+  cmPlPor04        = 6044;
+  cmPlPor05        = 6045;
+  cmPlPor06        = 6046;
+  cmPlPor07        = 6047;
+  cmPlPor08        = 6048;
+  cmPlPor09        = 6049;
+  cmPlPor10        = 6050;
+  cmPlPor11        = 6051;
+  cmPlPor31        = 6052;
+  cmPlPor32        = 6053;
+  cmPlPor33        = 6054;
+  cmPlPor17        = 6055;
+  cmPlPor18        = 6056;
+  cmBuhCalculator  = 6057;
+  cmGeneratepartys = 6058;
+  cmCheckOrder     = 6059;
+  cmCheckRPD       = 6060;
+
+  cmMMyPick        = 6200;
+  cmMMySort        = 6201;
+  cmMCloseDopWin   = 6202;
+  cmMShowBrMKlient = 6203;
+  cmMShowBrMPredst = 6204;
+  cmMShowBrMKlTel1 = 6205;
+  cmMShowBrMGarant = 6206;
+  cmMShowBrMKont   = 6207;
+  cmMShowBrMTelPr  = 6208;
+  cmMShowscMKlient = 6209;
+  cmMShowscMPredst = 6210;
+  cmMShowscMKlTel1 = 6211;
+  cmMShowscMGarant = 6212;
+  cmMShowscMKont   = 6213;
+  cmMShowscMTelPr  = 6214;
+  cmMShowSort      = 6215;
+  cmMEnd           = 6299;
+  cmDelPickMy      = 6300;
+  cmPropusk        = 6301;
+
+  cmOne            = 9991;
+  cmTwo            = 9992;
+  cmAccording      = 9993;
+  cmSelectPar      = 3241;
+  cmSDF1           = 5000;
+  cmSDF2           = 5001;
+  cmSDF3           = 5002;
+  cmSDF4           = 5003;
+  cmSDF5           = 5004;
+  cmSDF6           = 5005;
+  cmSDF7           = 5006;
+  cmSDF8           = 5007;
+  cmSDF9           = 5008;
+  cmSDF10          = 5009;
+  cmODT1           = 5010;
+  cmODT2           = 5011;
+  cmODT3           = 5012;
+  cmODT4           = 5013;
+
+  cmReplCodes      = 4083;
+
+  cmExp            = 5014;
+  cmImp            = 5015;
+  cmIEHist         = 5016;
+
+  cmChooseExcelTable = 5017;
+  cmRunExcel         = 5018;
+
+  cmXchangeMCSetup   = 5020;
+  cmGoToBrowse       = 5021;
+  cmOkAll            = 5022;
+  cmSkipThis         = 5023;
+  cmSkipAll          = 5024;
+
+  cmDeleteFile       = 5025;
+  cmDeleteFiltered   = 5026;
+  cmRunOperation     = 5027;
+  cmLog              = 5028;
+
+  cmVRunInterface  = 5029;
+  cmRunHier        = 5030;
+
+  cmInsertRelated  = 5031;
+  cmUpdateRelated  = 5032;
+  cmDeleteRelated  = 5033;
+
+  cmInitFromHash   = 5034;
+  cmDoneFromHash   = 5035;
+
+  cmNeedReScan     = 5036;
+  cmCallGroup      = 5037;
+
+  cmVSetPos        = 5038;
+
+  cmSubMark        = 5039;
+  cmCallTunes      = 5040;
+  cmReSortByOrder  = 5041;
+  cmReSortByName   = 5042;
+  cmCallFilter     = 5043;
+
+  cmDebug          = 5044;
+  cmSwitch         = 5045;
+  cmExtendSwitch   = 5046;
+
+   cmBeforeFirstInit = 5047;
+   cmBeforeInit      = 5048;
+   cmAfterFirstInit  = 5049;
+   cmAfterInit       = 5050;
+
+  cmInsertEditKN   = 5051;
+  cmSearchForKN    = 5052;
+
+  cmCopySpecToClipboard    = 5053;
+  cmCopySpecFromClipboard  = 5054;
+  cmViewSpecClipboard      = 5055;
+  cmVDE            = 5056;
+
+  cmRecalcAllSums  = 5057;
+
+
+  cmMulSelDO       = 5060;
+
+  cmIerarchy       = 5061;
+  cmLegend         = 5062;
+
+  cmNewData  = 5063;
+
+
+  cmBudgetPlan  = 5064;
+  cmBudgetFact  = 5065;
+  cmBudgetRez   = 5066;
+
+  cmSynchBrowse = 5067;
+  cmFACalculate = 5068;
+
+  cmExtendSwitchName = 5069;
+
+  cmExtendedDelete = 5070;
+  cmSpecialDelete = 5071;
+  cmAlternativeDelete = 5072;
+  cmGoToNextStep = 5073;
+  cmGoToPrevStep = 5074;
+
+  cmPgUp = 5075;
+  cmPgDn = 5076;
+
+  cmCalc = 5077;
+
+  cmKauReff = 5078;
+  cmLimits  = 5079;
+
+  cmBoxPlan       = 5080;
+  cmHandBoxPlan   = 5081;
+  cmAutoBoxPlan   = 5082;
+  cmAutoNakl      = 5083;
+  cmPacketBoxPlan = 5084;
+  cmBoxBirks      = 5085;
+  cmCreateRaspred = 5086;
+  cmClearBoxPlan  = 5087;
+  cmPrintBoxPlan  = 5088;
+  cmFormRasTr     = 5089;
+
+  cmEditStBud     = 5090;
+  cmEditBudget    = 5091;
+
+  cmCalcKol       = 5092;
+  cmCallJoinFlt   = 5093;
+
+  cmCtrlTab       = 5094;
+
+  cmSendMailToTechPodr = 5095;
+  cmRaspVIPMC     = 5096;
+
+  // Создание операций ОС/НМА из картотеки
+  cmOSCr_1_Post   = 5097;
+  cmOSCr_2_VnuPer = 5098;
+  cmOSCr_3_IzmStm = 5099;
+  cmOSCr_4_Vybyt  = 5100;
+  cmOSCr_6_Pereoz = 5101;
+  cmOSCr_7_IzmGrV = 5102;
+  cmOSCr_9_ChgPar = 5103;
+
+  cmGetWeight     = 5104;
+  cmCalcSrPrice   = 5105;
+  cmHozOper       = 5106;
+  cmShowUKSPrice  = 5107;
+
+  cmDoRes         = 5108;
+  cmSkipRes       = 5109;
+  cmDoOper        = 5110;
+  cmUnDoOper      = 5111;
+  cmDoRaschetGr   = 5112;
+  cmExClassRepl   = 5113;
+
+  cmExtPoint1     = 5114;
+  cmExtPoint2     = 5115;
+  cmExtPoint3     = 5116;
+  cmExtPoint4     = 5117;
+  cmExtPoint5     = 5118;
+  cmExtPoint6     = 5119;
+  cmExtPoint7     = 5120;
+
+  cmExAttrBat     = 5121;
+
+  cmCreateKNByKN  = 5122;
+  cmNormUb        = 5123;
+  cmNormUb2       = 5124;
+
+  cmCalcDiscount  = 5125;
+
+  cmChangeTitle   = 5126;
+
+  cmCalcUslParam  = 5127;
+
+  cmVal9          = 5128; //не использовать
+
+  // дополнительные пункты меню
+  cmDopMenu1      = 5130;
+  cmDopMenu2      = 5131;
+  cmDopMenu3      = 5132;
+  cmDopMenu4      = 5133;
+  cmDopMenu5      = 5134;
+  cmDopMenu6      = 5135;
+  cmDopMenu7      = 5136;
+  cmDopMenu8      = 5137;
+  cmDopMenu9      = 5138;
+  cmDopMenu10     = 5139;
+
+  cmCreateKD      = 5140;
+  cmSwitchKD      = 5141;
+  cmFastClose     = 5142;
+  cmMakeFreePlat  = 5143;
+  cmCreateKDGr    = 5144;
+  cmBatSchFact    = 5145;
+
+  cmDopMenu11     = 5150;
+  cmDopMenu12     = 5151;
+  cmDopMenu13     = 5152;
+  cmDopMenu14     = 5153;
+  cmDopMenu15     = 5154;
+  cmDopMenu16     = 5155;
+  cmDopMenu17     = 5156;
+  cmDopMenu18     = 5157;
+  cmDopMenu19     = 5158;
+  cmDopMenu20     = 5159;
+
+  cmMoveNodeUp         = 5160;
+  cmMoveNodeDown       = 5161;
+  cmRecalcAllDocPerfs  = 5162; // Пересчет показателей всех документов
+  cmSnapServicesToPoss = 5163; // Привязка МЦ/услуги к текущей позиции документа
+  cmSnapToObjBuilding  = 5164; // Привязка помеченных смет к объекту строительства
+  cmSnapToObjRepair    = 5165; // Привязка помеченных смет к объекту ремонта
+  cmGoSmetaPrev        = 5166;
+  cmGoSmetaNext        = 5167;
+  cmCheckBoughtValue   = 5168; // Команда лок. меню "Проверка корректности количества приобретенных ресурсов"
+
+  cmFindAttrVal        = 5169;
+
+  cmCheckCache         = 5170;
+  cmReInitCache        = 5171;
+
+  cmAddMenu01      = 5181;
+  cmAddMenu02      = 5182;
+  cmAddMenu03      = 5183;
+  cmAddMenu04      = 5184;
+  cmAddMenu05      = 5185;
+  cmAddMenu06      = 5186;
+  cmAddMenu07      = 5187;
+  cmAddMenu08      = 5188;
+  cmAddMenu09      = 5189;
+  cmAddMenu10      = 5190;
+  cmAddMenuProtAll = 5191;
+  cmAddMenuProtDoc = 5192;
+
+  // Базовый сопроводительный 6000..6500
+  cmBSZamObj           = 6100;
+  cmBSZamStat          = 6101;
+  cmBSZamNazna         = 6102;
+  
+  // Экспорт данных во внешнее хранилище
+  cmDE_AddFolder   = 50001;
+  cmDE_AddTasks    = 50002;
+  cmDE_RunTask     = 50003;
+  cmDE_LineUp      = 50004;
+  cmDE_LineDown    = 50005;
+  cmDE_RereadRecord= 50006;
+  cmDE_EditJob     = 50007;
+  // для перерисовки отчетного периода
+  cmPeriodUpdate   = 50008;
+  cmExitGalaxy     = 50009;
+  cmDocOfGdsInNakl = 50010;
+  cmPrintReestr    = 50011;
+  cmPrintFRReestr  = 50111;
+
+  // константы работы со скриптами
+  cmShowScript     = 50012;
+  cmRunScript      = 50013;
+  cmShowJava       = 50014;
+  cmCompScript     = 50015;
+
+  // события группировок
+  cmGroupBody    = 50016;
+
+  cmGroup1Open   = 50017;
+  cmGroup1Close  = 50018;
+
+  cmGroup2Open   = 50019;
+  cmGroup2Close  = 50020;
+
+  cmGroup3Open   = 50021;
+  cmGroup3Close  = 50022;
+
+  cmGroup4Open   = 50023;
+  cmGroup4Close  = 50024;
+
+  cmGroup5Open   = 50025;
+  cmGroup5Close  = 50026;
+  cmChkSum       = 50027;
+  cmCreateIA     = 50028;
+  cmPrintIA      = 50029;
+  cmAttrSchFact  = 50030;
+  cmAutoRasp     = 50031;
+
+  // события работы с ЭЦП в документах
+  cmSignDoc      = 50040;
+  cmChkSignDoc   = 50041;
+  cmControlSign  = 50042;
+  cmClearSign    = 50043;
+
+  // События Диадок
+  cmDiaSendDoc     = 50050;
+  cmDiaSignDoc     = 50051;
+  cmDiaRejectSign  = 50052;
+  cmDiaUpdateData  = 50053;
+  cmDiaShowDoc     = 50054;
+  cmDiaImport      = 50055;
+  cmDiaSendReciept = 50056;
+
+ //Резервирование
+  cmInsReserve    = 50070;
+  cmDelReserve    = 50071;
+
+ //Заполнение позиций документа неиспользованными запасами
+  cmInsZapas      = 50072;

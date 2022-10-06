@@ -1,0 +1,18 @@
+#doc
+Объектный интерфейс "Функции для Дрога Колинска"
+#end
+objInterface objDrogaFunc;
+#doc
+возвращает код МЦ покупателя
+#end
+function getBuyerItemCode(cSpSopr: comp): string;
+function getSAPItemCode(cSpSopr: comp): string;
+function getMercuryCode(cKatSopr: comp): string;
+function getCountInPack(cSpSopr: comp): string;
+function getPackVol(cSpSopr: comp): string;
+#doc
+возвращает основание подписи в документах
+#end
+function getDocBasis: string;
+end;
+vipInterface iDrogaFunc implements objDrogaFunc licensed(free);

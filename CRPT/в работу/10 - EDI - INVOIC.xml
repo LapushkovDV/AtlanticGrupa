@@ -1,0 +1,154 @@
+<Document-Invoice>
+<Invoice-Header>
+<InvoiceNumber>test2</InvoiceNumber>
+<InvoiceDate>2020-12-25</InvoiceDate>
+<InvoiceCurrency>RUB</InvoiceCurrency>
+<DocumentFunctionCode>O</DocumentFunctionCode>
+<MessageType>INVDOP</MessageType>
+<Documents>
+<DocumentDescription>Продажа товара</DocumentDescription>
+<Document>
+<DocumentNumber>01-6/5916-ТД</DocumentNumber>
+<DocumentDate>2013-06-01</DocumentDate>
+<DocumentName>Договор</DocumentName>
+</Document>
+</Documents>
+<Order>
+<BuyerOrderNumber>6002996348</BuyerOrderNumber>
+<BuyerOrderDate>2020-12-23</BuyerOrderDate>
+</Order>
+<Delivery>
+<DeliveryNoteNumber>205051</DeliveryNoteNumber>
+<DeliveryNoteDate>2020-12-25</DeliveryNoteDate>
+<ReceivingAdviceNumber>
+</ReceivingAdviceNumber>
+<ReceivingAdviceDate>2020-12-25</ReceivingAdviceDate>
+</Delivery>
+</Invoice-Header>
+<Invoice-Parties>
+<Buyer>
+<ILN>4606038008351</ILN>
+<TaxID>7728029110</TaxID>
+<UtilizationRegisterNumber>997350001</UtilizationRegisterNumber>
+<Name>АО "Торговый дом "ПЕРЕКРЕСТОК"</Name>
+<StreetAndNumber>Калитниковская Ср. ул, дом 28, стр.4</StreetAndNumber>
+<CityName>Москва г</CityName>
+<ProvinceCode>77</ProvinceCode>
+<PostalCode>109029</PostalCode>
+<Country>RU</Country>
+</Buyer>
+<Seller>
+<ILN>4607978939996</ILN>
+<TaxID>7709191580</TaxID>
+<UtilizationRegisterNumber>772501001</UtilizationRegisterNumber>
+<Name>ООО "Атлантик Брендс" (Общество с ограниченной ответственностью  "Атлантик Брендс")</Name>
+<ManagingPerson>Лалетина Елена</ManagingPerson>
+<ManagingPersonFather>Викторовна</ManagingPersonFather>
+<ContactFunction>Менеджер по логистике</ContactFunction>
+<AccountingContact>Кравцов Олег Федорович</AccountingContact>
+<InsuranceContact>6</InsuranceContact>
+<SupplierContact>1</SupplierContact>
+<AuthorityContact>Доверенность</AuthorityContact>
+<AcceptionContact>б/н от 13.07.2016</AcceptionContact>
+<StreetAndNumber>1-й Дербеневский пер., дом 5</StreetAndNumber>
+<CityName>Москва г</CityName>
+<ProvinceCode>77</ProvinceCode>
+<PostalCode>115114</PostalCode>
+<Country>RU</Country>
+</Seller>
+<DeliveryPoint>
+<ILN>4606038018831</ILN>
+<TaxID>7728029110</TaxID>
+<UtilizationRegisterNumber>781145003</UtilizationRegisterNumber>
+<Name>АО "Торговый Дом"Перекресток", РЦ ЗТЛ</Name>
+<StreetAndNumber>Седова ул, дом 9, кор.4, литера А</StreetAndNumber>
+<CityName>Санкт-Петербург г</CityName>
+<ProvinceCode>78</ProvinceCode>
+<PostalCode>192019</PostalCode>
+<Country>RU</Country>
+</DeliveryPoint>
+<Consignor>
+<ILN>4607978939996</ILN>
+<TaxID>7709191580</TaxID>
+<UtilizationRegisterNumber>772501001</UtilizationRegisterNumber>
+<Name>ООО "Атлантик Брендс" (Общество с ограниченной ответственностью  "Атлантик Брендс")</Name>
+<StreetAndNumber>1-й Дербеневский пер., дом 5</StreetAndNumber>
+<CityName>Москва г</CityName>
+<ProvinceCode>77</ProvinceCode>
+<PostalCode>115114</PostalCode>
+<Country>RU</Country>
+</Consignor>
+<Carrier>
+<Name>ООО "Атлантик Брендс" (Общество с ограниченной ответственностью  "Атлантик Брендс")</Name>
+<ManagingPerson>Лалетина Елена</ManagingPerson>
+<ManagingPersonFather>Викторовна</ManagingPersonFather>
+<ManagementContact>1</ManagementContact>
+<ContactFunction>Менеджер по логистике</ContactFunction>
+</Carrier>
+</Invoice-Parties>
+<Invoice-Lines>
+<Line>
+<Line-Item>
+<LineNumber>1</LineNumber>
+<LineItemInformation>1</LineItemInformation>
+<EAN>3838600041188</EAN>
+<BuyerItemCode>54807</BuyerItemCode>
+<SupplierItemCode>1004327</SupplierItemCode>
+<ItemDescription>Вода минеральная питьевая лечебная "Donat Mg"-0,5 л (ПЭТ)</ItemDescription>
+<InvoiceQuantity>1080.000</InvoiceQuantity>
+<UnitOfMeasure>PCE</UnitOfMeasure>
+<InvoiceUnitNetPrice>41.00</InvoiceUnitNetPrice>
+<InvoiceUnitGrossPrice>49.20</InvoiceUnitGrossPrice>
+<CountryOfOriginCode>SI</CountryOfOriginCode>
+<TaxRate>20.00</TaxRate>
+<TaxAmount>8856.00</TaxAmount>
+<NetAmount>44280.00</NetAmount>
+<GrossAmount>53136.00</GrossAmount>
+<CustomsDeclarationNumber>10013160/271120/0680079/1</CustomsDeclarationNumber>
+</Line-Item>
+<Package-Reference>
+<PackageType>DC</PackageType>
+<PackageNumber>146059229913300751</PackageNumber>
+</Package-Reference>
+</Line>
+<Line>
+<Line-Item>
+<LineNumber>2</LineNumber>
+<LineItemInformation>1</LineItemInformation>
+<EAN>3838600041157</EAN>
+<BuyerItemCode>54819</BuyerItemCode>
+<SupplierItemCode>1004319</SupplierItemCode>
+<ItemDescription>Вода минеральная питьевая лечебная "Donat Mg"-1 л (ПЭТ)</ItemDescription>
+<InvoiceQuantity>3000.000</InvoiceQuantity>
+<UnitOfMeasure>PCE</UnitOfMeasure>
+<InvoiceUnitNetPrice>72.62</InvoiceUnitNetPrice>
+<InvoiceUnitGrossPrice>87.14</InvoiceUnitGrossPrice>
+<CountryOfOriginCode>SI</CountryOfOriginCode>
+<TaxRate>20.00</TaxRate>
+<TaxAmount>43572.00</TaxAmount>
+<NetAmount>217860.00</NetAmount>
+<GrossAmount>261432.00</GrossAmount>
+<CustomsDeclarationNumber>10013160/201220/0737532/1</CustomsDeclarationNumber>
+</Line-Item>
+<Package-Reference>
+<PackageType>DC</PackageType>
+<PackageNumber>146059229913300750</PackageNumber>
+</Package-Reference>
+</Line>
+</Invoice-Lines>
+<Invoice-Summary>
+<TotalLines>2</TotalLines>
+<TotalNetAmount>262140.00</TotalNetAmount>
+<TotalTaxAmount>52428.00</TotalTaxAmount>
+<TotalGrossAmount>314568.00</TotalGrossAmount>
+<Tax-Summary>
+<Tax-Summary-Line>
+<TaxRate>20.00</TaxRate>
+<TaxAmount>52428.00</TaxAmount>
+<TaxableBasis>262140.00</TaxableBasis>
+<TaxableAmount>262140.00</TaxableAmount>
+<GrossAmount>314568.00</GrossAmount>
+</Tax-Summary-Line>
+</Tax-Summary>
+</Invoice-Summary>
+</Document-Invoice>

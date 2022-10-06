@@ -1,0 +1,28 @@
+#include PreDefs.inc; 
+const
+#include GloConst.inc;
+#include Galnet.csc;
+#include Galnet.ccm;
+#include TUNES.INC
+#include fldcolor.inc
+end;
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include DicTypes.def
+#include GloDefs.inc
+#include StatDefs.inc
+#define ComponentVersion
+#include ExtAttr.vih
+
+
+var PiextAttr : iExtAttr;
+
+#include marker.vih
+#include countsal.vih
+
+
+#Component "ATLANTIC"
+#make    "source\CountSalMC_LAPUS.vip"

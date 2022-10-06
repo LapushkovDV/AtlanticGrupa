@@ -1,0 +1,108 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компоненты
+
+#ifdef ComponentVersion
+#component "L_MCU"
+#end
+
+//--KatDopEd\
+VipInterface GetDopEd              licensed (FREE) Parameters (cMCUsl : comp; PrMC : word; c1 : comp);
+VipInterface GetCapacity           licensed (FREE)
+             Parameters (TypeWork : word; TypeInterface : word; pPodr : comp; pMc : comp; pDate : date;
+                         pTime : time; ptemper : double; pCapacity : double; switch : boolean;
+                         _wTable : word; _cRec : comp);
+VipInterface GetCapacity2          licensed (FREE) Parameters (pPodr : comp; pMc : comp; NrecSpSklad : comp);
+VipInterface KatDopEd              licensed (FREE) Parameters (c1 : comp; pMarker : longint; wParams : word);
+!#include oDEI.vih
+//--KatEdIzm\
+VipInterface GetEdIzm              licensed (FREE) Parameters (c1 : comp);
+//--KatMC\
+!#include AddGetMC.vih
+VipInterface AllMoveMC             licensed (FREE) Parameters (pMC : comp; pMarkName : string; pRez : word);
+!#include F_Mmc.vih
+!#include f_OEdMMC.vih
+VipInterface Formuls_MaskMC        licensed (FREE) Parameters (pRezim : word; pFrml : comp);
+VipInterface Formuls_OtpEdMaskMC   licensed (FREE) Parameters (pRezim : word; pFrml : comp);
+VipInterface KatMC                 licensed (FREE) Parameters (pMC : comp; pMask : comp);
+VipInterface iViewMCUslCatal       licensed (FREE) Parameters (prMC : word; pMCUsl : comp; pMask : comp; wTab : word; pNRec : comp);
+VipInterface MaskMC                licensed (FREE) Parameters (c1 : comp);
+#ifdef __VarNameMCU__
+VipInterface VarNameKatMCU         licensed (FREE) Parameters (pVidCatal : word; pIntMode : word; pRezim : word;
+                                                               pRec : comp; pName : string);
+#end
+
+!#include ObjMC.vih
+!#include oGetMC.vih
+!#include oKatMC.vih
+//--KatMC\PICKS\
+VipInterface GetComplMC            licensed (FREE) Parameters (p1 : comp);
+VipInterface GetGrMC               licensed (FREE) Parameters (c1 : comp; s1 : string[20]);
+VipInterface GetGrMCS              licensed (FREE) Parameters (c1 : comp; s1 : string[20]; bPick : boolean);
+VipInterface GetGrMCSK             licensed (FREE) Parameters (c1 : comp; s1 : string[20]; bPick : boolean);
+VipInterface GetGrMCSS             licensed (FREE) Parameters (c1 : comp; s1 : string[20]; bPick : boolean);
+VipInterface GetMaskMC             licensed (FREE) Parameters (pMask : comp);
+VipInterface GetMC                 licensed (FREE) Parameters (pMC : comp);
+VipInterface GetSomCompl           licensed (FREE);
+VipInterface GetSomGM              licensed (FREE);
+VipInterface GetTekSaldoParty2     licensed (FREE) Parameters (_cPodr, _cMol :comp);
+VipInterface GetTekSaldoParty_Release
+                                   licensed (FREE)
+             Parameters (pGroup : Boolean; pfixedKol : Boolean; pMCNonOst : Boolean
+                         ; pWhatKol : Word; pPodr : comp; pMol : comp; pMC : comp; pParty : comp
+#ifdef __UKS_SALDO__
+                         ; pObj : comp
+#end
+                         ; pKol : Double; pNotEdRazr : Word
+#ifdef __UKS_SALDO__
+                         ; pSaldoTbl : Word; pRazrObj : Word
+#end
+                        );
+
+VipInterface GetTekSaldoParty (GetTekSaldoParty_Release);
+
+VipInterface GetSomeMC             licensed (FREE) Parameters (pMC : comp);
+!#include gtsMC_0.vih
+!#include gtsMC_1.vih
+VipInterface GetOtpEd              licensed (FREE) Parameters (c1 : comp; p1 : comp; Tip : word);
+//--KatUSL\
+!#include AddGetUs.vih
+!#include f_MUs.vih
+VipInterface AllMoveUsl            licensed (FREE) Parameters (pMC : comp; pMarkName : string; pRez : word);
+VipInterface Formuls_MaskUsl       licensed (FREE) Parameters (pRezim : word; pFrml : comp);
+VipInterface KatUsl                licensed (FREE) Parameters (pUsl : comp; pMask : comp);
+VipInterface MaskUsl               licensed (FREE) Parameters (c1 : comp);
+!#include oGetUs.vih
+//--KatUSL\PICKS\
+VipInterface GetComplUsl           licensed (FREE) Parameters (p1 : comp);
+VipInterface GetCUsl               licensed (FREE) Parameters (p1 : comp);
+VipInterface GetGrUsl              licensed (FREE) Parameters (c1 : comp; s1 : string[20]);
+VipInterface GetGrUslS             licensed (FREE) Parameters (c1 : comp; s1 : string[20]; bPick :boolean);
+VipInterface GetGrUslSK            licensed (FREE) Parameters (c1 : comp; s1 : string[20]; bPick :boolean);
+VipInterface GetGrUslSS            licensed (FREE) Parameters (c1 : comp; s1 : string[20]; bPick :boolean);
+VipInterface GetMaskUsl            licensed (FREE) Parameters (pMask : comp);
+VipInterface GetSomGU              licensed (FREE);
+VipInterface GetSomeUsl            licensed (FREE) Parameters (pUsl : comp);
+!#include gtsUs_0.vih
+!#include gtsUs_1.vih
+VipInterface GetUsl                licensed (FREE) Parameters (pUsl : comp);
+//--XChange\
+VipInterface iListZam              licensed (FREE)
+             Parameters (wMode : word; wChoose : word; wResource : word; cResource : comp; cGCode : comp);
+VipInterface IXCMC                 licensed (FREE)
+             Parameters (wRes : word; cRes : comp; wDoc : word;
+             cDoc : comp; cGCode : comp; wMode : word; wChoose : word);
+
+VipInterface KatMCFinder           licensed (FREE)
+             Parameters (FldNo : word; pKatMC : comp);
+
+VipInterface GetVariatMcUsl        licensed (FREE)
+             Parameters (pKatMcUsl: comp; pVariantFlag: word; pKatalogFlag: word; pVariant: comp);
+
+Dialog ChoiceDocFromTypes
+(
+  wFlags1_1 : word;
+  wFlags1_2 : word;
+  wFlags1_3 : word;
+  wFlags1_4 : word;
+  wFlags1_5 : word
+);

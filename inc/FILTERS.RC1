@@ -1,0 +1,71 @@
+! Статусные строки системы фильтров
+
+        (scFiltersList..scFiltersList)
+        {
+          '~F4~ Изменить',           cmModify,               kbF4;
+          '~F7~ Создать',            cmInsert,               kbF7;
+          '~F8~ Удалить',            cmDelete,               kbF8;
+          '~F9~ Установить',         cmRunFilter,            kbF9;
+          '~Alt+F9~ Снять',          cmDiscardFilter,        kbAltF9;
+          '~Alt+ *~ Инвертировать',  cmInvertFilter,         kbAltGrayMul;
+          '~Ctrl+E~ Экспорт',        cmFilterExport,         kbCtrlE;
+          '~Ctrl+I~ Импорт',         cmFilterImport,         kbCtrlI;
+#include filters.rc0
+        }
+
+        (scFilterListViewer..scFilterListViewer)
+        {
+          '~F1~ Справка',            cmHelp,                 kbF1;
+          '~F2~ Отменить',           cmDiscardFilter,        kbF2;
+          '~F3~ Применить',          cmRunFilter,            kbF3;
+          '~F4~ Исправить',          cmEditFilter,           kbF4;
+          '~F7~ Новый',              cmNewFilter,            kbF7;
+          '~F8~ Удалить',            cmDeleteFilter,         kbF8;
+#include filters.rc0
+        }
+
+        (scFilterMainDialog..scFilterMainDialog)
+        {
+          '~F1~ Справка',            cmHelp,                 kbF1;
+          '~F3~ Поля запроса',       cmFilterQueryFields,    kbF3;
+          '~F4~ Постоянные условия', cmFilterConstantPart,   kbF4;
+#include filters.rc0
+        }
+
+        (scFilterConditionsDialog..scFilterConditionsDialog)
+        {
+          '~F1~ Справка',            cmHelp,                 kbF1;
+          '~F3~ Выбор',              cmUniversePick,         kbF3;
+          '~F7~ Добавить',           cmFilterInsert,         kbF7;
+          '~F8~ Удалить',            cmFilterDelete,         kbF8;
+#include filters.rc0
+        }
+
+        (scFilterHelpOnly..scFilterHelpOnly)
+        {
+          '~F1~ Справка',            cmHelp,                 kbF1;
+          '~Esc~ Отмена',            cmCancel,               kbNoKey;
+#include filters.rc0
+        }
+
+
+        (scFilterConstructorTree..scFilterConstructorTree)
+        {
+          '~F3~ Выбор',              cmPick,                 kbF3;
+          '~F7~ Создать условие',    cmInsert,               kbF7;
+          '~Ctrl+F7~ Создать группу',cmFilterInsertGroup,    kbCtrlF7;
+          '~F8~ Удалить',            cmDelete,               kbF8;
+          '~Enter~ Применить',       cmDefault,              kbEnter;
+          '',                        cmTreeOpenNode,         kbCtrlEnter;
+          '',                        cmTreeCloseNode,        kbCtrlBack;
+        }
+
+        (scFilterConstructorGroup..scFilterConstructorGroup)
+        {
+          '~F7~ Создать условие',    cmInsert,               kbF7;
+          '~Ctrl+F7~ Создать группу',cmFilterInsertGroup,    kbCtrlF7;
+          '~F8~ Удалить',            cmDelete,               kbF8;
+          '~Enter~ Применить',       cmDefault,              kbEnter;
+          '',                        cmTreeOpenNode,         kbCtrlEnter;
+          '',                        cmTreeCloseNode,        kbCtrlBack;
+        }

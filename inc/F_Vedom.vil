@@ -1,0 +1,13 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_Vedom
+
+#ifdef ComponentVersion
+#component "F_Vedom"
+#end
+
+VipInterface GetKasir      licensed (Free)    Parameters (tmpComp : comp);
+VipInterface GetVed        Licensed (Free)    Parameters (myNRec : comp);
+VipInterface Kassa_KO5     licensed (B_Kassa) Parameters (CurClass : word);
+VipInterface Kassa_05Edit  licensed (B_Kassa) Parameters (CurClass : word; CurRec : comp; CurCommand : word);
+VipInterface Kassa_15Edit  licensed (B_Kassa) Parameters (CurClass : word; CurRec : comp; CurCommand : word);
+VipInterface RegPlatVed    licensed (B_Kassa) ;

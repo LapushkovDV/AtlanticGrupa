@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>Alter_Report_Sklad_Make</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika_stend\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.36.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\inc\*
+					..\..\SourceGal\*
+					..\..\..\..\Galaktika_stend\FRM\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_SF.res
+					$[GalExe]\C_EXTCLASS.res
+					$[GalExe]\L_SKLREP.res
+				</ResourceList>
+				<OutputResource>..\..\Alter_Report_Sklad_Make_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm_STEND</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="Alter_Report_Sklad_Make.prj" PosX="1" PosY="22" OpenEditor="True"/>
+			<File Name="Source\Alter_Report_Sklad_Make.vip" PosX="39" PosY="28" OpenEditor="True"/>
+			<File Name="..\..\SourceGal\5.5.33\L_SklRep\vip\O_Make_R.vip" PosX="37" PosY="1283" OpenEditor="True" Active="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="Alter_Report_Sklad_Make.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\Alter_Report_Sklad_Make\Alter_Report_Sklad_Make.prj" DateTimeStart="43863,3560684838" DateTimeCompile="0,000644479172478896" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;REPORT_SKLAD_MAKE.fillFiltFromPick&quot;, объявленный в C:\Galaktika\res\src\Alter_Report_Sklad_Make\SOURCE\Alter_Report_Sklad_Make.vip(10), не был использован" SourceFileName="C:\Galaktika\res\src\Alter_Report_Sklad_Make\SOURCE\Alter_Report_Sklad_Make.vip" SourceLine="39" SourceColumn="5"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="02.02.2020 8:33:40"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<MarkerList>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
+			<Marker FileName="alter\Alter_CalcDolgDG.vip" Caption="Нумерованная закладка 2" Line="123" NumIndex="2" MarkerType="mtNumBookmark" Comment="and PlP_Sopr.TiDkGal in (10,21,22)"/>
+			<Marker FileName="alter\Alter_CalcDolgDG.vip" Caption="Нумерованная закладка 1" Line="196" NumIndex="1" MarkerType="mtNumBookmark" Comment="var _MAXDEBTSAGE : double = tDolgDog.MAXDEBTSAGE;"/>
+			<Marker FileName="..\..\SourceGal\5.5.33\L_SklRep\vip\O_Make_R.vip" Caption="Нумерованная закладка 1" Line="1508" NumIndex="1" MarkerType="mtNumBookmark" Comment="if not(fillFiltFromPick(11)) // заполняем ее данными из Pick"/>
+		</MarkerList>
+		<Watches>
+			<Watch Expression="totalNDE"/>
+		</Watches>
+	</ProjectManager>
+</Viper>

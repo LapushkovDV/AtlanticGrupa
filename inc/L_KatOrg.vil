@@ -1,0 +1,27 @@
+#ifdef ComponentVersion
+#component "L_KATORG"
+#end
+
+vipinterface GetB             licensed (FREE) Parameters (n : string[80]);
+vipinterface GetBank          licensed (FREE) Parameters (NRecorg, p1 : comp);
+vipinterface GetCity          licensed (FREE) Parameters (c1, c2 : comp);
+vipinterface GetGrState       licensed (FREE) Parameters (c1 : comp);
+vipinterface GetKatOr         licensed (FREE) Parameters (c1, _UpperGroup : comp; ExChoise : boolean; g1, c3 : comp);
+vipinterface GetKatOrgDescr   licensed (FREE) Parameters (wParam1 : word; bMSel : boolean; cResRec : comp);
+vipinterface GetOKDP          licensed (FREE) Parameters (s1, rOKPD : string[20]);
+vipinterface GetSomeBank      licensed (FREE) Parameters (cGetOrg : comp);
+vipinterface GetSomeKontr     licensed (FREE) Parameters (NotNeedKill : boolean);
+vipinterface GetSomeKontr1    licensed (FREE) ;
+vipinterface GetSomeKontrPrim licensed (FREE) Parameters (NotNeedKill : boolean);
+vipinterface GetState         licensed (FREE) Parameters (c1 : comp);
+vipinterface GetUserLink      licensed (FREE) Parameters (myCodeTable : word; c1 : comp);
+vipinterface GetVidOrg        licensed (FREE) Parameters (c1, UpperGroup : comp);
+vipinterface GrKatOrg         licensed (FREE) Parameters (c1 : comp);
+vipinterface IBanks           licensed (FREE) Parameters (wIsForSelect : word; SelectKatB : comp);
+vipinterface iKatBConverter   licensed (FREE) Parameters (TypeOfWork : word);
+vipinterface KatBankFinder    licensed (FREE) Parameters (UpperGroup, pOrg, pOrgDescr, pBank : comp; isFltArch_ : word);
+vipinterface KatOrgFinder     licensed (FREE) Parameters (UpperGroup : comp; FldNo : word; pOrg, pOrgDescr : comp; isFltArch_ : word);
+vipinterface KatSvidReg       licensed (FREE) Parameters (p_cOrg : comp);
+vipinterface AllMoveOrg       licensed (FREE) Parameters (pOrg: comp; pMarkName: string; pRez : word);
+vipinterface ViewKontras      licensed (FREE) Parameters (pOrg: comp);
+vipinterface OldNamesHistory  licensed (FREE) Parameters (wTable : word; cRec : comp);

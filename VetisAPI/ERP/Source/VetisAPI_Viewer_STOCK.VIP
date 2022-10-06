@@ -1,0 +1,644 @@
+#doc
+Просмотр запросов стока VetisAPI
+#end
+
+Interface VetisAPI_Viewer_STOCK 'Просмотр запросов стока VetisAPI' doaccept, Gray;
+  Show at (, , 87, 27);
+var _VETISRQSTSPNEW : VETISRQSTSPNEW;
+Create view
+var _cLastRqst: comp;
+    _dForm : date;
+    _timeForm :time;
+    _Stock_UUID : string;
+    _UnitGuid : string;
+    _isGetUUID_by_GUID : boolean;
+    _DiscrepancyReason : string;
+select
+  Round(Double(ATL_VETISRQSTSP.VOLUME)/(KATMC.MASSA*KATOTPED_Upak.koef),2) (FieldName = RecalcUpakovka)
+
+  ,if(not isvalidall(tntVETIS_ProductType),ATL_VETISRQSTSP.PRODUCTTYPE,tVETIS_ProductType.name) (FieldName = ATL_VETISRQSTSP_PRODUCTTYPE) //ATL_VETISRQSTSP.PRODUCTTYPE
+  ,if(not isvalidall(tntVETIS_ProductTypeNew),_VETISRQSTSPNEW.PRODUCTTYPE,tVETIS_ProductTypeNew.name) (FieldName = _VETISRQSTSPNEW_PRODUCTTYPE) //ATL_VETISRQSTSP.PRODUCTTYPE
+
+  ,if(not isvalidall(tntVETIS_VidPRoduct),ATL_VETISRQSTSP.PRODUCTGUID,tVETIS_VidPRoduct.name) (FieldName = ATL_VETISRQSTSP_PRODUCTGUID) // ATL_VETISRQSTSP.PRODUCTGUID
+  ,if(not isvalidall(tntVETIS_VidPRoductNew),_VETISRQSTSPNEW.PRODUCTGUID,tVETIS_VidPRoductNew.name) (FieldName = _VETISRQSTSPNEW_PRODUCTGUID) // ATL_VETISRQSTSP.PRODUCTGUID
+
+  ,if(not isvalidall(tntVETIS_VidSubPRoduct),ATL_VETISRQSTSP.SUBPRODUCTGUID, tVETIS_VidSubPRoduct.name) (FieldName = ATL_VETISRQSTSP_SUBPRODUCTGUID) //ATL_VETISRQSTSP_SUBPRODUCTGUID
+  ,if(not isvalidall(tntVETIS_VidSubPRoductNew),_VETISRQSTSPNEW.SUBPRODUCTGUID, tVETIS_VidSubPRoductNew.name) (FieldName = _VETISRQSTSPNEW_SUBPRODUCTGUID) //ATL_VETISRQSTSP_SUBPRODUCTGUID
+
+  ,if(not isvalidall(tntVETIS_PackageLevelType2),ATL_VETISRQSTSP.LEVEL2, tVETIS_PackageLevelType2.name) (FieldName = ATL_VETISRQSTSP_LEVEL2) //  ATL_VETISRQSTSP_LEVEL2
+  ,if(not isvalidall(tntVETIS_PackageLevelType2New),_VETISRQSTSPNEW.LEVEL2, tVETIS_PackageLevelType2New.name) (FieldName = _VETISRQSTSPNEW_LEVEL2) //  ATL_VETISRQSTSP_LEVEL2
+
+  ,if(not isvalidall(tntVETIS_PackingCodeType2) ,ATL_VETISRQSTSP.PACKINGTYPEID_2, tVETIS_PackingCodeType2.name) (FieldName = ATL_VETISRQSTSP_PACKINGTYPEID_2) // ATL_VETISRQSTSP_PACKINGTYPEID_2
+  ,if(not isvalidall(tntVETIS_PackingCodeType2New) ,_VETISRQSTSPNEW.PACKINGTYPEID_2, tVETIS_PackingCodeType2New.name) (FieldName = _VETISRQSTSPNEW_PACKINGTYPEID_2) // ATL_VETISRQSTSP_PACKINGTYPEID_2
+
+  ,if(not isvalidall(tntVETIS_PackageLevelType4),ATL_VETISRQSTSP.LEVEL4, tVETIS_PackageLevelType4.name) (FieldName = ATL_VETISRQSTSP_LEVEL4) //  ATL_VETISRQSTSP_LEVEL4
+  ,if(not isvalidall(tntVETIS_PackageLevelType4New),_VETISRQSTSPNEW.LEVEL4, tVETIS_PackageLevelType4New.name) (FieldName = _VETISRQSTSPNEW_LEVEL4) //  ATL_VETISRQSTSP_LEVEL4
+
+
+
+  ,if(not isvalidall(tntVETIS_PackingCodeType4) ,ATL_VETISRQSTSP.PACKINGTYPEID_4, tVETIS_PackingCodeType4.name) (FieldName = ATL_VETISRQSTSP_PACKINGTYPEID_4) // ATL_VETISRQSTSP_PACKINGTYPEID_4
+  ,if(not isvalidall(tntVETIS_PackingCodeType4New) ,_VETISRQSTSPNEW.PACKINGTYPEID_4, tVETIS_PackingCodeType4New.name) (FieldName = _VETISRQSTSPNEW_PACKINGTYPEID_4) // ATL_VETISRQSTSP_PACKINGTYPEID_4
+
+
+
+  ,if(not isvalidall(tntVETIS_Status) ,ATL_VETISRQSTSP.Status, tVETIS_Status.name) (FieldName = ATL_VETISRQSTSP_Status) // ATL_VETISRQSTSP_Status
+from
+  ATL_VETIS_REQUEST
+, ATL_VETISRQSTSP
+, ATL_VETISPRODITEM
+, KatMc
+, KatOtpEd
+, KatOtpEd KATOTPED_Upak
+, SpKau tVETIS_ProductType
+, SpKau tVETIS_VidPRoduct
+, SpKau tVETIS_VidSubPRoduct
+
+, SpKau tVETIS_ProductTypeNew
+, SpKau tVETIS_VidPRoductNew
+, SpKau tVETIS_VidSubPRoductNew
+
+, AttrNam AttrNam_VidProduct
+, AttrNam AttrNam_VidProductNew
+
+, AttrVal AttrVal_VidProduct
+, AttrVal AttrVal_VidProductNew
+
+, AttrNam AttrNam_VidSubProduct
+, AttrNam AttrNam_VidSubProductNew
+, AttrVal AttrVal_VidSubProduct
+, AttrVal AttrVal_VidSubProductNew
+
+, SpKAu tVETIS_PackageLevelType2
+, SpKAu tVETIS_PackageLevelType2New
+
+, SpKAu tVETIS_PackageLevelType4
+, SpKAu tVETIS_PackageLevelType4New
+
+, SpKAu tVETIS_PackingCodeType2
+, SpKAu tVETIS_PackingCodeType2New
+
+, SpKAu tVETIS_PackingCodeType4
+, SpKAu tVETIS_PackingCodeType4New
+
+, SpKau tVETIS_Status
+, SpKau tVETIS_DiscrepancyReason
+where
+((
+      ATL_VETIS_REQUEST.nrec    == ATL_VETISRQSTSP.REQUESTNREC
+//  and ATL_VETISRQSTSP_PRODUCTGUID    == ATL_VETISPRODITEM.PRODUCTIONGUID (noindex)
+  and ATL_VETISRQSTSP.GLOBALID    == ATL_VETISPRODITEM.GLOBALID (noindex)
+  and ATL_VETISPRODITEM.KATMCNREC    == KatMc.Nrec
+  and ATL_VETISPRODITEM.KATOTPEDNREC == KatOtpEd.nrec
+  and                                 1 == KATOTPED_Upak.PrMC
+  and                        KatMc.Nrec == KATOTPED_Upak.cMcUsl
+  and ATL_VETISRQSTSP.PRODUCTMARKSEAN_4 == KATOTPED_Upak.BKOD
+
+  and coVETIS_ProductType         == tVETIS_ProductType.kodGrKau
+  and ATL_VETISRQSTSP.PRODUCTTYPE == tVETIS_ProductType.Code
+
+  and coVETIS_ProductType         == tVETIS_ProductTypeNew.kodGrKau
+  and _VETISRQSTSPNEW.PRODUCTTYPE == tVETIS_ProductTypeNew.Code
+
+
+    and coVETIS_Status         == tVETIS_Status.kodGrKau
+    and ATL_VETISRQSTSP.STATUS == tVETIS_Status.Code
+
+
+//'Глобальный идентификатор','продукции'
+and                          8512 == AttrNam_VidProduct.wTable
+and                coAttrNam_GUID == AttrNam_VidProduct.name
+and       AttrNam_VidProduct.nrec == AttrVal_VidProduct.cAttrNam
+and ATL_VETISRQSTSP.PRODUCTGUID == AttrVal_VidProduct.vString
+and       AttrVal_VidProduct.cRec == tVETIS_VidPRoduct.Nrec
+and       coVETIS_VidPRoduct      == tVETIS_VidPRoduct.kodGrKau (NoIndex)
+
+//'Глобальный идентификатор','продукции'
+and                             8512 == AttrNam_VidProductNew.wTable
+and                   coAttrNam_GUID == AttrNam_VidProductNew.name
+and       AttrNam_VidProductNew.nrec == AttrVal_VidProductNew.cAttrNam
+and      _VETISRQSTSPNEW.PRODUCTGUID == AttrVal_VidProductNew.vString
+and       AttrVal_VidProductNew.cRec == tVETIS_VidPRoductNew.Nrec
+and          coVETIS_VidPRoduct      == tVETIS_VidPRoductNew.kodGrKau (NoIndex)
+
+
+
+//'Глобальный идентификатор','вида продукции'
+and                                 8512 == AttrNam_VidSubProduct.wTable
+and                       coAttrNam_GUID == AttrNam_VidSubProduct.name
+and           AttrNam_VidSubProduct.nrec == AttrVal_VidSubProduct.cAttrNam
+and ATL_VETISRQSTSP.SUBPRODUCTGUID == AttrVal_VidSubProduct.vString
+and           AttrVal_VidSubProduct.cRec == tVETIS_VidSubPRoduct.Nrec
+and             coVETIS_VidPRoduct      == tVETIS_VidSubPRoduct.kodGrKau (NoIndex)
+
+//'Глобальный идентификатор','вида продукции'
+and                                 8512 == AttrNam_VidSubProductNew.wTable
+and                       coAttrNam_GUID == AttrNam_VidSubProductNew.name
+and        AttrNam_VidSubProductNew.nrec == AttrVal_VidSubProductNew.cAttrNam
+      and _VETISRQSTSPNEW.SUBPRODUCTGUID == AttrVal_VidSubProductNew.vString
+and        AttrVal_VidSubProductNew.cRec == tVETIS_VidSubPRoductNew.Nrec
+and              coVETIS_VidPRoduct      == tVETIS_VidSubPRoductNew.kodGrKau (NoIndex)
+
+
+
+and coVETIS_PackageLevelType == tVETIS_PackageLevelType2.kodGrKau
+and ATL_VETISRQSTSP.LEVEL2   == tVETIS_PackageLevelType2.code
+
+and coVETIS_PackageLevelType == tVETIS_PackageLevelType2New.kodGrKau
+and _VETISRQSTSPNEW.LEVEL2   == tVETIS_PackageLevelType2New.code
+
+and         coVETIS_PackingCodeType == tVETIS_PackingCodeType2.kodGrKau
+and ATL_VETISRQSTSP.PACKINGTYPEID_2 == tVETIS_PackingCodeType2.code
+
+and         coVETIS_PackingCodeType == tVETIS_PackingCodeType2New.kodGrKau
+and _VETISRQSTSPNEW.PACKINGTYPEID_2 == tVETIS_PackingCodeType2New.code
+
+and coVETIS_PackageLevelType == tVETIS_PackageLevelType4.kodGrKau
+and ATL_VETISRQSTSP.LEVEL4   == tVETIS_PackageLevelType4.code
+
+and coVETIS_PackageLevelType == tVETIS_PackageLevelType4New.kodGrKau
+and _VETISRQSTSPNEW.LEVEL4   == tVETIS_PackageLevelType4New.code
+
+and         coVETIS_PackingCodeType == tVETIS_PackingCodeType4.kodGrKau
+and ATL_VETISRQSTSP.PACKINGTYPEID_4 == tVETIS_PackingCodeType4.code
+
+and         coVETIS_PackingCodeType == tVETIS_PackingCodeType4New.kodGrKau
+and _VETISRQSTSPNEW.PACKINGTYPEID_4 == tVETIS_PackingCodeType4New.code
+
+))
+//'COMPLETED' == ATL_VETIS_REQUEST.REQUESTSTATUS (NoIndex)
+bounds LastRqst _cLastRqst == ATL_VETIS_REQUEST.nrec
+;
+procedure SetVisibleaddWindow(_visible : boolean; _Origin_X,_Origin_Y : single); forward;
+procedure GetAllStock;
+{
+  popBounds(tbLastRqst);
+  set _dForm    := cur_Date;
+  set _TimeForm := cur_time;
+rescanpanel(tnATL_VETIS_REQUEST);
+RescanPanel(tnATL_VETISRQSTSP);
+}
+Procedure GetCurrentStock;
+{
+  popBounds(tbLastRqst);
+  _try
+   {
+    SQl
+     select nrec from (
+     Select top 1
+         t.Nrec
+       , t.REQUESTDATE
+       , t.REQUESTTIME
+      from ATL_VETIS_REQUEST t
+      where  t.REQUESTSTATUS = 'COMPLETED'
+      order by t.REQUESTDATE desc, t.REQUESTTIME desc
+      ) t
+    into (_cLastRqst)
+   }
+   _except else{ var ___i : string; ___i := '';}
+//  if getlast ATL_VETIS_REQUEST = tsOK then _cLastRqst := ATL_VETIS_REQUEST.nrec ;
+  pushbounds(tbLastRqst);
+  set _dForm    := cur_Date;
+  set _TimeForm := cur_time;
+rescanpanel(tnATL_VETIS_REQUEST);
+RescanPanel(tnATL_VETISRQSTSP);
+
+}
+Screen scrMain (,,sci1Esc);
+  Show at (,,,1);
+table ATL_VETIS_REQUEST;
+Fields
+  _dForm  ('Дата формирования',,sci13EnEsc): ['DD/MM/YYYY'], Protect;
+  _TimeForm  ('Время формирования',,sci13EnEsc): Protect;
+Buttons
+  cmValue1, Default,,'Показать текущий сток',,sci1Esc;
+  cmValue2, ,,'Показать все запросы за все даты',,sci1Esc;
+  cmValue3, ,,'Запросить сток сейчас',,sci1Esc;
+  cmValue4, ,,'Обновить весь каталог продуктов.субпродуктов',,sci1Esc;
+<<
+Даные по сосотянию на .@@@@@@@@@@@.@@@@@@@@@    <.Текущий сток .>   <.Показать все записи.>  <.Запросить сток.>  <.Обновить весь каталог продуктов.субпродуктов.>
+>>
+end;
+Browse brATL_VETIS_REQUEST  (,,sci1Esc);
+  Show at (,2,,6);
+Table ATL_VETIS_REQUEST;
+ Fields
+  ATL_VETIS_REQUEST.NAME          'Наименование'    ('',,): [6], Protect;
+  ATL_VETIS_REQUEST.REQUESTDATE   'Дата запроса'    ('',,): [6], Protect;
+  ATL_VETIS_REQUEST.REQUESTTIME   'Дата запроса'    ('',,): [6], Protect;
+  ATL_VETIS_REQUEST.APPLICATIONID 'ID запроса'      ('',,): [6], Protect;
+  ATL_VETIS_REQUEST.REQUESTSTATUS 'Статус запроса'  ('',,): [6], Protect;
+  ATL_VETIS_REQUEST.DESCRIPTION   'Описание'        ('',,): [6], Protect;
+ end;
+Browse brATL_VETISRQSTSP (,,sci1Esc);
+  Show at (,7,,);
+Table ATL_VETISRQSTSP;
+ Fields
+  ATL_VETISRQSTSP.DESCRIPTION       'Описание'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.GUID              'GUID записи складского журнала'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.ENTRYNUMBER       'Номер записи складского журнала'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.NAME              'Наименование продукции'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.VOLUME            'Объём в КГ'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.DATEOFPRODUCTION  'Дата производства'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.EXPIRYDATE        'Срок годности'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.PERISHABLE        'Скоропорт'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.QUANTITY2         'Количество штук'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.QUANTITY4         'Количество коробок'    ('',,): [6], Protect, {Font ={BackColor = if(RecalcUpakovka <> double(ATL_VETISRQSTSP.QUANTITY4) and isValidAll(tnKATOTPED_Upak),colorerror,0)}};
+//  ATL_VETISRQSTSP.STATUS            'Статус версии записи журнала'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.CREATEDATE        'Дата создания записи журнала'    ('',,): [6], Protect;
+//  ATL_VETISRQSTSP.UPDATEDATE        'Дата изменения записи журнала'    ('',,): [6], Protect;
+//  ATL_VETISRQSTSP_PRODUCTTYPE       'Тип продукции'    ('',,): [6], Protect;
+// ATL_VETISRQSTSP_PRODUCTGUID       'GUID продукции'    ('',,): [6], Protect, {Font = {BackColor =if(not isValidAll(tnKatMc) or not isValidAll(tnKatOtpEd),colorerror,0);}};
+//  ATL_VETISRQSTSP_SUBPRODUCTGUID    'GUID вида продукции'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.GLOBALID          'GTIN'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.BATCHID           'BatchNumber'    ('',,): [6], Protect;
+//  ATL_VETISRQSTSP_LEVEL2            'Уровень упаковки(2)'    ('',,): [6], Protect;
+//  ATL_VETISRQSTSP_PACKINGTYPEID_2   'Идентификатор упаковки'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.PRODUCTMARKSEAN_2 'EAN13'    ('',,): [6], Protect;
+//  ATL_VETISRQSTSP_LEVEL4            'Уровень упаковки(4)'    ('',,): [6], Protect;
+//  ATL_VETISRQSTSP_PACKINGTYPEID_4   'Идентификатор упаковки по классиф. ЕК'    ('',,): [6], Protect;
+  ATL_VETISRQSTSP.PRODUCTMARKSEAN_4 'EAN13(4)'    ('',,): [6], Protect, {Font = {BackColor =if(not isValidAll(tnKATOTPED_Upak),colorerror,0);}};
+  ATL_VETISRQSTSP.PRODUCTMARKS_4    'EAN128(4)'    ('',,): [6], Protect;
+//  ATL_VETISRQSTSP.VETDOCUMENTUUID   'GUID связанного ВСД'    ('',,): [6], Protect;
+ end;
+
+Window winCurrRecordStock 'Информация по позиции стока';
+  Show at (, , 150, 30);
+Screen ScrCurrRecordStock;
+Table ATL_VETISRQSTSP;
+ Fields
+  _Stock_UUID                       ('Найденный UUID стока'   ):  Protect,{font = {Color = if(_isGetUUID_by_GUID , ColorSysGreen,colorerror)}};
+  ATL_VETISRQSTSP.DESCRIPTION       ('Описание'   ):  Protect;
+  ATL_VETISRQSTSP.GUID              ('GUID записи складского журнала'  ) :  Protect;
+  ATL_VETISRQSTSP.ENTRYNUMBER       ('Номер записи складского журнала'   ):  Protect;
+  ATL_VETISRQSTSP.NAME              ('Наименование продукции' )  : Protect;
+  _VETISRQSTSPNEW.NAME              ('Наименование продукции новое' )  : NoProtect, {Font ={BackColor = if(_VETISRQSTSPNEW.NAME <> ATL_VETISRQSTSP.NAME,10,0)}};
+  ATL_VETISRQSTSP.VOLUME            ('Объём в КГ'  )  : Protect;
+  _VETISRQSTSPNEW.VOLUME            ('Объём в КГ'  )  : ['666`666`666.8999'],NOProtect, {Font ={BackColor = if(_VETISRQSTSPNEW.VOLUME <> double(ATL_VETISRQSTSP.VOLUME),10,0)}};
+  ATL_VETISRQSTSP.DATEOFPRODUCTION  ('Дата производства'    ): Protect;
+  _VETISRQSTSPNEW.DATEOFPRODUCTION  ('Дата производства'    ): NOProtect, {Font ={BackColor = if(dateToStr(_VETISRQSTSPNEW.DATEOFPRODUCTION,co_formatToDate) <> ATL_VETISRQSTSP.DATEOFPRODUCTION,10,0)}};
+  ATL_VETISRQSTSP.EXPIRYDATE        ('Срок годности'  ) :  Protect;
+  _VETISRQSTSPNEW.EXPIRYDATE        ('Срок годности'  ) :  NOProtect, {Font ={BackColor = if(dateToStr(_VETISRQSTSPNEW.EXPIRYDATE,co_formatToDate) <> ATL_VETISRQSTSP.EXPIRYDATE,10,0)}};
+  ATL_VETISRQSTSP.PERISHABLE        ('Скоропорт'    ):  Protect;
+  _VETISRQSTSPNEW.PERISHABLE        ('Скоропорт'    ): PickButton, Protect, {Font ={BackColor = if(_VETISRQSTSPNEW.PERISHABLE <> ATL_VETISRQSTSP.PERISHABLE,10,0)}};
+  ATL_VETISRQSTSP.QUANTITY2         ('Количество штук' )  : Protect;
+  _VETISRQSTSPNEW.QUANTITY2         ('Количество штук' )  :['666`666`666.8999'], NOProtect,{Font ={BackColor= if(_VETISRQSTSPNEW.QUANTITY2 <> double(ATL_VETISRQSTSP.QUANTITY2),10,0)}};
+  ATL_VETISRQSTSP.QUANTITY4         ('Количество коробок'    ):  Protect,{Font ={BackColor = if(RecalcUpakovka <> double(ATL_VETISRQSTSP.QUANTITY4) and isValidAll(tnKATOTPED_Upak),colorerror,0)}};
+  _VETISRQSTSPNEW.QUANTITY4         ('Количество коробок'    ):  ['666`666`666.8999'],NoProtect,{Font ={BackColor= if(_VETISRQSTSPNEW.QUANTITY4 <> double(ATL_VETISRQSTSP.QUANTITY4),10,0)}};
+  ATL_VETISRQSTSP_Status            ('Статус версии записи журнала'    ): Protect,{Font = {BackColor =if(not isvalidall(tntVETIS_Status),colorerror,0);}};
+  ATL_VETISRQSTSP.CREATEDATE        ('Дата создания записи журнала'    ):  Protect;
+  ATL_VETISRQSTSP.UPDATEDATE        ('Дата изменения записи журнала'   ): Protect;
+  ATL_VETISRQSTSP_PRODUCTTYPE       ('Тип продукции'   )  : Protect, {Font = {BackColor =if(not isvalidall(tntVETIS_ProductType),colorerror,0);}};
+  _VETISRQSTSPNEW_PRODUCTTYPE       ('Тип продукции'   )  : PickButton,Protect, {Font ={BackColor= if(ATL_VETISRQSTSP_PRODUCTTYPE<> _VETISRQSTSPNEW_PRODUCTTYPE,10,0)}};
+
+  ATL_VETISRQSTSP_PRODUCTGUID       ('GUID продукции'  )  : Protect, {Font = {BackColor =if(not isvalidall(tntVETIS_VidPRoduct),colorerror,0);}};
+  _VETISRQSTSPNEW_PRODUCTGUID       ('GUID продукции'  )  : PickButton,Protect,  {Font ={BackColor= if(ATL_VETISRQSTSP_PRODUCTGUID<> _VETISRQSTSPNEW_PRODUCTGUID,10,0)}};
+
+  ATL_VETISRQSTSP_SUBPRODUCTGUID    ('GUID вида продукции'   ):  Protect, {Font = {BackColor =if(not isvalidall(tntVETIS_VidSubPRoduct),colorerror,0);}};
+  _VETISRQSTSPNEW_SUBPRODUCTGUID    ('GUID вида продукции'   ):  PickButton,Protect,  {Font ={BackColor= if(ATL_VETISRQSTSP_SUBPRODUCTGUID<> _VETISRQSTSPNEW_SUBPRODUCTGUID,10,0)}};
+
+  ATL_VETISRQSTSP.GLOBALID          ('GTIN'   ) : Protect;
+  _VETISRQSTSPNEW.GLOBALID          ('GTIN'   ) : NoProtect ,  {Font ={BackColor= if(_VETISRQSTSPNEW.GLOBALID<>  ATL_VETISRQSTSP.GLOBALID,10,0)}};
+
+  ATL_VETISRQSTSP.BATCHID           ('BatchNumber' )   : Protect;
+  _VETISRQSTSPNEW.BATCHID           ('BatchNumber' )   : NoProtect ,  {Font ={BackColor= if(_VETISRQSTSPNEW.BATCHID<>  ATL_VETISRQSTSP.BATCHID,10,0)}};
+
+  ATL_VETISRQSTSP_LEVEL2            ('Уровень упаковки(2)'  )  : Protect, {Font = {BackColor =if(not isvalidall(tntVETIS_PackageLevelType2),colorerror,0);}};
+  _VETISRQSTSPNEW_LEVEL2            ('Уровень упаковки(2)'  )  : PickButton, Protect, {Font ={BackColor= if(_VETISRQSTSPNEW_LEVEL2 <> ATL_VETISRQSTSP_LEVEL2,10,0)}};
+
+  ATL_VETISRQSTSP_PACKINGTYPEID_2   ('Идентификатор упаковки'  ): Protect, {Font = {BackColor =if(not isvalidall(tntVETIS_PackingCodeType2),colorerror,0);}};
+  _VETISRQSTSPNEW_PACKINGTYPEID_2   ('Идентификатор упаковки'  ): PickButton,Protect, {Font ={BackColor= if(_VETISRQSTSPNEW_PACKINGTYPEID_2 <> ATL_VETISRQSTSP_PACKINGTYPEID_2,10,0)}};
+
+  ATL_VETISRQSTSP.PRODUCTMARKSEAN_2 ('EAN13'  )  : Protect;
+  _VETISRQSTSPNEW.PRODUCTMARKSEAN_2 ('EAN13'  )  : NoProtect, {Font ={BackColor= if( ATL_VETISRQSTSP.PRODUCTMARKSEAN_2 <> _VETISRQSTSPNEW.PRODUCTMARKSEAN_2,10,0)}};
+
+  ATL_VETISRQSTSP_LEVEL4            ('Уровень упаковки(4)'   ):  Protect, {Font = {BackColor =if(not isvalidall(tntVETIS_PackageLevelType4),colorerror,0);}};
+  _VETISRQSTSPNEW_LEVEL4            ('Уровень упаковки(4)'   ):  PickButton, Protect, {Font ={BackColor= if( ATL_VETISRQSTSP_LEVEL4 <> _VETISRQSTSPNEW_LEVEL4,10,0)}};
+
+  ATL_VETISRQSTSP_PACKINGTYPEID_4   ('Идентификатор упаковки по классиф. ЕК'):  Protect, {Font = {BackColor =if(not isvalidall(tntVETIS_PackingCodeType2),colorerror,0);}};
+  _VETISRQSTSPNEW_PACKINGTYPEID_4   ('Идентификатор упаковки по классиф. ЕК'):  PickButton, Protect, {Font ={BackColor= if( ATL_VETISRQSTSP_PACKINGTYPEID_4 <> _VETISRQSTSPNEW_PACKINGTYPEID_4,10,0)}};
+
+  ATL_VETISRQSTSP.PRODUCTMARKSEAN_4 ('EAN13(4)'    ): Protect, {Font = {BackColor =if(not isValidAll(tnKATOTPED_Upak),colorerror,0);}};
+  _VETISRQSTSPNEW.PRODUCTMARKSEAN_4 ('EAN13(4)'    ): NoProtect, {Font ={BackColor= if(  ATL_VETISRQSTSP.PRODUCTMARKSEAN_4 <> _VETISRQSTSPNEW.PRODUCTMARKSEAN_4,10,0)}};
+
+  ATL_VETISRQSTSP.PRODUCTMARKS_4    ('EAN128(4)'   ): Protect;
+  _VETISRQSTSPNEW.PRODUCTMARKS_4    ('EAN128(4)'   ): NoProtect, {Font ={BackColor= if(  ATL_VETISRQSTSP.PRODUCTMARKS_4 <> _VETISRQSTSPNEW.PRODUCTMARKS_4,10,0)}};
+
+  ATL_VETISRQSTSP.VETDOCUMENTUUID   ('GUID связанного ВСД'    ): Protect;
+  _VETISRQSTSPNEW.VETDOCUMENTUUID   ('GUID связанного ВСД'    ): NoProtect, {Font ={BackColor= if(  ATL_VETISRQSTSP.VETDOCUMENTUUID <> _VETISRQSTSPNEW.VETDOCUMENTUUID,10,0)}};
+  _DiscrepancyReason : PickButton, Protect, {Font ={BackColor= if(  _DiscrepancyReason = '',ColorNeed,0)}};
+Buttons
+  cmValue6 ,,,'Запросить историю',,;
+  cmValue4, ,,'Начать инвентаризацию',,sci1Esc;
+  cmValue5, ,,'Подтвердить внесенные изменения',,sci1Esc;
+
+<<
+                                                                                 Найденный UUID .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                       Описание.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ GUID записи складского журнала.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Номер записи складского журнала.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+         Наименование продукции.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                     Объём в КГ.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+              Дата производства.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                  Срок годности.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                      Скоропорт.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                Количество штук.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+             Количество коробок.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+   Статус версии записи журнала.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+   Дата создания записи журнала.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  Дата изменения записи журнала.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                  Тип продукции.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                 GUID продукции.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            GUID вида продукции.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                           GTIN.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                    BatchNumber.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            Уровень упаковки(2).@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+         Идентификатор упаковки.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                          EAN13.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            Уровень упаковки(4).@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Идентификатор упаковки по классиф. ЕК.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                       EAN13(4).@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                      EAN128(4).@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            GUID связанного ВСД.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ -> .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                                                             Причина инвентаризации .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                   <.Запросить историю.>                         <.Инвентаризация.>  <.Подтвердить изменения.>
+
+>>
+end;
+handleevent
+cmInit:
+{
+  ClearAdvRecord(_VETISRQSTSPNEW);
+  _isGetUUID_by_GUID := false;
+  _DiscrepancyReason := '';
+  SetVisibleaddWindow(false,Origin_X,Origin_Y);
+}
+cmValue4:
+{
+   _UnitGuid := '';
+  if _isGetUUID_by_GUID := iVetisAPI_PowerShell.GetRequestToAPIVetis_GetStockUUIDbyGUID(ATL_VETISRQSTSP.GUID, _Stock_UUID, _UnitGuid)
+
+  if _isGetUUID_by_GUID
+   then
+   {
+     ClearAdvRecord(_VETISRQSTSPNEW);
+    set _VETISRQSTSPNEW.NAME              := ATL_VETISRQSTSP.name;
+    set _VETISRQSTSPNEW.VOLUME            := double(ATL_VETISRQSTSP.VOLUME);
+    set _VETISRQSTSPNEW.DATEOFPRODUCTION  := StrToDate(ATL_VETISRQSTSP.DATEOFPRODUCTION,co_formatToDate);
+    set _VETISRQSTSPNEW.EXPIRYDATE        := StrToDate(ATL_VETISRQSTSP.EXPIRYDATE,co_formatToDate);
+    set _VETISRQSTSPNEW.PERISHABLE        := ATL_VETISRQSTSP.PERISHABLE;
+    set _VETISRQSTSPNEW.QUANTITY2         := double(ATL_VETISRQSTSP.QUANTITY2);
+    set _VETISRQSTSPNEW.QUANTITY4         := double(ATL_VETISRQSTSP.QUANTITY4);
+    set _VETISRQSTSPNEW.PRODUCTTYPE       := ATL_VETISRQSTSP.PRODUCTTYPE;
+    set _VETISRQSTSPNEW.STATUS            := ATL_VETISRQSTSP.STATUS;
+    set _VETISRQSTSPNEW.PRODUCTGUID       := ATL_VETISRQSTSP.PRODUCTGUID;
+    set _VETISRQSTSPNEW.SUBPRODUCTGUID    := ATL_VETISRQSTSP.SUBPRODUCTGUID;
+    set _VETISRQSTSPNEW.GLOBALID          := ATL_VETISRQSTSP.GLOBALID;
+    set _VETISRQSTSPNEW.BATCHID           := ATL_VETISRQSTSP.BATCHID;
+    set _VETISRQSTSPNEW.LEVEL2            := ATL_VETISRQSTSP.LEVEL2;
+    set _VETISRQSTSPNEW.LEVEL4            := ATL_VETISRQSTSP.LEVEL4;
+    set _VETISRQSTSPNEW.PACKINGTYPEID_4   := ATL_VETISRQSTSP.PACKINGTYPEID_4;
+    set _VETISRQSTSPNEW.PRODUCTMARKSEAN_2 := ATL_VETISRQSTSP.PRODUCTMARKSEAN_2;
+    set _VETISRQSTSPNEW.PRODUCTMARKSEAN_4 := ATL_VETISRQSTSP.PRODUCTMARKSEAN_4;
+    set _VETISRQSTSPNEW.PRODUCTMARKS_4    := ATL_VETISRQSTSP.PRODUCTMARKS_4;
+    set _VETISRQSTSPNEW.VETDOCUMENTUUID   := ATL_VETISRQSTSP.VETDOCUMENTUUID;
+    set _VETISRQSTSPNEW.PACKINGTYPEID_2   := ATL_VETISRQSTSP.PACKINGTYPEID_2;
+    SetVisibleaddWindow(true,Origin_X,Origin_Y);
+   }
+   else
+   {
+    message(_Stock_UUID,error)
+   }
+   set _Stock_UUID := _Stock_UUID;
+}
+cmValue5:
+{
+  If _DiscrepancyReason = ''
+   {
+    Message('Заполните причину инвентаризации',error);
+   }
+   else
+   {
+    var _VetisDiscrepancy : VetisDiscrepancy;
+
+      _VetisDiscrepancy.StockUUID             := _Stock_UUID;
+      _VetisDiscrepancy.productType           := _VETISRQSTSPNEW.PRODUCTTYPE;
+      _VetisDiscrepancy.ProductGuid           := _VETISRQSTSPNEW.PRODUCTGUID;
+      _VetisDiscrepancy.subProductGuid        := _VETISRQSTSPNEW.SUBPRODUCTGUID;
+      _VetisDiscrepancy.productItemGlobalGUID := _VETISRQSTSPNEW.GLOBALID ;
+      _VetisDiscrepancy.productItemNAME       := _VETISRQSTSPNEW.NAME;
+      _VetisDiscrepancy.volume                := _VETISRQSTSPNEW.VOLUME;
+      _VetisDiscrepancy.UnitGuid              := _UnitGuid;
+      _VetisDiscrepancy.FirstDateYear         := Year(_VETISRQSTSPNEW.DATEOFPRODUCTION);
+      _VetisDiscrepancy.FirstDateMonth        := Month(_VETISRQSTSPNEW.DATEOFPRODUCTION);
+      _VetisDiscrepancy.FirstDateDay          := Day(_VETISRQSTSPNEW.DATEOFPRODUCTION);
+      _VetisDiscrepancy.ExpiryDateYear        := Year(_VETISRQSTSPNEW.EXPIRYDATE);
+      _VetisDiscrepancy.ExpiryDateMonth       := Month(_VETISRQSTSPNEW.EXPIRYDATE);
+      _VetisDiscrepancy.ExpiryDateDay         := Day(_VETISRQSTSPNEW.EXPIRYDATE);
+      _VetisDiscrepancy.batchID               := _VETISRQSTSPNEW.batchID;
+      _VetisDiscrepancy.perishable            := if(_VETISRQSTSPNEW.PERISHABLE = 'Не скоропортящаяся','false','true');
+      _VetisDiscrepancy.countryGUID           := ATL_VETISRQSTSP.COUNTRY_GUID;
+      _VetisDiscrepancy.producerGUID          := ATL_VETISRQSTSP.PRODUCER_GUID;
+      _VetisDiscrepancy.producerROLE          := ATL_VETISRQSTSP.PRODUCER_ROLE;
+      _VetisDiscrepancy.LowGradeCargo         := ATL_VETISRQSTSP.LOWGRADECARGO;
+      _VetisDiscrepancy.packageLevel4         := _VETISRQSTSPNEW.LEVEL4;
+      _VetisDiscrepancy.packingTypeGUID4      := extAttr.sgetattr(8512,tVETIS_PackingCodeType4New.nrec,coAttrNam_GUID);
+      _VetisDiscrepancy.Quantity4             := DoubleToStr(_VETISRQSTSPNEW.QUANTITY4,'66666666666'+if(Round(_VETISRQSTSPNEW.QUANTITY4,0) <> _VETISRQSTSPNEW.QUANTITY4,'.889999',''));
+      _VetisDiscrepancy.EAN4128               := _VETISRQSTSPNEW.PRODUCTMARKS_4;
+      _VetisDiscrepancy.EAN413                := _VETISRQSTSPNEW.PRODUCTMARKSEAN_4;
+      _VetisDiscrepancy.packageLevel2         := _VETISRQSTSPNEW.LEVEL2;
+      _VetisDiscrepancy.packingTypeGUID2      := extAttr.sgetattr(8512,tVETIS_PackingCodeType2New.nrec,coAttrNam_GUID);;
+      _VetisDiscrepancy.Quantity2             := DoubleToStr(_VETISRQSTSPNEW.QUANTITY2,'66666666666'+if(Round(_VETISRQSTSPNEW.QUANTITY2,0) <> _VETISRQSTSPNEW.QUANTITY2,'.889999',''));
+      _VetisDiscrepancy.EAN213                := _VETISRQSTSPNEW.PRODUCTMARKSEAN_2;
+      _VetisDiscrepancy.ReasonName            := _DiscrepancyReason;
+
+      var _result : string = '';
+      var _isResolveDisperancy : boolean = iVetisAPI_PowerShell.GetRequestToAPIVetis_ResolveDiscrepancy(_VetisDiscrepancy, _result);
+
+      if _isResolveDisperancy
+       {
+        Message('Успешно. Запросите заново сток');
+       }
+       else
+       {
+         Message(_result,error)
+       }
+   }
+}
+cmValue6:
+{
+  var _isGetHistory : boolean = iVetisAPI_PowerShell.GetRequestToAPIVetis_GetStockEntryVersionListRequest(ATL_VETISRQSTSP.GUID);
+  if _isGetHistory
+   then message('История выгружена в EXCEL');
+}
+cmPick:
+{
+case curField of
+   #_VETISRQSTSPNEW.PERISHABLE:
+    {
+      set _VETISRQSTSPNEW.PERISHABLE := if(_VETISRQSTSPNEW.PERISHABLE = 'Не скоропортящаяся','Cкоропортящаяся','Не скоропортящаяся');
+    }
+   #_VETISRQSTSPNEW_PRODUCTTYPE:
+    {
+      var _SelectedItem : comp = tVETIS_ProductTypeNew.nrec;
+      RunInterface(VetisAPI_Viewer_SpKau,coVETIS_ProductType, 1, 0, _SelectedItem);
+      if getfirst tVETIS_ProductTypeNew where ((_SelectedItem == tVETIS_ProductTypeNew.nrec)) = tsOK
+       {
+         set _VETISRQSTSPNEW.PRODUCTTYPE := tVETIS_ProductTypeNew.Code;
+       }
+    }
+   #_VETISRQSTSPNEW_PRODUCTGUID:
+    {
+      var _SelectedItem : comp = tVETIS_VidPRoductNew.nrec;
+      RunInterface(VetisAPI_Viewer_SpKau,coVETIS_VidPRoduct, 1, 1, _SelectedItem);
+      if getfirst tVETIS_VidPRoductNew where ((_SelectedItem == tVETIS_VidPRoductNew.nrec)) = tsOK
+       {
+         set _VETISRQSTSPNEW.PRODUCTGUID := extAttr.sgetattr(8512,tVETIS_VidPRoductNew.nrec,coAttrNam_GUID);
+       }
+    }
+   #_VETISRQSTSPNEW_SUBPRODUCTGUID:
+    {
+      var _SelectedItem : comp = tVETIS_VidSubPRoductNew.nrec;
+      RunInterface(VetisAPI_Viewer_SpKau,coVETIS_VidPRoduct, 1, 2, _SelectedItem);
+      if getfirst tVETIS_VidSubPRoductNew where ((_SelectedItem == tVETIS_VidSubPRoductNew.nrec)) = tsOK
+       {
+         set _VETISRQSTSPNEW.SUBPRODUCTGUID := extAttr.sgetattr(8512,tVETIS_VidSubPRoductNew.nrec,coAttrNam_GUID);
+       }
+    }
+   #_VETISRQSTSPNEW_LEVEL2    :
+    {
+      var _SelectedItem : comp = tVETIS_PackageLevelType2New.nrec;
+      RunInterface(VetisAPI_Viewer_SpKau,coVETIS_PackageLevelType, 1, 0, _SelectedItem);
+      if getfirst tVETIS_PackageLevelType2New where ((_SelectedItem == tVETIS_PackageLevelType2New.nrec)) = tsOK
+       {
+         set _VETISRQSTSPNEW.LEVEL2 := tVETIS_PackageLevelType2New.code;
+       }
+    }
+   #_VETISRQSTSPNEW_PACKINGTYPEID_2 :
+    {
+      var _SelectedItem : comp = tVETIS_PackingCodeType2New.nrec;
+      RunInterface(VetisAPI_Viewer_SpKau,coVETIS_PackingCodeType, 1, 0, _SelectedItem);
+      if getfirst tVETIS_PackingCodeType2New where ((_SelectedItem == tVETIS_PackingCodeType2New.nrec)) = tsOK
+       {
+         set _VETISRQSTSPNEW.PACKINGTYPEID_2 := tVETIS_PackingCodeType2New.code;
+       }
+    }
+   #_VETISRQSTSPNEW_LEVEL4    :
+    {
+      var _SelectedItem : comp = tVETIS_PackageLevelType4New.nrec;
+      RunInterface(VetisAPI_Viewer_SpKau,coVETIS_PackageLevelType, 1, 0, _SelectedItem);
+      if getfirst tVETIS_PackageLevelType4New where ((_SelectedItem == tVETIS_PackageLevelType4New.nrec)) = tsOK
+       {
+         set _VETISRQSTSPNEW.LEVEL4 := tVETIS_PackageLevelType4New.code;
+       }
+    }
+   #_VETISRQSTSPNEW_PACKINGTYPEID_4 :
+    {
+      var _SelectedItem : comp = tVETIS_PackingCodeType4New.nrec;
+      RunInterface(VetisAPI_Viewer_SpKau,coVETIS_PackingCodeType, 1, 0, _SelectedItem);
+      if getfirst tVETIS_PackingCodeType4New where ((_SelectedItem == tVETIS_PackingCodeType4New.nrec)) = tsOK
+       {
+         set _VETISRQSTSPNEW.PACKINGTYPEID_4 := tVETIS_PackingCodeType4New.code;
+       }
+    }
+   #_DiscrepancyReason:
+   {
+      var _SelectedItem : comp = 0h;
+      RunInterface(VetisAPI_Viewer_SpKau,coVETIS_DiscrepancyReason, 1, 0, _SelectedItem);
+      if getfirst tVETIS_DiscrepancyReason where ((_SelectedItem == tVETIS_DiscrepancyReason.nrec)) = tsOK
+       {
+         set _DiscrepancyReason := tVETIS_DiscrepancyReason.name;
+       }
+   }
+ end;
+rereadrecord;
+}
+end;
+end;
+procedure SetVisibleaddWindow(_visible : boolean; _Origin_X,_Origin_Y : single);
+{
+  cfssetprop('T_SCRCURRRECORDSTOCK_Найденный_UUID','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK_STOCK_UUID','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#1','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#2','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#3','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#4','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#5','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#6','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#7','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#8','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#9','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#10','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#11','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#12','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#13','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#14','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#15','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#16','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#17','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#18','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_->#19','Visible',_visible);
+  cfssetprop('T_SCRCURRRECORDSTOCK_Причина инвентаризации','Visible',_visible);
+
+  cfssetprop('i_SCRCURRRECORDSTOCK','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#1','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#2','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#3','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#4','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#5','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#6','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#7','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#8','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#9','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#10','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#11','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#12','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#13','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#14','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#15','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#16','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#17','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#18','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK#19','Visible',_visible);
+
+  cfssetprop('i_SCRCURRRECORDSTOCK_VETISRQSTSPNEW_PRODUCTTYPE','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK_VETISRQSTSPNEW_PRODUCTGUID','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK_VETISRQSTSPNEW_SUBPRODUCTGUID','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK_VETISRQSTSPNEW_LEVEL2','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK_VETISRQSTSPNEW_PACKINGTYPEID_2','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK_VETISRQSTSPNEW_LEVEL4','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK_VETISRQSTSPNEW_PACKINGTYPEID_4','Visible',_visible);
+  cfssetprop('i_SCRCURRRECORDSTOCK_DiscrepancyReason','Visible',_visible);
+  cfssetprop('b_SCRCURRRECORDSTOCK_Подтвердить_изменения','Visible',_visible);
+  LocateWin(_Origin_X ,_Origin_Y , if(_visible,150,85), 31, winCurrRecordStock);
+  SetWindowTitle(winCurrRecordStock,if(_visible,'Информация по позиции стока','Информация по позиции стока. Проведение инветаризации'));
+}
+
+HandleEvent
+cmInit:
+{
+  getcurrentStock;
+}
+cmValue1:
+{
+ getcurrentStock;
+}
+cmValue2:
+{
+ GetAllStock;
+}
+cmValue3:
+{
+  iVetisAPI_PowerShell.GetRequestToAPIVetis_GetStockList;
+  getcurrentStock;
+}
+cmValue4:{
+  iVetisAPI_PowerShell.GetRequestToAPIVetis_GetProductType;
+  iVetisAPI_PowerShell.GetRequestToAPIVetis_GetSubProductList('');
+}
+cmDefault:
+{
+  runwindowmodal(winCurrRecordStock)
+}
+end;
+End. // Interface

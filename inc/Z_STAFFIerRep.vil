@@ -1,0 +1,11 @@
+#ifdef ComponentVersion
+#component "Z_STAFFIerRep"
+#end
+
+// иерархические отчеты
+vipinterface StaffHierReportsSetups
+  licensed (staffmainmenu,staffmainmenu2) parameters (CurRepCode : word);
+vipinterface StaffHierReports7801 licensed(free) parameters (SetupNRec: comp; isNeedBuild: boolean);
+vipinterface StaffHierReports7802 licensed(free) parameters (SetupNRec: comp; isNeedBuild: boolean);
+vipinterface SHR_FormParams licensed(free) parameters (parReport: comp; bNeedReForm: boolean);
+vipinterface SHR_PossibleFields licensed(free) parameters (par_out_NRec: word; CodeField: word);

@@ -1,0 +1,10 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_TXOAPI
+
+#ifdef ComponentVersion
+#component "F_TXOAPI"
+#end
+
+! По идее все вызывается объектно - нечего экспортировать
+!VipInterface ;
+

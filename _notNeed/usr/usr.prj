@@ -1,0 +1,31 @@
+#include GalNet.inc
+end;
+#include GloVars.inc
+
+#param /linc:c:\vip\autoexec.vpp
+
+#define ComponentVersion
+
+#include extattr.vih
+
+// отчеты - ОТЧЕТЫ ПОЛЬЗОВАТЕЛЯ
+//LOAN  ARD  1011_FI_Customers
+!#include DrogaSrc\Ex2DBF\loan.vpp
+!#include DrogaSrc\Ex2DBF\translit.vih
+!#make "DrogaSrc\Ex2DBF\translit.vip"
+!#make "DrogaSrc\Ex2DBF\loan.vip"
+
+//  ОТЧЕТЫ ПОЛЬЗОВАТЕЛЯ
+#make 'reports\ImportOstatki.vip'; // Интерфейс импорта складских остатков в Словении. 
+#make 'reports\ImportZayavka.vip'; //Интерфейс импорта заявки на поставку (ДО на продажу).
+#make 'reports\GetPosMassVol.vip'; //Интерфейсы, применяемые в качестве процедур для расчета массы и объема нетто/брутто позиций ДО или накладных.
+#make 'reports\SalesReport.vip';  //Отчет по продажам, формируемый для Словении.
+
+#make 'reports\Raspred.vip';      //Интерфейс распределения транспортных расходов по накладным.
+#make 'reports\TransportReport.vip'; //Отчет по транспортным расходам по накладным. Использует информацию о распределении транспортных расходов по накладным
+#make 'reports\SummaryOrder.vip';  //Форма «Сводный заказ» для заказа каш детских из Словении. Выгружается в 
+#make 'reports\LogisticInfo.vip';  //Отчет «Логистическая информация». 
+
+function  PGetNatCurrency(comp,double,date): double; external 'G_Val.dll'; //для SalesReportSkidka.vip
+! function  PRate(comp,date): double; external 'G_Val.dll';
+#make 'reports\SalesReportSkidka.vip'          //Отчет о Реализации (Скидки,Премии,Каналы сбыта)

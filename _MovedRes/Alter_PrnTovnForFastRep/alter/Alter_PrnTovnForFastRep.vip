@@ -1,0 +1,81 @@
+////////////// подменяем обработчик событий 
+#component "L_PRNSOPR"
+alter interface PrnTovnForFastRep;
+Overload
+ DataStream fr_prndata;
+end;
+create view
+var _cKsSrc : comp;
+as select
+SpSoprPrint_MC.cmcUsl
+from
+spsopr SpSoprPrint_MC
+, KatMc KatMc_Print
+, KatSopr KatSoprPrint
+, STEPDOC STEPDOCPrint
+, KatSopr KsSrc1
+, KatSopr KsSrc
+,SchFact SFSRC
+, SchFact SFCur
+, BaseDoc BaseDocPrint
+where
+((
+fr_docspecif.SpSoprNRec == SpSoprPrint_MC.Nrec
+and (SpSoprPrint_MC.prMc = 1)
+and SpSoprPrint_MC.cMcUsl == KatMc_Print.nrec
+and fr_dochead.KatSoprNRec == KatSoprPrint.nrec
+and KatSoprPrint.cStepDoc == StepDocPrint.nrec
+and StepDocPrint.cBaseDoc == BaseDocPrint.nrec
+// для исправлений, т.к. стандарт левые значения дает
+    and _cKsSrc == KsSrc1.nrec
+    and KsSrc1.cschfact == SfSrc.nrec
+and fr_dochead.SchFact_NRec    ==  SFCur.nrec
+))
+;
+function GetKsSrc(_cRec: comp): comp;
+{
+  result := 0h;
+  if getfirst fastfirstrow KsSrc where ((_cRec == KsSrc.nrec)) = tsOK
+   then
+   {
+     if KsSrc.cADoc <> 0h
+      then result := GetKsSrc(KsSrc.cAdoc)
+      else result := KsSrc.nrec
+   }
+}
+Function InitScrDoc: boolean;
+{
+  if KatSoprPrint.cAdoc <> 0h
+  then  set _cKsSrc := GetKsSrc(KatSoprPrint.cAdoc);
+  if getfirst KsSrc1 = tsOK{}
+  result := true;
+}
+DataStream fr_prndata
+(
+   Table Inherited::fr_dochead
+    (
+      [AttrOrg_NumMetroStore] extAttr.sGetAttr(1418,KatSoprPrint.CGRUZTO ,'Номер магазина МЕТРО');
+      [AttrOrg_GLNMetroStore] extAttr.sGetAttr(1418,KatSoprPrint.CGRUZTO ,'GLN магазина');
+      [AttrOrg_NumZakaz]     STEPDOCPrint.NKONT;
+
+      [Atlantic_initSrcDoc]  InitScrDoc;
+      [Atlantic_SFSRC_NUM]   if(_cKsSrc <> 0h, SfSrc.NUM, SFCur.num) ;
+      [Atlantic_SFSRC_DAT]   if(_cKsSrc <> 0h, datetostr(SfSrc.dFact,'"DD" Mon YYYY г.'),datetostr(SFCur.dFact,'"DD" Mon YYYY г.'));
+      [Atlantic_NomIspr]     if(_cKsSrc <> 0h, replace(SFCur.num,SfSrc.num+'_',''),'-') ;
+      [Atlantic_BaseDocNoDoc]   if(isvalid(tnBasedocPrint),basedocPrint.NoDoc ,'-') ;
+      [Atlantic_StepDoc_dZabor] if(isvalid(tnStepdocPrint),datetostr(StepDocPrint.dZabor,'DD.MM.YYYY'),'-') ;
+      [Atlantic_StepDoc_dOtgr]  if(isvalid(tnStepdocPrint),datetostr(StepDocPrint.dOtgr ,'DD.MM.YYYY'),'-') ;
+    );
+
+  table Inherited::fr_docSpecif
+  (
+    [AttrMC_MetroKod]     extAttr.sGetAttr(coKatMc,SpSoprPrint_MC.cmcusl,'Код МЕТРО' );
+    [AttrMC_MetroArtikul] extAttr.sGetAttr(coKatMc,SpSoprPrint_MC.cmcusl,'Артикул МЕТРО (13-значный)');
+    [AttrMC_AUSHANKod]     extAttr.sGetAttr(coKatMc,SpSoprPrint_MC.cmcusl,'Код Ашана' );
+    [AttrMC_BarKod] if(isvalid(tnKatMc_Print), KatMc_Print.BarKod, '');
+    [TNVED_TMP]         if(isvalid(tnKatMc_Print), KatMc_Print.TNVED, '');  // Накосячила Галактика... лять
+  );
+)
+end;
+
+end. // interface

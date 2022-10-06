@@ -1,0 +1,9 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_UserReport
+
+#ifdef ComponentVersion
+#component "F_UserReport"
+#end
+
+VipInterface UserReport Licensed(Free) Parameters (ModuleID : string);
+

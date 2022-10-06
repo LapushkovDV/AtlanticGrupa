@@ -1,0 +1,271 @@
+#doc
+ Просмотр каталогов VetisAPI
+#end
+Interface VetisAPI_Viewer_SpKau 'Просмотр каталогов VetisAPI'  Gray;
+  Show at (, , 87, 27);
+
+Create view
+ var
+      _KodGrkau
+    , _View_or_Select
+    , _ParamSelect
+    , _TypeNodes  : word;
+
+    _SelectedItem : comp;
+
+    cRootNode
+  , _cNode : comp = 0h;
+as select
+   AV_GUID.vString   (FieldName = GUID)
+ , AV_EXCODE.vString (FieldName = EXTCODE)
+ , SpKau.Name        (FieldName = SPNAME)
+ , SpKau.code        (FieldName = isActive)
+from
+    SpKau
+  , SpKau SpKau2
+  , SpKau SpKau3
+  , KatKAU
+  , AttrNam AN_GUID
+  , AttrVal AV_GUID
+  , AttrNam AN_EXCODE
+  , AttrVal AV_EXCODE
+  , AttrNam AN_GUID_UP
+  , AttrVal AV_GUID_UP
+
+where
+((            _KodGrkau == KatKau.KODGROUP
+and     KatKau.KODGROUP == SpKau.kodGrKau
+
+and                8512 == AN_GUID.wTable
+and      coAttrNam_GUID == AN_GUID.name
+and      AN_GUID.wTable == AV_GUID.wTable
+and          SpKau.Nrec == AV_GUID.cRec
+and        AN_GUID.nrec == AV_GUID.cAttrnam
+
+and                   8512 == AN_EXCODE.wTable
+and coAttrNam_ExternalCode == AN_EXCODE.name
+and       AN_EXCODE.wTable == AV_EXCODE.wTable
+and             SpKau.Nrec == AV_EXCODE.cRec
+and         AN_EXCODE.nrec == AV_EXCODE.cAttrnam
+
+and            SpKau.cNode == SpKau2.nrec
+and                   8512 == AN_GUID_UP.wTable
+and         coAttrNam_GUID == AN_GUID_UP.name
+and      AN_GUID_UP.wTable == AV_GUID_UP.wTable
+and            SpKau2.Nrec == AV_GUID_UP.cRec
+and        AN_GUID_UP.nrec == AV_GUID_UP.cAttrnam
+
+))
+bounds ByTreeNode = _cNode == SpKau.cNode (noindex)
+;
+
+parameters
+   _KodGrkau
+ , _View_or_Select
+ , _TypeNodes // 0 - все, 1-только папки , 2  - только листы
+ , _SelectedItem
+ ;
+
+tree trSpKau (,,sci1Tree);
+show(,,86,);
+table SpKau;
+fields
+ SPNAME    'Наименование' :[30],Protect;
+ GUID      'GUID'         :[10],Protect;
+ EXTCODE   'EXTERNAL CODE':[8] ,Protect;
+ isActive  ''     :[6] ,Protect;
+end;
+Browse brSpKau (,,sci1Esc);
+show(,,86,);
+table SpKau;
+fields
+ SPNAME    'Наименование' :[30],Protect;
+ GUID      'GUID'         :[10],Protect;
+ EXTCODE   'EXTERNAL CODE':[8] ,Protect;
+ isActive  ''     :[6] ,Protect;
+end;
+
+TableEvent table SpKau;
+cmTreeNodeType:{
+  if (TreeIsTerminal(trSpKau))
+    TreeSetNodeType(trSpKau, ntfText);
+}
+cmTreeTop:{
+  _cNode:=cRootNode;
+}
+cmTreeUp:{
+  _cNode:=SpKau.cNode;
+}
+cmTreeDown:{
+  _cNode:=SpKau.NRec;
+}
+cmTreeNeedOwner:{
+  if (SpKau.cNode <> cRootNode)
+    TreeJumpToRecord(trSpKau,SpKau.cNode)
+  else
+    TreeJumpToRecord(trSpKau,0);
+}
+end;
+
+Procedure MySetTitle;
+{
+ SetTitle(if (_View_or_Select = 1 ,'Выбор из каталога: ','Просмотр каталога: ')  + katKau.Name);
+ case  _KodGrkau of
+  coVETIS_PackageLevelType: { // VETIS.PackageLevelType
+    cfsSetProp('c_TRSPKAU_EXTCODE_EXTERNAL_CODE','VISIBLE',False);
+    cfsSetProp('c_BRSPKAU_EXTCODE_EXTERNAL_CODE','VISIBLE',False);
+    cfsSetProp('c_TRSPKAU_GUID_GUID','VISIBLE',False);
+    cfsSetProp('c_BRSPKAU_GUID_GUID','VISIBLE',False);
+    cfsSetProp('c_TRSPKAU_ISACTIVE','TITLE','Код')
+  }
+  coVETIS_ProductType     : { // VETIS.ProductType
+    cfsSetProp('c_TRSPKAU_EXTCODE_EXTERNAL_CODE','VISIBLE',False);
+    cfsSetProp('c_BRSPKAU_EXTCODE_EXTERNAL_CODE','VISIBLE',False);
+    cfsSetProp('c_TRSPKAU_GUID_GUID','VISIBLE',False);
+    cfsSetProp('c_BRSPKAU_GUID_GUID','VISIBLE',False);
+    cfsSetProp('c_TRSPKAU_ISACTIVE','TITLE','Код')
+  }
+  coVETIS_PackingCodeType : { // VETIS.PackingCodeType
+    cfsSetProp('c_TRSPKAU_EXTCODE_EXTERNAL_CODE','VISIBLE',False);
+    cfsSetProp('c_BRSPKAU_EXTCODE_EXTERNAL_CODE','VISIBLE',False);
+    cfsSetProp('c_TRSPKAU_ISACTIVE','TITLE','Код')
+  }
+  coVETIS_EdIzm           : { // VETIS.Единицы измерения
+    cfsSetProp('c_TRSPKAU_EXTCODE_EXTERNAL_CODE','VISIBLE',False);
+    cfsSetProp('c_BRSPKAU_EXTCODE_EXTERNAL_CODE','VISIBLE',False);
+      cfsSetProp('c_TRSPKAU_ISACTIVE','TITLE','ACTIVE')
+  }
+  coVETIS_VidPRoduct      : { // VETIS.Виды продукции
+      cfsSetProp('c_TRSPKAU_ISACTIVE','TITLE','ACTIVE')
+  }
+  coVETIS_Status          : {// VETIS.Виды продукции
+    cfsSetProp('c_TRSPKAU_EXTCODE_EXTERNAL_CODE','VISIBLE',False);
+    cfsSetProp('c_BRSPKAU_EXTCODE_EXTERNAL_CODE','VISIBLE',False);
+    cfsSetProp('c_TRSPKAU_GUID_GUID','VISIBLE',False);
+    cfsSetProp('c_BRSPKAU_GUID_GUID','VISIBLE',False);
+    cfsSetProp('c_TRSPKAU_ISACTIVE','TITLE','Код')
+  }
+ end;
+
+// cfsSetProp('c_TRSPKAU_EXTCODE_EXTERNAL_CODE','VISIBLE',False)
+// c_TRSPKAU_GUID_GUID
+}//Procedure MySetTitle;
+
+handleevent
+cminit:
+{
+ cRootNode := 0h;
+ putcommand(cmAccording);
+ MySetTitle;
+ if _SelectedItem <> 0h
+  {
+   TreeJumpToRecord(trSpKau,_SelectedItem);
+  }
+}
+cmValue1:{
+   var _tmpGUID : string = '';
+   _tmpGUID := GUID;
+  if getfirst SpKau2 = tsOK
+  if getfirst AV_GUID_UP = tsok
+   {
+    _tmpGUID := AV_GUID_UP.vString;
+   }
+   if _tmpGUID <> ''
+     {
+      iVetisAPI_PowerShell.GetRequestToAPIVetis_GetProductType;
+      iVetisAPI_PowerShell.GetRequestToAPIVetis_GetSubProductList(_tmpGUID);
+     }
+     else
+     {
+       Message('Пустой GUID',error);
+     }
+  RescanPanel(tnSpKau);
+}
+cmValue2:{
+   iVetisAPI_PowerShell.GetRequestToAPIVetis_GetUnitList;
+  RescanPanel(tnSpKau);
+}
+cmValue4:{
+  iVetisAPI_PowerShell.GetRequestToAPIVetis_GetProductType;
+  iVetisAPI_PowerShell.GetRequestToAPIVetis_GetSubProductList('');
+  RescanPanel(tnSpKau);
+}
+cmHotKeys:{
+  case  _KodGrkau of
+  coVETIS_VidPRoduct     : { // VETIS. VidPRoduct
+    PutContextMenuCommand('ATL_VETISCATALOG_VidPRoduct_HotKeys');
+  }
+  coVETIS_EdIzm           : { // VETIS.Единицы измерения
+   PutContextMenuCommand('ATL_VETISCATALOG_EdIzm_HotKeys');
+  }
+  else   PutContextMenuCommand('ATL_VETISCATALOG_MANUAL_HotKeys');
+
+ end;
+ rescanPanel(tnSpKau);
+
+}
+cmAccording:{ //переключение режима табл/дерево Alt-S
+  if (BoundActive(tbByTreeNode)) {
+    SubBounds(tbByTreeNode);
+    setformat(brSpKau);
+    ReReadRecord(tnSpKau);
+  } else {
+    var CurRec:comp;
+    CurRec:=SpKau.NRec;
+    AddBounds(tbByTreeNode);
+    setformat(trSpKau);
+    ReReadRecord(tnSpKau);
+    TreeJumpToRecord(trSpKau,CurRec);
+  }
+}
+CmDefault:
+{
+  var isOK : boolean = true;
+ if _View_or_Select = 1
+  then
+   {
+     case _TypeNodes of
+      0 :{isOK := true
+        }
+      1 :{// только папки
+          if(getfirst SpKau3 where ((SpKau.kodGrKau == SpKau3.kodGrKau)) and  SpKau3.cNOde = SpKau.nrec) <> tsOK
+           {
+            isOK := false;
+            Message('Необходимо выбрать элемент - папку',error);
+           }
+
+        }
+      2 :{ // только листы
+          if(getfirst SpKau3 where ((SpKau.kodGrKau == SpKau3.kodGrKau)) and  SpKau3.cNOde = SpKau.nrec) = tsOK
+           {
+            isOK := false;
+            Message('Необходимо выбрать элемент - лист',error);
+           }
+
+        }
+     end;
+     if isOK then
+      {
+       _SelectedItem := SpKau.nrec;
+       CloseInterface(-1);
+      }
+   }
+}
+end;
+end.
+
+ATL_VETISCATALOG_MANUAL_HotKeys Menu
+{
+- '~Р~ежим просмотра дерево/список', cmAccording, 'Переключение режима просмотра между таблицей и деревом', , 'Alt+S', kbAltS, sci1Esc,,,,bmpTree_brows;
+}
+ATL_VETISCATALOG_EdIzm_HotKeys Menu
+{
+- '~Р~ежим просмотра дерево/список', cmAccording, 'Переключение режима просмотра между таблицей и деревом', , 'Alt+S', kbAltS, sci1Esc,,,,bmpTree_brows;
+- '~О~бновить весь каталог через API', cmValue2, 'Обновить весь каталог через API', , '', kbAltS, sci1Esc,,,,bmpTree_brows;
+}
+ATL_VETISCATALOG_VidPRoduct_HotKeys Menu
+{
+- '~Р~ежим просмотра дерево/список', cmAccording, 'Переключение режима просмотра между таблицей и деревом', , 'Alt+S', kbAltS, sci1Esc,,,,bmpTree_brows;
+- '~О~бновить текущий уровень через API', cmValue1, 'Обновить текущий уровень через API', , '', kbAltS, sci1Esc,,,,bmpTree_brows;
+- '~О~бновить весь каталог через API', cmValue4, 'Обновить весь каталог через API', , '', kbAltS, sci1Esc,,,,bmpTree_brows;
+}

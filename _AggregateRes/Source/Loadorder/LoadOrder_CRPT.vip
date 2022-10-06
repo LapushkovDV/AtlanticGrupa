@@ -1,0 +1,440 @@
+#component "ATLANTIC"
+#include LoadOrder_CRPT.vih
+const
+//  coStrDateFormat   = 'YYYY-MM-DD';
+  co_EANUpak1080 = '3838600041195'; //03838600041195 - 0.5 L Donat паллета = 1080 бутылок (90 упаковок)
+  co_EANUpak600  = '3838600041164'; //03838600041164 - 1 L Donat паллета = 600 бутылок (100 упаковок)
+  co_wStatus     = 1; //katnotes.status;
+  co_cStatus     = 40003089DD24DC9Ah; //40003089DD24DC9Ah;
+  co_Org         = 03E8000000000002h; // "Атлантик Дрога Колинска, Животноводческая промышленность, д.о.о."
+  co_CPAYMENT    = 03E8000000000001h; // Импорт
+  co_priceList   = 03E800000000038Fh; // 'Закупка ДОНАТ 2014'
+  co_cVal        = 0000000000000003h; // EUR
+  co_cdogovor    = 03E8000000000E7Bh; // KS - 03/14
+  co_usl         = 03E8000000000060h; // ТРАНСПОРТ (налоги МИН ВОДА ДОНАТ)
+  co_myBank      = 03E8000000000215h; // Банк ВТБ (ПАО)
+  co_cBank       = 03E8000000000005h; // Nova Ljubljanska Banka d. d.
+  cokolDn3       = 3;
+end;
+Interface LoadOrder_CRPT 'Создание ДО на основании файла импорта CRPT';
+  show at (,, 91, 23);
+
+create view
+var
+ _logFile : string = '';
+as select
+ ATL_PickingRep_HEAD.nrec
+from
+   ATL_PickingRep_HEAD
+ , ATL_PickingRep_Spec
+ , BAsedoc
+ , StepDoc
+ , SpStep
+ , KatBank KatBank_Def
+ , katotped katotped_usl
+ , KatOtpEd
+ , prices
+ , katmc
+ , SoprHoz
+ where ((
+       co_cdogovor == dogovor.nrec
+        and co_usl == katUsl.nrec
+   and           2 == katotped_usl.prMc
+   and katUsl.nrec == katotped_usl.cmcusl
+   and (katotped_usl.AKT = 1)
+ ))
+ ;
+
+procedure MyLog(_log : string);
+{
+  if _logFile = '' then _logFile := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'LoadOrder_CRPT_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+  logstrtofile(_logFile,_log);
+}
+
+Function GetDirectFromviddoc(_viddoc: word) : word;
+{
+  var _result : word; _result :=0;
+  case _viddoc of
+   101 : _result := 2
+   201 : _result := 1
+  end;
+result := _result;
+}
+
+function GetKatBankDef(_cOrg : comp): comp;
+{
+ result := 0h;
+ if(getfirst KatBank_Def where ((_cOrg == KatBank_Def.cOrg))
+                    and (KatBank_Def.AKTIV = 1 ) ) = tsOK
+  then result := KatBank_Def.nrec
+}
+Function GetTidkfromviddoc(_viddoc : word) : word;
+{
+  var _result : word; _result :=0;
+  case _viddoc of
+   101 : _result := 41
+   201 : _result := 51
+  end;
+result := _result;
+}
+Function getBaseDocNrecByNoDoc(_nodoc : string): comp;
+{
+ result := 0h;
+ if (getfirst basedoc where ((101 == basedoc.viddoc)) and basedoc.nodoc = _nodoc and Basedoc.ddoc = cur_date) <> tsok
+  then {
+       ClearBuffer(tnbasedoc);
+        basedoc.NAME    := if(isvalidall(tnDogovor),'Дог. от ' + datetostr(Dogovor.DDoc,'DD/MM/YYYY') + ' № '+Dogovor.NoDoc ,'') ; // 'Загружено автоматически';
+        basedoc.dprice  := if(isvalidall(tnDogovor),DOGOVOR.DDOC,0); // 'Загружено автоматически';
+        basedoc.DESCR    := Sgettune('USER.DESCR');
+        basedoc.DESGR    := Sgettune('User.DESGR');
+        basedoc.CORG     := co_Org; // "Атлантик Дрога Колинска, Животноводческая промышленность, д.о.о."
+        basedoc.SUMMA    := 0;
+        BASEDOC.KOLDN    := cokolDn3;
+        basedoc.DFORM    := cur_date;
+        basedoc.DDOC     := cur_date;
+        basedoc.DEND     := add_day(cur_date,cokolDn3) ;
+        basedoc.VHODNAL  := 2;
+        basedoc.CPAYMENT := co_CPAYMENT;
+        basedoc.DIRECT   := GetDirectFromviddoc(101);
+        basedoc.STATUS   := co_wStatus; //katnotes.status;
+        basedoc.CNOTE    := co_cStatus; //40003089DD24DC9Ah;
+        basedoc.VIDDOC   := 101;
+        basedoc.NODOC    := _nodoc;
+        basedoc.YEARDOC  := Year(cur_date);
+        basedoc.CBANK    := GetKatBankDef(co_Org);
+        basedoc.TOTAL    := 0;
+        basedoc.TOTALNDE := 0;
+        basedoc.TIPMONEY := 1;
+        basedoc.PRIOR    := 99;
+        basedoc.VHSKID   := 1;
+        basedoc.cval     := co_cVal;
+        basedoc.TARAVOZ  := 2;
+        basedoc.CBANK    := co_cBank; // 03E8000000000005h
+//        basedoc.cParty   := Katpodr_br.nrec;
+        basedoc.CDOGOVOR := if(isvalidall(tnDogovor),dogovor.nrec,0h);
+//        basedoc.cAppDOGOVOR :=
+        basedoc.CGRPOL   := if(GetDirectFromviddoc(basedoc.VIDDOC) = 2,coGetTune('MYORG'), BaseDoc.cOrg);
+        basedoc.CMYBANK  := co_myBank; // 20211201 - сказали ставить ВТБ ПАО coGetTune('MYBANK');
+        basedoc.CGROTPR  := if(GetDirectFromviddoc(basedoc.VIDDOC) = 1,coGetTune('MYORG'), BaseDoc.cOrg);
+       Insert current basedoc;
+//       update current basedoc set basedoc.NAME := basedoc.NAME + ', ДО_ №'+basedoc.NODOC +  ' от ' +datetostr(basedoc.DDOC,'DD.MM.YYYY');
+        if isvalidall(tnDogovor)
+         {
+          basedoc.tipmoney := Dogovor.tipmoney;
+          basedoc.cVal     := Dogovor.CVAL;
+          update current basedoc;
+         }
+  }
+ result := basedoc.nrec
+}
+
+function getmcbyGTIN(_gtIN : string) : comp;
+{
+  mylog('getmcbyGTIN(_gtIN : string) : comp; _gtIN = ' + _gtIN)
+  var _result : comp = 0h;
+  if _gtIN = '' then exit;
+
+  _loop KatOtpEd where ((_GTIN == KatOtpEd.BKOD)) and KatOtpEd.PrMc = 1
+   {
+//       mylog('getmcbyGTIN _loop KatOtpEd where ((_GTIN == KatOtpEd.BKOD)) and KatOtpEd.PrMc = 1 KatOtpEd = ' + KatOtpEd.nrec);
+    if getfirst katmc where ((KatOtpEd.cMcUsl == katmc.nrec)) = tsOK
+     {
+//       mylog('getmcbyGTIN if getfirst katmc where ((KatOtpEd.cMcUsl == katmc.nrec)) = tsOK katmc.varkod=' + katmc.barkod);
+//       mylog('getmcbyGTIN if extAttr.sGetAttr(coKatMc, katmc.nrec, CRPT_relevant)  = ' + extAttr.sGetAttr(coKatMc, katmc.nrec, 'CRPT_relevant'));
+      if extAttr.sGetAttr(coKatMc, katmc.nrec, 'CRPT_relevant') = '1'
+       {
+        _result := katmc.nrec;
+       }
+     }
+   }
+   if getfirst katmc where ((_result == katmc.nrec)) = tsOK {}
+  mylog('getmcbyGTIN(_gtIN : string) : comp; _result  = ' + _result )
+
+ result := _result
+}
+function GetkolByGTIN(_EANUPAK : string) : double;
+{
+  case _EANUPAK of
+  co_EANUpak1080 : result := 1080
+  co_EANUpak600  : result := 600
+  else result := 0
+  end;
+}
+Procedure CalcSum;
+{
+Var oNalogFun: NalogFun;
+ if (BaseDoc.VhodNal = 1) // налоги входят
+  {
+    if oNalogFun.CountBasePrice_(BaseDoc.NRec
+                               , SpStep.NRec
+                               , BASEDOC.viddoc + 1000
+                               , SpStep.cGrNal
+                               , BaseDoc.cOrg
+                               , if(SpStep.PrMC > 2, 0, SpStep.Kol)
+                               , if(SpStep.PrMC > 2, 0, SpStep.cOtpEd)
+                               , BaseDoc.dDoc
+                               , BaseDoc.cVal
+                               , 0
+                               , if(BaseDoc.cVal = 0, SpStep.SUMMA,    0)
+                               , if(BaseDoc.cVal = 0,    0, SpStep.SUMMA)
+                               , BaseDoc.cPayment
+                                )
+      SpStep.Nds := SpStep.SUMMA - if(BaseDoc.cVal = 0, oNalogFun.GetBasePrice_, oNalogFun.GetBaseValPrice_)
+  }
+  else
+  {
+    if oNalogFun.CountNalogPrice_(BaseDoc.NRec
+                                , SpStep.NRec
+                                , BASEDOC.viddoc + 1000
+                                , SpStep.cGrNal
+                                , BaseDoc.cOrg
+                                , if(SpStep.PrMC > 2, 0, SpStep.Kol)
+                                , if(SpStep.PrMC > 2, 0, SpStep.cOtpEd)
+                                , BaseDoc.dDoc
+                                , BaseDoc.cVal
+                                , 0
+                                , if(BaseDoc.cVal = 0, SpStep.SUMMA,    0)
+                                , if(BaseDoc.cVal = 0,    0, SpStep.SUMMA)
+                                , BaseDoc.cPayment
+                                 )
+      SpStep.Nds := if(BaseDoc.cVal = 0, oNalogFun.GetNaLogPrice_, oNalogFun.GetNaLogValPrice_) - SpStep.SUMMA;
+  }
+
+  update current SpStep;
+}
+function GetNPP(_cStepDoc : comp): word;
+{
+  result := 0;
+  _loop SpStep where ((_cStepDoc == SpStep.cStepDoc)) {
+    result := result + 1
+    }
+  result := result + 1
+}
+function getcursOnDate(_date: date; _cVal : comp): double; cacheable;
+{
+  var _result : double = 0;
+    _Try
+        {
+          sql
+          select
+            cv.SUMRUBL
+          from CURSVAL cv
+          where cv.KODVALUT = :(_cVal)
+            and cv.datval = :(_date)
+            into (_result)
+            ;
+        }
+         _Except
+        else
+         {var _empty : boolean; _empty:= false;} //чтобы компилятор ничего не говорил
+
+ result := _result;
+}
+
+procedure FindInsertSpstep(_cStepDoc : comp; _EANUPAK: string);
+{
+ var _cMc : comp = getmcbyGTIN(_EANUPAK);
+ if _cMc = 0h {
+    mylog(' could not find katmc by _EANUPAK = ' + _EANUPAK);
+    exit;
+  }
+
+ if getfirst prices where (( co_priceList == prices.CKLPRICE
+                                 and _cMc == prices.cThing
+                           )) <> tsOK
+  {
+    mylog(' could not find katmc (nrec = '+_cMc+') in pricelist (nrec =  ' + co_priceList);
+    exit;
+  }
+   var _NPP : word = GetNPP(_cStepDoc);
+  if(getfirst SpStep where ((_cStepDoc == SpStep.cStepDoc)) and SpStep.cmcusl = _cMc and SpStep.prmc = 1 ) <> tsOK {
+    clearbuffer(tnspstep) ;
+     spstep.NPP        := _NPP;
+     spstep.PRMC       := 1;
+     spstep.CMCUSL     := KatMc.Nrec;
+     spstep.COTPED     := Prices.cOtped;
+     spstep.CALTED     := Prices.cOtped;
+     spstep.CPRICELIST := co_priceList;
+     spstep.PRICE      := if(prices.cval = 0h, prices.Price, prices.SUMVAL);
+     spstep.CGRNAL     := KATMC.CGRNAL;
+     spstep.NETTO      := KATMC.massa;
+     spstep.MTARA      := KATMC.MTARA;
+     spstep.DDOC       := basedoc.ddoc;
+     spstep.CSTEPDOC   := _cStepDoc;
+     spstep.PRSKID     := 1;
+     spstep.CVAL       := StepDoc.CVal;
+     STEPDOC.DOTGR   := if(isvalidall(tnDogovor),DOGOVOR.DEND ,0); // 'Загружено автоматически';
+     STEPDOC.DOPLMAX := if(isvalidall(tnDogovor),DOGOVOR.DEND ,0); // 'Загружено автоматически';
+
+    Insert current spstep;
+
+  }
+
+   SpStep.KOL    := SpStep.KOL    + GetkolByGTIN(_EANUPAK);
+   SpStep.KOLSKL := SpStep.KOLSKL + GetkolByGTIN(_EANUPAK);
+   SpStep.SUMMA  := SpStep.KOL*spstep.PRICE;
+   SpStep.KOLDOP := SpStep.KOL*spstep.PRICE;
+  update current SpStep;
+  CalcSum;
+
+
+// надо вставить услугу
+/* 20211130 -  Николай сказал не вставлять услугу
+ if isvalidall(tnkatotped_usl)
+  {
+   var _NPP : word = GetNPP(_cStepDoc);
+     if(getfirst SpStep where ((_cStepDoc == SpStep.cStepDoc)) and SpStep.cmcusl = co_usl and SpStep.prmc = 4 ) <> tsOK {
+        clearbuffer(tnspstep);
+         spstep.NPP        := _NPP;
+         spstep.PRMC       := 4;
+         spstep.CMCUSL     := co_usl;
+         spstep.COTPED     := katotped_usl.nrec;
+         spstep.KOLSKL     := 1;
+         spstep.CGRNAL     := KATUSL.CGRNAL ;
+         spstep.DDOC       := basedoc.ddoc;
+         spstep.CSTEPDOC   := _cStepDoc;
+         spstep.PRSKID     := 1   ;
+         spstep.CVAL       := StepDoc.CVal ;
+        Insert current spstep;
+        CalcSum;
+      }
+  }
+*/
+
+       Update Current BASEDOC set
+         BASEDOC.SUMMA := 0
+       , BASEDOC.NDS   := 0
+       ;
+
+
+    _loop SpStep where ((_cStepDoc == SpStep.cStepDoc)) {
+       Update Current BASEDOC set
+         BASEDOC.SUMMA := BASEDOC.SUMMA + SpStep.SUMMA
+       , BASEDOC.NDS   := BASEDOC.NDS + SpStep.NDS
+       ;
+      }
+
+var _curs : double = 0;
+       _curs := getcursOnDate(basedoc.dDoc, basedoc.cVal);
+
+    Update Current BASEDOC set
+       BASEDOC.Total    := BASEDOC.SUMMA + if(basedoc.VHODNAL = 1,0,BASEDOC.NDS)
+     , baseDoc.TotalNde := Round(if(BASEDOC.cVal <> 0h, _curs,1)*(BASEDOC.SUMMA + if(basedoc.VHODNAL = 1,0,BASEDOC.NDS)),2)
+     ;
+    update Current SoprHoz set SoprHoz.SUMMA := BASEDOC.TotalNde;
+    update Current STEPDOC set
+         STEPDOC.SUMMA  := if(BASEDOC.cVal <> 0h, 0,BASEDOC.TotalNde)
+       , STEPDOC.SUMVAL := if(BASEDOC.cVal <> 0h, BASEDOC.Total, 0)
+     ;
+
+
+
+
+}
+
+function GetStepDocByBaseDoc(_cBaseDoc : comp): comp;
+{
+  result := 0h;
+ if getfirst stepdoc where ((_cBaseDoc == stepdoc.cbasedoc)) <> tsok
+  then {
+       Insert STEPDOC
+        set
+           STEPDOC.NSTEP    := 1
+         , STEPDOC.CBASEDOC := BaseDoc.nrec
+         , STEPDOC.STATUS   := 2
+         , STEPDOC.CVAL     := BaseDoc.CVAL
+        ;
+  }
+  result := stepdoc.nrec
+}
+function GetSoprHozByBaseDoc(_cBaseDoc : comp): comp;
+{
+  result := 0h;
+  var _TIPDOC : word;
+       _TIPDOC := GetTidkfromviddoc(BaseDoc.VIDDOC);
+
+ if getfirst SoprHoz where ((_TIPDOC == TIPDOC and  _cBaseDoc == CSOPRDOC)) <> tsOK
+  {
+        Insert SOPRHOZ set
+           SOPRHOZ.CSTEPDOC := StepDoc.nrec
+         , SOPRHOZ.CSOPRDOC := Basedoc.Nrec
+         , SOPRHOZ.TIPDOC   := _TIPDOC
+         , SOPRHOZ.TIDKGAL  := _TIPDOC
+         , SOPRHOZ.NODOC    := BaseDoc.Nodoc
+         , SOPRHOZ.DESCR    := BaseDoc.Descr
+         , SOPRHOZ.DESGR    := BaseDoc.Desgr
+         , SOPRHOZ.DIRECT   := BaseDoc.direct
+         , SOPRHOZ.CORG     := basedoc.corg
+         , SoprHoz.datob    := basedoc.ddoc
+         , SOPRHOZ.CDOGOVOR := basedoc.cdogovor
+         , SOPRHOZ.CappDOGOVOR := basedoc.cappdogovor
+         , SOPRHOZ.VHSUMHOZ := '+'
+        ;
+  }
+  result := SOPRHOZ.nrec;
+}
+procedure InsertATL_PickingRep_Spec(_cBaseDoc : comp; _SSCC : string; _Prod_date : date);
+{
+
+    if getfirst ATL_PickingRep_HEAD where ((_cBaseDoc == ATL_PickingRep_HEAD.cBaseDoc)) <> tsOK
+     {
+        clearbuffer(tnATL_PickingRep_HEAD);
+        ATL_PickingRep_HEAD.cSopr    := 0h;
+        ATL_PickingRep_HEAD.filename := 'Import CRPT';
+        ATL_PickingRep_HEAD.Nakl_Num := '';
+        ATL_PickingRep_HEAD.isOK     := true;
+        ATL_PickingRep_HEAD.cBaseDoc := _cBaseDoc;
+       insert current ATL_PickingRep_HEAD;
+     }
+ // на МЦ спозиционировались ранее при вставке спецификации
+    insert ATL_PickingRep_Spec set
+       ATL_PickingRep_Spec.cHead     := ATL_PickingRep_HEAD.nrec
+     , ATL_PickingRep_Spec.cMc       := KatMc.Nrec
+     , ATL_PickingRep_Spec.ISMANUAL  := false
+     , ATL_PickingRep_Spec.SAPCODE   := KatMc.BarKod2
+     , ATL_PickingRep_Spec.SSCCManuf := _SSCC
+    ;
+}
+Procedure InsertSpec(   _NoDoc
+                      , _SSCC
+                      , _EAN
+                      , _EANUPAK   : string;
+                        _Prod_date : date
+                     ) ;
+{
+  var _cBaseDoc : comp = getBaseDocNrecByNoDoc(_NoDoc);
+ if _cBaseDoc = 0h {
+    mylog('getBaseDocNrecByNoDoc return 0h');
+    exit;
+  }
+
+  var _cStepDoc : comp = GetStepDocByBaseDoc(_cBaseDoc);
+ if _cStepDoc = 0h {
+    mylog(' StepDoc not found | basedoc.nrec = ' + string(_cBaseDoc,0,0));
+    exit;
+  }
+
+  var _cSoprHoz : comp = GetSoprHozByBaseDoc(_cBaseDoc);
+ if _cStepDoc = 0h {
+    mylog(' SoprHoz not found | basedoc.nrec = ' + string(_cBaseDoc,0,0));
+    exit;
+  }
+
+  do { //срезаем лидирующие нули
+   if pos('0',_EANUPAK) = 1
+    {
+     _EANUPAK := substr(_EANUPAK,2,length(_EANUPAK));
+    }
+  } while pos('0',_EANUPAK) = 1
+
+if getfirst dogovor = tsOK {}
+if getfirst katUsl = tsOK {}
+if getfirst katotped_usl = tsOK {}
+
+  FindInsertSpstep(_cStepDoc, _EANUPAK);
+  InsertATL_PickingRep_Spec(_cBaseDoc,_SSCC,_Prod_date);
+}
+
+handleevent
+End;//HandleEvent
+End.//Interface

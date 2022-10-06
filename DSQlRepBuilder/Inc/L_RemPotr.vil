@@ -1,0 +1,6 @@
+#ifdef ComponentVersion
+#component "L_RemPotr"
+#end
+
+VipInterface Potrebnost                licensed (FREE);
+

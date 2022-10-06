@@ -1,0 +1,62 @@
+// Галактика 8.1   2006г.
+// Описание экспортируемых интерфейсов компонента
+
+#ifdef ComponentVersion
+#component "F_OSOPER"
+#end
+
+//------------------------------------------------------------------------------
+VipInterface MoveAmort
+Licensed
+(
+#include MoveAmort.lih
+)
+Parameters (pVidop, wTip : word);
+//------------------------------------------------------------------------------
+VipInterface SpMoveOs       Licensed (Free)
+                            Parameters (wTip : word; c_SpMove_nRec : comp);
+//------------------------------------------------------------------------------
+VipInterface InvList
+Licensed (B_Act,B_Osn,mbp,NalogReg)
+Parameters (VidDoc : word; wCallType : word; cNRecInvTab : comp);
+//------------------------------------------------------------------------------
+VipInterface ChkMoveOs      Licensed (Free);
+//------------------------------------------------------------------------------
+VipInterface DoPerOs
+Licensed
+(
+#include DoPerOs.lih
+)
+Parameters (cNRecNastrOs,cNRecMoveOs,cNRecPerOs:comp;wMode:word);
+//------------------------------------------------------------------------------
+VipInterface MoveOsMcPerem  Licensed (Free) Parameters (TecMoveOs,cNastrOs:comp);
+//------------------------------------------------------------------------------
+VipInterface OsMoveMc       Licensed (Free) Parameters (cTekKatOs:comp;wTip,wOper:word);
+//------------------------------------------------------------------------------
+VipInterface OsRealSe       Licensed (Free) Parameters (parViewMode:word;parMetod,parMoveOs:comp;parTiDk:word);
+//------------------------------------------------------------------------------
+VipInterface OsRealSt       Licensed (Free) Parameters (parTiDk:word;parMetod,parMoveOs:comp);
+//------------------------------------------------------------------------------
+VipInterface Pereoc
+Licensed
+(
+#include Pereoc.lih
+)
+Parameters (wCallType : word; cNRecPerOs : comp);
+
+//------------------------------------------------------------------------------
+VipInterface VvRKoef
+Licensed
+(
+#include VvRKoef.lih
+)
+Parameters (cNRecPerOs,cNRecNastrOs:comp;wPereocType,wOtborType:word;cNacDiap,cEndDiap:string[9]);
+//------------------------------------------------------------------------------
+VipInterface TstOperShow    Licensed (Free);
+//------------------------------------------------------------------------------
+VipInterface RunTstOper     Licensed (Free) Parameters (TipDock : word);
+//------------------------------------------------------------------------------
+VipInterface VvStroy        Licensed (FREE) Parameters (wVvStroyType : word; cVvStroyNRec : comp);
+//------------------------------------------------------------------------------
+VipInterface SvSpravka_ChangeSumms Licensed (Free);
+//------------------------------------------------------------------------------

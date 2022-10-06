@@ -1,0 +1,335 @@
+#ifdef ComponentVersion
+#component "L_ADVREP"
+#end
+
+VipInterface AktInvDK
+  Licensed (dogovor,postpol);
+
+VipInterface CRepGaz
+  Licensed (FREE)
+  Parameters
+  (
+    NReport : word;
+    pNRec   : comp
+  );
+
+VipInterface CReport
+  Licensed (FREE)
+  Parameters
+  (
+    NReport : word;
+    pNRec   : comp
+  );
+
+VipInterface SetUpComplMTR
+  Licensed (FREE)
+  Parameters
+  (
+    NReport : word;
+    pNRec   : comp
+  );
+
+VipInterface DOGREES
+  Licensed (dogovor)
+  Parameters
+  (
+    NReport : word;
+    pNRec   : comp
+  );
+
+VipInterface ExecNZNomTree
+  Licensed (dogovor)
+  Parameters
+  (
+    pUserDeskRep : comp
+  );
+
+VipInterface ExecNZTree
+  Licensed (dogovor)
+  Parameters
+  (
+    pUserDeskRep : comp
+  );
+
+VipInterface ExecRONomTree
+  Licensed (dogovor)
+  Parameters
+  (
+    pUserDeskRep : comp
+  );
+
+VipInterface ExecROTree
+  Licensed (dogovor)
+  Parameters
+  (
+    pUserDeskRep : comp
+  );
+
+VipInterface Isp_PlatPKP
+  Licensed (dogovor);
+
+VipInterface Isp_PlatPKP_Chrono
+  Licensed (dogovor);
+
+VipInterface Isp_PKP
+  Licensed (dogovor);
+
+VipInterface Isp_PKP_Chrono
+  Licensed (dogovor);
+
+VipInterface Isp_PKP_Nom
+  Licensed (dogovor);
+
+VipInterface IspContr
+  Licensed (dogovor);
+
+VipInterface iEditUserSet
+  Licensed (FREE)
+  Parameters
+  (
+    ReportID : word;
+    pnRec    : comp
+  );
+
+VipInterface IspExC01
+  Licensed (dogovor);
+
+VipInterface IspExC02
+  Licensed (dogovor);
+
+VipInterface IspExC03
+  Licensed (dogovor);
+
+VipInterface IspExC04
+  Licensed (dogovor);
+
+VipInterface IspExC05
+  Licensed (dogovor);
+
+VipInterface IspExC06
+  Licensed (dogovor);
+
+VipInterface IspExC07
+  Licensed (dogovor);
+
+VipInterface IspExC08
+  Licensed (dogovor);
+
+VipInterface IspExC09
+  Licensed (dogovor);
+
+VipInterface IspExC10
+  Licensed (dogovor);
+
+VipInterface IspPZRep
+  Licensed (FREE);
+
+VipInterface IspPZSet
+  Licensed (FREE)
+  Parameters
+  (
+    pNRec : comp
+  );
+
+VipInterface iSvodReport
+  Licensed (dogovor)
+  Parameters
+  (
+    CurCode : word
+  );
+
+VipInterface iEditSvSet
+  Licensed (dogovor)
+  Parameters
+  (
+    NReport : word;
+    pNRec   : comp
+  );
+
+VipInterface Nastrset
+  Licensed (FREE)
+  Parameters
+  (
+    ReportID : word;
+    pnRec    : comp
+  );
+
+VipInterface NZTree
+  Licensed (dogovor)
+  Parameters
+  (
+    pUserDeskRep : comp
+  );
+
+VipInterface OGP_Report
+  Licensed (dogovor,coPlan)
+  Parameters
+  (
+    cvWorkSetup : comp
+  );
+
+VipInterface Otch
+  Licensed (dogovor);
+
+VipInterface Platzach
+  Licensed (dogovor)
+  Parameters
+  (
+    ReportID : word
+  );
+
+VipInterface PRNNZREES
+  Licensed (dogovor)
+  Parameters
+  (
+    NReport : word
+  );
+
+VipInterface PRNROREES
+  Licensed (dogovor)
+  Parameters
+  (
+    NReport : word
+  );
+
+VipInterface RealizGaz
+  Licensed (dogovor);
+
+VipInterface ROTree
+  Licensed (dogovor)
+  Parameters
+  (
+    pUserDeskRep : comp
+  );
+
+VipInterface Sv_AktSv
+  Licensed (dogovor);
+
+VipInterface TVEL_Report
+  Licensed (dogovor,coPlan)
+  Parameters
+  (
+    cvWorkSetup : comp
+  );
+
+VipInterface TVEL_Report2
+  Licensed (dogovor,coPlan)
+  Parameters
+  (
+    cvWorkSetup : comp
+  );
+
+VipInterface ReAktSv
+  Licensed (dogovor);
+
+VipInterface AktSvSetup
+  Licensed (FREE)
+  Parameters
+  (
+    pNRec : Comp
+  );
+
+VipInterface NastrPLZ
+  Licensed (FREE)
+  Parameters
+  (
+    ReportID : word;
+    pnRec    : comp
+  );
+
+VipInterface PlZDog
+  Licensed (dogovor)
+  Parameters
+  (
+    ReportID : word
+  );
+
+VipInterface AktInvDO
+  Licensed
+  (
+  #include AktInvDO.lih
+  )
+  Parameters
+  (
+    TipDO : word
+  );
+
+vipinterface SprDebit
+  Licensed (dogovor);
+
+VipInterface NReeIski
+  Licensed (dogovor)
+  Parameters
+  (
+    NReport : word
+  );
+
+VipInterface NastrRepIsk
+  Licensed (dogovor)
+  Parameters
+  (
+    NReport : word
+  );
+
+VipInterface DogUrgent
+  Licensed (FREE);
+
+VipInterface RepNIOKR_Nastr
+  Licensed (FREE)
+  Parameters
+  (
+    NReport : word;
+    pNRec   : comp
+  );
+
+VipInterface VedPlanPlat
+  Licensed (dogovor);
+
+VipInterface DolFinNIOKR
+  Licensed (dogovor)
+  Parameters
+  (
+    NReport : word
+  );
+
+VipInterface GrafFinNIOKR
+  Licensed (dogovor)
+  Parameters
+  (
+    NReport : word
+  );
+
+VipInterface ItogNIOKR
+  Licensed (dogovor);
+
+VipInterface ReeDogNIOKR
+  Licensed (dogovor)
+  Parameters
+  (
+    NReport : word
+  );
+
+VipInterface ReeMailDog
+  Licensed (dogovor);
+
+VipInterface RepAgent
+  Licensed (FREE)
+  Parameters
+  (
+    pRec : comp;
+    bPath: boolean;
+    bMes : boolean
+  );
+
+VipInterface SpravNIOKR
+  Licensed (dogovor);
+
+VipInterface TotSprNIOKR
+  Licensed (dogovor);
+
+VipInterface VedPlanPlat_Nastr
+  Licensed (FREE)
+  Parameters
+  (
+    pNRec: comp
+  );

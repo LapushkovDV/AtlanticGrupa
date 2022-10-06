@@ -1,0 +1,23 @@
+#ifdef ComponentVersion
+#component "L_VAL"
+#end
+
+vipinterface CursVal     licensed (FREE) Parameters (p1 : comp; p2 : double; dat_curse : date; only_pick : word);
+vipinterface EditCrsV    licensed (FREE) Parameters (pVal, pCurs : comp; pIntModeVal, pIntModeCurs : word);
+vipinterface GetSomeVal  licensed (FREE) Parameters (param_nrec : comp);
+vipinterface GetSomeVal2 licensed (FREE) ;
+vipinterface GetValCu    licensed (FREE) Parameters (myC : comp; myd : date; sumr, sumv, Curs : double; cursdate : date);
+vipinterface GetValName  licensed (FREE) Parameters (s30 : string[30]);
+vipinterface GetValOt    licensed (FREE) Parameters (p1 : comp);
+vipinterface GetValuta   licensed (FREE) Parameters (myC : comp; myd : date; sumr, sumv : double);
+vipinterface OutValut    licensed (FREE) Parameters (c1 : comp);
+vipinterface GetCurPr    licensed (FREE) Parameters (myC : comp; myD : date; sumr, sumv : double);
+VipInterface GetCurse    licensed (FREE) Parameters (DatV: date; CodeV: comp; Cur: double);
+VipInterface GetDCurse   licensed (FREE) Parameters (DatV: date; CodeV: comp; DatM: date);
+VipInterface GetValKod   licensed (FREE) Parameters (c1: comp);
+VipInterface GetDCCurse  licensed (FREE) Parameters (DatV: date; CodeV: comp; DatM: date; Cur: double);
+
+VipInterface GetSourceKod licensed (FREE) Parameters ( _cParent : comp; _klCod : comp );
+VipInterface GetSourceVal licensed (FREE) Parameters ( wCode : word );
+
+dialog GetValAnd100(p1: word);

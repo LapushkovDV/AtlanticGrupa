@@ -1,0 +1,19 @@
+#component "ATLANTIC"
+objInterface ObjVetisAPI_PowerShell;
+  Function GetRequestToAPIVetis_GetStockList   : boolean;
+  Function GetRequestToAPIVetis_GetProductList : boolean;
+  Function GetRequestToAPIVetis_GetUnitList    : boolean;
+  Function GetRequestToAPIVetis_GetProductType : boolean;
+  Function GetRequestToAPIVetis_GetSubProductList(_productGUID: string) : boolean;
+  Function GetRequestToAPIVetis_GetBusinessEntity(_INN : string; var _BissnEntity: string) : boolean;
+  Function GetRequestToAPIVetis_GetStockUUIDbyGUID(_GUID: string; var _UUID, _UNITGUID: string) : boolean;
+  Function GetRequestToAPIVetis_ResolveDiscrepancy(_fnVetisDiscrepancy : VetisDiscrepancy; var _result : string) : boolean;
+  Function GetRequestToAPIVetis_GetStockEntryVersionListRequest(_fnSTOCKGUID : string) : boolean;
+  Function GetRequestToAPIVetis_GetDocumentList(_dateBegin_dateEnd : string): boolean;
+end;
+
+vipInterface VetisAPI_PowerShell implements ObjVetisAPI_PowerShell
+  licensed(free)
+  Parameters (_Parameter : string);
+
+var iVetisAPI_PowerShell : VetisAPI_PowerShell;

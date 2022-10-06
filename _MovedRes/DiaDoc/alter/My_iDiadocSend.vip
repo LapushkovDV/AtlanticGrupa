@@ -1,0 +1,70 @@
+
+//#include DiadocFuncs.var
+
+// #include My_iDiadocSend.vih
+
+
+////////////// подменяем обработчик событий
+
+interface My_iDiaDocSend;
+var _Log : string = '';
+CReate view
+ var _nRecKatSopr : comp;
+//      oDiadocFuncs : iDiadocFuncs;
+as select katsopr.nrec
+from katsopr
+;
+Procedure MyLog(_Str: string);
+{
+ if _Log = '' then ReadMyDSK(_Log,coATLANTIC_DIADOCAUTO_LOGNAME,true) ;
+ if _Log = '' then _Log := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'DIADOC_AUTOSEND_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+ LogStrtoFile(_log,_Str);
+}
+
+
+screen ScrParam(,,sci1Esc);
+fields
+  _nRecKatSopr : NoProtect;
+buttons
+  cmOk,default,,'RUN',,;
+  cmCancel,,,'Выход',,;
+<<
+
+KatSopr Nrec  .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+ <. Run .>          <. ~О~тмена  .>
+>>
+end;
+HandleEvent
+cmInit:
+{
+  _Log := '' ;
+  MyLog('MY DIADOC. wndSendDocs cmInit');
+}
+
+cmOk:
+{
+  if(getfirst katsopr where ((_nRecKatSopr == katsopr.nrec)) and katsopr.vidsopr = 201
+    ) <> tsOK
+    {
+      Message('Не найдена накладная сбыта с nrec = ' + _nRecKatSopr ,error);
+      stop; abort; exit;
+    }
+        SaveMyDsk(_log,coATLANTIC_DIADOCAUTO_LOGNAME) ;
+        var lMarkerDiaDoc : TPtr = InitMarker('DiadocDocument', 8, 100, 10);
+        ClearMarker(lMarkerDiaDoc);
+        InsertMarker(lMarkerDiaDoc, KatSopr.nRec);
+
+        MyLog('Запускаем автоматическую отправку DIADOC');
+       var oDiadocFuncs : iDiadocFuncs;
+
+        if oDiadocFuncs.SendDocs(coKatSopr, lMarkerDiaDoc)
+            then MyLog('MY DIADOC/ SendDocs = OK')
+            else MyLog('MY DIADOC/ SendDocs = error');
+
+        DoneMarker(lMarkerDiaDoc, '');
+
+  ProcessText(_Log,vfEscable or vfNewTitle or vfMacroSize,'Протокол');
+}
+end;
+end.

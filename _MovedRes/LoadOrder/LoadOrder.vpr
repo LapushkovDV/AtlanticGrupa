@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>LoadOrder</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="\\10.2.1.151\Galaktika\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.33.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					\\10.2.1.151\Galaktika\res\src\inc\*
+					..\..\..\FRM\*
+					..\Viper 5.5\bin\5.5.31.0\Source\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_BaseDoc.res
+					$[GalExe]\L_Common.res
+				</ResourceList>
+				<OutputResource>..\..\LoadOrder_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:RUMOW-VMGAL01.atlantic.grupa[1997]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="LoadOrder.prj" PosX="34" PosY="21" OpenEditor="True"/>
+			<File Name="vip\LoadOrder.vip" PosX="71" PosY="207" OpenEditor="True" Active="True"/>
+			<File Name="vip\OpenFileExcelSearchCells.vip" PosX="22" PosY="181" OpenEditor="True"/>
+			<File Name="vip\LoadOrder_tune.vip" PosX="42" PosY="77" OpenEditor="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="LoadOrder.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\LoadOrder\LoadOrder.prj" DateTimeStart="43809,6472866204" DateTimeCompile="5,13425911776721E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\GALAKTIKA\RES\SRC\LOADORDER\VIP\VarsTypes.vip" SourceLine="1" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\LoadOrder\VIP\LoadOrder.vip" Line="10" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - fillrecArrayByTypeTable входящий параметр: _log:String не используется." SourceFileName="C:\Galaktika\res\src\LoadOrder\VIP\LoadOrder.vip" SourceLine="280" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\LoadOrder\VIP\LoadOrder.vip" SourceLine="286" SourceColumn="61"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\LoadOrder\VIP\LoadOrder.vip" SourceLine="477" SourceColumn="11"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\LoadOrder\VIP\LoadOrder.vip" SourceLine="480" SourceColumn="12"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\LoadOrder\VIP\LoadOrder.vip" SourceLine="531" SourceColumn="11"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\LoadOrder\VIP\LoadOrder.vip" SourceLine="725" SourceColumn="11"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\LoadOrder\VIP\LoadOrder.vip" SourceLine="728" SourceColumn="12"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\LoadOrder\VIP\LoadOrder.vip" SourceLine="806" SourceColumn="72"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\LoadOrder\VIP\LoadOrder.vip" SourceLine="807" SourceColumn="106"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\LoadOrder\VIP\LoadOrder_tune.vip" SourceLine="80" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект IVIPIFCIFC L_DOGOVOR::GETSOMKATNOTES, описывающий интерфейс вызова. Параметры вызова для L_DOGOVOR::GETSOMKATNOTES не проверены." SourceFileName="C:\GALAKTIKA\RES\SRC\LOADORDER\VIP\LoadOrder_tune.vip" SourceLine="101" SourceColumn="123"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект IVIPIFCIFC L_PRICES::GETKLPR, описывающий интерфейс вызова. Параметры вызова для L_PRICES::GETKLPR не проверены." SourceFileName="C:\GALAKTIKA\RES\SRC\LOADORDER\VIP\LoadOrder_tune.vip" SourceLine="107" SourceColumn="84"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="10.12.2019 15:32:10"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<BreakPointList>
+			<BreakPoint FileName="vip\LoadOrder.vip" Line="1"/>
+		</BreakPointList>
+		<MarkerList>
+			<Marker FileName="vip\OpenFileExcelSearchCells.vip" Caption="Нумерованная закладка 1" Line="167" NumIndex="1" MarkerType="mtNumBookmark" Comment="_recArray[_i].column := SearchCellsByName(_recArray[_i].def, _log, nrow);"/>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\ModPric2.vpp" Caption="Нумерованная закладка 1" Line="70" NumIndex="1" MarkerType="mtNumBookmark" Comment="if ( GetFirst Prices where (( lMPP.Prices.nRec == Prices.nRec )) = tsOk ) {}"/>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\BaseStep\inc\GETTOT.VPP" Caption="Нумерованная закладка 1" Line="463" NumIndex="1" MarkerType="mtNumBookmark" Comment=", tipDo + 1000"/>
+			<Marker FileName="vip\LoadOrder.vip" Caption="Нумерованная закладка 1" Line="483" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="vip\LoadOrder.vip" Caption="Нумерованная закладка 2" Line="238" NumIndex="2" MarkerType="mtNumBookmark" Comment="_Price := getpriceToOrgAndMcandDogAndUs(tInsertBaseDoc_BR.cOrg, tInsertBaseDocSP_br.cMc,tInsertBaseDoc_BR.cDog,tInsertBaseDoc_BR.cDogUs, tInsertBaseDocSP_br.cEdUchOtp, _priceVal);"/>
+		</MarkerList>
+	</ProjectManager>
+</Viper>

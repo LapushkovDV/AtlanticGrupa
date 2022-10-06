@@ -1,0 +1,71 @@
+//------------------------------------------------------------------------------
+//                                                      (c) Корпорация ГАЛАКТИКА
+//------------------------------------------------------------------------------
+// Галактика 8.1 - Проверка таблиц
+//------------------------------------------------------------------------------
+
+#ifndef nTable
+  #error Не определено nTable
+#end
+#ifndef cTable
+  #error Не определено cTable
+#end
+#define nTable1 Mo
+#define nTable2 de
+
+#ifdef ComponentVersion
+#component "F_Common"
+#end
+
+VipInterface #nTable#nTable1#nTable2 #Licensed_Free;
+Static:
+  function #nTable#nTable1#nTable2 : boolean;
+end;
+
+#doc
+#Doc_Internal
+#end
+Interface #nTable#nTable1#nTable2;
+
+create view
+from
+  #nTable, x$Files
+where
+((
+  co#nTable == x$Files.xF$Code
+))
+;
+
+function #nTable#nTable1#nTable2 : boolean;
+{
+  Result := #nTable2#nTable1#nTable1#nTable2;
+  if Result
+  {
+    Result := (RecordsInTable(##nTable) > #cTable);
+    if Result
+    {
+      Message(Ansi2OEM(''#D1h#E8h#F1h#F2h#E5h#ECh#E0h#20h#F0h#E0h#E1h#EEh#F2h#E0h#E5h#F2h +
+                       ''#20h#E2h#20h#F0h#E5h#E6h#E8h#ECh#E5h#20h#C4h#E5h#ECh#EEh#2Dh#C2h +
+                       ''#E5h#F0h#F1h#E8h#E8h#21h#0Dh#0Dh#CFh#F0h#E5h#E2h#FBh#F8h#E5h#EDh +
+                       ''#EEh#20h#ECh#E0h#EAh#F1h#E8h#ECh#E0h#EBh#FCh#EDh#EEh#20h#E4h#EEh +
+                       ''#EFh#F3h#F1h#F2h#E8h#ECh#EEh#E5h#20h#EAh#EEh#EBh#E8h#F7h#E5h#F1h +
+                       ''#F2h#E2h#EEh#20h#E7h#E0h#EFh#E8h#F1h#E5h#E9h#20h#E2h#20h#F2h#E0h +
+                       ''#E1h#EBh#E8h#F6h#E5h#0Dh) +
+                       xf$Name + ''#20h#28h + xf$Title + ''#29h#2Eh#0Dh#0Dh +
+              Ansi2OEM(''#C2h#F1h#E5h#E3h#EEh#20h#E7h#E0h#EFh#E8h#F1h#E5h#E9h#20h#F2h#E0h +
+                       ''#E1h#EBh#E8h#F6h#E5h#3Ah#20h) +
+                       string(RecordsInTable(##nTable)) +
+              Ansi2OEM(''#0Dh#C4h#EEh#EFh#F3h#F1h#F2h#E8h#ECh#EEh#E5h#20h#EAh#EEh#EBh#E8h +
+                       ''#F7h#E5h#F1h#F2h#E2h#EEh#3Ah#20h) +
+                       Trim(string(#cTable,20,0)), Information);
+    }
+  }
+  Result := not Result;
+}
+
+End.
+
+//------------------------------------------------------------------------------
+#undef nTable
+#undef cTable
+//------------------------------------------------------------------------------

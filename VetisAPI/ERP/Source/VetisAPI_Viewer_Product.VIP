@@ -1,0 +1,115 @@
+#doc
+ Просмотр каталога VetisAPI
+#end
+Interface VetisAPI_Viewer_Product 'Просмотр каталога продукции VetisAPI'  Gray;
+  Show at (, , 87, 27);
+
+Create view
+from
+   ATL_VETISPRODITEM
+ , KatMC
+ , KatOtpEd
+//, SpKau tVETIS_PackageLevelType
+, SpKau tVETIS_ProductType
+, SpKau tVETIS_PackingCodeType
+, SpKau tVETIS_EdIzm
+, SpKau tVETIS_VidPRoduct
+, SpKau tVETIS_VidSubPRoduct
+, AttrNam AttrNam_VidProduct
+, AttrVal AttrVal_VidProduct
+, AttrNam AttrNam_VidSubProduct
+, AttrVal AttrVal_VidSubProduct
+, AttrNam AttrNam_PackingCodeType
+, AttrVal AttrVal_PackingCodeType
+, AttrNam AttrNam_EdIzm
+, AttrVal AttrVal_EdIzm
+
+where
+((
+    ATL_VETISPRODITEM.KATMCNREC    == KatMc.Nrec
+and ATL_VETISPRODITEM.KATOTPEDNREC == KatOtpEd.nrec
+
+
+// 'Тип продукции'
+and           coVETIS_ProductType == tVETIS_ProductType.kodGrKau
+and ATL_VETISPRODITEM.PRODUCTTYPE == tVETIS_ProductType.code
+//'Глобальный идентификатор','продукции'
+and                          8512 == AttrNam_VidProduct.wTable
+and                coAttrNam_GUID == AttrNam_VidProduct.name
+and       AttrNam_VidProduct.nrec == AttrVal_VidProduct.cAttrNam
+and ATL_VETISPRODITEM.PRODUCTIONGUID == AttrVal_VidProduct.vString
+and       AttrVal_VidProduct.cRec == tVETIS_VidPRoduct.Nrec
+and      coVETIS_VidPRoduct      == tVETIS_VidPRoduct.kodGrKau (NoIndex)
+
+//'Глобальный идентификатор','вида продукции'
+and                                 8512 == AttrNam_VidSubProduct.wTable
+and                       coAttrNam_GUID == AttrNam_VidSubProduct.name
+and           AttrNam_VidSubProduct.nrec == AttrVal_VidSubProduct.cAttrNam
+and ATL_VETISPRODITEM.PRODUCTIONTYPEGUID == AttrVal_VidSubProduct.vString
+and           AttrVal_VidSubProduct.cRec == tVETIS_VidSubPRoduct.Nrec
+and             coVETIS_VidPRoduct      == tVETIS_VidSubPRoduct.kodGrKau (NoIndex)
+
+// 'Глобальный идентификатор','вида продукции'
+and                               8512 == AttrNam_PackingCodeType.wTable
+and                     coAttrNam_GUID == AttrNam_PackingCodeType.name
+and       AttrNam_PackingCodeType.nrec == AttrVal_PackingCodeType.cAttrNam
+and      ATL_VETISPRODITEM.PACKAGEGUID == AttrVal_PackingCodeType.vString
+and       AttrVal_PackingCodeType.cRec == tVETIS_PackingCodeType.Nrec
+and       coVETIS_PackingCodeType      == tVETIS_PackingCodeType.kodGrKau (NoIndex)
+
+// 'Глобальный идентификатор','ед измерения'
+and                               8512 == AttrNam_EdIzm.wTable
+and                     coAttrNam_GUID == AttrNam_EdIzm.name
+and                 AttrNam_EdIzm.nrec == AttrVal_EdIzm.cAttrNam
+and      ATL_VETISPRODITEM.MEASUREGUID == AttrVal_EdIzm.vString
+and                 AttrVal_EdIzm.cRec == tVETIS_EdIzm.Nrec
+and                 coVETIS_EdIzm      == tVETIS_EdIzm.kodGrKau (NoIndex)
+
+))
+;
+
+Browse brATL_VETISPRODITEM (,,sci1Esc);
+  Show at (,,,);
+Table ATL_VETISPRODITEM;
+ Fields {Font = {BackColor =if(not isValidAll(tnKatMc) or not isValidAll(tnKatOtpEd),colorerror,0);}};
+  ATL_VETISPRODITEM.ATL_LASTDATE       'Дата последней','модификации'    ('',,): [6], Protect;
+  ATL_VETISPRODITEM.ATL_LASTTIME       'Время последней','модификации'    ('',,): [6], Protect;
+  ATL_VETISPRODITEM.DESCRIPTION        'Описание'    ('',,): [6], Protect;
+  ATL_VETISPRODITEM.GUID               'Глобальный идентификатор','номенклатуры'    ('',,): [6], Protect;
+  ATL_VETISPRODITEM.ACTIVE             'Является ли запись','активной'    ('',,): [6], Protect;
+  ATL_VETISPRODITEM.GLOBALID           'Trade Identification','Number'    ('',,): [6], Protect;
+  ATL_VETISPRODITEM.NAME               'Наименование','продукции'    ('',,): [6], Protect;
+  ATL_VETISPRODITEM.CODE               'Артикул (код)'    ('',,): [6], Protect;
+  // ATL_VETISPRODITEM.PRODUCTTYPE        'Тип продукции'    ('',,): [6], Protect;
+  tVETIS_ProductType.name              'Тип продукции'    ('',,): [6], Protect;
+  // ATL_VETISPRODITEM.PRODUCTIONGUID     'Глобальный идентификатор','продукции'    ('',,): [6], Protect;
+  tVETIS_VidPRoduct.name              'Глобальный идентификатор','продукции'    ('',,): [6], Protect;
+  // ATL_VETISPRODITEM.PRODUCTIONTYPEGUID 'Глобальный идентификатор','вида продукции'    ('',,): [6], Protect;
+  tVETIS_VidSubPRoduct.name            'Глобальный идентификатор','вида продукции'    ('',,): [6], Protect;
+//  ATL_VETISPRODITEM.PACKAGEGUID        'Глобальный идентификатор','упаковки'    ('',,): [6], Protect;
+  tVETIS_PackingCodeType.name          'Глобальный идентификатор','упаковки'    ('',,): [6], Protect;
+  ATL_VETISPRODITEM.QUANTITY           'Количество','единиц упаковки'    ('',,): [6], Protect;
+  ATL_VETISPRODITEM.VOLUME             'Объём единицы','упаковки товара'    ('',,): [6], Protect;
+ // ATL_VETISPRODITEM.MEASUREGUID        'Глобальный идентификатор','ед измерения'    ('',,): [6], Protect;
+  tVETIS_EdIzm.name                    'Глобальный идентификатор','ед измерения'    ('',,): [6], Protect;
+  KatMc.name                           'Связанная','МЦ'    ('',,): [6], Protect;
+  KatOtpEd.name                        'Связанная','единица'    ('',,): [6], Protect;
+ end;
+HandleEvent
+cmHotKeys:{
+    PutHotCommand(RunMenu('mnu_EditVetisAPIProduct'));
+}
+cmValue1:{
+  if isValidAll(tnKatMc) RunInterface('L_MCU::KATMC', KatMc.nrec, 0h);
+}
+cmValue2:{
+  iVetisAPI_PowerShell.GetRequestToAPIVetis_GetProductList;
+  REscanPanel(tnATL_VETISPRODITEM);
+}
+end;
+End. // Interface
+
+mnu_EditVetisAPIProduct Menu {
+    - 'Просмотр МЦ', cmValue1, '', hcNoContext, '',, sci1Esc;
+    - 'Обновить каталог через VETIS API', cmValue2, '', hcNoContext, '',, sci1Esc;
+}

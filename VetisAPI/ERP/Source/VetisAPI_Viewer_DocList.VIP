@@ -1,0 +1,367 @@
+#doc
+Просмотр списка документов VetisAPI
+#end
+
+Interface VetisAPI_Viewer_DocList 'Просмотр списка документов VetisAPI' Gray;
+  Show at (, , 87, 27);
+var _VETISRQSTSPNEW : VETISRQSTSPNEW;
+table struct OrgByAvValue
+(
+  nrec : comp
+ ,name : string
+)
+with index
+(
+  ind0 = nrec
+)
+;
+Function GetGruzopoluchatel_EnterpriseGuid(_EnterpriseGuid,_BusinessEntityGuid : string): string; forward;
+Function NormalizeGUID(_GUID : string) : string; forward;
+Function GetSpKauNameByGUID(_kodGrKau: word; _GUID: string): string; forward;
+Create view
+var _dateBeg, _dateEnd: date;
+select
+ GetGruzopoluchatel_EnterpriseGuid(ATL_Vetis_DocList.EnterpriseGuid,ATL_Vetis_DocList.BusinessEntityGuid) (Fieldname = Gruzopoluchatel)
+, NormalizeGUID(ATL_Vetis_DocList.uuid) (Fieldname=NormUUID)
+, GetSpKauNameByGUID(coVETIS_EdIzm, ATL_Vetis_DocList.kated) (Fieldname = tVetisKatEdname)
+from
+  ATL_Vetis_DocList
+, ATL_Vetis_DocSpRefD
+, ATL_Vetis_DocSpRefSt
+, ATL_VETISPRODITEM
+, KatMc
+, KatOtpEd
+
+
+
+
+, SpKAu tVETIS_PackageLevelType
+, SpKAu tVETIS_PackingCodeType
+
+
+, SpKau tVETIS_TransportType
+, SpKau tVETIS_StatusDoc
+, SpKau tVETIS_StatusDoc2
+
+, SpKau tVETIS_DocumentType
+, SpKau tVETIS_IssueRelatType
+
+, OrgByAvValue
+where
+((
+      root == ATL_Vetis_DocList.nrec
+
+
+and        coVETIS_DocumentStatus == tVETIS_StatusDoc2.kodGrKau
+and ATL_Vetis_DocList.STATUS == tVETIS_StatusDoc2.Code
+
+
+
+  and ATL_Vetis_DocList.ProductGlobalID == ATL_VETISPRODITEM.GLOBALID (noindex)
+  and ATL_VETISPRODITEM.KATMCNREC    == KatMc.Nrec
+  and ATL_VETISPRODITEM.KATOTPEDNREC == KatOtpEd.nrec
+
+
+and  coVETIS_TransportType          == tVETIS_TransportType.kodGrKau
+and ATL_Vetis_DocList.Trasporttype  == tVetis_TransportType.code
+
+/*
+and        coVETIS_PackageLevelType == tVETIS_PackageLevelType2.kodGrKau
+and       ATL_Vetis_DocList.Level_2 == tVETIS_PackageLevelType2.code
+and         coVETIS_PackingCodeType == tVETIS_PackingCodeType2.kodGrKau
+and ATL_Vetis_DocList.PACKINGTYPEID_2 == tVETIS_PackingCodeType2.code
+
+and        coVETIS_PackageLevelType == tVETIS_PackageLevelType4.kodGrKau
+and       ATL_Vetis_DocList.Level_4 == tVETIS_PackageLevelType4.code
+and         coVETIS_PackingCodeType == tVETIS_PackingCodeType4.kodGrKau
+and ATL_Vetis_DocList.PACKINGTYPEID_4 == tVETIS_PackingCodeType4.code
+
+*/
+and ATL_Vetis_DocList.nrec  == ATL_Vetis_DocSpLevel.cATL_Vetis_DocList
+and        coVETIS_PackageLevelType == tVETIS_PackageLevelType.kodGrKau
+and       ATL_Vetis_DocSpLevel.Level == tVETIS_PackageLevelType.code
+and         coVETIS_PackingCodeType  == tVETIS_PackingCodeType.kodGrKau
+and ATL_Vetis_DocSpLevel.PACKINGTYPEID == tVETIS_PackingCodeType.code
+
+
+and ATL_Vetis_DocList.NREC == ATL_Vetis_DocSpRefD.cATL_Vetis_DocList
+
+and            coVETIS_DocumentType ==  tVETIS_DocumentType.kodGrKau
+and ATL_Vetis_DocSpRefD.Issuetype ==  tVETIS_DocumentType.code
+
+     and           coVETIS_ReferenceType == tVETIS_IssueRelatType.kodGrKau
+and ATL_Vetis_DocSpRefD.IssueRelatType == tVETIS_IssueRelatType.code
+
+
+and ATL_Vetis_DocList.NREC == ATL_Vetis_DocSpRefSt.cATL_Vetis_DocList
+and        coVETIS_DocumentStatus == tVETIS_StatusDoc.kodGrKau
+and ATL_Vetis_DocSpRefSt.Status == tVETIS_StatusDoc.Code
+
+))
+;
+
+Function GetSpKauNameByGUID(_kodGrKau: word; _GUID: string): string; cacheable;
+{
+  var _result : string = '';
+  _try
+   {
+      sql
+      select
+       spk.name
+      from SpKau spk
+      join attrnam an on AN.wTable = 8512 and AN.name = 'GUID'
+      join attrval av on av.wtable  = an.wtable and av.cattrnam = an.nrec and spk.nrec = av.crec
+      where av.vstring = :(_GUID)
+        and spk.kodGrKau = :(_kodGrKau)
+        into (_result)
+   }
+   _except else{ var ___i : string; ___i := '';}
+
+  result := _result;
+}
+Function NormalizeGUID(_GUID : string) : string; cacheable;
+{
+ _GUID  := replace(_GUID,'-','');
+ var _result : string = '';
+ _result := _result +     substr(_GUID,1,4)+'-'+substr(_GUID,5,4)+'-'+substr(_GUID,9,4);
+ _result := _result + '-'+substr(_GUID,13,4)+ '-'+substr(_GUID,17,4)+'-'+substr(_GUID,21,4);
+ _result := _result + '-'+substr(_GUID,25,4)+ '-'+substr(_GUID,29,4);
+ result := upcase(_result);
+}
+
+Function GetGruzopoluchatel_BusinessEntityGuid(_BusinessEntityGuid : string): string;
+{
+  var _Result : string = '';
+  delete all OrgByAvValue;
+
+  _try
+   {
+     SQl
+        select top 1
+            org.nrec as nrec
+           ,org.name as name
+        from KatOrg org
+        join attrnam an on an.wtable = 1418 and an.name = :(coAttrNam_BusinessEntity)
+        join attrval av on av.cattrnam = an.nrec and av.wtable = an.wtable and av.crec = org.nrec
+        where upper(av.vstring) = upper(:(_BusinessEntityGuid))
+        into OrgByAvValue
+       ;
+   }
+   _except else{ var ___i : string; ___i := '';}
+
+
+  if getfirst OrgByAvValue <> tsOK
+    {
+      _result := 'Клиент не найден в Галактике'
+    }
+    else
+    {
+        _Result := '!!НЕТОЧНО!! '+ OrgByAvValue.name
+    }
+    result := _result;
+}
+Function GetGruzopoluchatel_EnterpriseGuid(_EnterpriseGuid,_BusinessEntityGuid : string): string; cacheable;
+{
+  var _Result : string = '';
+  delete all OrgByAvValue;
+  _try
+   {
+    SQl
+     select
+         org.nrec as nrec
+        ,org.name as name
+     from KatOrg org
+     join attrnam an on an.wtable = 1418 and an.name = :(coAttrNam_VETIS_Enterprise)
+     join attrval av on av.cattrnam = an.nrec and av.wtable = an.wtable and av.crec = org.nrec
+     where upper(av.vstring) = upper(:(_EnterpriseGuid))
+     into OrgByAvValue
+    ;
+   }
+   _except else{ var ___i : string; ___i := '';}
+
+   if getfirst OrgByAvValue <> tsOK
+    {
+      _result := GetGruzopoluchatel_BusinessEntityGuid(_BusinessEntityGuid);
+    }
+    else
+    {
+      if recordsInTable(tnOrgByAvValue) = 1
+       {
+        _result := OrgByAvValue.name
+       }
+       else
+       {
+        _Result := '!!ОШИБКА!! Много КЛИЕНТОВ ('+ recordsInTable(tnOrgByAvValue) + ' шт)';
+        _loop OrgByAvValue _Result := _Result +';'+ OrgByAvValue.name;
+       }
+    }
+ result := _Result;
+}
+
+Browse brATL_Vetis_DocList (,,sci1Esc);
+Table ATL_Vetis_DocList;
+ Fields
+  ATL_Vetis_DocList.UUID 'UUID ЭВСД'    ('',,): [6], Protect;
+  ATL_Vetis_DocList.DataEVSD 'дата оформления ЭВСД' ('',,): [6], Protect;
+//  ATL_Vetis_DocList.STATUS  'Статус'           ('',,): [6], Protect;
+  tVETIS_StatusDoc2.name   'Статус'           ('',,): [6], Protect;
+  Gruzopoluchatel    'Грузополучатель' ('',,): [6], Protect;
+  ATL_Vetis_DocList.ProductName 'Наименование продукции' ('',,): [6], Protect;
+  ATL_Vetis_DocList.Volume 'Объем'                       ('',,): [6], Protect;
+ end;
+
+Window winSetPeriod 'Указание периода для запроса документов';
+show at (,,50,6);
+Screen ScrSetPeriod;
+Fields
+ _dateBeg : NoProtect;
+ _dateEnd : noProtect;
+ Buttons
+  cmValue67, Default,,'Показать текущий сток',,sci1Esc;
+  cmCancel,,,,,;
+<<
+Задайте период запроса документов
+
+Начало .@@@@@@@@@@ окончание .@@@@@@@@@@
+
+ <.  Ok  .>             <.Отмена.>
+>>
+
+end;
+handleevent
+cminit:
+{
+  _dateBeg := _dateEnd := cur_date;
+}
+cmValue67:
+{
+  if _dateEnd < _dateEnd then
+  {
+    Message('Дата окончания не может быть меньше даты начала',error);
+    stop;abort;exit;
+  }
+  iVetisAPI_PowerShell.GetRequestToAPIVetis_GetDocumentList(DateToStr(_dateBeg,'YYYY-MM-DD')+'/'+ DateToStr(_dateEnd,'YYYY-MM-DD'));
+  closewindow(winSetPeriod);
+}
+end;
+end;
+
+Window winCurrRecordDoc 'Информация по ЭВСД';
+  Show at (, , 100, 50);
+Screen ScrCurrRecordStock;
+  Show at (, , 99, 22);
+Table ATL_Vetis_DocList;
+ Fields
+   ATL_Vetis_DocList.UUID               ('UUID ЭВСД') : Protect;
+   NormUUID                             ('UUID ЭВСД нормализованный') : Protect;
+   ATL_Vetis_DocList.DataEVSD           ('дата оформления ЭВСД') : Protect;
+//   ATL_Vetis_DocList.STATUS             ('Статус') : Protect;
+   tVETIS_StatusDoc2.name  ('Статус') : Protect;
+
+   Gruzopoluchatel                      ('Грузополучатель') : Protect;
+   tVETIS_TransportType.name            ('Тип транспортного средства') : Protect;
+   ATL_Vetis_DocList.Car                ('Автомобиль') : Protect;
+   ATL_Vetis_DocList.ProductGlobalID    ('GlobalID продукции') : Protect;
+   ATL_Vetis_DocList.ProductName        ('Наименование продукции') : Protect;
+   ATL_Vetis_DocList.Volume             ('Объем') : Protect;
+//   ATL_Vetis_DocList.KatEd              ('Единица объема') : Protect;
+   tVetisKatEdname                    ('Единица объема') : Protect;
+   ATL_Vetis_DocList.DataProizv         ('Дата производства') : Protect;
+   ATL_Vetis_DocList.SrokGodn           ('Срок годности') : Protect;
+   ATL_Vetis_DocList.BatchID            ('batchID') : Protect;
+<<
+           UUID ЭВСД .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ Нормализованный UUD .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+дата оформления ЭВСД .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+              Статус .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+     Грузополучатель .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Тип транспортного средства .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                Автомобиль .@@@@@@@@@@@@@@@
+    GlobalID продукции .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+Наименование продукции .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+                 Объем .@@@@@@@@@@@ Единица объема .@@@@@@@@@@@@@@@@@@@
+   Дата производства.@@@@@@@@@@@ Срок годности.@@@@@@@@@@@
+            batchID .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+>>
+end;
+
+Screen ScrATL_Vetis_DocSpLevel;
+show at (,23,99,24);
+ table ATL_Vetis_DocSpLevel;
+<<
+                Уровни упаковки
+>>
+end;
+Browse brATL_Vetis_DocSpLevel;
+ Show at (, 25, 99, 31);
+ table ATL_Vetis_DocSpLevel;
+fields
+//  ATL_Vetis_DocSpLevel.Level       'Уровень упаковки'    ('',,): [5], Protect;
+  tVETIS_PackageLevelType.name       'Уровень упаковки'    ('',,): [5], Protect;
+  tVETIS_PackingCodeType.name   'Упаковка'    ('',,): [10], Protect;
+  ATL_Vetis_DocSpLevel.Quantity    'Количество'    ('',,): [3], Protect;
+  ATL_Vetis_DocSpLevel.EAN13       'EAN13'    ('',,): [7], Protect;
+  ATL_Vetis_DocSpLevel.EAN128      'EAN128'    ('',,): [7], Protect;
+  ATL_Vetis_DocSpLevel.SSCC      'SSCC'    ('',,): [7], Protect;
+end;
+
+
+Screen ScrATL_Vetis_DocSpRefD;
+show at (,32,99,33);
+ table ATL_Vetis_DocSpRefD;
+<<
+                Связанные документы
+>>
+end;
+Browse brATL_Vetis_DocSpRefD;
+ Show at (, 34, 99, 40);
+ table ATL_Vetis_DocSpRefD;
+fields
+ ATL_Vetis_DocSpRefD.IssueNumber 'Номер'    ('',,): [3], Protect;
+ ATL_Vetis_DocSpRefD.IssueDate   'Дата'    ('',,): [4], Protect;
+ tVETIS_IssueRelatType.name        'Тип связи'    ('',,): [4], Protect;
+ tVETIS_DocumentType.name          'Тип документа'    ('',,): [6], Protect;
+end;
+Screen ScrATL_Vetis_DocSpRefSt ;
+show at (,41,99,42);
+ table ATL_Vetis_DocSpRefSt;
+<<
+               История смены статусов
+>>
+end;
+
+Browse brATL_Vetis_DocSpRefSt ;
+Show at (, 43, 99, 49);
+table ATL_Vetis_DocSpRefSt ;
+fields
+ tVETIS_StatusDoc.name                  'Статус'    ('',,): [3], Protect;
+ ATL_Vetis_DocSpRefSt.SpecifiedPerson 'ФИО'    ('',,): [6], Protect;
+ ATL_Vetis_DocSpRefSt.ActualDateTime  'Дата-время изменения'    ('',,): [3], Protect;
+end;
+handleevent
+end;
+end;
+
+HandleEvent
+
+cmValue1:
+{
+  RunWindowModal(WinSetPeriod);
+  rereadrecord;
+}
+cmDefault:
+{
+  runwindowmodal(winCurrRecordDoc);
+  rereadrecord;
+
+}
+cmHotKeys:{
+    PutHotCommand(RunMenu('mnu_VetisAPI_Viewer_DocList'));
+}
+
+end;
+End. // Interface
+
+mnu_VetisAPI_Viewer_DocList Menu {
+    - 'Обновить список документов через VETIS API', cmValue1, '', hcNoContext, '',, sci1Esc;
+}

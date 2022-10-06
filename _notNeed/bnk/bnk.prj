@@ -1,0 +1,13 @@
+#statusline "statgal"
+
+#include galnet.inc end;
+#include glovars.inc
+
+#define ComponentVersion  
+#Component "F_BankDocF"
+
+#doc
+  Интерфейс пред- и постобработки файла банковской выписки
+#end
+
+#make "VypScript\vypScript.vip"; // Предобработка банковской выписки

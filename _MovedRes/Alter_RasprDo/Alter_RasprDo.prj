@@ -1,0 +1,27 @@
+#include PreDefs.inc; 
+const
+#include GloConst.inc;
+#include TUNES.INC
+
+#include Galnet.csc;
+#include Galnet.ccm;
+#include Money.ccm
+#include Money.csc //без Galnet.inc надо
+
+end;
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include DicTypes.def
+#include GloDefs.inc
+//#include StatDefs.inc
+
+#define ComponentVersion  
+#include ExtAttr.vih
+
+
+#Component "L_BASEDOC"
+
+#make "alter\Alter_RasprDo.vip"

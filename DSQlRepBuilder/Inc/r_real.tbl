@@ -1,0 +1,29 @@
+Table STRUCT tblR_real "Отчет реализации по контр и скл"
+(
+  nRec     : comp       "",
+  sMC      : string[80] "наименование товара",
+  sKl      : string[17] "наименование классификатора",
+  sOrg     : string[150]"наименование контрагента",
+  sED      : string[80] "наименование ед.измерения",
+  sBarKod  : string[30] "бар-код",
+  bInt     : Date       "дата начала интервала",
+  eInt     : Date       "дата конца  интервала",
+  Kol      : Double     "количество",
+  Price    : Double     "цена в вал. для отч.",
+  Summa    : Double     "стоимость",
+  VPrice   : Double     "цена в баз вал.",
+  VSumma   : Double     "стоимость,",
+  flag     : char       "Summa,Avrg;Pos",
+  Rest     : Double     "остаток"
+)
+With Index
+(
+  tblR_real00  =  eInt,
+  tblR_real01  =  sMC + sKl + sOrg + eInt,
+  tblR_real02  =  sMC + sKl + eInt,
+  tblR_real03  =  sMC + eInt,
+  tblR_real04  =  sKl + sOrg + sMC + eInt,
+  tblR_real05  =  sKl + sMC + eInt,
+  tblR_real06  =  sKl + sOrg + eInt,
+  tblR_real07  =  sKl + eInt
+);

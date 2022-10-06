@@ -1,0 +1,17 @@
+#ifndef _included_LoadOrder_CRPT_vih_
+#define _included_LoadOrder_CRPT_vih_
+
+#component "ATLANTIC"
+objInterface ObjLoadOrder_CRPT;
+ Procedure InsertSpec(  _NoDoc
+                      , _SSCC
+                      , _EAN
+                      , _EANUPAK   : string;
+                        _Prod_date : date
+                     ) ;
+end;
+
+vipInterface LoadOrder_CRPT implements ObjLoadOrder_CRPT licensed(free);
+
+var _LoadOrder_CRPT : LoadOrder_CRPT;
+#end

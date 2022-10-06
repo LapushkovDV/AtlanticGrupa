@@ -1,0 +1,83 @@
+#ifdef ComponentVersion
+#component "z_sredn"
+#end
+
+vipinterface BLisNet1
+  licensed
+  (
+    #include BLisNet1.lih
+  )
+  parameters(PrClsc: comp; prcex: comp; p1: comp; p2: double; SickListType: word; typeRun: word; persNRec: comp);
+
+vipinterface ZBlisNet1 licensed(free) Parameters(PrClsc: comp;prcex : comp;p2: double; SickListType: word; typeRun: word; persNRec: comp);
+
+vipinterface FormOtpb licensed(free) parameters(Subject: word; DataType: word; prcLs: comp);
+vipinterface RaschetOtpB licensed(free) parameters(Subject: word; DataType: word);
+vipinterface klOtpusk licensed(free) parameters(p1: comp; p2: double; DataType  : word);
+
+vipinterface otpusk1
+  licensed
+  (
+    #include otpusk1.lih
+  )
+  Parameters(prcLs: comp; prcex: comp; p1: comp; p2: double; V0Choice: word);
+
+vipinterface ZOtpusk1 licensed(free) Parameters(prcLs: comp; prcex: comp; p2: double; V0Choice: word);
+
+vipinterface ConvOtp licensed(free);
+vipinterface VozOtpusk licensed(free) parameters(PersonalAccount: comp);
+vipinterface pickOTP licensed(free) parameters(KOtpus_t: word; iType: integer; vIntref: integer; notMarkMode : boolean);
+vipinterface pickOTPforEdit licensed(free) parameters(KOtpus_t: word; iType: integer; vIntref: integer);
+vipinterface PickSred licensed(free) parameters(Choice: word);
+vipinterface prvidopl3 licensed(free) parameters(prmnrec: comp; interfaceType: word);
+vipinterface SelectBlisnet licensed (free) parameters(NRecLShet: comp; refNRec: comp);
+vipinterface SprSrZar licensed(free) parameters(_tip: word);
+vipinterface f_1_12_S_1 licensed(free) parameters(prcex: comp; YearK: integer);
+vipinterface f_1_12_S licensed(free);
+vipinterface klbldch licensed(free) parameters(Kod: word);
+vipinterface Kllisnet licensed(free) parameters(p1: comp);
+vipinterface pickklbl licensed(free) parameters(LisNet: word);
+vipinterface KlVidPos licensed(free) parameters(p1: comp);
+vipinterface PickPos licensed(free) parameters(VidPos_t: word);
+vipinterface PickPosForEdit licensed(free) parameters(VidPos_t: word);
+vipinterface PriSprBl licensed(free) parameters(MyB: word);
+vipinterface PriSprOt licensed(free) parameters(V0Choice: word);
+vipinterface PriT60 licensed(free) parameters(V0Choice: word);
+vipinterface DetSprOt licensed(free) parameters(V0Choice: word);
+vipinterface RasBl licensed(free) parameters(DataType: word; RasBlOne: boolean);
+vipinterface raskoef licensed(free);
+vipinterface raskoef1 licensed(free);
+vipinterface RasOtp licensed(free) parameters(V0Choice: word; KodOtpusk: word;  NrecOtp: comp);
+vipinterface SPRZAR_2 licensed(free);
+vipinterface Sredni licensed(free);
+vipinterface SrednZar licensed(free) parameters(p1: comp; Choice: word);
+vipinterface OkladList licensed(free) parameters(prcex: comp; prcLs: comp; p2: double);
+vipinterface DoVOtpusk licensed(free) parameters(V0Choice: word; vDataN, vDatOk: date; KOtp, MesUxoda,YeaUxoda : word);
+vipinterface VOEdit licensed(free);
+vipinterface VOtpusk licensed(free);
+vipinterface ReesBol licensed(free);
+vipinterface markbol licensed(free);
+vipinterface ParamPrintSredn licensed(free) parameters(format : string);
+vipinterface markotp licensed(free);
+vipinterface KontrOtp licensed(free);
+vipinterface FVedom2 licensed(free);
+vipinterface SicklistWithLeaveIntersectionSetup licensed(free);
+vipinterface SicklistWithLeaveIntersectionControl licensed(free)  parameters(PeriodFltr: integer; Myb : word);
+vipinterface SelectorKindOfDiseaseEvent licensed(free) parameters(KLBLDChrec: comp; Kod_t: Word);
+vipinterface ClassifBoln licensed(free);
+vipinterface DETSPRbl parameters(myb: word) licensed(free);
+vipinterface kontrprbl parameters(myb: word) licensed(free);
+
+#include GroupingAndSorting.vih
+vipinterface fvedom2Calculation licensed(free) parameters(GAS: IGroupingAndSorting);
+
+
+//------------------------------------------------------------------------------
+// диалоги
+//------------------------------------------------------------------------------
+
+// selectot.dlg
+dialog selectOT(OtlFlag: word; CaseByte: word; KalendFlag: word; FlagArme: word; FlagOpl: word; ODSredDay: double; ODKoef12: word; NormDay: word; ODPeriod: word; KoefP: double; ODFlag12: word; Claster: word; Datanko: date; Datakko: date; Datank2: date; Datakk2: date; BDClaster1: word; BDA_K_O: word);
+dialog selectBL(CaseByte: word; KalendFlag: word; vDataN: date; vDatOk: date; OtlFlag: word;ODPeriod: word; Claster: word; K_1_12: double; vCurdate: date; Claster1: word; A_K_O: word);
+dialog VOtpPar(CaseByte: word);
+dialog ConDohY2(DataN: date; DatOk: date; Datas: date; CheckMon1: word; CheckMon2: word; CheckMon12: word; CheckMon22: word; Claster: word; Clasterd: word; Claster1: word);

@@ -1,0 +1,224 @@
+[obj | ObjInterface declaration]
+ObjInterface Obj|;
+End;
+
+[vip | VipInterface declaration]
+VipInterface | implements Obj
+  Licensed( free )
+  Parameters( );
+
+[int | Interface template]
+Interface | '' ('', hcNoContext, sci1Esc);
+  Show at(,,,);
+End.
+
+[cre | Create view]
+Create view
+Var
+  |
+As select *
+From
+
+Where ((
+
+));
+
+[win | Window template]
+Window wn| '' ('', hcNoContext, sci1Esc);
+  Show at(,,,);
+
+End;
+
+[scr | Screen template]
+Screen sc| '' ('', hcNoContext, sci1Esc);
+  Show at(,,,);
+  Table ;
+Fields
+<<
+>>
+End;
+
+[brs | Browse template]
+Browse br| '' ('', hcNoContext, sci1Esc);
+  Show at(,,,);
+  Table ;
+Fields
+End;
+
+[tre | Tree template]
+Tree tr| '' ('', hcNoContext, sci1Esc);
+  Show at(,,,);
+  Table ;
+Fields
+End;
+
+[emb | Embedded Interface template]
+Embedded emb| '' Interface ;
+End;
+
+[ts | TabbedSheet template]
+TabbedSheet Bottom ts|;
+  Show at(,,,);
+
+End;
+
+[func | Function declaration]
+Function |(): ;
+{
+  Result := ;
+}
+
+[proc | Procedure declaration]
+Procedure |();
+{
+}
+
+[hei | HandleEvent for Interface]
+HandleEvent // Interface
+
+cmOnVipLoad:
+{
+  |
+}
+
+cmOnVipUnload:
+{
+}
+
+cmHotKeys:
+  PutHotCommand( RunMenu( #AddComp( '' )'' ) );
+
+End;
+
+[hew | HandleEvent for Window]
+WindowEvent |;
+
+cmInit:
+{
+}
+
+cmHotKeys:
+  PutHotCommand( RunMenu( #AddComp( '' )'' ) );
+
+End;
+
+[te | TableEvent template]
+TableEvent
+  Table |;
+
+cmSetDefault:
+{
+}
+
+cmCheckRecord:
+{
+}
+
+cmInsertRecord:
+  insert current ;
+
+cmUpDateRecord:
+  update current ;
+
+cmDeleteRecord:
+  delete current ;
+
+cmPositionChanged:
+{
+}
+
+End;
+
+[cmtr | Tree Events]
+cmTreeTop:
+  node := 0;
+
+cmTreeDown:
+  node := Table.NRec;
+
+cmTreeUp:
+   node := Table.cNode;
+
+cmTreeNodeType:
+  if ( TreeIsTerminal(trPanel) )
+    TreeSetNodeType(trPanel, ntfText);
+
+cmTreeNeedOwner:
+  TreeJumpToRecord(trPanel, Table.cNode);
+
+[if | if statement]
+if ( | )
+{
+}
+else
+{
+}
+
+[for | for statement]
+var i: integer;
+for( i := 0; i < |; i++ )
+{
+}
+
+[while | while statement]
+while ( | )
+{
+}
+
+[dow | do .. while]
+do
+{
+  |
+}
+while ( );
+
+[case | case statement]
+case | of
+  : ;
+  : ;
+else ;
+end;
+
+[try | try except finally]
+_try
+{
+  |
+}
+_except
+  on:
+  {
+  }
+_finally
+{
+}
+
+[array | array declaration (var)]
+array[ 0..| ] of ;
+
+[arrayc | array declaration (const)]
+array[ 0..| ] of = ();
+
+[dts | DataStream]
+DataStream |
+(
+  [Paraam1] Variable1;
+  [Paraam2] Variable2;
+
+  Table TableName
+  (
+    [field_11] TableName.Fld1;
+    [field_12] TableName.Fld2;
+  );
+
+  DataSet DS
+  (
+    [field_21] Variable3;
+    [field_22] Variable4;
+  );
+)
+end;
+
+[vis | Visualisation]
+StartNewVisual( |vtRotateVisual / vtNumericVisual / vtIndicatorVisual, vfTimer + vfBreak + vfConfirm, 'Описание процесса...', 1 );
+
+StopVisual( '', 0 );

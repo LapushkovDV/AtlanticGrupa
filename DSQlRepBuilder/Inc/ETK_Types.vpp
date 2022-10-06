@@ -1,0 +1,18 @@
+#ifndef __ETK_TYPES_VPP__
+#define __ETK_TYPES_VPP__
+
+Type
+  tETKOperFilter = record
+    wMode
+  , wMode2
+  , wMode3
+  , wMode4
+  , wMode5    : word;
+
+    BegDate
+  , EndDate   : date;
+    cPlansSch : comp;
+    SchetMarker : longint;
+  end;
+
+#end // __ETK_TYPES_VPP__

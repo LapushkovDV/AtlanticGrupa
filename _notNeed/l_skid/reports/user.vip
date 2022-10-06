@@ -1,0 +1,25 @@
+#include UserReport.vih
+vipInterface UserReport_fin_res implements iUserReport licensed(free);
+interface UserReport_fin_res;
+create view;
+procedure Run;
+begin
+  RunInterfaceNoModal('L_SKID::atl_katskid');
+end;
+function GetReportName: string;
+begin
+  GetReportName := 'Справочник скидок по позиции спецификации';
+end;
+function GetGroupName (level: word): string;
+begin
+  GetGroupName := '';
+end;
+function GetPriority: integer;
+begin
+  GetPriority := 10;
+end;
+function VisibleInModule(ind: byte): string;
+begin
+  VisibleInModule := 'SELL';
+end;
+end.

@@ -1,0 +1,366 @@
+#component 'F_XLSRep'
+#include xlReport.Vih   // процедуры работы с отчетами excel
+INTERFACE Droga_TransportReport 'Отчет по транспортным расходам' EscClose;
+SHOW AT (,,44,10);
+Const
+ #include DrogaConst.inc
+ DefaultShablonPath   = '%StartPath%DrogaResources\XLT\Droga_TransportReport.xlt';
+end;
+// Временная таблица в памяти. В нее копируются нужные значения,
+// потом она сортируется и выгружается в Excel
+TABLE STRUCT tTransportReport
+(
+ KatsoprNrec  : comp,
+ KatorgName   : string,
+ DogovorNoDoc : string,
+ ZayavkaDdoc  : date,
+ ZayavkaNodoc : string,
+ KatsoprDsopr : date,
+ KatsoprNsopr : string,
+ KatsoprSumma : double,
+ AutoDate     : date,
+ AutoNoDoc    : string,
+ AutoSumma    : double,
+ RailDate     : date,
+ RailNoDoc    : string,
+ RailSumma    : double
+)
+WITH INDEX
+(
+ tTransportReport01 = KatsoprNrec,
+ tTransportReport02 = KatorgName + KatsoprDsopr + KatsoprNsopr
+);
+
+CREATE VIEW
+VAR d1,d2  :date;                       //Даты начала и конца периода отчета
+    sXLTFileName, sXLSFileName :string; //Пути на шаблон и на результирующий файл
+AS SELECT *
+FROM tTransportReport,
+     katorg, dogovor, dogovor appdogovor, basedoc zayavka, stepdoc Zstepdoc,
+	  basedoc, stepdoc, spstep, katsopr, katusl, katusl katuslRail,
+	  attrnam, attrval
+WHERE
+((
+    word(201)           == katsopr.vidsopr
+and d1                 <<= katsopr.dsopr
+and d2                 >>= katsopr.dsopr
+
+and katsopr.corg        == katorg.nrec
+and katsopr.cdogovor    == dogovor.nrec
+and katsopr.cappdogovor == appdogovor.nrec
+and katsopr.cstepdoc    == Zstepdoc.nrec
+and Zstepdoc.cbasedoc   == zayavka.nrec
+
+and word(1104)          == attrnam.wtable
+and AttrSPNakl          == attrnam.name
+and attrnam.nrec        == attrval.cattrnam
+and katsopr.nrec        == attrval.vcomp (noindex)
+and attrval.crec        == spstep.nrec
+and spstep.cstepdoc     == stepdoc.nrec
+and stepdoc.cbasedoc    == basedoc.nrec
+and spstep.cmcusl       == katusl.nrec     and (Pos(AutoGroupCode,katusl.kod    )=4) //Потому что первые три символа
+and spstep.cmcusl       == katuslRail.nrec and (Pos(RailGroupCode,katuslRail.kod)=4) //заняты для закрытия счетов
+));
+
+FILE MyFile; //Используется здесь для проверки наличия файла шаблона
+
+VAR
+ OneRec     : record as table tTransportReport;
+ TotalNakl, TotalAuto, TotalRail : double;
+ pXL : XLSRepBuilder;  // объект формирования excel отчетов
+
+Screen scr1;
+ NoTableNavigation
+ fields
+  d1          : NoProtect;
+  d2          : NoProtect;
+  sXLTFileName: NoProtect, PickButton;
+
+   Buttons
+   cmOK, Default, ,,;
+   cmCancel,,,,;
+<< 'Параметры отчета'
+
+  Формировать за период:
+                      Начало:  .@@@@@@@@@@
+                      Конец :  .@@@@@@@@@@
+  -----------------------------------------------------------------------
+  Путь к шаблону отчета
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+     <.  Ok   .>               <.Cancel.>
+
+>>
+End;
+
+//Проверка наличия файла по полному пути
+FUNCTION CheckFileExistence(sFileName:string):boolean;
+{
+ CheckFileExistence:=TRUE
+ _TRY MyFile.OpenFile (sFileName,stOpen)
+ _EXCEPT
+	  ON ExFileNotFound:
+	  {
+	   CheckFileEXISTENCE := FALSE;
+	   _SkipFinally;
+	  }
+ _FINALLY MyFile.Close;
+}//checkfileexistence
+
+//Проверка корректного заполнения всех параметров отчета
+FUNCTION AllParametersOK :boolean;
+{
+ AllParametersOK := FALSE;
+ IF D1=Date(0,0,0) OR D2=Date(0,0,0) OR d1>d2  THEN {Message('Неверно задан период отчета!');Exit;}
+ IF sXLTFileName='' THEN {Message('Не указан путь к шаблону отчета!');Exit;}
+ IF NOT CheckFileExistence(sXLTFileName) THEN {Message('Не найден шаблон отчета по указанному пути:'+chr(13)+sXLTFileName);Exit;}
+ AllParametersOK := TRUE;
+}//AllParametersOK
+
+//Функция выгрузки данных в Excel
+Function RunRep : boolean;
+{
+  RunRep := False;
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  // CONNECT EXCEL
+  //
+  // создаем отчет на основании существующего шаблона
+  Set sXLSFileName := pXL.CreateReport(sXLTFileName, True);
+  //////////////////////////////////////////////////////////////////////////////
+  // выгрузка таблицы отчета
+  //
+  pXL.CreateTbls(sXLSFileName);
+  pXL.CreateTbl('TransportReportTable');
+  pXL.CreateTblFld('KatorgName');
+  pXL.CreateTblFld('DogovorNoDoc');
+  pXL.CreateTblFld('ZayavkaDdoc');
+  pXL.CreateTblFld('ZayavkaNodoc');
+  pXL.CreateTblFld('KatsoprDsopr');
+  pXL.CreateTblFld('KatsoprNsopr');
+  pXL.CreateTblFld('KatsoprSumma');
+  pXL.CreateTblFld('AutoDate');
+  pXL.CreateTblFld('AutoNoDoc');
+  pXL.CreateTblFld('AutoSumma');
+  pXL.CreateTblFld('RailDate');
+  pXL.CreateTblFld('RailNoDoc');
+  pXL.CreateTblFld('RailSumma');
+  // выгрузка полей таблицы
+  _Loop tTransportReport ORDERED BY INDEX tTransportReport02
+  {
+   IF not NextVisual THEN
+	{
+	 pXL.DisconnectExcel;
+	 DELETE ALL tTransportReport;
+	 Exit;
+   }//Если прервали
+   // очистить буфер записи таблицы
+   pXL.ClearTblBuffer;
+   // заполнение значений полей текущей записи таблицы
+   pXL.SetTblStringFldValue('KatorgName'  ,tTransportReport.KatorgName  );
+   pXL.SetTblStringFldValue('DogovorNoDoc',tTransportReport.DogovorNoDoc);
+   pXL.SetTblDateFldValue  ('ZayavkaDdoc' ,tTransportReport.ZayavkaDdoc );
+   pXL.SetTblStringFldValue('ZayavkaNodoc',tTransportReport.ZayavkaNodoc);
+   pXL.SetTblDateFldValue  ('KatsoprDsopr',tTransportReport.KatsoprDsopr);
+   pXL.SetTblStringFldValue('KatsoprNsopr',tTransportReport.KatsoprNsopr);
+   pXL.SetTblNumberFldValue('KatsoprSumma',tTransportReport.KatsoprSumma);
+   pXL.SetTblDateFldValue  ('AutoDate'    ,tTransportReport.AutoDate    );
+   pXL.SetTblStringFldValue('AutoNoDoc'   ,tTransportReport.AutoNoDoc   );
+   pXL.SetTblNumberFldValue('AutoSumma'   ,tTransportReport.AutoSumma   );
+   pXL.SetTblDateFldValue  ('RailDate'    ,tTransportReport.RailDate    );
+   pXL.SetTblStringFldValue('RailNoDoc'   ,tTransportReport.RailNoDoc   );
+   pXL.SetTblNumberFldValue('RailSumma'   ,tTransportReport.RailSumma   );
+   // вставка записи в таблицу
+   pXL.InsTblRow;
+  }//Loop
+  DELETE ALL tTransportReport;
+  // все необходимые пост-действия по "публикации" таблицы (DBTbl Destructor)
+  pXL.PublishTbl('TransportReportTable');
+  //
+  // выгрузка таблицы отчета
+  //////////////////////////////////////////////////////////////////////////////
+  // выгрузка переменных отчета
+  //
+  // инициализация переменных Excel-БД (DBVar Constructor)
+  pXL.CreateVar(sXLSFileName);
+  // выгрузка значений переменных
+  pXL.SetDateVar('DateRep' , Cur_Date);
+  pXL.SetDateVar('DateBegin' , D1);
+  pXL.SetDateVar('DateEnd'   , D2);
+  pXL.SetNumberVar('TotalNakl',TotalNakl);
+  pXL.SetNumberVar('TotalAuto',TotalAuto);
+  pXL.SetNumberVar('TotalRail',TotalRail);
+  // все необходимые пост-действия по "публикации" переменных (DBVar Destructor)
+  pXL.PublishVar;
+  //
+  // выгрузка переменных отчета
+  //////////////////////////////////////////////////////////////////////////////
+
+  // формирование отчета по заданнному шаблону
+  StartNewVisual(vtRotateVisual, vfTimer, 'Шаг 3 из 3: Обработка данных в Excel', 0);
+  pXL.LoadReport(sXLSFileName);
+  StopVisual('',0);
+  pXL.DisconnectExcel;
+  //
+  // DISCONNECT EXCEL
+  //////////////////////////////////////////////////////////////////////////////
+  RunRep := True;
+}//runrep
+
+//Функция чтения БД и сохранения данных во временную таблицу в памяти
+FUNCTION InitTableTransportReport : boolean;
+{
+ InitTableTransportReport := False;
+ TotalNakl :=0; TotalAuto :=0; TotalRail :=0;
+ _LOOP katsopr
+ {
+  IF NOT NextVisual THEN Exit;
+  OneRec.KatsoprNrec  := katsopr.nrec;
+  OneRec.KatorgName   := '';            OneRec.DogovorNoDoc := '';
+  OneRec.ZayavkaDdoc  := date(0,0,0);   OneRec.ZayavkaNodoc := '';
+  OneRec.KatsoprDsopr := katsopr.dsopr;
+  OneRec.KatsoprNsopr := katsopr.nsopr;
+  OneRec.KatsoprSumma := katsopr.summa;
+  OneRec.AutoDate     := date(0,0,0);   OneRec.AutoNoDoc    := '';   OneRec.AutoSumma    := 0;
+  OneRec.RailDate     := date(0,0,0);   OneRec.RailNoDoc    := '';   OneRec.RailSumma    := 0;
+  IF GetFirst fastfirstrow Katorg = tsOK THEN OneRec.KatorgName := katorg.name;
+  IF GetFirst fastfirstrow AppDogovor = tsOK
+  THEN {OneRec.DogovorNodoc:=appdogovor.nodoc;}
+  ELSE {IF GetFirst fastfirstrow Dogovor = tsOK THEN {OneRec.DogovorNodoc:=dogovor.nodoc;}}
+  IF GetFirst fastfirstrow zstepdoc = tsOK
+  THEN {IF GetFirst fastfirstrow Zayavka = tsOK THEN {OneRec.ZayavkaDdoc:=zayavka.ddoc; OneRec.ZayavkaNodoc:=zayavka.nodoc;}}
+  IF GetFirst fastfirstrow attrnam <> tsOK
+  THEN {Message('В системе не обнаружен внешний атрибут "'+AttrSPNakl+'"!'+chr(13)+'Операция отменена.'); Exit;}
+  ELSE
+  {
+   _LOOP attrval
+   {
+    IF GetFirst fastfirstrow spstep = tsOK
+    IF GetFirst fastfirstrow stepdoc = tsOK
+    IF GetFirst fastfirstrow basedoc = tsOK
+    {
+      IF GetFirst fastfirstrow katusl = tsOK THEN
+		{
+		 OneRec.AutoDate  := basedoc.ddoc;
+		 OneRec.AutoNoDoc := basedoc.nodoc;
+		 OneRec.AutoSumma := spstep.summa;
+		}//katusl
+      IF GetFirst fastfirstrow katuslRail = tsOK THEN
+		{
+		 OneRec.RailDate  := basedoc.ddoc;
+		 OneRec.RailNoDoc := basedoc.nodoc;
+		 OneRec.RailSumma := spstep.summa;
+		}//katuslRail
+    }//spstep, stepdoc, basedoc
+   }//loop attrval
+  }//attrnam
+  INSERT tTransportReport
+     SET tTransportReport.KatsoprNrec  := OneRec.KatsoprNrec ,
+         tTransportReport.KatorgName   := OneRec.KatorgName  ,
+         tTransportReport.DogovorNoDoc := OneRec.DogovorNoDoc,
+         tTransportReport.ZayavkaDdoc  := OneRec.ZayavkaDdoc ,
+         tTransportReport.ZayavkaNodoc := OneRec.ZayavkaNodoc,
+         tTransportReport.KatsoprDsopr := OneRec.KatsoprDsopr,
+         tTransportReport.KatsoprNsopr := OneRec.KatsoprNsopr,
+         tTransportReport.KatsoprSumma := OneRec.KatsoprSumma,
+         tTransportReport.AutoDate     := OneRec.AutoDate    ,
+         tTransportReport.AutoNoDoc    := OneRec.AutoNoDoc   ,
+         tTransportReport.AutoSumma    := OneRec.AutoSumma   ,
+         tTransportReport.RailDate     := OneRec.RailDate    ,
+         tTransportReport.RailNoDoc    := OneRec.RailNoDoc   ,
+         tTransportReport.RailSumma    := OneRec.RailSumma
+  ;//insert tTransportReport
+  IF RowCount<>0 THEN
+  {
+   TotalNakl := TotalNakl + OneRec.KatsoprSumma;
+   TotalAuto := TotalAuto + OneRec.AutoSumma;
+   TotalRail := TotalRail + OneRec.RailSumma;
+  }
+ }//loop katsopr
+ InitTableTransportReport := True;
+}//InitTableTransportReport
+
+HANDLEEVENT
+cmInit:
+{
+ SET D1:=date(1,Month(Cur_Date),Year(Cur_Date));
+ SET D2:=Cur_Date;
+ sXLTFileName := TranslatePath(DefaultShablonPath);
+ sXlSFileName := '';
+}//cmInit
+
+cmPick:
+{
+ CASE CurField OF
+ #sXLTFileName:
+ {
+  SET sXLTFileName := GetFileName('*.xlt', 'Выберите шаблон отчета');
+  IF sXLTFileName = '' THEN SET sXLTFileName := TranslatePath(DefaultShablonPath);
+ }//sxltfilename
+ END;//case
+}//cmPick
+
+cmOK:
+{
+ SET d1:=d1;
+ SET d2:=d2;
+ IF AllParametersOK THEN
+ {
+  StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Шаг 1 из 3: Чтение данных из БД', 0);
+  IF NOT InitTableTransportReport THEN
+  {
+   Message('Операция прервана пользователем!');
+  }
+  ELSE
+  {
+   RestartVisual('Шаг 2 из 3: Выгрузка в шаблон Excel', 0);
+   IF NOT RunRep THEN Message('Выгрузка данных в шаблон Excel прервана пользователем!');
+  }//Если нормально проинициализировалась временная таблица
+  DELETE ALL tTransportReport;
+  StopVisual('',0);
+  //CloseInterface(cmDefault);
+ }//Если параметры нормально заданы
+}//cmOK
+
+cmCancel:
+{
+ CloseInterface(cmCancel);
+}//cmCancel
+end;//HandleEvent
+end.//interface
+
+//////////////////////////////////////////////
+//  пункт меню в отчетах пользовател
+//
+#component 'F_UserReport'
+#include UserReport.vih
+VipInterface UserReport_DrogaTransportReport Implements IUserReport;
+Interface UserReport_DrogaTransportReport;
+create view;
+procedure Run;
+begin
+  RunInterface('F_XLSRep::Droga_TransportReport')
+end;
+function GetReportName: String;
+begin
+  GetReportName := 'Отчет по транспортным расходам';
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+end;
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'BUY';
+    2 : VisibleInModule := 'SELL';
+    3 : VisibleInModule := 'DOGOVOR';
+  end;
+end;
+!-------------------------------------------------------------------------------
+end.

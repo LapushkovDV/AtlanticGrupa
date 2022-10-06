@@ -1,0 +1,34 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_Podot
+
+#ifdef ComponentVersion
+#component "F_Podot"
+#end
+
+#include PosMarker.vih // Автопометка с функцией обхода помеченных записей в порядке их пометки
+
+VipInterface AllPlatDocPr      licensed (b_Kassa) Parameters (cSpPrikaz, cPrikazEtap: comp);
+VipInterface Deponents_Kassa   licensed (b_Kassa) Parameters (myPodr : comp);
+VipInterface GetKO_Form        licensed (b_Kassa) Parameters (pMarker : IPosMarker; myNRec: comp; myTp: word; myEtap: comp);
+VipInterface GetLschet         licensed (Free)    Parameters (tmpLschet : comp; tmpPers : comp);
+VipInterface GetNormGrup       licensed (Free)    Parameters (isMode : word; myC : comp; myState : comp; myCity : comp);
+VipInterface GetPers           licensed (Free)    Parameters (tmpComp : comp);
+VipInterface GetPrikaz         licensed (Free)    Parameters (isEdit : boolean; myTiDk : word; myC : comp; typeRun : word);
+VipInterface PrintPrikaz       licensed (Free)    Parameters (myC : comp; isMarkSp : boolean; typeRun : word);
+VipInterface KomUd             licensed (
+  #include KomUd.lih
+  ) Parameters (myPerson : comp; typeRun : word);
+VipInterface OneDepon_Kassa    licensed (
+  #include OneDepon_Kassa.lih
+  ) Parameters (MyLSchet : comp);
+VipInterface Podotchet         licensed (
+  #include Podotchet.lih
+  ) Parameters (myPodotchet : comp; InOut : word);
+VipInterface SaldPodotchet     licensed (Free) Parameters (myPodotchet : comp; REG : byte);
+VipInterface CheckDocPodotchet licensed (Free);
+VipInterface Kassa_KO3         licensed (B_Kassa);
+VipInterface PrNorm            licensed (b_Kassa);
+VipInterface SeeTreeAO         licensed (B_Kassa) Parameters (cUserDeskRep : comp);
+VipInterface SetTreeAO         licensed (B_Kassa);
+VipInterface UchetPers         licensed (Free) Parameters (myTiDk : word);
+VipInterface PrikazConv        licensed (Free);

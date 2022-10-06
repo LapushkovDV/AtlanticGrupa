@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>ReportSaleByMC</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="\\10.2.1.151\Galaktika\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.31.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					\\10.2.1.151\Galaktika\res\src\inc\*
+					..\..\..\FRM\*
+					..\Viper 5.5\bin\5.5.31.0\Source\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_BaseDoc.res
+					$[GalExe]\L_Common.res
+				</ResourceList>
+				<OutputResource>..\..\ReportSaleByMC_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:RUMOW-VMGAL01.atlantic.grupa[1997]</SqlServerParameters>
+					<HwKeyDirectory>\\srv-dc2\HWKey</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="ReportSaleByMC.prj" PosX="10" PosY="8" OpenEditor="True"/>
+			<File Name="ReportSaleByMC.vip" PosX="32" PosY="184" OpenEditor="True" Active="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="ReportSaleByMC.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\ReportSaleByMC\ReportSaleByMC.prj" DateTimeStart="43480,9224532986" DateTimeCompile="5,8275465562474E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\ReportSaleByMC\ReportSaleByMC.vip" SourceLine="7" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\ReportSaleByMC\ReportSaleByMC.vip" SourceLine="259" SourceColumn="9"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\ReportSaleByMC\ReportSaleByMC.vip" SourceLine="260" SourceColumn="13"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\ReportSaleByMC\ReportSaleByMC.vip" SourceLine="300" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_REPORTSALEBYMC_IUserReport_GetGroupName входящий параметр: Level:Word не используется." SourceFileName="C:\Galaktika\res\src\ReportSaleByMC\ReportSaleByMC.vip" SourceLine="311" SourceColumn="1"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="15.01.2019 22:08:25"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<BreakPointList>
+			<BreakPoint FileName="vip\LoadOrder.vip" Line="1"/>
+		</BreakPointList>
+		<MarkerList>
+			<Marker FileName="vip\OpenFileExcelSearchCells.vip" Caption="Нумерованная закладка 1" Line="167" NumIndex="1" MarkerType="mtNumBookmark" Comment="_recArray[_i].column := SearchCellsByName(_recArray[_i].def, _log, nrow);"/>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\ModPric2.vpp" Caption="Нумерованная закладка 1" Line="70" NumIndex="1" MarkerType="mtNumBookmark" Comment="if ( GetFirst Prices where (( lMPP.Prices.nRec == Prices.nRec )) = tsOk ) {}"/>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\BaseStep\inc\GETTOT.VPP" Caption="Нумерованная закладка 1" Line="463" NumIndex="1" MarkerType="mtNumBookmark" Comment=", tipDo + 1000"/>
+			<Marker FileName="vip\LoadOrder.vip" Caption="Нумерованная закладка 2" Line="327" NumIndex="2" MarkerType="mtNumBookmark" Comment="{"/>
+			<Marker FileName="vip\LoadOrder.vip" Caption="Нумерованная закладка 1" Line="199" NumIndex="1" MarkerType="mtNumBookmark" Comment="Window wnSelectDogovorbyOrg ''"/>
+		</MarkerList>
+	</ProjectManager>
+</Viper>

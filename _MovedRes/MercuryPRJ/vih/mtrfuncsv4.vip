@@ -1,0 +1,1021 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 8.10 - Целевой учет запасов
+// Функции для целевого учета
+//------------------------------------------------------------------------------
+
+#include MTRFuncs.vih
+#include Docs2Obj.vih
+#include SaldTune.vih  // Настройка объектов учета целевого назначения запасов МТР
+#include MakeOrder.vih // Функции для формирования ордеров
+
+#doc
+Реализация методов для целевого учета в позициях спецификации документов.
+#end
+Interface MTRFuncsV4;
+
+#include SaldoMtr.inc
+
+#include MakeOrder.var // Функции для формирования ордеров
+
+Create view MTR
+
+Var
+//------------------------------------------------------------------------------
+  vcSaldTune_UKS:  comp; // Ссылка на настройку целевого учета для капстроя
+  vwPlaceZatr_UKS: word; // Место статьи затрат в строительстве в списке аналитик
+//------------------------------------------------------------------------------
+
+As select
+//------------------------------------------------------------------------------
+*
+
+From
+
+  SpecMTR
+, KitKAU
+, SpecMTR DstSpecMTR
+, SpecMTR SpecMTRForKit
+, SpecMTR SpecMtrFree // Для локального использования внутри методов. Нельзя расчитывать на позицию в этой таблице после вызова любого другого метода.
+, SaldTune
+, MTRAct
+, MTRAct MTRActSrc
+, MTRAct MTRActDst
+, KatStroy
+, AddSumTune
+, AddSumTune SubAddSumTune
+, SpSopr
+, SpSopr SpSoprFree // Для локального использования внутри методов. Нельзя расчитывать на позицию в этой таблице после вызова любого другого метода.
+, SaldoRaz
+, SaldoObj
+, SpDocSmeta
+, SpStep
+, StepDoc
+, BaseDoc
+, SpDocs
+Where
+((
+      KitKau.cSaldTune  == SpecMTRForKit.cSaldTune
+  and KitKau.cObj       == SpecMTRForKit.cObj
+  and KitKau.cKau[1]    == SpecMTRForKit.cKau[1]
+  and KitKau.cKau[2]    == SpecMTRForKit.cKau[2]
+  and KitKau.cKau[3]    == SpecMTRForKit.cKau[3]
+  and KitKau.cKau[4]    == SpecMTRForKit.cKau[4]
+  and KitKau.cKau[5]    == SpecMTRForKit.cKau[5]
+  and KitKau.cKau[6]    == SpecMTRForKit.cKau[6]
+  and KitKau.cKau[7]    == SpecMTRForKit.cKau[7]
+  and KitKau.cKau[8]    == SpecMTRForKit.cKau[8]
+  and KitKau.cKau[9]    == SpecMTRForKit.cKau[9]
+
+  and word(613)         == MTRActSrc.VidSopr
+  and KitKau.cSaldTune  == MTRActSrc.cSaldSrc
+  and KitKau.cObj       == MTRActSrc.cObjSrc
+  and KitKau.cKau[1]    == MTRActSrc.cKauSrc[1]
+  and KitKau.cKau[2]    == MTRActSrc.cKauSrc[2]
+  and KitKau.cKau[3]    == MTRActSrc.cKauSrc[3]
+  and KitKau.cKau[4]    == MTRActSrc.cKauSrc[4]
+  and KitKau.cKau[5]    == MTRActSrc.cKauSrc[5]
+  and KitKau.cKau[6]    == MTRActSrc.cKauSrc[6]
+  and KitKau.cKau[7]    == MTRActSrc.cKauSrc[7]
+  and KitKau.cKau[8]    == MTRActSrc.cKauSrc[8]
+  and KitKau.cKau[9]    == MTRActSrc.cKauSrc[9]
+
+  and word(613)         == MTRActDst.VidSopr
+  and KitKau.cSaldTune  == MTRActDst.cSaldDst
+  and KitKau.cObj       == MTRActDst.cObjDst
+  and KitKau.cKau[1]    == MTRActDst.cKauDst[1]
+  and KitKau.cKau[2]    == MTRActDst.cKauDst[2]
+  and KitKau.cKau[3]    == MTRActDst.cKauDst[3]
+  and KitKau.cKau[4]    == MTRActDst.cKauDst[4]
+  and KitKau.cKau[5]    == MTRActDst.cKauDst[5]
+  and KitKau.cKau[6]    == MTRActDst.cKauDst[6]
+  and KitKau.cKau[7]    == MTRActDst.cKauDst[7]
+  and KitKau.cKau[8]    == MTRActDst.cKauDst[8]
+  and KitKau.cKau[9]    == MTRActDst.cKauDst[9]
+
+  and AddSumTune.nRec   == SubAddSumTune.cNode
+
+  and  SpStep.cStepDoc  == StepDoc.Nrec
+  and  StepDoc.cBaseDoc == BaseDoc.Nrec
+))
+;
+
+//******************************************************************************
+var vDocToObj: DocToObj;
+#include SaldTune.var   // Настройка объектов учета целевого назначения запасов МТР (oTune)
+
+//******************************************************************************
+// [PUBLIC] Удаление записи по буферу
+Procedure DeleteRec(buf: TSpecMtr);
+{
+  if (delete SpecMTR where (( buf.NRec == SpecMtr.NRec )) = tsOk)
+  {
+    vDocToObj.DelSpDoc(buf);
+
+    if (GetFirst KitKau where (( buf.cSaldTune == KitKau.cSaldTune and
+                                 buf.cObj      == KitKau.cObj      and
+                                 buf.cKau[1]   == KitKau.cKau[1]   and
+                                 buf.cKau[2]   == KitKau.cKau[2]   and
+                                 buf.cKau[3]   == KitKau.cKau[3]   and
+                                 buf.cKau[4]   == KitKau.cKau[4]   and
+                                 buf.cKau[5]   == KitKau.cKau[5]   and
+                                 buf.cKau[6]   == KitKau.cKau[6]   and
+                                 buf.cKau[7]   == KitKau.cKau[7]   and
+                                 buf.cKau[8]   == KitKau.cKau[8]   and
+                                 buf.cKau[9]   == KitKau.cKau[9])) = tsOk) // позиционируемся на KitKau
+    {
+      if ((not IsValid(#SpecMTRForKit)) and (not IsValid(#MTRActSrc)) and (not IsValid(#MTRActDst)))
+        // удаленная запись была последняя, имеющая такой набор аналитик
+        delete current KitKau;
+    }
+  }
+}
+//******************************************************************************
+// [PUBLIC] Удаление целевого учета для позиции спецификации
+Procedure DelSpecMTR(SrcTab : word; SrcSpec : comp);
+{
+  if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) = tsOk)
+  {
+    DeleteRec(SpecMtr.buffer);
+    SaveMyDsk(comp(0), 'KitKau.cSaldTune');
+  }
+}
+
+//******************************************************************************
+
+Procedure CopySpecMTR(SrcTab : word; SrcSpec : comp; DstTab : word; DstSpec : comp);
+{
+  if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) <> tsOk)
+  {
+    if (GetFirst DstSpecMTR where ((DstTab == DstSpecMTR.coTable and DstSpec == DstSpecMTR.cSpec)) = tsOk)
+      DelSpecMTR(DstTab, DstSpec);
+
+    exit;
+  }
+
+  if (GetFirst DstSpecMTR where ((DstTab == DstSpecMTR.coTable and DstSpec == DstSpecMTR.cSpec)) <> tsOk)
+  {
+    SpecMTR.nRec    := 0;
+    SpecMTR.coTable := DstTab;
+    SpecMTR.cSpec   := DstSpec;
+    if (insert current SpecMTR = tsOk)
+    {
+      vDocToObj.AddSpDoc( SpecMTR.coTable, SpecMTR.cSpec );
+    }
+  }
+  else
+  {
+    var old: TSpecMtr;
+    old := DstSpecMTR.buffer;
+
+    DstSpecMTR.cSaldTune := SpecMTR.cSaldTune;
+    DstSpecMTR.cObj      := SpecMTR.cObj;
+    DstSpecMTR.cKau[1]   := SpecMTR.cKau[1];
+    DstSpecMTR.cKau[2]   := SpecMTR.cKau[2];
+    DstSpecMTR.cKau[3]   := SpecMTR.cKau[3];
+    DstSpecMTR.cKau[4]   := SpecMTR.cKau[4];
+    DstSpecMTR.cKau[5]   := SpecMTR.cKau[5];
+    DstSpecMTR.cKau[6]   := SpecMTR.cKau[6];
+    DstSpecMTR.cKau[7]   := SpecMTR.cKau[7];
+    DstSpecMTR.cKau[8]   := SpecMTR.cKau[8];
+    DstSpecMTR.cKau[9]   := SpecMTR.cKau[9];
+    if (update current DstSpecMTR = tsOk)
+    {
+      vDocToObj.AddSpDoc( DstSpecMTR.coTable, DstSpecMTR.cSpec );
+      vDocToObj.DelSpDoc(old);
+    }
+  }
+}
+
+//******************************************************************************
+
+Function MTRIsUKS(SrcTab : word; SrcSpec : comp) : boolean;
+{
+  result := false;
+
+  if (vcSaldTune_UKS <> 0)
+    if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) = tsOk)
+      result := (SpecMTR.cSaldTune = vcSaldTune_UKS); // Строительство
+}
+
+//******************************************************************************
+
+Function GetObjUKS(SrcTab : word; SrcSpec : comp) : comp;
+{
+  GetObjUKS := 0;
+  if (MTRIsUKS(SrcTab, SrcSpec))
+    if (GetFirst KatStroy where ((SpecMTR.cObj == KatStroy.nRec)) = tsOk)
+      if ( (KatStroy.LevelObj = 1) or (KatStroy.LevelObj = 2) )
+        GetObjUKS := SpecMTR.cObj;
+}
+
+//******************************************************************************
+
+Function SetObjSmeta(SrcTab : word; SrcSpec, cSmeta : comp) : boolean;
+{
+  SetObjSmeta := false;
+
+  var wPlace: word;
+
+  if (MTRIsUKS(SrcTab, SrcSpec))
+    {
+      wPlace := (oTune.GetPlaceKau(cgKau_SmetaStroy) - 1);
+
+      if (wPlace <= 0)  or (wPlace > 9)
+        exit;
+
+      SpecMTR.cKau[wPlace] := cSmeta;
+
+      update current SpecMTR;
+
+      SetObjSmeta := true;
+    }
+}
+
+//******************************************************************************
+
+Function GetZatrUKS(SrcTab : word; SrcSpec : comp) : comp;
+{
+  result := 0;
+
+  if (MTRIsUKS(SrcTab, SrcSpec) and (vwPlaceZatr_UKS > 0) and (vwPlaceZatr_UKS <= 9))
+    if (GetFirst AddSumTune where ((SpecMTR.cKau[vwPlaceZatr_UKS] == AddSumTune.nRec)) = tsOk)
+      result := SpecMTR.cKau[vwPlaceZatr_UKS];
+}
+
+//******************************************************************************
+
+Function GetKau(SrcTab : word; SrcSpec : comp; acKau : word) : comp;
+{
+  var vwPl, vwTip : word;
+
+  GetKau := 0;
+  if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) <> tsOk)
+    exit;
+
+  if (GetFirst SaldTune where ((SpecMTR.cSaldTune == SaldTune.nRec)) = tsOk)
+  {
+    vwTip := SaldTune.wType;
+    oTune.GetTune(vwTip);
+    vwPl := oTune.GetPlaceKau(acKau);
+    if ( vwPl > 0 )
+      GetKau := if(vwPl = 1, SpecMTR.cObj, SpecMTR.cKau[vwPl-1]);
+  }
+}
+
+//******************************************************************************
+
+Function GetKitKau(SrcTab : word; SrcSpec : comp) : comp;
+{
+  var i : word;
+
+  GetKitKau := 0;
+
+  case SrcTab of
+    coMtrAct :
+    {
+      if (GetFirst MTRAct where ((SrcSpec == MTRAct.nRec)) <> tsOk)
+        exit;
+
+      if (MTRAct.cSaldSrc = 0)
+        exit;
+
+      if (GetFirst KitKau where ((MTRAct.cSaldSrc     == KitKau.cSaldTune and
+                                  MTRAct.cObjSrc      == KitKau.cObj      and
+                                  MTRAct.cKauSrc[1]   == KitKau.cKau[1]   and
+                                  MTRAct.cKauSrc[2]   == KitKau.cKau[2]   and
+                                  MTRAct.cKauSrc[3]   == KitKau.cKau[3]   and
+                                  MTRAct.cKauSrc[4]   == KitKau.cKau[4]   and
+                                  MTRAct.cKauSrc[5]   == KitKau.cKau[5]   and
+                                  MTRAct.cKauSrc[6]   == KitKau.cKau[6]   and
+                                  MTRAct.cKauSrc[7]   == KitKau.cKau[7]   and
+                                  MTRAct.cKauSrc[8]   == KitKau.cKau[8]   and
+                                  MTRAct.cKauSrc[9]   == KitKau.cKau[9])) <> tsOk) // позиционируемся на KitKau
+      {
+        ClearBuffer(#KitKau);
+        KitKau.cSaldTune := MTRAct.cSaldSrc;
+        KitKau.cObj := MTRAct.cObjSrc;
+        for(i := 1; i <= 9; inc(i))
+          KitKau.cKau[i] := MTRAct.cKauSrc[i];
+
+        insert current KitKau;
+      }
+
+      GetKitKau := KitKau.nRec;
+    }
+    coSpMtrAct :
+    {
+      if (GetFirst MTRAct where ((SrcSpec == MTRAct.nRec)) <> tsOk)
+        exit;
+
+      if (MTRAct.cSaldDst = 0)
+        exit;
+
+      if (GetFirst KitKau where ((MTRAct.cSaldDst     == KitKau.cSaldTune and
+                                  MTRAct.cObjDst      == KitKau.cObj      and
+                                  MTRAct.cKauDst[1]   == KitKau.cKau[1]   and
+                                  MTRAct.cKauDst[2]   == KitKau.cKau[2]   and
+                                  MTRAct.cKauDst[3]   == KitKau.cKau[3]   and
+                                  MTRAct.cKauDst[4]   == KitKau.cKau[4]   and
+                                  MTRAct.cKauDst[5]   == KitKau.cKau[5]   and
+                                  MTRAct.cKauDst[6]   == KitKau.cKau[6]   and
+                                  MTRAct.cKauDst[7]   == KitKau.cKau[7]   and
+                                  MTRAct.cKauDst[8]   == KitKau.cKau[8]   and
+                                  MTRAct.cKauDst[9]   == KitKau.cKau[9])) <> tsOk) // позиционируемся на KitKau
+      {
+        ClearBuffer(#KitKau);
+        KitKau.cSaldTune := MTRAct.cSaldDst;
+        KitKau.cObj := MTRAct.cObjDst;
+        for(i := 1; i <= 9; inc(i))
+          KitKau.cKau[i] := MTRAct.cKauDst[i];
+
+        insert current KitKau;
+      }
+
+      GetKitKau := KitKau.nRec;
+    }
+  else
+  {
+    if (GetFirst SpecMTR where ((SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec)) <> tsOk)
+      exit;
+
+    if (GetFirst KitKau where ((SpecMTR.cSaldTune == KitKau.cSaldTune and
+                                SpecMTR.cObj      == KitKau.cObj      and
+                                SpecMTR.cKau[1]   == KitKau.cKau[1]   and
+                                SpecMTR.cKau[2]   == KitKau.cKau[2]   and
+                                SpecMTR.cKau[3]   == KitKau.cKau[3]   and
+                                SpecMTR.cKau[4]   == KitKau.cKau[4]   and
+                                SpecMTR.cKau[5]   == KitKau.cKau[5]   and
+                                SpecMTR.cKau[6]   == KitKau.cKau[6]   and
+                                SpecMTR.cKau[7]   == KitKau.cKau[7]   and
+                                SpecMTR.cKau[8]   == KitKau.cKau[8]   and
+                                SpecMTR.cKau[9]   == KitKau.cKau[9])) <> tsOk) // позиционируемся на KitKau
+      {
+        ClearBuffer(#KitKau);
+        KitKau.cSaldTune := SpecMTR.cSaldTune;
+        KitKau.cObj := SpecMTR.cObj;
+        for(i := 1; i <= 9; inc(i))
+          KitKau.cKau[i] := SpecMTR.cKau[i];
+
+        insert current KitKau;
+      }
+
+    GetKitKau := KitKau.nRec;
+  }
+  end;
+}
+
+//******************************************************************************
+// [PUBLIC] Максимальное количество для списания в документе по ЦУ
+Function GetMaxColSpisSpSopr(SrcSpec: comp; dFOrd: date; var kForSpis: double): boolean;
+{
+  result := false;
+
+  if (GetFirst FastFirstRow SpecMTR where (( coSpSopr == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec )) <> tsOk)
+    {
+      if (wGetTune('UKS.ObjUKS_forSpis') = 0) // списание без ЦУ
+        result := true;
+
+      if (wGetTune('UKS.ObjUKS_forSpis') = 2) // списание без ЦУ по запросу
+        if (message ('Не указан объект ЦУ, оприходовать?', Confirmation + YesNo) = cmYes)
+          result := true;
+
+      exit;
+    }
+
+  if ( GetFirst FastFirstRow SpSopr where (( SrcSpec == SpSopr.nRec )) <> tsOk )
+    exit;
+
+  if (SpSopr.PrMC <> 1) // если не МЦ
+    {
+      result := true;
+      exit;
+    }
+
+  var cKK: comp;
+
+  cKK := GetKitKau(coSpSopr, SpSopr.nRec);
+
+  if (cKK = 0)
+    exit;
+
+  var wMode, wVidUch: word;
+  wMode := 0;
+
+  if(boGetTune('Oper.CelUch.VidUch'))
+  {
+    var wVidUch: word;
+    wVidUch := oMakeOrder.GetVidUch(SpSopr.VidSopr, cgVidOrder_Discharge);
+    wMode := #ModeByVidUch(wVidUch);
+  }
+
+  if ( GetFirst FastFirstRow SaldoRaz where (( SpecMTR.cSaldTune == SaldoRaz.cSaldTune and
+                                               wMode             == SaldoRaz.wMode     and
+                                               SpSopr.cMCUsl     == SaldoRaz.cMC       and
+                                               SpSopr.cPodr      == SaldoRaz.cPodr     and
+                                               SpSopr.cMol       == SaldoRaz.cMol      and
+                                               SpSopr.cParty     == SaldoRaz.cParty    and
+                                               SpecMTR.cObj      == SaldoRaz.cObj      and
+                                               cKK               == SaldoRaz.cKitKau  )) = tsOk )
+    if ( GetLast SaldoObj where (( SaldoRaz.nRec == SaldoObj.cSaldoRaz and
+                                   dFOrd        >>= SaldoObj.dOper )) = tsOk )
+      if ( SaldoObj.Kol >= (SpSopr.kolFact * fEdIzm.GetKoefOtpEd(SpSopr.cOtpEd) ) )
+        result := true;
+      else
+        kForSpis := SaldoObj.Kol / fEdIzm.GetKoefOtpEd(SpSopr.cOtpEd);
+}
+
+//******************************************************************************
+
+// Возвращает объект целевого учета для сопроводительных документов (спецификация на основе SpSopr)
+// в зависимости от типа документа (который определяем по SpSopr.VidSopr).
+// Значения зависят от соотв-х настроек для документов
+function GetSaldTuneBySpSopr( _spSoprNrec: comp ): comp;
+{
+  result := 0;
+
+  // Пытаемся определить тип сопроводительного документа для указанной позиции спецификации
+  if( GetFirst SpSoprFree where(( _spSoprNrec == SpSoprFree.nRec )) = tsOk )
+  {
+    // Пожалуйста, добавляйте новые документы, сохраняя сортировку номеров по возрастанию
+    case SpSoprFree.VidSopr of
+      cgDoc_0106, cgDoc_0114, cgDoc_0201, cgDoc_0211:
+        result := coGetTune('CelUchForModul.SELL');
+
+      cgDoc_0101, cgDoc_0108, cgDoc_0111, cgDoc_0115, cgDoc_0206:
+        result := coGetTune('CelUchForModul.BUY');
+
+      cgDoc_0110, cgDoc_0210, cgDoc_0229, cgDoc_0610, cgDoc_0629, cgDoc_1610:
+        result := vcSaldTune_UKS;
+    end;
+  }
+}
+
+// Возвращает объект целевого учета для ДО (спецификация на основе SpStep)
+// в зависимости от типа документа (который определяем по BaseDoc.VidDoc).
+// Значения зависят от соотв-х настроек для документов
+function GetSaldTuneBySpStep( _spStepNrec: comp ): comp;
+{
+  result := 0;
+
+  // Связь SpStep с BaseDoc задана подцепками в ЛТ
+  if( GetFirst SpStep where(( _spStepNrec == SpStep.nRec )) = tsOk )
+  {
+    if( IsValid( #BaseDoc ) )
+    {
+      // Код утащил из метода InitSpStep интерфейса iDoPrice (L_BaseDoc\vip\doprice.vip)
+      // Здесь используется утверждение, что на 1 начинаются документы снабжение на 2 сбыта
+      if( ( BaseDoc.VidDoc div 100) = 1 )
+        result := coGetTune('CelUchForModul.BUY');
+      else
+        result := coGetTune('CelUchForModul.SELL');
+    }
+  }
+}
+
+// Возвращает ОЦУ по умолчанию для договора/календарного плана
+// в зависимости от направления ( продажа или закупка ).
+function GetSaldTuneBySpDocs( _spDocsNrec: comp ): comp;
+{
+  result := 0;
+
+  if( GetFirst SpDocs where(( _spDocsNrec == SpDocs.nRec )) = tsOk )
+  {
+    if( SpDocs.Direct = 1 )
+      result := coGetTune('CelUchForModul.SELL');
+    else if( SpDocs.Direct = 2 )
+      result := coGetTune('CelUchForModul.BUY');
+  }
+}
+
+// Возвращает объект целевого учета в зависимости от типа документа
+// Значения зависят от соотв-х настроек для документов
+function GetSaldTuneByTable( _wTable: word; _cTable: comp ): comp;
+{
+  result := 0;
+
+  case _wTable of
+    coSpSopr:
+      result   := GetSaldTuneBySpSopr( _cTable );
+
+    coSpStep:
+      result := GetSaldTuneBySpStep( _cTable );
+
+    coSpDocs:
+      result := GetSaldTuneBySpDocs( _cTable );
+
+  end;
+}
+
+// Задать поля в SpecMTR специфичные для объекта целевого учета "Управление капстроем"
+Function SpecMtrBufSetDefault_UKS( var _bufSpecMtr: TSpecMtr; _spSoprNrec: comp; _cObjBuild: comp; _cZatr: comp ): boolean;
+{
+  result := false;
+
+  if( _cObjBuild != 0 )
+  {
+    if (GetFirst KatStroy where (( _cObjBuild == KatStroy.nRec )) != tsOk)
+      exit;
+
+    if ( (KatStroy.LevelObj <> 1) and (KatStroy.LevelObj <> 2) )
+      exit;
+
+    _bufSpecMtr.cObj := _cObjBuild;
+  }
+  // else Если объект не указан - там окажется значение по умоланию для объекта целевого учета
+
+
+  // Установить статью затрат
+
+  if( _cZatr !=0 )
+  {
+    if (GetFirst AddSumTune where (( _cZatr == AddSumTune.nRec )) <> tsOk)
+      exit;
+
+    if ( IsValid(#SubAddSumTune) )
+      exit;
+
+    if( (vwPlaceZatr_UKS > 0) and (vwPlaceZatr_UKS <= 9) )
+      _bufSpecMtr.cKau[ vwPlaceZatr_UKS ] := _cZatr;
+  }
+
+  // Если ст. затрат все еще не указана - устанавливаем "прочие затраты"
+  if( (vwPlaceZatr_UKS > 0) and (vwPlaceZatr_UKS <= 9) )
+    if( _bufSpecMtr.cKau[ vwPlaceZatr_UKS ] = 0 )
+      if( GetFirst AddSumTune where(( 3 == AddSumTune.Tip )) = tsOk )
+        _bufSpecMtr.cKau[ vwPlaceZatr_UKS ] := AddSumTune.nRec;
+
+
+  var smetaPlaceKau: word;
+  smetaPlaceKau := oTune.GetPlaceKau( cgKau_SmetaStroy );
+  if( smetaPlaceKau > 0 )
+  {
+    if( GetFirst SpDocSmeta where(( coSpSopr == SpDocSmeta.coTable and _spSoprNrec == SpDocSmeta.cSpec )) = tsOk )
+    {
+      // Этот кусок утащил из LinkMtr2Spec. Видно, так надо было
+      if( smetaPlaceKau > 1 )
+        _bufSpecMtr.cKau[ smetaPlaceKau - 1 ] := SpDocSmeta.cSmeta
+      else
+        _bufSpecMtr.cObj := SpDocSmeta.cSmeta;
+    }
+  }
+
+  result := true;
+}
+
+// [PUBLIC]
+// Заполнение полей переданного буфера для SpecMtr значениями по умолчанию.
+//
+// Возвращат:
+//   TRUE в случае успешного заполнения полей.
+//
+// Внимание!
+// При использовании функции, пожалуйста, проверьте наличие нужной таблицы и вашего типа документа в
+// методах GetSaldTuneByTable, GetSaldTuneBySpSopr, GetSaldTuneBySpStep текущего интерфейса (см. выше по коду)
+//
+Function SpecMtrBufSetDefault(
+  var _bufSpecMtr: TSpecMtr; // Возвращаемый параметр - буфер записи таблицы SpecMtr
+  _wTable:         word;     // Код таблицы спецификации документа ( напр. coSpSopr )
+  _cTable:         comp;     // nRec указанной таблицы спецификации, к которой осуществляется привязка
+  _cSaldTune:      comp = 0; // НЕОБЯЗАТЕЛЬНЫЙ ПАРАМЕТР, дает возможность указать объект ЦУ, отличный от такового по умолчанию.
+                             // Если не указан - берет значение по настройке CelUchForModul в зав-ти от типа документа.
+  _cObjBuild:      comp = 0; // НЕОБЯЗАТЕЛЬНЫЙ ПАРАМЕТР. Имеет смысл только ОЦУ для УКС. Объект строительства.
+                             // Если не указывать - берет значение по умолчанию для объекта ЦУ "Управление капстроем".
+  _cZatr:          comp = 0  // НЕОБЯЗАТЕЛЬНЫЙ ПАРАМЕТР. Имеет смысл только в ОЦУ для УКС. Статья затрат.
+                             // Если не указвать - берет знач. по умолчанию, а если не задано - ст. затрат "прочие затраты";
+  ): boolean;
+{
+  result := false;
+
+  if( (_wTable = 0) or (_cTable = 0) )
+    exit;
+
+  var cSaldTune: comp;
+
+  // Пытаемся определить объет целевого учета по настройкам, если не указан
+  if( _cSaldTune = 0 )
+    cSaldTune := GetSaldTuneByTable( _wTable, _cTable );
+  else
+    cSaldTune := _cSaldTune;
+
+  if( cSaldTune = 0 )
+    exit;
+
+  if( GetFirst SaldTune where(( cSaldTune == SaldTune.nRec )) != tsOk )
+    exit;
+
+  _bufSpecMtr.coTable := _wTable;
+  _bufSpecMtr.cSpec   := _cTable;
+
+  // Заполнить поля значеними по умолчанию для выбранного объекта целевого учета
+
+  if( GetFirst SpecMtrFree where((
+        coSaldTune == SpecMtrFree.coTable
+    and cSaldTune  == SpecMtrFree.cSpec )) = tsOk )
+  {
+    _bufSpecMtr.cSaldTune := cSaldTune;
+    _bufSpecMtr.cObj    := SpecMtrFree.cObj;
+    _bufSpecMtr.cKau[1] := SpecMtrFree.cKau[1];
+    _bufSpecMtr.cKau[2] := SpecMtrFree.cKau[2];
+    _bufSpecMtr.cKau[3] := SpecMtrFree.cKau[3];
+    _bufSpecMtr.cKau[4] := SpecMtrFree.cKau[4];
+    _bufSpecMtr.cKau[5] := SpecMtrFree.cKau[5];
+    _bufSpecMtr.cKau[6] := SpecMtrFree.cKau[6];
+    _bufSpecMtr.cKau[7] := SpecMtrFree.cKau[7];
+    _bufSpecMtr.cKau[8] := SpecMtrFree.cKau[8];
+    _bufSpecMtr.cKau[9] := SpecMtrFree.cKau[9];
+  }
+  else
+    exit;
+
+  // Заполнить специфичные для УКС поля (для УКС могут быть указаны объект строительства и статья затрат)
+  if( cSaldTune = vcSaldTune_UKS )
+  {
+    if( not boGetTune('CelUchForModul.UKS') ) // Настройкой запрещена привязка ЦУ для УКС
+      exit;
+
+    if( not SpecMtrBufSetDefault_UKS( _bufSpecMtr, _cTable, _cObjBuild, _cZatr ) )
+      exit;
+  }
+
+  result := true;
+}
+
+// [PUBLIC]
+// Привязка целевого учета к позиции спецификации документа (в т.ч. ДО).
+// С ее помощью можно также привязать ЦУ для УКС, при необходимости указав объект строительства, статью затрат.
+// Рекомендуется использовать вместо LinkMtr2Spec.SetVal, LinkMtr2Spec.SetValU.
+//
+// Возвращат:
+//   nRec записи в SpecMtr в случае успеха или 0 при неудаче.
+//
+// Нюансы:
+//   Видел в коде случаи, когда генерят привязку ЦУ к позиции спецификации, которая еще не вставлена в БД, но
+// nRec записи уже известен (такое случается cmSetDefault таблицы SpSopr). Не уверен, что такой код имеет смысл,
+// но если это все же необходимо - вызывайте LinkMtrToSpec с конкретно указанным ОЦУ (параметр _cSaldTune),
+// т.к. в противном случае LinkMtrToSpec попытается определять тип док-та по позиции спецификации, а ее еще нет и
+// метод завершится неудачей.
+//
+// Внимание!
+// При использовании функции, пожалуйста, проверьте наличие нужной таблицы и вашего типа документа в
+// методах GetSaldTuneByTable, GetSaldTuneBySpSopr, GetSaldTuneBySpStep текущего интерфейса (см. выше по коду)
+//
+// Примеры вызова:
+//   любой сопроводительный документ (в том числе документы УКС):
+//     LinkMtrToSpec( coSpSopr, SpSopr.nRec ) - используется объект целевого учета, заданный настройкой для документа
+//     LinkMtrToSpec( coSpSopr, SpSopr.nRec, cSaldTune ) - используется указанный объект целевого учета
+//   документ УКС, с указанием конкретного объекта строительства:
+//     LinkMtrToSpec( coSpSopr, SpSopr.nRec, 0, cObjBuild );
+//   документ УКС, с указанием статьи затрат:
+//     LinkMtrToSpec( coSpSopr, SpSopr.nRec, 0, 0, cZatr );
+
+Function LinkMtrToSpec(
+  _wTable:         word;     // Код таблицы спецификации документа ( напр. coSpSopr )
+  _cTable:         comp;     // nRec указанной таблицы спецификации, к которой осуществляется привязка
+  _cSaldTune:      comp = 0; // НЕОБЯЗАТЕЛЬНЫЙ ПАРАМЕТР, дает возможность указать объект ЦУ, отличный от такового по умолчанию.
+                             // Если не указан - берет значение по настройке CelUchForModul в зав-ти от типа документа.
+  _cObjBuild:      comp = 0; // НЕОБЯЗАТЕЛЬНЫЙ ПАРАМЕТР. Имеет смысл только ОЦУ для УКС. Объект строительства.
+                             // Если не указывать - берет значение по умолчанию для объекта ЦУ "Управление капстроем".
+  _cZatr:          comp = 0  // НЕОБЯЗАТЕЛЬНЫЙ ПАРАМЕТР. Имеет смысл только в ОЦУ для УКС. Статья затрат.
+                             // Если не указвать - берет знач. по умолчанию, а если не задано - ст. затрат "прочие затраты";
+  ): comp;
+{
+  result := 0;
+
+  ClearBuffer( #SpecMtr );
+
+  if( not SpecMtrBufSetDefault( SpecMTR.buffer, _wTable, _cTable, _cSaldTune, _cObjBuild, _cZatr ) )
+    exit;
+
+  InsUpdRec( SpecMTR.buffer );
+
+  if( GetFirst SpecMTR where(( _wTable == SpecMTR.coTable and _cTable == SpecMTR.cSpec )) = tsOk )
+    result := SpecMTR.nRec;
+}
+
+// Сгенерировать целевой учет в позиции спецификации с ОЦУ "УКС".
+Procedure GenSpecMTRForUKS( SrcTab: word; SrcSpec, acObj, acZatr: comp );
+{
+  LinkMtrToSpec( SrcTab, SrcSpec, vcSaldTune_UKS, acObj, acZatr );
+}
+
+//******************************************************************************
+// [PUBLIC] Сгенерировать целевой учет в позиции спецификации для по заданному значению набора аналитик
+Procedure GenAnySpecMTR(KauData: TMTRKauArray);
+Var
+  wT: word;
+{
+  if ( KauData.cSaldTune = 0 )
+    {
+      if ( GetFirst SpecMTR where (( KauData.wTable   == SpecMTR.coTable and
+                                     KauData.cSpecRec == SpecMTR.cSpec  )) = tsOk )
+        DelSpecMTR(KauData.wTable, KauData.cSpecRec);
+
+      exit;
+    }
+
+  if ( GetFirst SaldTune where (( KauData.cSaldTune == SaldTune.nRec )) <> tsOk )
+    exit;
+
+  wT := SaldTune.wType;
+  oTune.GetTune(wT);
+
+  ClearBuffer( #SpecMTR );
+  SpecMTR.coTable   := KauData.wTable;
+  SpecMTR.cSpec     := KauData.cSpecRec;
+  SpecMTR.cSaldTune := KauData.cSaldTune;
+
+  var i, wPlace: word;
+  for ( i := 1; i <= 10; i++ )
+  {
+    wPlace := oTune.GetPlaceKauRole(KauData.wKau[i], KauData.cRole[i]);
+
+    if ( wPlace = 0 )
+      continue;
+
+    if ( wPlace = 1 )
+      SpecMTR.cObj := KauData.cKau[i];
+    else
+      SpecMTR.cKau[wPlace - 1] := KauData.cKau[i];
+  }
+  InsUpdRec( SpecMTR.buffer );
+}
+
+//******************************************************************************
+// [PUBLIC] Сгенерировать целевой учет в позиции спецификации для по сохраненному значению набора аналитик в DSK
+Procedure InsSpecMTR(SrcTab : word; SrcSpec : comp);
+{
+  var vbDateChg: boolean;
+  if (ReadMyDsk(SpecMTR.cSaldTune, 'KitKau.cSaldTune', vbDateChg))
+  {
+    if (not ReadMyDsk(SpecMTR.cObj, 'KitKau.cObj', vbDateChg))
+      SpecMTR.cObj := 0;
+
+    if (SpecMTR.cObj = 0)
+      exit;
+
+    var i: word;
+    for (i := 1; i <= 9; i++)
+    {
+      if (not ReadMyDsk(SpecMTR.cKau[i], 'KitKau.cKau[' + string(i) + ']', vbDateChg))
+        SpecMTR.cKau[i] := 0;
+    }
+
+    SpecMTR.coTable := SrcTab;
+    SpecMTR.cSpec   := SrcSpec;
+
+    InsUpdRec(SpecMtr.buffer);
+  }
+}
+
+//******************************************************************************
+// [PUBLIC] Вставка/модификация записи по буферу
+Procedure InsUpdRec(buf: TSpecMtr);
+{
+  var vbIs: boolean;
+  vbIs := (GetFirst SpecMTR where (( buf.coTable == SpecMTR.coTable and
+                                     buf.cSpec   == SpecMTR.cSpec )) = tsOk);
+  var old: TSpecMtr;
+  if (vbIs)
+    old := SpecMtr.Buffer;
+
+  if (buf.cSaldTune = 0)
+  {
+    if (vbIs)
+      DeleteRec(buf);
+  }
+  else if( (buf.cObj != 0) or (buf.cSaldTune = vcSaldTune_UKS) ) // Для УКС наличие аналитики 1-го уровня необязательно
+  {
+    if (not vbIs)
+      ClearBuffer(#SpecMTR);
+
+    SpecMTR.coTable   := buf.coTable;
+    SpecMTR.cSpec     := buf.cSpec;
+    SpecMTR.cSaldTune := buf.cSaldTune;
+    SpecMTR.cObj      := buf.cObj;
+
+    var i: word;
+    for (i := 1; i <= 9; i++)
+      SpecMTR.cKau[i] := buf.cKau[i];
+
+    if (vbIs)
+      update current SpecMTR;
+    else
+      insert current SpecMTR;
+
+    vDocToObj.AddSpDoc(SpecMTR.coTable, SpecMTR.cSpec); // Добавляем новую связь с объектом
+
+    if (vbIs) // При апдейте удаляем старую связь
+      vDocToObj.DelSpDoc(old);
+
+    if (GetFirst KitKau where ((SpecMTR.cSaldTune == KitKau.cSaldTune and
+                                SpecMTR.cObj      == KitKau.cObj      and
+                                SpecMTR.cKau[1]   == KitKau.cKau[1]   and
+                                SpecMTR.cKau[2]   == KitKau.cKau[2]   and
+                                SpecMTR.cKau[3]   == KitKau.cKau[3]   and
+                                SpecMTR.cKau[4]   == KitKau.cKau[4]   and
+                                SpecMTR.cKau[5]   == KitKau.cKau[5]   and
+                                SpecMTR.cKau[6]   == KitKau.cKau[6]   and
+                                SpecMTR.cKau[7]   == KitKau.cKau[7]   and
+                                SpecMTR.cKau[8]   == KitKau.cKau[8]   and
+                                SpecMTR.cKau[9]   == KitKau.cKau[9])) <> tsOk) // позиционируемся на KitKau
+    {
+      ClearBuffer(#KitKau);
+      KitKau.cSaldTune := SpecMTR.cSaldTune;
+      KitKau.cObj := SpecMTR.cObj;
+      for(i := 1; i <= 9; inc(i))
+        KitKau.cKau[i] := SpecMTR.cKau[i];
+      insert current KitKau;
+    }
+  }
+}
+
+//******************************************************************************
+
+Procedure SaveKitKau(SrcTab : word; SrcSpec : comp);
+{
+  var i : word;
+
+  if (GetKitKau(SrcTab, SrcSpec) <> 0)
+  {
+    SaveMyDsk(KitKau.cSaldTune, 'KitKau.cSaldTune');
+    SaveMyDsk(KitKau.cObj, 'KitKau.cObj');
+    for (i := 1; i <= 9; inc(i))
+      SaveMyDsk(KitKau.cKau[i], 'KitKau.cKau[' + string(i) + ']');
+  }
+  else
+  {
+    SaveMyDsk(comp(0), 'KitKau.cSaldTune');
+    SaveMyDsk(comp(0), 'KitKau.cObj');
+    for (i := 1; i <= 9; inc(i))
+      SaveMyDsk(comp(0), 'KitKau.cKau[' + string(i) + ']');
+  }
+}
+
+//******************************************************************************
+
+Procedure SaveKitKauForKit(acKit: comp);
+{
+  var i : word;
+
+  if (GetFirst KitKau where ((acKit == KitKau.nRec)) = tsOk)
+  {
+    SaveMyDsk(KitKau.cSaldTune, 'KitKau.cSaldTune');
+    SaveMyDsk(KitKau.cObj, 'KitKau.cObj');
+    for (i := 1; i <= 9; inc(i))
+      SaveMyDsk(KitKau.cKau[i], 'KitKau.cKau[' + string(i) + ']');
+  }
+  else
+  {
+    SaveMyDsk(comp(0), 'KitKau.cSaldTune');
+    SaveMyDsk(comp(0), 'KitKau.cObj');
+    for (i := 1; i <= 9; inc(i))
+      SaveMyDsk(comp(0), 'KitKau.cKau[' + string(i) + ']');
+  }
+}
+
+//******************************************************************************
+
+Function GetObjUKSName(SrcTab : word; SrcSpec : comp) : string;
+{
+  var vcObj : comp;
+
+  GetObjUKSName := '';
+  vcObj := GetObjUKS(SrcTab, SrcSpec);
+  if (GetFirst KatStroy where ((vcObj == KatStroy.nRec)) = tsOk)
+    GetObjUKSName := KatStroy.Name;
+}
+
+//******************************************************************************
+
+Function GetZatrUKSName(SrcTab : word; SrcSpec : comp) : string;
+{
+  var vcZatr : comp;
+
+  GetZatrUKSName := '';
+  vcZatr := GetZatrUKS(SrcTab, SrcSpec);
+  if (GetFirst AddSumTune where ((vcZatr == AddSumTune.nRec)) = tsOk)
+    GetZatrUKSName := AddSumTune.Name;
+}
+
+
+// Имеется ли привязка целевого учета по указанной позиции спецификации.
+Function IsSpecMTRPresent( SrcTab : word; SrcSpec : comp ): boolean;
+{
+  result := ( GetFirst fastfirstrow SpecMTR where(( SrcTab == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec )) = tsOk );
+}
+
+// [PUBLIC] Сгенерировать целевой учет в позиции спецификации по указанному разрезу ЦУ
+Procedure InsSpecMTR_Kit( awSrcTab: word; acSrcSpec, acKitKau: comp );
+{
+  if (acKitKau <> 0)
+    if (GetFirst KitKau where (( acKitKau == KitKau.NRec )) = tsOk)
+      if (KitKau.cObj <> 0)
+      {
+        SpecMTR.coTable   := awSrcTab;
+        SpecMTR.cSpec     := acSrcSpec;
+        SpecMTR.cSaldTune := KitKau.cSaldTune;
+        SpecMTR.cObj      := KitKau.cObj;
+
+        var i: word;
+        for (i := 1; i <= 9; i++)
+          SpecMTR.cKau[i] := KitKau.cKau[i];
+
+        InsUpdRec(SpecMtr.buffer);
+      }
+}
+
+// [PUBLIC] Связать позицию спецификации с заданным значением аналитики первого уровня
+Procedure SetSpecMTR_Obj( awSrcTab: word; acSrcSpec, acKitKau, acSaldTune, acObj: comp );
+{
+  if (acKitKau <> 0)
+  {
+    if (GetFirst KitKau where (( acKitKau == KitKau.NRec )) <> tsOk)
+      InsSpecMTR_Kau( awSrcTab, acSrcSpec, acSaldTune, acObj, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+    else
+      InsSpecMTR_Kau( awSrcTab, acSrcSpec, KitKau.cSaldTune, acObj, KitKau.cKau[1], KitKau.cKau[2],
+                      KitKau.cKau[3], KitKau.cKau[4], KitKau.cKau[5], KitKau.cKau[6], KitKau.cKau[7],
+                      KitKau.cKau[8], KitKau.cKau[9] );
+  }
+  else
+    if (GetKitKau(awSrcTab, acSrcSpec) = 0)
+      InsSpecMTR_Kau( awSrcTab, acSrcSpec, acSaldTune, acObj, 0, 0, 0, 0, 0, 0, 0, 0, 0 );
+    else
+      InsSpecMTR_Kau( awSrcTab, acSrcSpec, KitKau.cSaldTune, acObj, KitKau.cKau[1], KitKau.cKau[2],
+                      KitKau.cKau[3], KitKau.cKau[4], KitKau.cKau[5], KitKau.cKau[6], KitKau.cKau[7],
+                      KitKau.cKau[8], KitKau.cKau[9] );
+}
+
+// [PUBLIC] Сгенерировать целевой учет в позиции спецификации по указанным значениям аналитик ЦУ
+Procedure InsSpecMTR_Kau( awSrcTab: word; acSrcSpec, acSaldTune, acObj,
+                          acKau1, acKau2, acKau3, acKau4, acKau5, acKau6, acKau7, acKau8, acKau9: comp );
+{
+  if (acSaldTune <> 0) and (acObj <> 0)
+  {
+    ClearBuffer(#SpecMTR);
+    SpecMTR.coTable   := awSrcTab;
+    SpecMTR.cSpec     := acSrcSpec;
+    SpecMTR.cSaldTune := acSaldTune;
+    SpecMTR.cObj      := acObj;
+    SpecMTR.cKau[1]   := acKau1;
+    SpecMTR.cKau[2]   := acKau2;
+    SpecMTR.cKau[3]   := acKau3;
+    SpecMTR.cKau[4]   := acKau4;
+    SpecMTR.cKau[5]   := acKau5;
+    SpecMTR.cKau[6]   := acKau6;
+    SpecMTR.cKau[7]   := acKau7;
+    SpecMTR.cKau[8]   := acKau8;
+    SpecMTR.cKau[9]   := acKau9;
+    InsUpdRec(SpecMtr.buffer);
+  }
+}
+
+// [PUBLIC]
+// Позволяет получить системный код аналитики и ссылку на значение
+// для указанной позиции спецификации документа и номеру аналитики (значение 1..10)
+function GetSpecifAnalytics(
+  _specifTable: word; // код таблицы спецификации документа (например coSpSopr)
+  _specifRec: comp;   // nRec позиции спецификации документа (например, SpSopr.nRec)
+  _placeKau: word;    // порядковый номер аналитики (значение от 1 до 10)
+  var _wKau: word;    // Возвращаемое значение. Системный код искомой аналитики позиции спецификации док-та
+  var _cKau: comp     // Возвращаемое значение. Ссылка на значение искомой аналитики.
+): boolean; // Возвращает True в случае успеха и False при неудаче.
+{
+  result := false;
+
+  _wKau := 0;
+  _cKau := 0;
+
+  if( (_specifTable = 0) or (_specifRec = 0) or (_placeKau < 1) or (_placeKau > 10) )
+    exit;
+
+  if( GetFirst fastfirstrow SpecMTR where(( _specifTable == SpecMTR.coTable and _specifRec == SpecMTR.cSpec )) = tsOk )
+  {
+    _cKau := if( _placeKau = 1, SpecMtr.cObj, SpecMtr.cKau[ _placeKau - 1 ] );
+
+    if( GetFirst fastfirstrow SaldTune where(( SpecMtr.cSaldTune == SaldTune.nRec )) = tsOk )
+    {
+      _wKau := if( _placeKau = 1, SaldTune.wObj, SaldTune.wKau[ _placeKau - 1 ] );
+      result := true;
+    }
+  }
+}
+
+//******************************************************************************
+
+HandleEvent
+
+cmOnVipLoad:
+{
+  vwPlaceZatr_UKS := 0;
+  vcSaldTune_UKS := oTune.GetTune(1);
+
+  if ( vcSaldTune_UKS <> 0 )
+    vwPlaceZatr_UKS := (oTune.GetPlaceKau(cgKau_StZatr) - 1);
+}
+
+cmInit :
+  Abort;
+
+end;
+end.

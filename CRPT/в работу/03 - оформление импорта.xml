@@ -1,0 +1,16 @@
+<introduce_import version="4">
+<trade_participant_inn>7709191580</trade_participant_inn>
+<declaration_date>2020-11-06</declaration_date>
+<declaration_number>10013160/061120/0628581</declaration_number>
+<customs_code>10013160</customs_code>
+<decision_code>10</decision_code>
+<products_list>
+<product>
+<kitu>111111111111111111111</kitu>
+<certificate_type>CONFORMITY_CERTIFICATE</certificate_type>
+<certificate_number>RU.77.99.32.006.R.000337.02.20</certificate_number>
+<certificate_date>2020-02-11</certificate_date>
+<tnved_code>2201101900</tnved_code>
+</product>
+</products_list>
+</introduce_import>

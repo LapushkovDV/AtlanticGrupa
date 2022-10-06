@@ -1,0 +1,169 @@
+// ╔═════════════════════════════════════════════════════════════════════╗
+// ║              Проект Галактика   (с) 1996, TOP SOFT Ltd.             ║
+// ║      Версия :    5.50                                               ║
+// ║      Разработал: Александр Крахотко                                 ║
+// ║      Назначение: пересчет LIFO/FIFO цен в расходных ордерах         ║
+// ║                  обработка возвратов-приходов                       ║
+// ║      Изменения:                                                     ║
+// ╚═════════════════════════════════════════════════════════════════════╝
+/* ОБРАБОТКА ПРИХОДА-ВОЗВРАТА
+   описание самой сложной ситуации которая может возникнуть
+      ┌───────────────────╥─────────────────────────────┐
+      │  до пересчета     ║ после пересчета             │
+      ├─────────┬─────────╫─────────────┬───────────────┤
+      │  расход │ возврат ║ расход      │ возврат       │
+      ├─────────┴─────────╫─────────────┴───────────────┤
+      │  р 10     п 4     ║       ┌ р 3    п 4 ─┬ п 3   │
+      │           п 5     ║ р 10 ─┤ р 2         └ п 1   │
+      │                   ║       └ р 5                 │
+      │                   ║                п 5 ─┬ п 1   │
+      │                   ║                     └ п 4   │
+      └───────────────────╨─────────────────────────────┘
+*/
+
+var bRollBack : boolean ;
+var cRollBack : comp ;
+
+
+Procedure RollBack_Prih_Begin ;
+ {
+  if (GetFirst bSpOrder where ((rSpOrder.nRec == bSpOrder.cSpOrdV))=tsOk)
+   {
+    bRollBack := TRUE ;
+    cRollBack := rSpOrder.nRec ;
+    // сначала занесли все возвраты-приходы в Pick557
+    if (delete Pick557 where ((557==Pick557.wList)) <> tsOk ) {} ;
+    FOR( dStat := GetFirst bSpOrder where ((cRollBack == bSpOrder.cSpOrdV )) ;
+         dStat  = tsOk ;
+         dStat := GetNext  bSpOrder where ((cRollBack == bSpOrder.cSpOrdV )) )
+     {
+      if (not NextVisual) BREAK ;
+      ClearBuffer(#Pick557) ;
+      Pick557.wList := 557 ;
+      Pick557.cRec  := bSpOrder.nRec ;
+      insert current Pick557 ;
+     }
+
+    if (delete Pick556 where ((556==Pick556.wList)) <> tsOk ) {} ;
+   }
+  else
+    bRollBack := FALSE ;
+ }
+
+
+// заносим rSpOrder.nRec для которых были возвраты в таблицу Pick556
+Procedure RollBack_Prih_Add ;
+ {
+  if (not bRollBack) EXIT ;
+  if (bRollBack)
+   {
+    ClearBuffer(#Pick556) ;
+    Pick556.wList   := 556 ;
+    Pick556.cRec    := rSpOrder.nRec ;
+    Pick556.PickKol := rSpOrder.Kol ;
+    insert current Pick556 ;
+   }
+ }
+
+
+// после всего этого
+Procedure RollBack_Prih_End ;
+  var bFirstRBP : boolean ;
+      curRBPKol : double ;
+{
+  if (not bRollBack) EXIT ;
+
+  //теперь бежим по этим возвратам-приходам и корректирует их
+  FOR( dStat := GetFirst Pick557 where ((557 == Pick557.wList )) ;
+       dStat  = tsOk ;
+       dStat := GetNext  Pick557 where ((557 == Pick557.wList )) )
+   {
+    if (not NextVisual) BREAK ;
+    if (GetFirst bSpOrder where ((Pick557.cRec == bSpOrder.nRec )) <> tsOk)
+      CONTINUE ;
+
+    bFirstRBP := TRUE ;
+    curRBPKol := bSpOrder.Kol ;
+    FOR( dStat := GetFirst Pick556 where ((556    == Pick556.wList             and
+                                           0.0001 << Pick556.PickKol (NoIndex) )) ;
+         dStat  = tsOk ;
+         dStat := GetNext  Pick556 where ((556    == Pick556.wList             and
+                                           0.0001 << Pick556.PickKol (NoIndex) )) )
+     {
+      if (not NextVisual) BREAK ;
+      if (abs(curRBPKol)<0.0001) BREAK ;
+
+      // ищем расходный ордер
+      if (GetFirst SpOrder where ((Pick556.cRec == SpOrder.nRec))<>tsOk)
+        CONTINUE ;
+
+      if (Pick556.PickKol >= (curRBPKol-0.0001))
+       {
+        bSpOrder.Kol    := curRBPKol ;
+        Pick556.PickKol := Pick556.PickKol - curRBPKol ;
+        curRBPKol       := 0 ;
+       }
+      else
+       {
+        bSpOrder.Kol    := Pick556.PickKol ;
+        curRBPKol       := curRBPKol - Pick556.PickKol ;
+        Pick556.PickKol := 0 ;
+       }
+      update current Pick556 ;
+
+      bSpOrder.cSpOrdV := SpOrder.nRec ;
+      #ifndef _NalUch_
+      bSpOrder.SrPrice := SpOrder.SrPrice ;
+      bSpOrder.cVal    := SpOrder.cVal ;
+      bSpOrder.VPrice  := SpOrder.VPrice ;
+      bSpOrder.priceN  := SpOrder.priceN ;
+      bSpOrder.SummN   := SpOrder.SummN ;
+      bSpOrder.rSrPrice:= bSpOrder.SrPrice ;
+      bSpOrder.rVPrice := bSpOrder.vPrice  ;
+      bSpOrder.srPrice := oSaldo_K.RoundRubOrd(bSpOrder.rSrPrice, bSpOrder.kol);
+      bSpOrder.vPrice  := oSaldo_K.RoundValOrd(bSpOrder.rVPrice , bSpOrder.kol);
+      if (bFirstRBP)
+       { bFirstRBP := FALSE ;
+         oModifOrds.AnySpOrder_Update(TypeSpOrder(bSpOrder.buffer));
+       }
+      else
+       { bSpOrder.nRec := 0 ;
+         oModifOrds.AnySpOrder_Insert(TypeSpOrder(bSpOrder.buffer)); //insert current bSpOrder ;
+       }
+      #else
+      bSpOrder.priceN:= SpOrder.priceN;
+      bSpOrder.SummN := SpOrder.SummN;
+      if bFirstRBP  { bFirstRBP:= false;  update current bSpOrder; }
+      else          { bSpOrder.nRec:= 0;  insert current bSpOrder; }
+      #end
+
+     } // FOR "Pick556"
+
+    if (curRBPKol > 0.0001)
+     {
+      bSpOrder.cSpOrdV := 0 ; // пришлось отвязать
+      #ifndef _NalUch_
+      bSpOrder.SrPrice := 0 ;
+      bSpOrder.cVal    := 0 ;
+      bSpOrder.VPrice  := 0 ;
+      bSpOrder.priceN  := 0 ;
+      bSpOrder.Kol     := curRBPKol ;
+      bSpOrder.rSrPrice:= 0;
+      bSpOrder.rVPrice := 0;
+      bSpOrder.nRec    := 0;
+      oModifOrds.AnySpOrder_Insert(TypeSpOrder(bSpOrder.buffer)); //insert current bSpOrder ;
+      #else
+      bSpOrder.priceN:= 0;
+      bSpOrder.nRec  := 0;
+      insert current bSpOrder;
+      #end
+      frmErr.Write('! Логическая ОШИБКА: Возвращено было больше чем продавали ?!?' );
+      frmErr.Write('! Ордер № '+ if (GetFirst SklOrder where ((bSpOrder.cSklOrder==SklOrder.nRec))=tsOk,
+                                       SklOrder.nOrder+' от '+string(SklOrder.dOrd),
+                                       '????') );
+      frmErr.Write('! МЦ '+KatMC.Name+' н.ном. '+KatMC.BarKod );
+      frmErr.Write('! возвращено больше чем продали на '+string(curRBPKol) );
+      frmErr.Write('! Данная позиция возврата "не привязана" ни к одному приходу...');
+     }
+   } // FOR "Pick557"
+}

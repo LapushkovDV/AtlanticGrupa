@@ -1,0 +1,49 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента M_DVS
+
+#ifdef  ComponentVersion
+#component "M_DVS"
+#end
+
+#include SoprType_DVS.inc// постоянные для работы фильтра
+
+
+VipInterface dssch            licensed (FREE) Parameters (BaseNRec : comp);
+VipInterface DsNormRed        licensed (FREE) Parameters (parcBaseDoc : comp; parcKatDsNor : comp; Flag_Work : word; parKolNorm : double; parwListPick : word);
+VipInterface DsNormSelect     licensed (FREE);
+VipInterface SoprDsIn         licensed (FREE) Parameters (TypeSopr : word; pNRec : comp);
+VipInterface SoprDsOut        licensed (FREE) Parameters (TypeSopr : word; pNrec : comp);
+VipInterface DsVvodS          licensed (FREE) Parameters (parDat              : date;
+                                                          parcKatSopr         : comp;
+                                                          parVidSp            : word;
+                                                          parFlagNoRedactSpic : boolean;
+                                                          parRzlt             : longint);
+VipInterface ListMcInter      licensed (FREE) Parameters (parTmpSpDoc_wList : word;
+                                                          parStrTitl        : string;
+							  parFlag_Wrk       : longint;
+                                                          parTypeTab        : word;
+                                                          parcTab           : comp);
+
+VipInterface ListDocInter     licensed (FREE) Parameters (wListSrc : word; wListRez : word; StrTitl : string);
+VipInterface DVS_FltInDoc     licensed (FREE) Parameters (TypeSopr : word; pFlt : StructFltInDoc);
+
+//VipInterface MovDSMC        licensed (FREE);
+VipInterface DoDSIOConvertation licensed (FREE);
+VipInterface GetSomeGP        licensed (FREE) Parameters (pmc : comp; prKATDSNOR : comp);
+VipInterface DsFrmSb          licensed (DVS);
+VipInterface DsFrmbl          licensed (DVS);
+VipInterface RecalcPriceDS    licensed (FREE)  Parameters (cGAlg : comp; wGDoc : word; cGAdd : comp; parTypeDoc : word; parcDoc : comp);
+
+VipInterface GetDsIo          licensed (FREE) Parameters (prBaseDoc : comp; prKatSopr : comp; prVidSp : word);
+VipInterface DsGetProd        licensed (DVS) Parameters (Rep_Why : word);
+VipInterface DSGetProdSect    licensed (DVS);
+VipInterface DsFrmNorm        licensed (DVS) Parameters (ModeWork : word);
+VipInterface dsprndog         licensed (FREE) Parameters (prBaseDoc : comp);
+VipInterface DSMovSyr         licensed (DVS);
+VipInterface DSMovSyrSect     licensed (DVS);
+VipInterface NalSchFc         licensed (FREE) Parameters (p1 : comp);
+VipInterFace DS522Nkl_RspSyr  licensed (FREE) Parameters (parKatSopr : comp);
+VipInterFace DSVedomostNal    licensed (FREE);
+VipInterFace DSVedomostOborot licensed (FREE);
+
+

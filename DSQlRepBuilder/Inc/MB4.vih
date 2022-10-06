@@ -1,0 +1,87 @@
+//******************************************************************************
+//                                                      (с) корпорация Галактика
+// Галактика 8.0 - общая функциональность
+// Декларации стандартных реализаций интерфейсов описания и доступа к
+// псевдоклассификаторам
+//******************************************************************************
+
+#ifndef __MB4_vih__
+#define __MB4_vih__
+
+#include Commission.fun
+#include Commission.vih
+#include Commission.var
+#ifdef ComponentVersion
+  #component "l_sklad"
+#end
+
+ObjInterface objMB4FR;
+
+  #doc
+  удаляет все записи из Data
+  #end
+  Function RefDeleteData: boolean;
+
+  #doc
+  удаляет все записи из Head
+  #end
+  Function RefDeleteHead: boolean;
+
+  #doc
+  Вызывает FastReport
+  #end
+  procedure RunMB4(RepGroup: string);
+
+  #doc
+  Окно для проверки данных
+  #end
+  procedure SeeTestWindow;
+
+  #doc
+  Вставляет запись в шапку отчета
+  #end
+  function InsertMB4Head(Nrec:comp;
+                         TipOrg:string;
+                         OrgName:string;
+                         OrgOKPO:string;
+                         NomDes:string;
+                         dSopr:string;
+                         SoprName:string;
+                         NaznaName:string;
+                         PodrName:string;
+                         MolName:string;
+                         Summa:double;
+                         ForMnf_Price:double):boolean;
+
+  #doc
+  Вставляет запись о комиссии
+  #end
+  function InsertMB4Commiss(oCommission: Commission):boolean;
+
+  #doc
+  Вставляет запись в данные отчета
+  #end
+  function InsertMB4Data(NrecHead:comp;
+                         MCName:string;
+                         MCBarKod:string;
+                         OtpEd:string;
+                         PartyName:string;
+                         Kol:double;
+                         Price:double;
+                         ForMnf_Price:double):boolean;
+  #doc
+  Вставляет пустую запись в данные отчета
+  #end
+  function InsertMB4DataCl(NrecHead:comp):boolean;
+
+  #doc
+  Вставляет пустую запись в шапку отчета
+  #end
+  function InsertMB4HeadCl(Nrec:comp):boolean;
+
+End;
+
+
+VipInterface viMB4Print implements objMB4FR licensed (FREE);
+
+#end // __MB4_vih__

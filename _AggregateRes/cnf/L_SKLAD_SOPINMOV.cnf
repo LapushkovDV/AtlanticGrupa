@@ -1,0 +1,68 @@
+// Накладные на внутр. перемещение
+object 'L_SKLAD::SOPINMOV' : InterfaceWindow {
+
+  // Редактирование накладной на внутр. перемещение
+  object 'EDITSOPR' : InterfaceWindow {
+
+    // спецификация
+    object BRSPECIF1 : Browser {
+
+        object 'Field: KATMC.BARKOD2' : Column {
+          Original = False;
+          Visible = True;
+          Hidden = False;
+          Protect = True;
+          StatusCtx = 0;
+          Title = 'SAP Код';
+          FieldName = 'Field: KATMC.BARKOD2';
+          Index = 5;
+          DefaultWidth = 14;
+          ButtonType = 0;
+        } // 'Field: KATMC.BARKOD2' : Column
+
+    } // BRSPECIF1 : Browser
+
+  } // EDITSOPR : InterfaceWindow
+
+  object BRSELECTNAKL : Browser {
+    object 'c_BRSELECTNAKL_KATMOLBR1_NAME_МОЛ-отправитель' : Column {
+      Hidden = True;
+      }
+
+    object 'c_BRSELECTNAKL_TOMOLBR1_NAME_МОЛ-получатель' : Column {
+      Hidden = True;
+      }
+ object PickingReportField : Column {
+          Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Статус '^M+
+              'PickingReport';
+      HelpLine = 'Статус PickingReport';
+      FieldName = 'PickingReportField';
+      Index = 5;
+      DefaultWidth = 15;
+      ButtonType = 0;
+//      FontBackColor = 'if(isValidAll(tnATL_MERCURY_HEAD),if(ATL_MERCURY_HEAD.ISOK, 7, 10),0)';
+       FontBackColor = 'PickingReportFieldColor';
+      }
+
+    object 'Field: KATNAZNA.NAME' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Назначение';
+      FieldName = 'Field: KATNAZNA.NAME';
+      Index = 8;
+      DefaultWidth = 20;
+      ButtonType = 0;
+    } // 'Field: KATNAZNA.NAME' : Column
+
+  } // BRSELECTNAKL : Browser
+
+} // L_SKLAD::SOPINMOV : InterfaceWindow
+//-----------------------------------------------------------------------------

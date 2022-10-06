@@ -1,0 +1,14 @@
+! Стандартные команды, включаемые во все статусные строки в системе тестирования AQA
+
+          '',cmResize,kbCtrlF5;
+          '',cmSysMenu,kbCtrlF10;
+          '',cmCalculator,kbShiftF2;
+          '',cmEvaluateAndModify,kbCtrlF4;
+          '',cmLastHelp,kbAltF1;
+          '',cmHelp,kbF1;
+//          '',cmCallIndex,kbShiftF1;
+          '',cmQuit,kbAltX;
+          '',cmMenu,kbF10;
+          '',cmCalendar, kbAltF4;
+      	  '',cmAqaReport,kbCtrlP;
+          '',cmZoom,kbF5;

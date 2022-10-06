@@ -1,0 +1,42 @@
+#ifdef ComponentVersion
+#component "L_Kassa"
+#end
+
+!#include kut4kass.vih
+
+VipInterface Get_Kass licensed (FREE) Parameters (Rendering :word; d_NKassa :string; d_KassaNRec :comp);
+
+VipInterface KassaPar 
+  licensed (ROZN);
+
+VipInterface Katalogs2Berlio licensed (FREE) Parameters (pNRec :comp);
+
+VipInterface KUT2Kassa 
+  licensed 
+  (
+  #include KUT2Kassa.lih
+  );
+
+VipInterface Part4Tr licensed (FREE) Parameters (KassaNRec :comp; PrOnLine, povtor :boolean);
+
+VipInterface RestInKa 
+  licensed 
+  (
+  #include RestInKa.lih
+  ) 
+  Parameters 
+  (
+    Kolvo, Mode :double; 
+    P_MC, P_Podr, P_Mol, P_Goods :comp
+  );
+
+VipInterface Return4K 
+  licensed 
+  (
+  #include Return4K.lih
+  )
+Parameters (Propusk_nRec :comp)
+;
+VipInterface Setup_Berlio licensed (FREE) Parameters (pNRec :comp);
+VipInterface Setup_Tusson licensed (FREE) Parameters (pNRec :comp);
+VipInterface itovwithkass licensed (FREE);

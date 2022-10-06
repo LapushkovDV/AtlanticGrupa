@@ -1,0 +1,855 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента
+
+#include MnEquip.vih //
+
+#component "M_MnPlan"
+
+VipInterface iAlgObjUtil_1
+  Licensed (Free);
+
+VipInterface Bookings
+  Licensed
+  (
+    #include Bookings.lih
+  )
+  Parameters
+  (
+    Mode: word;
+    pIndent: comp;
+    p_cRoleRight: comp
+  );
+
+VipInterface GetOperPlan
+  Licensed
+  (
+    #include GetOperPlan.lih
+  )
+  Parameters
+  (
+    DocNRec: Comp;
+    WorkMode: Word
+  );
+
+VipInterface WorkPlacePl
+  Licensed (coPlan, ManufPlan, SalePlan, SupplyPlan);
+
+VipInterface PickAlgoritm
+  Licensed(Free)
+  Parameters
+  (
+    pWorkCode: comp;
+    pWorkMode: word;
+    pWorkType: word;
+    pTypePlan: word;
+    pWorkFltr: comp
+  );
+
+VipInterface iCheckBaseMnf
+  Licensed(Free)
+  Parameters
+  (
+    pWorkMode: Word
+  );
+
+VipInterface iConvTep
+  Licensed(ManufPlan);
+
+VipInterface RepList_Pl
+  Licensed(Free)
+  Parameters
+  (
+    NReport: word;
+    p_wModule: word;
+    p_cRoleRights: comp;
+    p_wPick: word;
+    p_cUserdeskRep: comp
+  );
+
+VipInterface PlanAnalyse_Run
+  Licensed(coPlan, manufacture, ManufPlan, SalePlan, SupplyPlan)
+  Parameters
+  (
+    cUserDeskRep: Comp;
+    pStatus: Word;
+    p_cMnPlan1: Comp;
+    p_cMnPlan2: Comp
+  );
+
+VipInterface BookingsRepRun
+  Licensed(coPlan, ManufPlan,SalePlan, SupplyPlan)
+  Parameters
+  (
+    cUserDeskRep: Comp;
+    pStatus: Word;
+    ccIndent1: Comp;
+    ccIndent2: Comp
+  );
+
+VipInterface irOPPerPlan
+  Licensed(ManufPlan, SupplyPlan);
+
+VipInterface irOPSumPerPlan
+  Licensed(ManufPlan, SupplyPlan);
+
+VipInterface irOPRecom
+  Licensed(ManufPlan, SupplyPlan);
+
+VipInterface irOPExceptOP
+  Licensed(ManufPlan, SupplyPlan);
+
+VipInterface irOPExceptSp
+  Licensed(ManufPlan, SupplyPlan);
+
+VipInterface eResInfo
+  Licensed(Free)
+  Parameters
+  (
+    Regime: word;
+    pResInfo: comp
+  );
+
+VipInterface NastrPl
+  Licensed(Free)
+  Parameters
+  (
+    pWorkType: word;
+    pWorkSetup: comp;
+    pWorkMode: word
+  );
+
+VipInterface RltTemplates
+  Licensed(Free)
+  Parameters
+  (
+    p_cFormPl: Comp;
+    pFlag: word;
+    pwTypeSrc: word;
+    pcTmpScr: comp;
+    pwTypeDst: word;
+    pcTmpDst: comp
+  );
+
+VipInterface GetNormRules
+  Licensed(Free)
+  Parameters
+  (
+    p_cFormPl: Comp;
+    p_fPick: Boolean
+  );
+
+VipInterface iWrkFndPrEd
+  Licensed(Free);
+
+VipInterface GetGrRepPl
+  Licensed(Free)
+  Parameters
+  (
+    p_nRep: Word;
+    p_wModule: Word;
+    p_fEdit: Word;
+    p_fPick: Word;
+    p_cGrRepPl: Comp
+  );
+
+VipInterface rars_DocCircle
+  Licensed(Free);
+
+VipInterface iR_RUsers
+  Licensed(Free);
+
+VipInterface sSpBook
+  Licensed(Free)
+  Parameters
+  (
+    pIndent: comp
+  );
+
+VipInterface GetSpMnPlan
+  Licensed(Free)
+  Parameters
+  (
+    ccMnPlan: comp;
+    wFlag: word;
+    ccSpMn: comp;
+    wFldNum: word;
+    dblValue: double;
+    wDocSheet: word;
+    wTypePlan: word;
+    wModeOper: word;
+    p_wStateRsvOper: Word
+  );
+
+VipInterface iEditMnEquip
+  Licensed(Free)
+  Parameters
+  (
+    pcObjRem: comp;
+    pcTipObj: comp;
+    pcKatMark: comp;
+    pcEqGroup: comp;
+    pwKauPlace: word;
+    pcPlace: comp
+  );
+
+VipInterface EqGroup
+  Licensed(Free)
+  Parameters
+  (
+    Tkod: comp
+  );
+
+VipInterface GrvPlan
+  Licensed(Free)
+  Parameters
+  (
+    Tkod: comp;
+    pTypeGr: LongInt;
+    pTypePlan: LongInt
+  );
+
+VipInterface SimpleWayToRunAlgorithm
+  Licensed(Free)
+  Parameters
+  (
+    cAlg: comp;
+    TypeCp: word;
+    DocNRec: comp;
+    DocSpNRec: comp
+  );
+
+VipInterface gFilters
+  Licensed(Free)
+  Parameters
+  (
+    Rendering: word;
+    pSFilters: comp;
+    NameMarker: string;
+    wType_: word;
+    iPlan_: longint
+  );
+
+VipInterface FieldSourceAnMCUsl
+  Licensed(Free)
+  Parameters
+  (
+    wMode: word;
+    cAnMc: comp;
+    cAnUsl: comp
+  );
+
+VipInterface FieldSourceDoc
+  Licensed(Free);
+
+VipInterface FieldSourceDocList
+  Licensed(Free)
+  Parameters
+  (
+    wNum: word;
+    wDoc: word
+  );
+
+VipInterface FieldSourceObjAcct
+  Licensed(Free)
+  Parameters
+  (
+    wDirect: word;
+    wDoc: word;
+    aDoc: comp;
+    wLook: word
+  );
+
+VipInterface FieldSourceSource
+  Licensed(Free)
+  Parameters
+  (
+    SourceName: string
+  );
+
+VipInterface FieldSourceSpObjAcc
+  Licensed(Free)
+  Parameters
+  (
+    wDirect: word;
+    wLook: word
+  );
+
+VipInterface FieldSourceView
+  Licensed(Free)
+  Parameters
+  (
+    SourceType: word;
+    wCode: word;
+    wField: word;
+    isSpec: word;
+    wSourceDoc: word
+  );
+
+VipInterface iKPNForOneObj_RB
+  Licensed(Free)
+  Parameters
+  (
+    pwKAUObj: word;
+    pcObject: comp;
+    psObjTitle: string
+  );
+
+VipInterface iProtPlan_RB
+  Licensed(Free)
+  Parameters
+  (
+    pcProtPlan: comp;
+    pwFlRun: word;
+    psTitle: string;
+    pwPickList: word;
+    pwTypeOwn: word;
+    pcOwner: comp;
+    pcFormPl: comp
+  );
+
+VipInterface iProtPlan
+  Licensed(Free)
+  Parameters
+  (
+    pcProtPlan: comp; //
+    pwMode: word;     //
+    pwTypeOwn: word;  //
+    pcOwner: comp;    //
+    pcFormPl: comp    //
+  );
+
+VipInterface W_MnPlanSp
+  Licensed(Free)
+  Parameters
+  (
+    pMnPlan: comp;
+    p_cRoleRights: comp
+  );
+
+VipInterface VidPick
+  Licensed(Free)
+  Parameters
+  (
+    pWorkMode: word;
+    pWorkCode: word;
+    pWorkSloj: comp;
+    pWorkType: word
+  );
+
+VipInterface iSelectDocType
+  Licensed(Free)
+  Parameters
+  (
+    pWorkType: word;
+    pWorkKind: word;
+    pWorkObj: word;
+    pWorkCode: word;
+    pWorkDoc: comp
+  );
+
+VipInterface Priority
+  Licensed(Free)
+  Parameters
+  (
+    Rendering: word;
+    Space: word;
+    pFarInfo: comp;
+    NameMarker: string
+  );
+
+VipInterface SelectPeriodFromFilter
+  Licensed(Free)
+  Parameters
+  (
+    LookingForTheSummer: comp;
+    MarkerOfFpPeriod: longint;
+    ExternalDate: date
+  );
+
+VipInterface GetDocstate
+  Licensed(Free)
+  Parameters
+  (
+    p_cFormPl: comp;
+    p_fPick: boolean;
+    p_wDocType: word;
+    p_cTemplate: comp;
+    p_TypeState: word;
+    p_wMultiPickFlags: word
+  );
+
+VipInterface GetTemplReg
+  Licensed(Free)
+  Parameters
+  (
+    p_cFormPl: comp;
+    p_fPick: boolean;
+    p_TypeState: word
+  );
+
+VipInterface iShowInfoAboutWorkCentre
+  Licensed(Free)
+  Parameters
+  (
+    p_wCgKau: word;
+    p_cObject: comp
+  );
+
+// давальческое сырье за рубежом
+VipInterface iCustLic
+  Licensed(Free)
+  Parameters
+  (
+    wGMode: word;
+    cGCode: comp;
+    MarkName: string
+  );
+
+VipInterface iPartyDS
+  Licensed(Free)
+  Parameters
+  (
+    wGMode: word;
+    wGType: word;
+    cGCode: comp;
+    cGLic: comp;
+    cGPos: comp;
+    MarkName: string
+  );
+
+VipInterface iRepDS01
+  Licensed(Free)
+  Parameters
+  (
+    cGUDRep: comp;
+    wGMode: word
+  );
+
+VipInterface iRepDS02
+  Licensed(Free)
+  Parameters
+  (
+    cGUDRep: comp;
+    wGMode: word
+  );
+
+VipInterface iRepDS03
+  Licensed(Free)
+  Parameters
+  (
+    cGUDRep: comp;
+    wGMode: word
+  );
+
+VipInterface iRepDS04
+  Licensed(Free)
+  Parameters
+  (
+    cGUDRep: comp;
+    wGMode: word
+  );
+
+VipInterface iRepDSRun
+  Licensed(Free)
+  Parameters
+  (
+    cGUDRep: comp;
+    wGMode: word
+  );
+
+VipInterface iRepDSSet
+  Licensed(Free)
+  Parameters
+  (
+    cGUDRep: comp;
+    bGNew: boolean;
+    p_cRoleRights: comp
+  );
+
+VipInterface iTActDS
+  Licensed(Free)
+  Parameters
+  (
+    wGMode: word;
+    cGCode: comp
+  );
+
+VipInterface MnPlDisp_toPlan
+  Licensed(                     ManufPlan                      );
+
+VipInterface MnPlDisp_toNeedMt
+  Licensed(        manufacture, ManufPlan                      );
+
+VipInterface MnPlDisp_toNeedTr
+  Licensed(                     ManufPlan                      );
+
+VipInterface MnPlDisp_toNeedEq
+  Licensed(                     ManufPlan                      );
+
+VipInterface MnPlDisp_toMnfZakaz
+  Licensed(        manufacture, ManufPlan                      );
+
+VipInterface MnPlDisp_toPlanSb
+  Licensed(                                SalePlan            );
+
+VipInterface MnPlDisp_toPlanSnab
+  Licensed(                                          SupplyPlan);
+
+VipInterface MnPlDisp_toCorpoNeed
+  Licensed(coPlan                                              );
+
+VipInterface MnPlDisp_toCorpoDelivery
+  Licensed(coPlan                                              );
+
+VipInterface MnPlDisp_toCorpoManuf
+  Licensed(coPlan                                              );
+
+VipInterface MnPlDisp_toCorpoBalance
+  Licensed(coPlan                                              );
+
+VipInterface AdjustSpMnPlOutN
+  Licensed(Free)
+  Parameters
+  (
+    wFormat: word;
+    wFormat1: word
+  );
+
+VipInterface iPickAlgFldSys
+  Licensed (Free)
+  Parameters
+  (
+    pWorkCode: word //
+  );
+
+VipInterface PickAlgoritmSys
+  Licensed (Free)
+  Parameters
+  (
+    pWorkCode: word //
+  );
+
+VipInterface KatvPlan
+  Licensed (Free)
+  Parameters
+  (
+    Tkod: comp;         //
+    pTypeGr: longint;   //
+    pTypePlan: longint  //
+  );
+
+VipInterface GetGrEqMnf
+  Licensed (Free)
+  Parameters
+  (
+    Tkod: comp //
+  );
+
+VipInterface SpZamResPlan
+  Licensed (Free)
+  Parameters
+  (
+   parTypeDoc                   : word;
+   iDoc                         : comp;
+   parcKlPrice                  : comp;
+   parFlag_NotUsed_Party1_MC2   : word;
+   parFlagUsed_AktZam0_ListZam1 : word;
+   parFlagSort_SG0_F1_L2_P3_GP4 : word;
+   parcKatPokaz_GP              : comp;
+   parFlagWrk                   : longint;
+   parKolZnak_Kol               : word;
+   parKolZnak_Price             : word;
+   parDate_SvOst                : date;
+   parListSklad                 : word;
+   parIndexFnc_for_LoadNal      : word;
+   parDate_Start_Flt            : date;
+   parDate_End_Flt              : date;
+   parAlgViewNmb_O              : word;
+   parMethodOfPIO               : word;
+   parTypePeriod                : word;
+   parFlag_UchetChildPeriod     : word;
+   parcFilter                   : comp;
+   parNumAnl_cParty             : word;
+   parNumAnl_cPodrCeh           : word;
+   parNumAnl_cPodrSklad         : word;
+   parNumAnl_cMOLSklad          : word;
+   parFlagCopy_Analitik         : word;
+   parNumAnl_NotUsed_1          : word;
+   parNumAnl_NotUsed_2          : word;
+   parNumAnl_NotUsed_3          : word;
+   parNumAnl_NotUsed_4          : word;
+   parNumAnl_NotUsed_5          : word;
+   parNumCln_Src_Kol            : word;
+   parNumCln_Dst_Kol            : word;
+   parNumCln_Src_Res            : word;
+   parFlag_RunVisualization     : word;
+   parRzlt                      : longint
+  );
+
+VipInterface iTCVTemplate_EF
+  Licensed (Free)
+  Parameters
+  (
+   pcRec : comp
+  );
+
+VipInterFace TCV_AvtoFrm
+  Licensed (Free)
+  Parameters
+  (
+    parRefMnPlan       : comp;
+    parListPick_TCVStr : word;
+    parNumberCln       : word;
+    parRefV_AllMemo    : comp
+  );
+
+VipInterface iCovering
+  Licensed(Free)
+  Parameters
+  (
+    pWorkCode: comp; // текущий SpMnPlan.NRec
+    NumField: word   // текущее поле 1..14 для подсветки Длительности. По умолчанию = 1
+  );
+
+VipInterface CritComp
+  Licensed(Free)
+  Parameters
+  (
+    wTypeBr: word //
+  );
+
+VipInterface iEditValSpMnP
+  Licensed(Free)
+  Parameters
+  (
+    SpMnPlanNRec: comp;  // текущая позиция документа
+    FormPlNRec: comp;    // текущий пользовательский алгоритм представления
+    VtHorNum: longint;   // горизонтальная позиция на экранной таблице по VtHor
+    StrSpMnPlan: string; // наименование позиции документа
+    CurVid: word         // текущее представление в пределах шаблона
+  );
+
+VipInterface FiltrVid
+  Licensed(Free)
+  Parameters
+  (
+    pWorkCode: comp; //
+    pWorkType: word; //
+    SlojNRec: comp   //
+  );
+
+VipInterface iFltrSpMnPl
+  Licensed(Free);
+
+VipInterface iFltrSpMnPlIntrf
+  Licensed(Free);
+
+VipInterface GetRltMnPlan
+  Licensed(Free)
+  Parameters
+  (
+    pcMnPlanParent: comp; // ссылка на документ-родитель
+    pcMnPlan      : comp; // ссылка на запись MnPlan (связанный документ)
+    pwFlRun       : word; // битовый флаг запуска
+    pwFilter      : word; // битовый флаг фильтра (по битам)
+    pwTypePlan    : word; // тип документов
+    pcWayAccou    : comp  // шаблон документов
+  );
+
+VipInterface GetSomeGrObjRem
+  Licensed(Free)
+  Parameters
+  (
+    pGrObjRem: comp //
+  );
+
+VipInterface GetSomePrvED
+  Licensed(Free)
+  Parameters
+  (
+    pPrvED: comp //
+  );
+
+VipInterface GetSpMn
+  Licensed(Free);
+
+VipInterface KindPlan
+  Licensed(Free)
+  Parameters
+  (
+    NNRec: comp;  // Nrec - вида плана по умолчанию
+    wTypeBr: word // 0 - множеств выбор в пики
+                  // 1 - един выбор в пик
+                  // 2 -  редактирование по дереву
+  );
+
+VipInterface MnfGetAltMC
+  Licensed(Free)
+  Parameters
+  (
+    pfPick: boolean;         // вход: доступен или нет выбор
+    pNRecSpObjAcc: comp;     // вход: ссылка на позицию во входящих плана
+    pNRecKatMC: comp;        // выход: выбранная альтернатива
+    pCOtpEd: comp;           // выход: ед.изм.
+    pDblKol: double;         // выход: количество к отгрузке
+    fInitPlanSklad: boolean; // инициализировать или нет интерфейс работы с плановым движением
+    sFormatKol: string       // формат для количества
+  );
+
+VipInterface MnfGetReDistribution
+  Licensed(Free)
+  Parameters
+  (
+    pNRecKatMC: comp;  // вход: ссылка на МЦ
+    sFormatKol: string // формат для количества
+  );
+
+VipInterface ObjAcct
+  Licensed(Free)
+  Parameters
+  (
+    NNRec: comp;  // Nrec - вида плана по умолчанию
+    wTypeBr: word // 0 - множеств выбор в пики
+                  // 1 - един выбор в пик
+                  // 2 -  редактирование по дереву
+  );
+
+VipInterface ParComp
+  Licensed(Free)
+  Parameters
+  (
+    wTypeBr: word; //
+    CritCode: word //
+  );
+
+VipInterface iPickInterfSys
+  Licensed(Free)
+  Parameters
+  (
+    pWorkCode: word //
+  );
+
+VipInterface PickProf
+  Licensed(Free)
+  Parameters
+  (
+    pWorkCode: comp // nRec выбранного документа
+  );
+
+VipInterface iPickVidSetup
+  Licensed(Free)
+  Parameters
+  (
+    cWayAccou: comp; //
+    pWorkCode: comp  //
+  );
+
+VipInterface iPickVidSetup_RB
+  Licensed(Free)
+  Parameters
+  (
+    cWayAccou: comp;  //
+    wSysAlgNumb: word //
+  );
+
+VipInterface iQuickFind
+  Licensed(Free)
+  Parameters
+  (
+    cMnPlan: comp;   //
+    cSpMnPlan: comp; //
+    wPosition: word  //
+  );
+
+VipInterface SectPlan
+  Licensed(Free)
+  Parameters
+  (
+    NNRec: comp;  // Nrec - вида плана по умолчанию
+    wTypeBr: word // 0 - множеств выбор в пики
+                  // 1 - един выбор в пик
+                  // 2 -  редактирование по дереву
+  );
+
+VipInterface iKatLinkA
+  Licensed(Free)
+  Parameters
+  (
+    pWorkMode: word; // режим работы 0 - просто настройка
+                     //              1 - выбор аналитики
+    pWorkAn: word;   // возвращаемая аналитика,
+    pWorkTbl: word;  // номер таблицы
+    pWorkAb: word    // и роль аналитики
+  );
+
+VipInterface SetupVid
+  Licensed(Free)
+  Parameters
+  (
+    pWorkType: word; // тип плана
+    pWorkMode: word; // режим работы  ( пока не используется ).
+    pWorkCode: comp  // FormPl.nRec
+  );
+
+VipInterface ShowInfoAboutOPZRecord
+  Licensed(Free)
+  Parameters
+  (
+    p_cSpOperPlan: comp // Ссылка на запись ОПЗ SpOperPlan.NRec
+  );
+
+VipInterface iVtHor
+  Licensed(Free)
+  Parameters
+  (
+    NNRec: comp;  // Nrec - вида плана по умолчанию
+    wTypeBr: word // 0 - множеств выбор в пики
+                  // 1 - един выбор в пик
+                  // 2 -  редактирование по дереву
+  );
+
+VipInterface Pr_Filtr_Dog_PKP
+  Licensed(Free)
+  Parameters
+  (
+    cFilt: comp //
+  );
+
+VipInterface GetPers1
+  Licensed(Free)
+  Parameters
+  (
+    Rendering: word;   // 0 - групповой выбор
+                       // 1 - единичный выбор
+                       // 2 - интерфейс просмотра
+    tmpComp: comp;     // сотрудник из  Persons
+    NameMarker: string //
+  );
+
+VipInterface vObjLink
+  Licensed(Free)
+  Parameters
+  (
+    pView: comp; //
+    pType: word  //
+  );
+
+VipInterface iChcRawFly
+  Licensed(Free);
+
+VipInterface RepGathTreeRun
+  Licensed(Free)
+  Parameters
+  (
+    pcUserDeskRep: comp; //
+    pwType: word;        // 0 - печать, 2 - создание шаблона
+    sXLSFileName: string //
+  );
+
+VipInterface RepGathTreeTune
+  Licensed(Free)
+  Parameters
+  (
+    pcUserDeskRep: comp //
+  );
+

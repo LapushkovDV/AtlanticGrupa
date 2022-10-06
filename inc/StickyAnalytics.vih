@@ -1,0 +1,21 @@
+/*
+                      (c) 1994,2003 корпорация ГАЛАКТИКА
+  Проект        : ГАЛАКТИКА
+  Система       : Заработная плата
+  Назначение    : декларация реализации объектного интерфейса "Липкая аналитика"
+  Ответственный : Корзюк Виталий Францевич
+  Параметры     : нет
+*/
+
+#ifndef _STICKYANALYTICS_VIH_INCLUDED_
+#define _STICKYANALYTICS_VIH_INCLUDED_
+
+#include IStickyAnalytics.obj
+
+#ifdef ComponentVersion
+  #component "z_zar"
+#end
+
+vipinterface StickyAnalytics implements IStickyAnalytics;
+
+#end

@@ -1,0 +1,60 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Общие функции
+// Объект с функциями 
+//******************************************************************************
+
+// для использования необходимо
+//   запускать методы объектного интерфейса через переменную: fManyFuns.
+// переменная глобальная, описывать в файлах нет необходимости
+
+#ifNdef __ManyFuns_VIH__
+#define __ManyFuns_VIH__
+
+//******************************************************************************
+
+#ifdef ComponentVersion
+#component ""
+#end
+
+//******************************************************************************
+
+ObjInterface ObjManyFunsV1;
+
+//******************************************************************************
+
+Function sNumDate(n: string; d: date): string;
+Procedure SetFieldVisible (FldNo: integer; need: boolean);
+Procedure SetFieldSelectable (FldNo: integer; need: boolean);
+Procedure SetFieldProtected (FldNo: integer; need: boolean);
+Procedure SetCommandEnabled (Cmd: longint; need: boolean);
+Function PreRound(var a: double): double;
+Function DoublesAreEqual(a, b, k: double): boolean;
+Function KolEqual(a, b: double): boolean;
+Function DoubleIsZero(a, k: double): boolean;
+Function KolIsZero(a: double): boolean;
+Function FirstIsGreater(a, b, k: double): boolean;
+Function FirstKolIsGreater(a, b: double): boolean;
+Function AddToDocName(var a: string; const b: string): boolean;
+Function GetNZnaks(d: double): word;
+Procedure CommonFlagSet(s: string);
+Procedure CommonFlagClear(s: string);
+Function CommonFlagCheck(s: string): boolean;
+
+//******************************************************************************
+
+end;
+
+//******************************************************************************
+
+VipInterface ManyFunsV1 implements ObjManyFunsV1
+#ifdef ATL51
+  licensed (FREE)
+#end
+;
+
+//******************************************************************************
+
+#end
+
+//******************************************************************************

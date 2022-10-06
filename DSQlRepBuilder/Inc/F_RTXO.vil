@@ -1,0 +1,10 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_RTXO
+
+#ifdef ComponentVersion
+#component "F_RTXO"
+#end
+
+VipInterface ReposPro Licensed (Free);
+VipInterface ViewTree Licensed (Free) Parameters (CurTidoc, CurSysOper : word);
+

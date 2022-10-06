@@ -1,0 +1,45 @@
+        (scLovelyRun..scLovelyRun)
+        {
+          '~F9~ Запуск без меню',   cmInternalRun,           kbF9;
+          '~Enter~ Запуск с меню',  cmInternalGo,            kbEnter;
+          '~Alt+B~ Фильтр',         cmInternalFilter,        kbAltB;
+#include filters.rc0
+        }
+
+        (scLovelySelect..scLovelySelect)
+        {
+          '~Enter~ Выбор',          cmDefault,               kbEnter;
+          '~Alt+B~ Фильтр',         cmInternalFilter,        kbAltB;
+#include filters.rc0
+        }
+
+        (scLovelyHistory..scLovelyHistory)
+        {
+          '~F9~ Запуск без меню',   cmInternalRun,           kbF9;
+          '~Enter~ Запуск с меню',  cmInternalGo,            kbEnter;
+          '~Alt+B~ Фильтр',         cmInternalFilter,        kbAltB;
+          '~Ctrl+F8~ Очистка',      cmInternalClear,         kbCtrlF8;
+#include filters.rc0
+        }
+
+        (scLovelyUserList..scLovelyUserList)
+        {
+          '~F7~ Добавить',          cmInsert,                kbF7;
+          '~F8~ Удалить',           cmDelete,                kbF8;
+          '~F9~ Запуск без меню',   cmInternalRun,           kbF9;
+          '~Enter~ Запуск с меню',  cmInternalGo,            kbEnter;
+          '~Alt+B~ Фильтр',         cmInternalFilter,        kbAltB;
+#include filters.rc0
+        }
+
+        (scLovelyUserPick..scLovelyUserPick)
+        {
+          '~F3~ Выбор',             cmPick,                  kbF3;
+          '~F7~ Добавить',          cmInsert,                kbF7;
+          '~F8~ Удалить',           cmDelete,                kbF8;
+          '~F9~ Запуск без меню',   cmInternalRun,           kbF9;
+          '~Enter~ Запуск с меню',  cmInternalGo,            kbEnter;
+          '~Alt+B~ Фильтр',         cmInternalFilter,        kbAltB;
+#include filters.rc0
+        }
+

@@ -1,0 +1,54 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента C_OLAP
+
+#ifdef ComponentVersion
+#component "C_OLAP"
+#end
+
+#include kbu.vpp
+
+#include  ETK_Types.vpp
+#include Avto_Types.vpp
+#include  ERP_Types.vpp
+
+//******************************************************************************
+// OLAP
+//******************************************************************************
+VipInterface dwCheckSystem          licensed (Free);
+VipInterface dwJobMan               licensed (DEMain) Parameters(DoAcceptMode : boolean; JobNRec : comp);
+VipInterface dwJrnlView             licensed (DEMain) Parameters(_cJournal : comp);
+VipInterface dwShowSysLog           licensed (DEMain) Parameters(EraseJournalMode : boolean);
+VipInterface dwQueueMan             licensed (DEMain);
+VipInterface dwUnloadMonitor        licensed (DEMain);
+VipInterface dwTaskMan              licensed (DEMain) Parameters(DoAcceptMode : boolean; TaskNRec : comp);
+VipInterface dwGetExternalModes     licensed (DEMain) Parameters(sExternalMode : string);
+//******************************************************************************
+VipInterface dwt_KBUSetup           licensed (DEMain) Parameters(wReport : word; Filter: IsrBuhFilter);
+//******************************************************************************
+VipInterface dwt_ETK_Katalogs_Setup licensed (DEMain) Parameters(wReport : word; Filter: tETKOperFilter);
+VipInterface dwt_ETK_Oper_Setup     licensed (DEMain) Parameters(wReport : word; Filter: tETKOperFilter);
+//******************************************************************************
+VipInterface dwt_Avto_Oper_Setup    licensed (DEMain) Parameters(wReport : word; Filter: tAvtoOperFilter);
+VipInterface dwt_Avto_Zar_Setup     licensed (DEMain) Parameters(NumTask : word; Filter: tAvtoZarFilter);
+VipInterface dwt_Avto_Staff_Setup   licensed (DEMain) Parameters(NumTask : word; Filter: tAvtoZarFilter);
+//******************************************************************************
+VipInterface dwt_BankSaldoSetup     licensed (DEMain) Parameters(Filter: tETKOperFilter);
+//******************************************************************************
+VipInterface dwt_ERP_Catalogs_Setup licensed (DEMain) Parameters(wReport : word; TskName: string; Filter: tERPFilter);
+VipInterface dwt_ERP_PlanDocs_Setup licensed (DEMain) Parameters(wReport : word; TskName: string; Filter: tERPFilter);
+VipInterface dwt_ERP_FactDocs_Setup licensed (DEMain) Parameters(wReport : word; TskName: string; Filter: tERPFilter);
+VipInterface dwt_ERP_MCMove_Setup   licensed (DEMain) Parameters(Filter: tERPFilter);
+VipInterface dwt_ERP_Saldo_Setup    licensed (DEMain) Parameters(Filter: tERPFilter; TaskNo: integer);
+VipInterface dwt_ERP_MnPlan_Setup   licensed (DEMain) Parameters(wReport : word; Filter: tERPMnplanFilter);
+VipInterface dwt_ERP_Zar_Setup      licensed (DEMain) Parameters(NumTask : word; Filter: tERPZarFilter);
+VipInterface dwt_ERP_Staff_Setup    licensed (DEMain) Parameters(NumTask : word; Filter: tERPStaffFilter);
+//******************************************************************************
+VipInterface GetSomeValuesExt       licensed (DEMain);
+
+// ETL
+VipInterface  vTestETL licensed (Free);
+
+// AvtoTor
+VipInterface  Avto_Saldo licensed (Free);
+
+

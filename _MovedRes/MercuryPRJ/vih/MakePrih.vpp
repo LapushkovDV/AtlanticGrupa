@@ -1,0 +1,74 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Логистика
+// Формирование приходных складских ордеров по накладной
+//******************************************************************************
+
+//******************************************************************************
+// формирование приходного ордера
+Function MakeOrder(showMess: boolean; var firstRozn: boolean; var prRozn: boolean): boolean;
+var
+  wMode  : word; // пакетный или обычный режим
+  wParam : word; // дополнительный параметр
+{
+#ifdef _s2o_
+  wMode := 1;
+
+  if (wDPrice <> 0)
+    wMode := 2;
+#else
+  wMode := 0;
+#end
+
+  wParam := 0;
+
+#ifdef smetakoladd
+  wParam := wParam Or 1;
+#end
+#ifdef _USE_SERIAL_
+  wParam := wParam Or 2;
+#end
+#ifdef g_l_pr_vpp
+  wParam := wParam Or 4;
+#end
+#ifdef _BoxNeedAuto
+  if (bBoxNeedAuto)
+    wParam := wParam Or 8;
+#end
+#ifdef _prihod_
+  if (ProtParty = 1)
+    wParam := wParam Or 16;
+#end
+#ifdef __PAKET_VIP__
+  wParam := wParam Or 32;
+#end
+
+  //--делать UpdateTable только если не используется пакетный режим
+  if (wMode = 0)
+    if (ShowMess)
+      if NOT UpdateTable
+        Exit;
+
+  BindEvent(CanMakeOrder, oMakeOrder.CanMakeOrder);
+
+  MakeOrder := oMakeOrder.MakePrihOrder (KatSopr.NRec, ShowMess, FirstRozn, prRozn, SkPr, wMode, wParam);
+
+  UnBindEvent(CanMakeOrder, oMakeOrder.CanMakeOrder);
+
+  ReReadRecord(#KatSopr);
+}
+
+//******************************************************************************
+// для public
+
+Function MakeOrderByKatSopr(cSopr_: comp; showMess_: boolean; var prRozn_: boolean): boolean;
+{
+  MakeOrderByKatSopr := FALSE;
+  var firstRozn_: boolean;  firstRozn_ := FALSE;
+  prRozn_ := FALSE;
+
+  if GetFirst KatSopr where ((cSopr_ == KatSopr.NRec)) = tsOk
+    MakeOrderByKatSopr := MakeOrder(showMess_, firstRozn_, prRozn_);
+}
+
+//******************************************************************************

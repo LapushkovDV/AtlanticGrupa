@@ -1,0 +1,430 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 8.10 - Целевой учет запасов
+// Функции для расчета сальдовых
+//------------------------------------------------------------------------------
+
+#include SaldoFuncs.vih
+
+#doc
+Реализация методов для целевого учета в позициях спецификации документов.
+#end
+Interface SaldoFuncs;
+
+#include SaldoMtr.inc
+
+Create view
+
+Var
+  cfTune
+, cfObj
+, cfPodr
+, cfMol
+, cfParty
+         : comp;
+
+  vwMode
+         : word;
+
+As select
+*
+
+From
+  SaldTune
+, SaldoRaz
+, SaldoObj
+, TmpSaldo2
+, TmpSaldo1
+, TmpSaldo1  TmpSaldoN
+, Pick       PickKatPodr
+, Pick       PickKatMOL
+, Pick       PickParty
+, KitKau
+
+Where
+((
+     SaldTune.nRec    == SaldoRaz.cSaldTune
+ and vwMode           == SaldoRaz.wMode
+
+ and word(11)         == PickKatPodr.wList
+ and SaldoRaz.cPodr   == PickKatPodr.cRec
+
+ and word(8)          == PickKatMOL.wList
+ and SaldoRaz.cMol    == PickKatMOL.cRec
+
+ and word(10)         == PickParty.wList
+ and SaldoRaz.cParty  == PickParty.cRec
+
+ and SaldoObj.cKitKau == KitKau.nRec
+))
+
+Bounds byTune  = cfTune  == SaldTune.nRec
+
+Bounds byObj   = cfObj            == SaldoRaz.cObj   (NoIndex)
+Bounds byMc    = TmpSaldo1.cMC    == SaldoRaz.cMC    (NoIndex)
+Bounds byPodr  = TmpSaldo1.cPodr  == SaldoRaz.cPodr  (NoIndex)
+Bounds byMol   = TmpSaldo1.cMol   == SaldoRaz.cMol   (NoIndex)
+Bounds byParty = TmpSaldo1.cParty == SaldoRaz.cParty (NoIndex)
+
+Bounds byPodr1  = cfPodr  == SaldoRaz.cPodr  (NoIndex)
+Bounds byMol1   = cfMol   == SaldoRaz.cMol   (NoIndex)
+Bounds byParty1 = cfParty == SaldoRaz.cParty (NoIndex)
+
+;
+
+//******************************************************************************
+Procedure Save_TmpSaldo1;
+{
+  _loop TmpSaldo1
+    {
+       if ( GetFirst TmpSaldo2 where ((  TmpSaldo1.cMC    == TmpSaldo2.cMC
+                                     and TmpSaldo1.cPodr  == TmpSaldo2.cPodr
+                                     and TmpSaldo1.cMOL   == TmpSaldo2.cMOL
+                                     and TmpSaldo1.cParty == TmpSaldo2.cParty
+                                     )) <> tsOk )
+         {
+           TmpSaldo2.nRec   := 0;
+           TmpSaldo2.cMC    := TmpSaldo1.cMC;
+           TmpSaldo2.cPodr  := TmpSaldo1.cPodr;
+           TmpSaldo2.cMOL   := TmpSaldo1.cMOL;
+           TmpSaldo2.cParty := TmpSaldo1.cParty;
+           TmpSaldo2.kol    := TmpSaldo1.kol;
+           TmpSaldo2.Price  := TmpSaldo1.Price;
+           TmpSaldo2.cVal   := TmpSaldo1.cVal;
+           TmpSaldo2.Vprice := TmpSaldo1.Vprice;
+
+           insert current TmpSaldo2;
+         }
+       else
+         {
+           TmpSaldo2.kol := TmpSaldo2.kol + TmpSaldo1.kol;
+           update current TmpSaldo2;
+         }
+    }
+
+  delete all TmpSaldo1;
+}
+
+Function ScanSaldoObj(awMode: word;
+                      dateCalc :date;
+                      bNGrPodr,  // группировать по складам
+                      bNGrMOL,   // группировать по МОЛ
+                      bNGrParty: // группировать по Партиям
+                                  boolean ) : boolean;
+{
+  result := true;
+
+  if (TmpSaldo1.cSaldTune <> 0)
+    exit;
+
+  vwMode := awMode;
+
+  _LOOP SaldTune
+  {
+    _LOOP SaldoRaz
+       {
+         if ( not NextVisual )
+           {
+             result := false;
+             exit;
+           }
+
+         if (cfPodr = -2)
+           if GetFirst PickKatPodr <> tsOk
+             continue;
+
+         if (cfMol = -2)
+           if GetFirst PickKatMOL <> tsOk
+             continue;
+
+         if (cfParty = -2)
+           if GetFirst PickParty <> tsOk
+             continue;
+
+         if ( GetLast FastFirstRow SaldoObj where (( SaldoRaz.nRec  == SaldoObj.cSaldoRaz  and
+                                                     dateCalc      >>= SaldoObj.dOper      )) = tsOk )
+          {
+            if ( (TmpSaldo1.Kol = SaldoObj.Kol) AND (TmpSaldo1.cSaldTune = 0) )
+              {
+                TmpSaldo1.cSaldTune := SaldoObj.cSaldTune;
+                TmpSaldo1.cObj      := SaldoObj.cObj;
+                TmpSaldo1.cKitKau   := SaldoObj.cKitKau;
+
+                if GetFirst FastFirstRow KitKau = tsOk
+                  {
+                    TmpSaldo1.cKau[1] := KitKau.cKau[1];
+                    TmpSaldo1.cKau[2] := KitKau.cKau[2];
+                    TmpSaldo1.cKau[3] := KitKau.cKau[3];
+                    TmpSaldo1.cKau[4] := KitKau.cKau[4];
+                    TmpSaldo1.cKau[5] := KitKau.cKau[5];
+                    TmpSaldo1.cKau[6] := KitKau.cKau[6];
+                    TmpSaldo1.cKau[7] := KitKau.cKau[7];
+                    TmpSaldo1.cKau[8] := KitKau.cKau[8];
+                    TmpSaldo1.cKau[9] := KitKau.cKau[9];
+                  }
+
+                update current TmpSaldo1;
+                exit;
+              }
+
+            if ( (TmpSaldo1.Kol > SaldoObj.Kol) AND (TmpSaldo1.cSaldTune = 0) )
+              {
+                TmpSaldo1.Kol := TmpSaldo1.Kol - SaldoObj.Kol;
+                update current TmpSaldo1;
+
+                ClearBuffer(#TmpSaldoN);
+                TmpSaldoN.nRec      := 0;
+                TmpSaldoN.cMC       := SaldoObj.cMC;
+                TmpSaldoN.cSaldTune := SaldoObj.cSaldTune;
+                TmpSaldoN.cObj      := SaldoObj.cObj;
+                TmpSaldoN.Kol       := SaldoObj.Kol;
+                TmpSaldoN.cVal      := SaldoObj.cVal;
+                TmpSaldoN.cKitKau   := SaldoObj.cKitKau;
+                TmpSaldoN.cPodr     := if(bNGrPodr,  SaldoObj.cPodr,  0);
+                TmpSaldoN.cMol      := if(bNGrMOL,   SaldoObj.cMol,   0);
+                TmpSaldoN.cParty    := if(bNGrParty, SaldoObj.cParty, 0);
+
+                If (wGetTune('UKS.vprices') = 0)
+                  {
+                    TmpSaldoN.price  := SaldoObj.srPrice;
+                    TmpSaldoN.vPrice := SaldoObj.vPrice;
+                  }
+                else
+                  {
+                    TmpSaldoN.price  := TmpSaldo1.price;
+                    TmpSaldoN.vPrice := TmpSaldo1.vPrice;
+                  }
+
+                if GetFirst FastFirstRow KitKau = tsOk
+                  {
+                    TmpSaldoN.cKau[1] := KitKau.cKau[1];
+                    TmpSaldoN.cKau[2] := KitKau.cKau[2];
+                    TmpSaldoN.cKau[3] := KitKau.cKau[3];
+                    TmpSaldoN.cKau[4] := KitKau.cKau[4];
+                    TmpSaldoN.cKau[5] := KitKau.cKau[5];
+                    TmpSaldoN.cKau[6] := KitKau.cKau[6];
+                    TmpSaldoN.cKau[7] := KitKau.cKau[7];
+                    TmpSaldoN.cKau[8] := KitKau.cKau[8];
+                    TmpSaldoN.cKau[9] := KitKau.cKau[9];
+                  }
+
+                Insert current TmpSaldoN;
+              }
+          }
+       }
+  }
+}
+
+//******************************************************************************
+Function Store_run_new(dateCalc :date;   // дата рассчета
+                         bSkl      // складские остатки SP=0
+                       , bUPL      // УПЛ  остатки SP=1
+                       , bRem      // ремонтные  остатки SP=2
+                       , bUks      // УКС  остатки SP=3
+                         : boolean;
+                         coMc      // фильтр по МЦ
+                       , coPodr    // фильтр по складу
+                       , coMol     // фильтр по МОЛ
+                       , coParty   // фильтр по партии
+                         : comp;
+                         bNeedMTR  // выгружать остатки по МТР
+                         : boolean;
+                         cTune     // фильтр по ЦУ
+                       , cObj      // фильтр по объекту
+                         : comp;
+                         bNGrPodr  // группировать по складам
+                       , bNGrMOL   // группировать по МОЛ
+                       , bNGrParty // группировать по Партиям
+                         : boolean ) : boolean;
+var
+  DontCheckKol: boolean;
+{
+  Store_run_new := false;
+
+  if ( not Store_Init )
+    {
+      Message('Не проинициализировался объект расчета сальдо...',cmCancel);
+      exit;
+    }
+
+  StartNewVisual(vtIndicatorVisual, vfTimer + vfBreak + vfConfirm, 'Группировка сальдовых остатков...', RecordsInTable(#TmpSaldo1));
+
+  cfTune  := cTune;
+  cfObj   := cObj;
+  cfPodr  := if(coPodr = -1, 0, if(coPodr = 0, -1, coPodr));
+  cfMol   := if(coMol  = -1, 0, if(coMol  = 0, -1, coMol));
+  cfParty := if(coParty= -1, 0, if(coParty= 0, -1, coParty));
+
+  Store_ReInit;
+
+  delete all TmpSaldo2;
+
+  if bSkl
+    {
+      Store_SkladProizv(0);
+      Store_Run(dateCalc, coMc, coPodr, coMol, coParty, bNGrPodr, bNGrMOL, bNGrParty);
+      Save_TmpSaldo1;
+    }
+
+  if Store_wasStopped
+  {
+    Store_Done;
+    StopVisual('',0);
+    message('Расчет прерван',Information);
+    Exit;
+  }
+
+  if bUPL
+    {
+      Store_SkladProizv(1);
+      Store_Run(dateCalc, coMc, coPodr, coMol, coParty, bNGrPodr, bNGrMOL, bNGrParty);
+      Save_TmpSaldo1;
+    }
+
+  if Store_wasStopped
+  {
+    Store_Done;
+    StopVisual('',0);
+    message('Расчет прерван',Information);
+    Exit;
+  }
+
+  if bRem
+    {
+      Store_SkladProizv(2);
+      Store_Run(dateCalc, coMc, coPodr, coMol, coParty, bNGrPodr, bNGrMOL, bNGrParty);
+      Save_TmpSaldo1;
+    }
+
+  if Store_wasStopped
+  {
+    Store_Done;
+    StopVisual('',0);
+    message('Расчет прерван',Information);
+    Exit;
+  }
+
+  if bUks
+    {
+      Store_SkladProizv(3);
+      Store_Run(dateCalc, coMc, coPodr, coMol, coParty, bNGrPodr, bNGrMOL, bNGrParty);
+      Save_TmpSaldo1;
+    }
+
+  if Store_wasStopped
+  {
+    Store_Done;
+    StopVisual('',0);
+    message('Расчет прерван',Information);
+    Exit;
+  }
+
+  Store_Done;
+  DontCheckKol := false;
+  ReadMyDsk(DontCheckKol, 'SaldoMC_DontCheckKol', false);
+  _loop TmpSaldo2
+   {
+     if ( GetFirst TmpSaldo1 where ((  TmpSaldo2.cMC    == TmpSaldo1.cMC
+                                   and TmpSaldo2.cPodr  == TmpSaldo1.cPodr
+                                   and TmpSaldo2.cMOL   == TmpSaldo1.cMOL
+                                   and TmpSaldo2.cParty == TmpSaldo1.cParty )) = tsOk )
+       {
+         TmpSaldo1.kol := TmpSaldo1.kol + TmpSaldo2.kol;
+
+         if ( TmpSaldo1.Price = 0 )
+           TmpSaldo1.Price := TmpSaldo2.Price;
+
+         update current TmpSaldo1;
+       }
+     else
+      if ( Abs(TmpSaldo2.Kol) > GetPresision_forKol ) or DontCheckKol
+       {
+         ClearBuffer(#TmpSaldo1);
+         TmpSaldo1.cMC    := TmpSaldo2.cMC;
+         TmpSaldo1.cPodr  := TmpSaldo2.cPodr;
+         TmpSaldo1.cMOL   := TmpSaldo2.cMOL;
+         TmpSaldo1.cParty := TmpSaldo2.cParty;
+         TmpSaldo1.kol    := TmpSaldo2.kol;
+         TmpSaldo1.Price  := TmpSaldo2.Price;
+         TmpSaldo1.cVal   := TmpSaldo2.cVal;
+         TmpSaldo1.Vprice := TmpSaldo2.Vprice;
+         insert current TmpSaldo1;
+       }
+   }
+
+  if bNeedMTR
+    {
+      if cTune <> 0
+        AddBounds(tbbyTune);
+
+      if cObj <> 0
+        AddBounds(tbbyObj);
+
+      AddBounds(tbbyMc);
+
+      if bNGrPodr
+        AddBounds(tbbyPodr)
+      else
+        if (cfPodr <> -2) and (cfPodr <> -1)
+          AddBounds(tbbyPodr1);
+
+      if bNGrMOL
+        AddBounds(tbbyMol)
+      else
+        if (cfMol <> -2) and (cfMol <> -1)
+          AddBounds(tbbyMol1);
+
+      if bNGrParty
+        AddBounds(tbbyParty)
+      else
+        if (cfParty <> -2) and (cfParty <> -1)
+          AddBounds(tbbyParty1);
+
+      _LOOP TmpSaldo1
+      {
+        if (not boGetTune('Oper.CelUch.VidUch'))
+          ScanSaldoObj(0, dateCalc, bNGrPodr, bNGrMOL, bNGrParty);
+        else
+        {
+          var bRet: boolean;
+          bRet := true;
+
+          if (bSkl)
+            bRet := ScanSaldoObj(#ModeByVidUch(cgVidUchO_Sklad), dateCalc, bNGrPodr, bNGrMOL, bNGrParty);
+
+          if (bRet and bUPL)
+            bRet := ScanSaldoObj(#ModeByVidUch(cgVidUchO_UPL), dateCalc, bNGrPodr, bNGrMOL, bNGrParty);
+
+          if (bRet and bRem)
+            bRet := ScanSaldoObj(#ModeByVidUch(cgVidUchO_TORO), dateCalc, bNGrPodr, bNGrMOL, bNGrParty);
+
+          if (bRet and bUks)
+            ScanSaldoObj(#ModeByVidUch(cgVidUchO_UKS), dateCalc, bNGrPodr, bNGrMOL, bNGrParty);
+        }
+      }
+
+      if BoundActive(tbbyTune)   SubBounds(tbbyTune);
+      if BoundActive(tbbyObj)    SubBounds(tbbyObj);
+      if BoundActive(tbbyMc)     SubBounds(tbbyMc);
+      if BoundActive(tbbyPodr)   SubBounds(tbbyPodr);
+      if BoundActive(tbbyMol)    SubBounds(tbbyMol);
+      if BoundActive(tbbyParty)  SubBounds(tbbyParty);
+      if BoundActive(tbbyPodr1)  SubBounds(tbbyPodr1);
+      if BoundActive(tbbyMol1)   SubBounds(tbbyMol1);
+      if BoundActive(tbbyParty1) SubBounds(tbbyParty1);
+    }
+  StopVisual('', 0);
+  DontCheckKol := false;  // для совместимости со старыми вызовами
+  SaveMyDsk(DontCheckKol, 'SaldoMC_DontCheckKol');
+
+  Store_run_new := true;
+}
+//******************************************************************************
+
+HandleEvent
+
+cmInit :
+  Abort;
+
+end;
+end.

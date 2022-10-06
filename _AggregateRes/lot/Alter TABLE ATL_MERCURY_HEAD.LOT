@@ -1,0 +1,5 @@
+Alter table ::ATL_MERCURY_HEAD
+Add
+(
+  wStatus : word "Status doc if isoK"
+)

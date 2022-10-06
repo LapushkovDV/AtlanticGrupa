@@ -1,0 +1,6 @@
+#ifdef ComponentVersion
+#component "z_staffNastr"
+#end
+
+vipinterface ConvRpdForGroup licensed(free);
+vipinterface convert_KPS licensed(free);

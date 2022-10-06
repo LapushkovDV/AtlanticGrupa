@@ -1,0 +1,25 @@
+#include PreDefs.inc;
+const
+#include GloConst.inc;
+#include Galnet.csc;
+#include Galnet.ccm;
+#include Money.ccm
+#include Money.csc //без Galnet.inc надо
+
+
+end;
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include DicTypes.def
+#include GloDefs.inc
+//#include StatDefs.inc
+
+#define ComponentVersion
+#include ExtAttr.vih
+
+
+
+#make "Source\Atlantic_MenuDynamic.vip"

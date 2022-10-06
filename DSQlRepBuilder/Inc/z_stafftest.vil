@@ -1,0 +1,18 @@
+#ifdef ComponentVersion
+#component "z_staffTest"
+#end
+
+vipinterface GetSpisTest licensed(free) parameters(cDoc: comp; tSpisTest: comp; Flag: boolean);
+vipinterface DetTest licensed(free) parameters(tSpisTest: comp; cDetTest: comp);
+vipinterface pickDetTest licensed(free)parameters(cSpisTest: comp; Otkuda: word; cPersTestFIO: comp; MyUserName: string[20]; PersTestdate: date);
+vipinterface SpisTest licensed(free) parameters(EditTest: word);
+vipinterface PersTest licensed(free) parameters(cSpisTest: comp);
+vipinterface UserTest licensed(free);
+
+vipinterface TestPar licensed(free);
+vipinterface TestStaff licensed(free) parameters(SpisTestMarker: longint;MarkersParam: longint;PersonTestMarker: longint);
+
+vipinterface FactorsTest licensed(free) parameters(cSpisTest: comp;cFactorsTest: comp);
+vipinterface TestStaffFaktor licensed(free) parameters(SpisTestMarker: longint;PersonTestMarker: longint);
+vipinterface AvtoTestStaff licensed(free);
+vipinterface AdditionalInfo licensed(free) parameters(PersNRec: comp);

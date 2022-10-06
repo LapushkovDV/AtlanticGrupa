@@ -1,0 +1,492 @@
+/*
+  г=====================================================================┐
+  │                     ЗАО "ГАЛАКТИКА СОФТ"                            │
+  │      Проект    : ГАЛАКТИКА  (с) 2012                                │
+  │      Система   : Сбыт                                               │
+  │      Версия    : 8.1                                                │
+  │      Разработал: Пригродский Б.М.     14/06/2012                    │
+  │      Назначение: Отчет о реализации                                 │
+  │      Изменения :                                                    │
+  │      Заказчик : Для Галактики СРВ                                   │
+  L=====================================================================-
+*/
+vipinterface real licensed(free);
+const
+  cmChek  = 50001;
+  cmNorm  = 50002;
+  cmBlik  = 50003;
+  cmUpAll = 50004;
+end;
+type ParamsType = record
+  recRep:comp;
+  Rep:string;
+  dRep:date;                //дата отчета
+  dBeg:date;
+  path:string;
+  cauntRows: array [1..65000] of longint;
+  namRazdel: array [1..65000] of string;
+  cauntCol: array [1..256] of longint;
+  VidDoc: array [1..500] of word;
+  summa: array [1..17] of double;
+  asumma: array [1..17] of double;
+  dayBeg1, dayBeg2, dayBeg3, dayBeg4, dayBeg5, dayBeg6, dayBeg7: longint;
+  dayEnd1, dayEnd2, dayEnd3, dayEnd4, dayEnd5, dayEnd6, dayEnd7: longint;
+  kolCom, kolMess: longint;
+  isErr, ans, userType, kolUser: word;
+  userNrec: comp;
+  userDeskr, userName, namePage: string;
+  time1, time2: time;
+  Asum, AsumP, Isum, IsumP, SumPlat: double;
+  cOrg: comp;
+end;
+
+interface real 'Отчет о реализации v.1.0.', EscClose, Gray;
+show at (,,94,4);
+
+table struct tmpForSelect (
+  crec: comp,
+  kod: word,
+  kods: string,
+  name: string
+)
+with index (
+  idx1 = kod
+);
+//
+table struct tZKAUVED (
+  crec1: comp,
+  crec2: comp,
+  crec3: comp,
+  kod: string,
+  name: string,
+  d1: double,
+  d2: double,
+  d3: double
+)
+with index (
+  idx1 = kod+crec1+crec2
+);
+//отбор матценностей
+table struct tMC (
+  nrec: comp,
+  cmc: comp,
+  ced: comp,
+  ed: string,
+  cUed: comp,
+  name: string[255],
+  kod: string[255],
+  massa: double
+)
+with index (
+  idx1 = name,
+  idx2 = nrec,
+  idx3 = kod,
+  idx4 = cmc
+);
+//События Галактики
+table struct tGalMes (
+  nrec: comp,
+  cpodr: comp,
+  cMOL: comp,
+  namePodr: string[255],
+  kodPodr: string[255],
+  oper:string,   // операция с записью: удаление, вставка, модификация
+  cUser:comp,
+  nameUser:string,
+  namDoc:string,
+  datDoc:date,
+  number:string,
+  comment:string,
+  DataMes:date,
+  TimeMes:time
+)
+with index (
+  idx1=cUser,
+  idx2=nrec,
+  idx3=kodPodr,
+  idx4=cpodr
+);
+//Шапки отчетов
+table struct tHeder (
+  crec: comp,
+  nRep: word,
+  nameRep: string[255],
+  nomEl:longint,
+  nRow: longint,
+  nCol: longint,
+  stepRow: longint,
+  stepCol: longint,
+  tipVal: string[10], //string,double,formula,variant
+  sValue: string,
+  dValue: double,
+  fValue: string,
+  vValue: variant
+
+)
+with index(idx1=nRep,idx2=nRep+nomEl,idx3=nRep+nRow+nCol);
+//Данные отчетов
+table struct tData (
+  crecGrp: comp,   //ссылка на НРЕК таблицы по которой группировка
+  crecGrp1: comp,   //ссылка на НРЕК таблицы по которой группировка1
+  crecGrp2: comp,   //ссылка на НРЕК таблицы по которой группировка2
+  nRep: word,
+  nPart: word,
+  nameRep: string[255],
+  nomEl:longint,
+  nRow: longint,
+  nRow1: longint,
+  nCol: longint,
+  stepRow: longint,
+  stepCol: longint,
+  tipVal: string[10], //string,double,formula,variant
+  sValue: string,
+  dValue: double,
+  fValue: string,
+  vValue: variant,
+  mark:word,
+  Color:longint
+)
+with index (
+  idx1=nRep,idx2=nRep+nomEl,idx3=nRep+nRow+nCol,idx4=nRep+nRow+nPart,
+  idx5=crecGrp+crecGrp1+crecGrp2,idx6=nRow,idx7=nRep+nPart+nomEl,
+  idx8=nRow+nCol,idx9=nRep+nCol+nPart,idx10=crecGrp1+nCol,
+  idx11=nRep+tipVal+nPart,idx12=mark,idx13=nRep+nPart+nCol+sValue
+);
+//Группировки данных
+table struct tGroupData (
+  nrec: comp,                             // номер записи
+  recGrp: comp,                              // nrec таблицы группировки
+  Level:word,
+  NameGrp: string,                   // названия группировки данные
+  CodeGrp: string,                   // код группировки данные
+  SumData: array [1..30] of double,   // итоги
+  Npp: integer
+)
+with index (
+  idx1=nrec,idx2=NameGrp,idx3=Npp,idx4=recGrp,idx5=CodeGrp,idx6=Level
+);
+table struct tGroupItog (
+  nrec: comp,                             // номер записи
+  cGrp: comp,                             // nrec таблицы группировки
+  Level:word,
+  Col: longint,                   // названия группировки данные
+  Row: longint,                   // код группировки данные
+  SumData:double,                // итоги
+  KolData:double                // итоги
+)
+with index(
+  idx1 = nrec,
+  idx4 = cGrp,
+  idx6 = level
+);
+//view
+create view tR
+var
+  nomAlg: integer;
+  filterMC, pat, tmpKods, tmpName: string;
+  tmpKod: word;
+  tmpRec, recAT: comp;
+as select * from
+        //tMC,
+  tGalMes,tmpForSelect,
+        tData,tHeder, tZKAUVED,
+//        tGroupData, tGroupItog,
+        attrval,
+        TUNEVAL,
+        ZKAUVED,
+        KLPRICE,
+        ATTRNAM,
+        PICK,
+        X$USERS,
+        Katorg
+where ((
+  word(1411) == attrval.wtable and
+  comp(ZKAUVED.PSTRING2) ==attrval.crec and
+  (attrval.crec = recAT)
+));
+//parameters cPrice;
+
+var p: ParamsType;
+
+ // panel Calc_panel1
+ screen scDebitor_SCR1;
+ show at (1,1,93,3);
+ fields
+   p.path  ('Шаблон отчета',,sciFaceSelect) : noprotect, pickButton;
+   pat  ('Шаблон отчета',,sciFaceSelect) : noprotect, pickButton,
+        { font = { bold = true;color = 2}};
+//   p.dBeg:noprotect;
+//   p.dRep:noprotect;
+/*
+   p.dayBeg1: noprotect;
+   p.dayEnd1: noprotect;
+   p.dayBeg2: noprotect;
+   p.dayEnd2: noprotect;
+   p.dayBeg3: noprotect;
+   p.dayEnd3: noprotect;
+   p.dayBeg4: noprotect;
+   p.dayEnd4: noprotect;
+   p.dayBeg5: noprotect;
+   p.dayEnd5: noprotect;
+   p.dayBeg6: noprotect;
+   p.dayEnd6: noprotect;
+   p.dayBeg7: noprotect;
+   p.dayEnd7: noprotect;
+*/
+ buttons
+   cmOK;
+   cmCancel;
+
+
+ <<
+ Шаблон отчета.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ <.Сформировать.><.   Отмена   .>
+ Внешний атрибут .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+ >>
+ end; // screen
+Window winGetNameAttr 'Выбор' Cyan, DoAccept;
+  Show at (1,1,80,13);
+  browse brwSelectAttr ; Table tmpForSelect;
+  fields
+     tmpForSelect.kods     'Код'  HeaderAlign = centered   ('Код') : [10], Protect;
+     tmpForSelect.name     'Наименование'  HeaderAlign = centered   ('Наименование') : [40], Protect;
+  end; //brwSelectAttr
+  handleEvent
+   cmInit: {
+      tmpRec  := 0;
+      tmpKod  := 0;
+      tmpKods := '';
+      tmpName := '';
+    }
+
+    cmDefault: {
+  //    i:=0;
+      tmpRec  := tmpForSelect.crec;
+      tmpKod  := tmpForSelect.kod;
+      tmpKods := tmpForSelect.kods;
+      tmpName := tmpForSelect.name;
+    }
+    cmCancel: {
+      tmpRec  := 0;
+      tmpKod  := 0;
+      tmpKods := '';
+      tmpName := '';
+    }
+  end; //handle winSelectAttr
+end; //winSelectAttr
+
+//Получить кол. записей в PICK
+function GetKolPick(parf : word) : word;
+{
+  GetKolPick := 0;
+  DELETE ALL tGalMes;
+  _loop Pick where ((word(parf)==pick.wList)) {
+    inc(GetKolPick);
+    if(getfirst KLPRICE WHERE((PICK.CREC==KLPRICE.NREC)))=tsOk {
+      INSERT tGalMes SET comment:=KLPRICE.NAME, nrec:=KLPRICE.NREC, cpodr:=KLPRICE.CGRPRICE;
+    }
+  }
+}
+
+#include real_func.vpp
+//#include iMarket.vpp
+
+handleEvent
+  cmInit: {
+    p.path:=GetFileParameter('Files','OutputFilesDirectory',ifFirstParameter);
+    nomAlg:=0;
+    p.userType:=0;
+
+    readMyDsk(p.path,'real_path', true);
+    readMyDsk(pat,'real_pat', true);
+    readMyDsk(recAT,'real_recAT', true);
+
+  if(getfirst X$USERS WHERE((UserName==XU$LOGINNAME)))=tsOk
+    {   p.userType:=X$USERS.XU$TYPE; p.userName:=X$USERS.XU$LOGINNAME; p.userNrec:=X$USERS.ATL_NREC;
+
+     if(getfirst tuneval Where((40004AC72914388Ch==tuneval.ctune
+        and (p.userNrec=tuneval.cuser))))=tsOk
+      {p.userDeskr:=tuneval.strval;}
+
+    }
+
+}
+  cmPick: {
+    case (curField) of
+                   #p.path:
+                {p.path:=GetFileName ('*.xls','Выберите шаблон отчета'); //GetDirName ('Выберите каталог с шаблоном отчета')+'\';
+                 rereadrecord();
+                }
+           #pat:
+        {
+         DELETE ALL tmpForSelect;
+                   _loop ATTRNAM Where((word(1411)==ATTRNAM.WTABLE))
+                    {
+                     INSERT tmpForSelect SET
+                        crec:=ATTRNAM.NREC,
+                        kod:=ATTRNAM.WTABLE,
+                        kods:='',
+                        name:=ATTRNAM.NAME;
+                    }
+           RunWindowModal(winGetNameAttr);
+           SET pat:=tmpName;SET recAT:=tmpRec;
+           rereadrecord();
+        }
+   end; // case
+  }
+
+  cmOk: {
+    SaveMyDsk(p.path,'real_path');
+    SaveMyDsk(pat,'real_pat');
+    SaveMyDsk(recAT,'real_recAT');
+
+    delete all tZKAUVED;
+    _loop ZKAUVED
+      INSERT tZKAUVED SET crec1:=ZKAUVED.CREC1,crec2:=ZKAUVED.CREC2,kod:=ZKAUVED.PSTRING2,d1:=ZKAUVED.PDOUBLE2;
+    if (getfirst ZKAUVED where ((1 == CREC1)) = tsOk) {
+      PutHeder(1,4,1,ZKAUVED.KAUNAMED1,'string',0h);
+      PutHeder(1,5,1,ZKAUVED.KAUNAMED2,'string',0h);
+      PutHeder(1,6,1,ZKAUVED.KAUNAMED3,'string',0h);
+      PutHeder(1,7,1,ZKAUVED.KAUNAMEK1,'string',0h);
+      PutHeder(1,8,1,ZKAUVED.KAUNAMEK2,'string',0h);
+      PutHeder(1,9,1,ZKAUVED.KAUNAMEK3,'string',0h);
+    }
+    if (getfirst ZKAUVED where ((2 == CREC1)) = tsOk)
+      PutHeder(1,10,3,ZKAUVED.KAUNAMED1,'string',0h);
+
+    delete all tmpForSelect;
+    p.Isum := p.IsumP := 0;
+    _loop ZKAUVED Where((3==ZKAUVED.CREC1))
+      insert tmpForSelect set crec = ZKAUVED.CREC11, name = ZKAUVED.KAUNAMED1 + ' ' + ZKAUVED.KAUNAMED2;
+    _loop tmpForSelect {
+      for (p.kolCom := 1; p.kolCom <= 17; p.kolCom := p.kolCom + 1) p.summa[p.kolCom] := 0;
+      p.cauntRows[1]:=p.cauntRows[1]+2;
+      PutData(1,1,p.cauntRows[1],2,tmpForSelect.name,0,'string',0h);
+      _loop ZKAUVED where ((4 == CREC1 and tmpForSelect.crec == CREC2)) {
+        p.cauntRows[1]:=p.cauntRows[1]+1;
+        if (getfirst ATTRVAL = tsOk)
+          PutData(1,1,p.cauntRows[1],1,ATTRVAL.VSTRING,0,'string',0h);
+        PutData(1,1,p.cauntRows[1],2,ZKAUVED.KAUNAMED1,0,'string',0h);
+        PutData(1,1,p.cauntRows[1],3,ZKAUVED.KAUNAMED2,0,'string',0h);
+        PutData(1,1,p.cauntRows[1],4,ZKAUVED.KAUNAMED3,0,'string',0h);
+        PutData(1,1,p.cauntRows[1],5,'',ZKAUVED.PDOUBLE1,'double',0h);p.summa[5]:=p.summa[5]+ZKAUVED.PDOUBLE1;
+        PutData(1,1,p.cauntRows[1],6,'',ZKAUVED.PDOUBLE2,'double',0h);p.summa[6]:=p.summa[6]+ZKAUVED.PDOUBLE2;
+        PutData(1,1,p.cauntRows[1],7,'',ZKAUVED.PDOUBLE3,'double',0h);p.summa[7]:=p.summa[7]+ZKAUVED.PDOUBLE3;
+        PutData(1,1,p.cauntRows[1],8,'',ZKAUVED.PDOUBLE4,'double',0h);p.summa[8]:=p.summa[8]+ZKAUVED.PDOUBLE4;
+        p.cauntCol[2]:=0;
+//        PutData(1,1,p.cauntRows[1],10,'`'+ZKAUVED.PSTRING2,0,'string',0h);
+        _loop tZKAUVED Where((5==tZKAUVED.CREC1 and tmpForSelect.crec==tZKAUVED.CREC2 and ZKAUVED.PSTRING2==tZKAUVED.KOD)) {
+          p.cauntCol[2]:=p.cauntCol[2]+1;
+//message('p.cauntCol[1]='+p.cauntCol[1]);
+            if (p.cauntCol[2] = 1)
+              PutData(1,1,p.cauntRows[1],11,'',tZKAUVED.D1,'double',0h);p.summa[11]:=p.summa[11]+tZKAUVED.D1;
+          if (p.cauntCol[2] = 2) {
+//            PutData(1,1,p.cauntRows[1],10,'',tZKAUVED.D1,'double',0h);p.summa[10]:=p.summa[10]+tZKAUVED.D1;
+            PutData(1,1,p.cauntRows[1],9,'',tZKAUVED.D1,'double',0h);p.summa[9]:=p.summa[9]+tZKAUVED.D1;
+          }
+        }
+//        PutData(1,1,p.cauntRows[1],11,'=H'+string(p.cauntRows[1]+13)+'-I'+string(p.cauntRows[1]+13),0,'formula',0);
+        PutData(1,1,p.cauntRows[1],9,'=H'+string(p.cauntRows[1]+13)+'-I'+string(p.cauntRows[1]+13),0,'formula',0);
+        PutData(1,1,p.cauntRows[1],11,'=J'+string(p.cauntRows[1]+13)+'-K'+string(p.cauntRows[1]+13),0,'formula',0);
+        PutData(1,1,p.cauntRows[1],12,'=(J'+string(p.cauntRows[1]+13)+'/L'+string(p.cauntRows[1]+13)+'-1)*100',0,'formula',0);
+        PutData(1,1,p.cauntRows[1],13,'=K'+string(p.cauntRows[1]+13)+'/J'+string(p.cauntRows[1]+13)+'*100',0,'formula',0);
+      }
+      p.cauntRows[1] += 1;
+      PutData(1,1,p.cauntRows[1],1,' ',0,'string',00FFF980h);
+      PutData(1,1,p.cauntRows[1],2,'Итого по '+tmpForSelect.name,0,'string',0h);
+//      PutData(1,1,p.cauntRows[1],5,'',p.summa[5],'double',0h);p.asumma[5]:=p.asumma[5]+p.summa[5];
+//      PutData(1,1,p.cauntRows[1],6,'',p.summa[6],'double',0h);p.asumma[6]:=p.asumma[6]+p.summa[6];
+//      PutData(1,1,p.cauntRows[1],7,'',p.summa[7],'double',0h);p.asumma[7]:=p.asumma[7]+p.summa[7];
+//      PutData(1,1,p.cauntRows[1],8,'',p.summa[8],'double',0h);p.asumma[8]:=p.asumma[8]+p.summa[8];
+//      PutData(1,1,p.cauntRows[1],10,'',p.summa[10],'double',0h);p.asumma[10]:=p.asumma[10]+p.summa[10];
+//      PutData(1,1,p.cauntRows[1],13,'',p.summa[13],'double',0h);p.asumma[13]:=p.asumma[13]+p.summa[13];
+//      PutData(1,1,p.cauntRows[1],15,'',p.summa[15],'double',0h);p.asumma[15]:=p.asumma[15]+p.summa[15];
+
+      PutData(1,1,p.cauntRows[1],5,'',p.summa[5],'double', 0h);
+      PutData(1,1,p.cauntRows[1],6,'',p.summa[6],'double', 0h);
+      PutData(1,1,p.cauntRows[1],7,'',p.summa[7],'double', 0h);
+      PutData(1,1,p.cauntRows[1],8,'',p.summa[8],'double', 0h);
+//      PutData(1,1,p.cauntRows[1],10,'',p.summa[10],'double',0h);
+      PutData(1,1,p.cauntRows[1],9,'',p.summa[9],'double', 0h);
+      PutData(1,1,p.cauntRows[1],11,'',p.summa[11],'double', 0h);
+
+//      PutData(1,1,p.cauntRows[1],11,'=H'+string(p.cauntRows[1]+13)+'-I'+string(p.cauntRows[1]+13),0,'formula',0);
+      PutData(1,1,p.cauntRows[1],9,'=H'+string(p.cauntRows[1]+13)+'-I'+string(p.cauntRows[1]+13),0,'formula',0);
+      PutData(1,1,p.cauntRows[1],11,'=J'+string(p.cauntRows[1]+13)+'-K'+string(p.cauntRows[1]+13),0,'formula',0);
+      PutData(1,1,p.cauntRows[1],12,'=(J'+string(p.cauntRows[1]+13)+'/L'+string(p.cauntRows[1]+13)+'-1)*100',0,'formula',0);
+      PutData(1,1,p.cauntRows[1],13,'=K'+string(p.cauntRows[1]+13)+'/J'+string(p.cauntRows[1]+13)+'*100',0,'formula',0);
+
+      p.cauntRows[2]:=p.cauntRows[2]+1;
+ // PutData(2,1,p.cauntRows[2],1,' ',0,'string',00FFF980h);
+      PutData(2,1,p.cauntRows[2],2,tmpForSelect.name,0,'string',0h);
+      PutData(2,1,p.cauntRows[2],5,'',p.summa[5],'double',0h);p.asumma[5]:=p.asumma[5]+p.summa[5];
+      PutData(2,1,p.cauntRows[2],6,'',p.summa[6],'double',0h);p.asumma[6]:=p.asumma[6]+p.summa[6];
+      PutData(2,1,p.cauntRows[2],7,'',p.summa[7],'double',0h);p.asumma[7]:=p.asumma[7]+p.summa[7];
+      PutData(2,1,p.cauntRows[2],8,'',p.summa[8],'double',0h);p.asumma[8]:=p.asumma[8]+p.summa[8];
+//  PutData(2,1,p.cauntRows[2],10,'',p.summa[10],'double',0h);p.asumma[10]:=p.asumma[10]+p.summa[10];
+      PutData(2,1,p.cauntRows[2],9,'',p.summa[9],'double',0h);p.asumma[9]:=p.asumma[9]+p.summa[9];
+      PutData(2,1,p.cauntRows[2],11,'',p.summa[11],'double',0h);p.asumma[11]:=p.asumma[11]+p.summa[11];
+//      PutData(2,1,p.cauntRows[2],11,'=H'+string(p.cauntRows[2]+13)+'-I'+string(p.cauntRows[2]+13),0,'formula',0);
+      PutData(2,1,p.cauntRows[2],9,'=H'+string(p.cauntRows[2]+13)+'-I'+string(p.cauntRows[2]+13),0,'formula',0);
+      PutData(2,1,p.cauntRows[2],11,'=J'+string(p.cauntRows[2]+13)+'-K'+string(p.cauntRows[2]+13),0,'formula',0);
+      PutData(2,1,p.cauntRows[2],12,'=(J'+string(p.cauntRows[2]+13)+'/L'+string(p.cauntRows[2]+13)+'-1)*100',0,'formula',0);
+      PutData(2,1,p.cauntRows[2],13,'=K'+string(p.cauntRows[2]+13)+'/J'+string(p.cauntRows[2]+13)+'*100',0,'formula',0);
+    }
+    p.cauntRows[1]:=p.cauntRows[1]+1;
+    PutData(1,1,p.cauntRows[1],1,' ',0,'string',00FFF980h);
+    PutData(1,1,p.cauntRows[1],2,'Итого по отчету:',0,'string',0h);
+    PutData(1,1,p.cauntRows[1],5,'',p.asumma[5],'double',0h);
+    PutData(1,1,p.cauntRows[1],6,'',p.asumma[6],'double',0h);
+    PutData(1,1,p.cauntRows[1],7,'',p.asumma[7],'double',0h);
+    PutData(1,1,p.cauntRows[1],8,'',p.asumma[8],'double',0h);
+//    PutData(1,1,p.cauntRows[1],10,'',p.asumma[10],'double',0h);
+    PutData(1,1,p.cauntRows[1],9,'',p.asumma[9],'double',0h);
+    PutData(1,1,p.cauntRows[1],11,'',p.asumma[11],'double',0h);
+//   PutData(1,1,p.cauntRows[1],11,'=H'+string(p.cauntRows[1]+13)+'-I'+string(p.cauntRows[1]+13),0,'formula',0);
+    PutData(1,1,p.cauntRows[1],9,'=H'+string(p.cauntRows[1]+13)+'-I'+string(p.cauntRows[1]+13),0,'formula',0);
+    PutData(1,1,p.cauntRows[1],11,'=J'+string(p.cauntRows[1]+13)+'-K'+string(p.cauntRows[1]+13),0,'formula',0);
+    PutData(1,1,p.cauntRows[1],12,'=(J'+string(p.cauntRows[1]+13)+'/L'+string(p.cauntRows[1]+13)+'-1)*100',0,'formula',0);
+    PutData(1,1,p.cauntRows[1],13,'=K'+string(p.cauntRows[1]+13)+'/J'+string(p.cauntRows[1]+13)+'*100',0,'formula',0);
+
+    p.cauntRows[2]:=p.cauntRows[2]+1;
+    PutData(2,1,p.cauntRows[2],1,' ',0,'string',00FFF980h);
+    PutData(2,1,p.cauntRows[2],2,'Итого по отчету:',0,'string',0h);
+    PutData(2,1,p.cauntRows[2],5,'',p.asumma[5],'double',0h);
+    PutData(2,1,p.cauntRows[2],6,'',p.asumma[6],'double',0h);
+    PutData(2,1,p.cauntRows[2],7,'',p.asumma[7],'double',0h);
+    PutData(2,1,p.cauntRows[2],8,'',p.asumma[8],'double',0h);
+//    PutData(2,1,p.cauntRows[2],10,'',p.asumma[10],'double',0h);
+    PutData(2,1,p.cauntRows[2],9,'',p.asumma[9],'double',0h);
+    PutData(2,1,p.cauntRows[2],11,'',p.asumma[11],'double',0h);
+//    PutData(2,1,p.cauntRows[2],11,'=H'+string(p.cauntRows[2]+13)+'-I'+string(p.cauntRows[2]+13),0,'formula',0);
+    PutData(2,1,p.cauntRows[2],9,'=H'+string(p.cauntRows[2]+13)+'-I'+string(p.cauntRows[2]+13),0,'formula',0);
+    PutData(2,1,p.cauntRows[2],11,'=J'+string(p.cauntRows[2]+13)+'-K'+string(p.cauntRows[2]+13),0,'formula',0);
+    PutData(2,1,p.cauntRows[2],12,'=(J'+string(p.cauntRows[2]+13)+'/L'+string(p.cauntRows[2]+13)+'-1)*100',0,'formula',0);
+    PutData(2,1,p.cauntRows[2],13,'=K'+string(p.cauntRows[2]+13)+'/J'+string(p.cauntRows[2]+13)+'*100',0,'formula',0);
+
+    pat:=GetFileParameter('Files', 'OutputFilesDirectory', ifFirstParameter);
+    copyMoveFile(p.path, pat+'RepRealizaciya.xls', false, 4+8); //ecmfClientFrom + ecmfClientTo
+    xlOpenExcel(true);
+    if (xlOpenWorkBook(pat+'RepRealizaciya.xls')) {
+      xlSetActiveWorkBookByName('RepRealizaciya.xls');
+      xlSetActiveSheetByName('Report');
+
+      outHeder(1,'Report',0,0);
+      outData(1,1,'Report',14,1,p.cauntRows[1],14);
+      xlSetActiveSheetByName('Report_i');
+
+      outHeder(1,'Report_i',0,0);
+      outData(2,1,'Report_i',14,1,p.cauntRows[2],14);
+    }
+    else {
+      message('Шаблон отчета не найден');
+    }
+
+    xlKillExcel;
+    closeInterface(cmOK);
+  }
+
+  cmCancel: {
+    closeInterface(cmCancel);
+  }
+end; // handleEvent
+end. // interface

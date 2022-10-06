@@ -1,0 +1,40 @@
+// 8.0
+// Экспортируемые интерфейсы компоненты F_TAXES
+
+#ifdef ComponentVersion
+#component "F_TAXES"
+#end
+
+VipInterface QuickStr                       Licensed (Free)  Parameters (parRetText : string);
+VipInterface TaxConvTpn                     Licensed (Free)  Parameters (parPathLog : string);
+VipInterface TaxPick                        Licensed (Free)  Parameters (parType : word);
+VipInterface TaxStrSe                       Licensed (Free)  Parameters (parMode : word; parRetFilial : comp; parRetKatKod : comp; parPol : comp; parPlj : comp; parKpp : comp);
+//-----------------------------------------------
+// вызываются из меню
+VipInterface Akt112                         Licensed (TAXES) Parameters (parViewMode : word; pNrec : comp);
+VipInterface Akt113                         Licensed (TAXES) Parameters (parViewMode : word; parNRec : comp);
+VipInterface Taxes_Conv                     Licensed (TAXES) Parameters (parProc : word);
+VipInterface TaxesStr                       Licensed (TAXES) Parameters (parMode : word; parSetGNI : comp; parSetTax : comp; parSetMinLevel : word; parRetLevel : word; parRetKatKod : comp);
+VipInterface FilialSee                      Licensed (TAXES, MENUZARP, MENUZARP2) Parameters (parMode : word; parRetRecord : comp);
+
+//-----------------------------------------------
+// построенные на макросе в TaxConvN.vip
+VipInterface TaxesConv_ATD                  Licensed (Free) ;
+VipInterface TaxesConv_GNI                  Licensed (Free) ;
+VipInterface TaxesConv_Tax                  Licensed (Free) ;
+VipInterface TaxesConv_Bud                  Licensed (Free) ;
+VipInterface TaxesConv_TPN                  Licensed (Free) ;
+VipInterface TaxesConv_Str                  Licensed (Free) ;
+VipInterface TaxesConv_UNN                  Licensed (Free) ;
+VipInterface TaxesConv_Fil                  Licensed (Free) ;
+VipInterface TaxesConv_FilOrg               Licensed (Free) ;
+VipInterface TaxesConv_Ofk                  Licensed (Free) ;
+
+VipInterface TaxesConv_Plp                  Licensed (Free) ;
+VipInterface TaxesConv_AvsGet               Licensed (Free) ;
+VipInterface TaxesConv_Akt                  Licensed (Free) ;
+VipInterface TaxesConv_Pay                  Licensed (Free) ;
+VipInterface TaxesConv_AvsPut               Licensed (Free) ;
+VipInterface TaxesConv_TreeByStr            Licensed (Free) ;
+//-----------------------------------------------
+

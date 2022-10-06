@@ -1,0 +1,11 @@
+alter FUNCTION [dbo].[S$ATL_GET_SERVERNAME]
+(
+
+)
+RETURNS nvarchar(256)
+AS
+BEGIN
+ declare @RESULTVALUE nvarchar(256) = (Select @@SERVERNAME)
+  RETURN @RESULTVALUE
+end
+

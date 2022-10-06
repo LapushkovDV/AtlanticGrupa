@@ -1,0 +1,45 @@
+#statusline "statgal"
+#include PreDefs.inc;
+const
+#include GloConst.inc;
+#include Galnet.csc;
+#include Galnet.ccm;
+#include TUNES.INC
+#include fldcolor.inc
+end;
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+
+#param /linc:autoexec.vpp
+
+#define ComponentVersion
+
+#include extattr.vih
+
+#define channel 'Канал Сбыта'
+#define sap_code 'Код SAPа'
+#define undefined 'не установлен'
+#define test 'Тестовый период эксплуатации интерфейса завершен! Обратитесь к разработчику'
+#define contract_price 03E8000000000007h
+
+table struct check_tbl (
+  nrec: comp,
+  name: string,
+  dbeg: date,
+  dend: date,
+  group: string,
+  channel: string
+)
+with index (
+  i01 = dbeg+ dend+ name
+);
+
+#component "droga"
+
+#make "reports\sale.vip"
+#make "reports\check.frm"
+#make "reports\check.vip"
+#make "reports\user.vip"

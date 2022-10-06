@@ -1,0 +1,8 @@
+// 8.0
+// Экспортируемые интерфейсы компоненты F_VZachet
+
+#ifdef ComponentVersion
+  #component "F_VZachet"
+#end
+VipInterface PrintAktZAkryt Licensed(Free)
+    parameters(_rec : comp);

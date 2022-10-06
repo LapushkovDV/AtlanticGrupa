@@ -1,0 +1,8 @@
+#component "ATLANTIC"
+objInterface ObjMercuryPRJ_View;
+ Procedure ShowMercuryData(_cSopr : comp) ;
+end;
+
+vipInterface MercuryPRJ_View implements ObjMercuryPRJ_View licensed(free);
+
+var _MercuryPRJ_View : MercuryPRJ_View;

@@ -1,0 +1,29 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_BuhRep
+
+#ifdef ComponentVersion
+#component "F_BuhRep"
+#end
+
+#include BuhFiltr.vpp
+#include BuhRep.vpp
+VipInterface AnUchDisp    Licensed(B_Finans,NalogReg)                           Parameters (parIntMode, parRepSave : word);
+VipInterface BuhDlg01     Licensed(B_Finans,B_Kassa,B_Balans,B_Konsol,NalogReg) Parameters (wReport : word);
+VipInterface BuhFilter    #Licensed_KBU                                         Parameters (Param : word; Filter : BuhFilterRecord);
+VipInterface BuhgMode     Licensed(B_Finans)                                    Parameters (wInitMode : word; BegDate, EndDate : date; wParam1, wParam2 : word; sGetSch : tSchet3; sGetSub : tSubSch; cKau : tKodKau);
+VipInterface BuhgTune     Licensed(B_Kassa)                                     Parameters (myRazdel : word; myV : boolean; myNrec : comp);
+VipInterface BuhRepRun    Licensed(B_Finans,B_Kassa,B_Balans,B_Konsol,NalogReg) Parameters (wReport, wNewOld : word);
+VipInterface CalcSalM     Licensed(B_Finans)                                    Parameters (Param1 : word; myPlansNo : comp);
+VipInterface CheckTSald   Licensed(B_Finans)                                    Parameters (myPlansNo : comp; MyTecSchet : tSchet3; CheckDate, CheckEndDate : date; wKau1 : word);
+VipInterface JornTune     Licensed(B_Finans)                                    Parameters (MakePick : boolean; myGetRec : comp);
+VipInterface JOTuned      Licensed(B_Finans)                                    Parameters (cJorn : comp);
+VipInterface MOTuned      Licensed(B_Finans)                                    Parameters (cJorn : comp);
+VipInterface CompareSaldo Licensed(B_Finans)                                    Parameters (CurRepParams : TVipReportParams);
+VipInterface RepTest      Licensed(B_Finans);
+VipInterface OnLineMB     Licensed(B_Balans);
+VipInterface OnLineOSV    Licensed(B_Balans);
+VipInterface OnLineGroup  Licensed(B_Balans)                                    Parameters (cJorn : comp);
+VipInterface BPeriod      Licensed(Free)                                        Parameters (BegDate,EndDate: date; SaldoSource: word; InFirst,RunPick: boolean);
+VipInterface AktReview	  Licensed(B_Finans)                                    Parameters (RepParams : TVipReportParams);
+VipInterface AktTuned	  Licensed(B_Finans)   					Parameters (cJorn : comp);
+VipInterface KassaTune Licensed(Free);

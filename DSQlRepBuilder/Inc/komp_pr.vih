@@ -1,0 +1,48 @@
+/*                                            `
+ ╔═══════════════════════════════════════════════════════════════════════════╗
+ ║                       (c) 2003 корпорация ГАЛАКТИКА                       ║
+ ║ Проект        : ГАЛАКТИКА                                                 ║
+ ║ Система       : Оперативный контур                                        ║
+ ║ Версия        : 5.85                                                      ║
+ ║ Назначение    : Ф-ии поиска документов по комплекту и его составляющей    ║
+ ║ Ответственный : Двинский Сергей Леонидович                                ║
+ ╚═══════════════════════════════════════════════════════════════════════════╝
+*/
+
+#ifndef __Komp_Pr_vih__
+#define __Komp_Pr_vih__
+
+#ifdef ComponentVersion
+#component "L_Sklad"
+#end
+
+#doc
+Функции поиска документов по комплекту и его составляющей
+#end
+
+ObjInterface IObjKomplMCPrice;
+#doc
+Возвращает цену МЦ
+#end
+  function GetMCPrice (_cPodr, _cMOL, _cMCKompl, _cPartyKompl, _cMC : comp; var _cSpOrder : comp) : double;
+#doc
+Возвращает номер приходного ордера
+#end
+  function GetPrihSpOrd (_InitialDate : date; _cPodr, _cMOL, _cMCKompl, _cPartyKompl, _cMC : comp) : comp;
+#doc
+Возвращает номер приходного ордера
+#end
+  function GetKPrihSpOrd (_InitialDate : date; _cPodr, _cMOL, _cMCKompl, _cPartyKompl : comp) : comp;
+#doc
+Возвращает номер приходного ордера
+#end
+  function GetPrihSpOrdBySpSopr (cSpSopr : comp) : comp;
+#doc
+Возвращает номер приходного ордера
+#end
+  function GetOS_SpOrdBySpSopr (cSpSopr : comp) : comp;
+end;
+
+VipInterface KomplMCPrice implements IObjKomplMCPrice licensed (FREE);
+
+#end // __Komp_Pr_vih__

@@ -1,0 +1,354 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Логистика - складской учет
+// функции для setlifo.vip
+//******************************************************************************
+
+
+//******************************************************************************
+
+Function ConvertMethodToLifo_fromDate(date_: Date): boolean;
+var meth_: word;
+{
+  Result := FALSE;
+
+  meth_ := wGetTune('Oper.L_F');
+
+  StartNewVisual(vtIndicatorVisual, vfBreak+vfConfirm+vfTimer, 'Подготовка ордеров к пересчету', kolPickMC);
+
+  _LOOP Pick where ((7 == Pick.wList))
+    {
+      if NOT NextVisual
+        {
+          StopVisual('', 0);
+          Exit;
+        }
+
+      _LOOP SpOrder where (( SkPr      == SpOrder.SP AND
+                             Pick.cRec == SpOrder.cMC ))
+        {
+          SpOrder.ostatok := 0;
+          SpOrder.empty   := oSaldo_K.LoSetSpOrder_Empty(SpOrder.tipOrd, SpOrder.vidOrder, 0, SpOrder.cSpSopr, SpOrder.ccPodr);
+
+          if SpOrder.tipOrd = 3 AND SpOrder.empty<>3
+            {
+              SpOrder.tipOrd := 1; //внеш.
+              if GetFirst SklOrder where ((SpOrder.cSklOrder == SklOrder.NRec)) = tsOk
+                {
+                  SklOrder.tipOrd := SpOrder.tipOrd;
+                  update current SklOrder;
+                }
+            }
+
+          //еще раз т.к. могли измениться параметры
+          SpOrder.ostatok := if(SpOrder.dOrd >= Date_, SpOrder.kol, 0);
+          SpOrder.empty   := oSaldo_K.LoSetSpOrder_Empty(SpOrder.tipOrd, SpOrder.vidOrder, SpOrder.ostatok, SpOrder.cSpSopr, SpOrder.ccPodr);
+          SpOrder.method  := if(SpOrder.dOrd >= Date_, meth_, 0);
+
+          if SpOrder.vidOrder = 1 AND SpOrder.dOrd >= Date_ //только после даты перехода
+            SpOrder.vidOrder := 123;//для расх.
+
+          update current SpOrder;
+
+          //для удаления переоценки
+          if (SpOrder.vidOrder = 0) AND (SpOrder.tipOrd>= 4 AND SpOrder.tipOrd<= 7) AND
+              SpOrder.dOrd >= Date_
+            InsertPick555(SpOrder.cSklOrder);
+        }//_LOOP SpOrder
+    }//_LOOP Pick
+
+  StopVisual('', 0);
+
+  //удаление переоценки
+  StartNewVisual(vtNumericVisual, vfBreak+vfConfirm+vfTimer, 'Удаление переоценки', 1);
+  While GetFirst Pick where ((555 == Pick.wList)) = tsOk Do
+    {
+      if NOT NextVisual
+        {
+          StopVisual('', 0);
+          Exit;
+        }
+
+      While GetFirst SpOrder where ((Pick.cRec == SpOrder.cSklOrder)) = tsOk Do
+        {
+          if oModifOrds.AnySpOrder_Delete(TypeSpOrder(SpOrder.buffer)) <> tsOk
+            Break;
+        }
+
+      if GetFirst SklOrder where ((Pick.cRec == SklOrder.NRec))<> tsOk
+        Continue;
+
+      iSHoz.DeleteDoc(SklOrder.NRec, GetSoprHozTipDoc(SklOrder.SP, SklOrder.VidOrder));
+
+      delete current SklOrder;
+      delete current Pick;
+    }//W Pick
+
+  StopVisual('', 0);
+
+  // расчет сальдовых
+  if NOT Store_Init OR NOT Store_ReInit
+    {
+      Message('Ошибка инициализации расчета остатков', Warning);
+      Exit;
+    }
+
+  Store_TypeOstatki(TRUE);//входящие
+  Store_SkladProizv(SkPr);
+  Store_Run(date_, comp(-2), 0, 0, 0, FALSE, FALSE, FALSE);
+
+  if Store_wasStopped
+    {
+      Message('Расчет прерван', Warning);
+      Store_Done;
+      Exit;
+    }
+
+  Store_Done;
+
+  //заполняем свободные остатки в последних перед датой перехода приходных ордерах
+  StartNewVisual(vtIndicatorVisual, vfBreak+vfConfirm+vfTimer, 'Заполнение остатков', RecordsInTable(#TmpSaldo1) );
+  var kol_: double;
+
+  _LOOP TmpSaldo1
+    {
+      if NOT NextVisual
+        {
+          StopVisual('', 0);
+          Exit;
+        }
+
+      kol_ := TmpSaldo1.kol;
+
+      While (kol_ > GetPresision_forKol) Do
+        if (GetLast SpOrder where (( SkPr == SpOrder.SP AND
+                          TmpSaldo1.cMC  == SpOrder.cMC AND
+                                  Date_  >> SpOrder.dOrd AND //до даты расчета
+               ( 0 = SpOrder.vidOrder  AND  3 > SpOrder.tipOrd AND
+                 0 < SpOrder.kol       AND  0 = SpOrder.empty)//пока пустой
+                                 )) <> tsOk)
+          kol_ := 0; //чтобы был выход из цикла W kol_
+        else
+          {
+            if (kol_ > SpOrder.kol)
+              {
+                SpOrder.ostatok  := SpOrder.kol;
+                SpOrder.ostatokN := SpOrder.kol;
+
+                kol_ -= SpOrder.kol;
+              }
+            else
+              {
+                SpOrder.ostatok  := kol_;
+                SpOrder.ostatokN := kol_;
+
+                kol_ := 0;
+              }
+
+            SpOrder.empty := 1;
+            SpOrder.method := meth_;
+            update current SpOrder;
+          } //if SpOrder = tsOk
+    }//LOOP TmpSaldo1
+
+  StopVisual('', 0);
+
+  //-----------------------------------------------------------------------
+  //  удаляем остатки после даты пересчета - чтобы не нужно было лишних апдейтов делать
+  StartNewVisual(vtIndicatorVisual, vfTimer+vfConfirm+vfBreak, 'Подготовка остатков к пересчету', kolPickMC);
+
+  _LOOP Pick where ((word(7) == Pick.wList))
+    {
+      if NOT NextVisual
+        {
+          StopVisual('', 0);
+          Exit;
+        }
+
+      //проверка сальдовых
+      if GetFirst SaldoMC where (( SkPr       == SaldoMC.SP  AND
+                                   Pick.cRec  == SaldoMC.cMC AND
+                                   Date_      << SaldoMC.dSaldo )) = tsOk // << т.к. +1
+        if SaldoMC.opers = 0
+          {
+            if GetFirst KatMC  where ((SaldoMC.cMC == KatMC.NRec))<>tsOk
+              KatMC.Name := string(KatMC.NRec)+'(удалена)';
+
+            Message('После указанной даты имеются сальдовые остатки со старых версии '+
+                    '(по крайней мере для МЦ "'+ KatMC.Name+'"). Пересчет произвести нельзя.', Warning);
+
+            StopVisual('', 0); Exit;
+          }
+
+      //удаление  сальдовых
+      delete novisual SaldoMC where (( SkPr     == SaldoMC.SP  AND
+                                     Pick.cRec  == SaldoMC.cMC AND
+                                     Date_      << SaldoMC.dSaldo )); // << т.к. +1
+    }//_LOOP
+
+  StopVisual('', 0);
+
+  //-------------------------------------------------------------------------
+  //пересчет цен в расходных одерах начиная c даты перехода
+  StartNewVisual(vtIndicatorVisual, vfBreak+vfConfirm+vfTimer, 'Пересчет цен в ордерах c '+string(date_), kolPickMC);
+  var thisFirstMC: boolean;  var rashKol, tmpKol: double;
+
+  _LOOP Pick where ((7 == Pick.wList))
+    {
+      if NOT NextVisual
+        {
+          StopVisual('', 0);
+          Exit;
+        }
+
+      if GetFirst KatMC where((Pick.cRec == KatMC.NRec)) <>tsOk
+         KatMC.Name := 'NRec = '+string(Pick.cRec)+'(МЦ удалена)';
+
+
+      While GetFirst rSpOrder where (( SkPr   == rSpOrder.SP       AND
+                                       123    == rSpOrder.vidOrder AND
+                                    Pick.cRec == rSpOrder.cMC      AND
+                                       Date_ <<= rSpOrder.dOrd     AND
+                        GetPresision_forKol  <<= rSpOrder.kol (noIndex) )) = tsOk
+        {
+          RollBack_Prih_Begin; //для возвратов
+
+          thisFirstMC := TRUE;
+          rashKol := rSpOrder.Kol; // сохранили распределяемое кол-во
+
+          //поиск свободных внешних приходов (по empty) ---------------
+          While ((rashKol >= GetPresision_forKol) AND
+                 (if(rSpOrder.method = 1,
+                           //LIFO
+                            ( GetLast SpOrder where (( SkPr  == SpOrder.SP AND
+                                 0               == SpOrder.vidOrder AND
+                                 rSpOrder.cMC    == SpOrder.cMC      AND
+                                 1               == SpOrder.empty    AND
+                                 rSpOrder.dOrd  >>= SpOrder.dOrd     AND
+                           GetPresision_forKol  <<= SpOrder.kol(noIndex) ))
+                            )
+                           //FIFO
+                           , ( GetFirst SpOrder where (( SkPr  == SpOrder.SP AND
+                                 0               == SpOrder.vidOrder AND
+                                 rSpOrder.cMC    == SpOrder.cMC      AND
+                                 1               == SpOrder.empty    AND
+                                 rSpOrder.dOrd  >>= SpOrder.dOrd     AND
+                           GetPresision_forKol  <<= SpOrder.kol(noIndex) ))
+                            )
+                    ) = tsOk
+                 )
+                )
+            { // TRUE  - нужный приход найден
+
+              Set_NewSpOrder; //заполняем rSpOrder там же меняется и vidOrder на 1
+
+              tmpKol := rashKol - SpOrder.ostatok;
+              if (tmpKol > -GetPresision_forKol)
+                {
+                  rSpOrder.kol := SpOrder.ostatok;
+
+                  rashKol := tmpKol;
+
+                  SpOrder.ostatok  := 0; // стал пуст
+                  SpOrder.ostatokN := 0; // стал пуст
+                  SpOrder.empty    := 0;
+                }
+              else
+                {
+                  rSpOrder.kol := rashKol;
+
+                  rashKol := 0;
+
+                  SpOrder.ostatok  := -tmpKol; // еще что-то осталось
+                  SpOrder.ostatokN := -tmpKol; // еще что-то осталось
+                  SpOrder.empty    := 1;
+                }
+
+              //добавить новую позицию в расх.ордер или обновить старую
+              if (thisFirstMC)
+                {
+                  update current rSpOrder;
+                  thisFirstMC := FALSE;
+                }
+              else
+                {
+                  rSpOrder.NRec := 0;
+                  insert current rSpOrder;
+                }
+
+              //выгрузка модифицированных расх ордеров в Pick555
+              InsertPick555(rSpOrder.cSklOrder);
+
+              RollBack_Prih_Add;   //для возвратов для расходного
+
+              //обновляем приходный:
+              update current SpOrder //т.к. только Ostatok и Empty
+            }// While по приходам
+
+          // если не найдено нужных приходов - обнуляем цены
+          // или добавляем спецификацию в расх.ордер с нулевыми ценами на разность кол-ва
+          if (rashKol >= GetPresision_forKol)
+            {
+              frmErr.Write('! Для расходного ордера от '+string(rSpOrder.dOrd) +',  МЦ "'+KatMC.Name+'"');
+              frmErr.Write('! не хватило ПРИХОДОВ МЦ');
+
+              Set_NewSpOrder; //заполняем rSpOrder и меняем vidOrder с 123 на 1
+              rSpOrder.cSpOrder := 0;
+              rSpOrder.kol      := rashKol;
+              rSpOrder.srPrice  := 0;      rSpOrder.vPrice  := 0;
+              rSpOrder.rSrPrice := 0;      rSpOrder.rVPrice := 0;
+              if (thisFirstMC)
+                {
+                  update current rSpOrder;
+                  thisFirstMC := FALSE;
+                  frmErr.Write('! в спецификации расходного ордера с установлена нулевая цена списания');
+                }
+              else
+                {
+                  rSpOrder.NRec := 0;
+                  insert current rSpOrder;
+                  frmErr.Write('! дополнительно требуется количество: '+string(rashKol));
+                  frmErr.Write('! добавлена спецификация расходного ордера с нулевой ценой');
+                }
+
+              //выгрузка модифицированных расх ордеров в Pick555
+              InsertPick555(rSpOrder.cSklOrder);
+
+              RollBack_Prih_Add; //для возвратов
+
+              rashKol := 0;
+            } // if (rashKol > 0)
+
+          RollBack_Prih_End;     //для возвратов
+        }//WHILE по расходным
+    }//_LOOP Pick
+
+  StopVisual('', 0);
+
+  //---------------------------------------------------------------------
+  StartNewVisual(vtIndicatorVisual, vfBreak+vfConfirm+vfTimer, 'Обновление остатков c '+string(date_), kolPickMC);
+
+  _LOOP Pick where ((word(7) == Pick.wList))
+    if NOT NextVisual
+      {
+        StopVisual('', 0);
+        Exit;
+      }
+    else
+      _LOOP SpOrder where ((SkPr      == SpOrder.SP  AND
+                            Pick.cRec == SpOrder.cMC AND
+                            Date_    <<= SpOrder.dOrd ))
+        oModifSal.AddSaldoMC_New(SpOrder.SP, SpOrder.cMC, SpOrder.ccPodr,
+                     SpOrder.ccMOL, SpOrder.cParty, SpOrder.kol,
+                     if(wGetTune('Oper.SaldoByOrder') = 0, SpOrder.SrPrice, SpOrder.RSrPrice), //  Сальдовые остатки считаем на основании суммы/цены в ордере
+                     if(wGetTune('Oper.SaldoByOrder') = 0, SpOrder.VPrice, SpOrder.RVPrice),
+                     SpOrder.srPrice, SpOrder.vPrice, SpOrder.cVal,
+                     SpOrder.priceN, SpOrder.vPriceN,
+                     SpOrder.dOrd, presision, FALSE, SpOrder.VidOrder, SpOrder.TipOrd);
+
+  StopVisual('', 0);
+
+  Result := TRUE;
+} // ReCalc_ExterOrder: boolean;
+
+//******************************************************************************

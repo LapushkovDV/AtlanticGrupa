@@ -1,0 +1,129 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента L_REPOPER
+
+
+#ifdef ComponentVersion
+#component "L_REPOPER"
+#end
+
+vipinterface DolgOpl        licensed (
+                                       #include DolgOpl.lih
+                                     );                      
+vipinterface DolgOpl1       licensed (                       
+                                       #include DolgOpl1.lih
+                                     )                       
+                            Parameters (pDirect: word);
+vipinterface DolgOpl2       licensed (                       
+                                       #include DolgOpl2.lih
+                                     );                      
+vipinterface HBDReestr      licensed (
+                                       #include HBDReestr.lih
+                                     )
+                            Parameters (pVidDoc: word);
+vipinterface HKSReestr      licensed (                       
+                                       #include HKSReestr.lih
+                                     )                       
+                            Parameters (pReport: word; _group: word);
+vipinterface IspGroup       licensed (                       
+                                       #include IspGroup.lih
+                                     );                      
+vipinterface KartKlie       licensed (                       
+                                       #include KartKlie.lih
+                                     )                       
+                            Parameters (wVidDoc: word);
+vipinterface NaklRees       licensed (
+                                       #include NaklRees.lih
+                                     )
+                            Parameters (Vid: word);
+vipinterface outnastr       licensed (free) Parameters (NReport: word; pNRec: comp);
+vipinterface R_real         licensed (                       
+                                       #include R_real.lih
+                                     )                       
+                            Parameters (paramPrimare: word);
+vipinterface R_real_XL      licensed (                       
+                                       #include R_real_XL.lih
+                                     )                       
+                            Parameters (pRepTip: word);
+vipinterface ReeGTD         licensed (free) Parameters (c1: comp; m1: longint; TypeSopr: word);
+vipinterface reepostavan    licensed (dogovor)                       
+                            Parameters (TypeReport: word);
+vipinterface RepBS          licensed (                       
+                                       #include RepBS.lih
+                                     )                       
+                            Parameters (zp: word; bCons: boolean);
+vipinterface RepBS_n        licensed (free) Parameters (pNRec: comp; zp: word);
+vipinterface RepDONal       licensed (                       
+                                       #include RepDONal.lih
+                                     )                       
+                            Parameters (pVidDoc: word);
+vipinterface SaleRep        licensed (                       
+                                       #include SaleRep.lih
+                                     )                       
+                            Parameters (pVidSopr : word);
+vipinterface See_Tov        licensed (                       
+                                       #include See_Tov.lih
+                                     )                       
+                            Parameters (TTDK: word);
+vipinterface SoprRep        licensed (                       
+                                       #include SoprRep.lih
+                                     )                       
+                            Parameters (pVidSopr : word);
+vipinterface SosOplV        licensed (buy);                      
+vipinterface TunExtDo       licensed (free) Parameters (ThingsOnPeriod: word; MoneyOnPeriod: word; Dat1: date; Dat2: date; TipDO: word; DenTov: word; KonDo: word; LoadOnly: word; OurAll: word; TheAll: word; DOTipMoney: word; toc:word; sXLTFileName:string);
+vipinterface HierSFReestr   licensed (                       
+                                       #include HierSFReestr.lih
+                                     )
+                            Parameters (pDirect
+                                          : word;
+                                        MrkGetSomeSchFact
+                                          : longint);
+vipinterface iUksNDSReestr  licensed (stroy);
+vipinterface iUksNDSReestrTune
+                            licensed (free) Parameters (cTuneRec : comp; TuneID, wAction : word);
+vipinterface OutAvans       licensed (free);
+
+VipInterface ReeNastr
+  Licensed
+    (
+      Free
+    )
+  Parameters
+    (
+      NReport    : word;
+
+      pNRec      : comp;
+
+      TypeReport : word;
+
+      fDog
+    , fGroup
+    , fKontr
+    , fProg
+    , fVidDog
+    , fMC
+    , fUsl
+    , fGroupMC
+    , fGroupUsl
+    , fDetails   : string
+    );
+
+vipinterface CalcBuy        licensed (free) Parameters (NReport : Word; pNRec : Comp; pStat : Word);
+
+vipinterface Ved16          licensed (free);
+vipinterface BDocRees       licensed (free) Parameters (Vid, Stat : word);
+vipinterface SetChronosAdvTunes
+                            licensed (free);
+vipinterface EDITHREPTUNES  licensed (free) Parameters (CurCode, pVidDoc : word; pnRec : comp);
+vipinterface EDITHREPTUNEKS licensed (free) Parameters (CurCode, pReport : word; pnRec : comp; mrkVidSopr : longint);
+vipinterface EDTSFREPTUNES  licensed (free) Parameters (CurCode, pDirect : word; boIsSelSF : boolean; pcSelUsrDskRep : comp);
+vipinterface SALENASTR      licensed (free) Parameters(NReport : word; pNRec : comp);
+vipinterface SOPRNASTR      licensed (free) Parameters(NReport : word; pNRec : comp);
+vipinterface REPBSZAR       licensed (free);
+vipinterface KARTSCH        licensed (free);
+vipinterface RepKursRazn    licensed (free) Parameters(pDirect : word);
+vipinterface RepBSIer       licensed (
+                                      #include REPBSIER.lih
+                                      ) Parameters (zp : word; bCons : boolean);
+vipinterface SoprEqualDocs  licensed (free) Parameters (Vid: word);
+
+vipinterface SPR_INV        licensed (free) Parameters (pDirect: word);

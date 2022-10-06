@@ -1,0 +1,14 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компоненты
+
+#ifdef ComponentVersion
+#component "L_Skid"
+#end
+
+VipInterface GetKatSkid       licensed (FREE) Parameters (pKatSkid : comp);
+VipInterface GetSkid          licensed (FREE) Parameters (p1 : comp; proc : double);
+VipInterface KatSkid          licensed (FREE) Parameters (pVidRez : word; pRezim : word; pSk : comp; pVidPr : word; pSkSp : comp);
+VipInterface KlSkidka         licensed (FREE);
+VipInterface SkidRep          licensed (FREE) Parameters (NReport : word);
+VipInterface SkidRepNastr     licensed (FREE) Parameters (NReport : word; RepNRec : comp);
+VipInterface SkidSum          licensed (FREE) Parameters (pTable : word; pRec : comp; pReadWrite : boolean);

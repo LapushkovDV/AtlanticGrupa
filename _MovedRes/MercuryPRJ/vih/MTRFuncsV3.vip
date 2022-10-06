@@ -1,0 +1,74 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 8.1
+// Функции для целевого учета
+//******************************************************************************
+
+#include MTRFuncs.vih
+
+#doc
+Реализация методов для целевого учета в позициях спецификации документов.
+#end
+
+Interface MTRFuncsV3;
+
+Create view MTR
+
+From
+  SpSopr
+, SaldoRaz
+, SaldoObj
+;
+
+Function GetMaxColSpisSpSopr(SrcSpec : comp; dFOrd : date; var kforspis : double) : boolean;
+{
+  GetMaxColSpisSpSopr := false;
+
+  if (GetFirst FastFirstRow SpecMTR where (( coSpSopr == SpecMTR.coTable and SrcSpec == SpecMTR.cSpec )) <> tsOk)
+    {
+      If wGetTune('UKS.ObjUKS_forSpis') = 0 // списание без ЦУ
+        GetMaxColSpisSpSopr := true;
+
+      If wGetTune('UKS.ObjUKS_forSpis') = 2 // списание без ЦУ по запросу
+        if Message ('Не указан ЦУ, оприходовать?', YesNo) = cmYes
+          GetMaxColSpisSpSopr := true;
+
+      Exit;
+    }
+
+  If GetFirst FastFirstRow SpSopr where (( SrcSpec == SpSopr.nRec )) <> tsOk
+    Exit;
+
+  if SpSopr.PrMC <> 1 // если не МЦ
+    {
+      GetMaxColSpisSpSopr := true;
+      Exit;
+    }
+
+  var cKK : comp;
+
+  cKK := GetKitKau(coSpSopr, SpSopr.nRec);
+
+  if cKK = 0
+    Exit;
+  
+  if GetFirst FastFirstRow SaldoRaz where (( SpecMTR.cSaldTune == SaldoRaz.cSaldTune and
+                                0                 == SaldoRaz.wMode     and
+                                SpSopr.cMCUsl     == SaldoRaz.cMC       and
+                                SpSopr.cPodr      == SaldoRaz.cPodr     and
+                                SpSopr.cMol       == SaldoRaz.cMol      and
+                                SpSopr.cParty     == SaldoRaz.cParty    and
+                                SpecMTR.cObj      == SaldoRaz.cObj      and
+                                cKK               == SaldoRaz.cKitKau  )) = tsOk
+    If GetLast SaldoObj where (( SaldoRaz.nRec    == SaldoObj.cSaldoRaz and
+                                 dFOrd           >>= SaldoObj.dOper )) = tsOk
+      if SaldoObj.Kol >= (spsopr.kolfact * fEdIzm.GetKoefOtpEd(SpSopr.cOtpEd) )
+        GetMaxColSpisSpSopr := true
+      else
+        kforspis := SaldoObj.Kol / fEdIzm.GetKoefOtpEd(SpSopr.cOtpEd);
+}
+
+//******************************************************************************
+//******************************************************************************
+
+end.

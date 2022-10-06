@@ -1,0 +1,17 @@
+
+#ifdef ComponentVersion
+#component "L_TTNDOC"
+#end
+
+#ifndef _MAKE_TTNDOC_
+VipInterface TTNDoc    licensed (FREE)  Parameters (pTable: word; pDoc: comp);
+#end
+
+VipInterface GMetLoad  licensed (FREE)  Parameters (c1: word; c2: comp);
+VipInterface SpTTNDoc  licensed (FREE)  Parameters (pTable: word; pDoc: comp);
+VipInterface GetMassa  licensed (FREE)  Parameters (c1: comp);
+VipInterface GetSpeed  licensed (FREE)  Parameters (c1: comp);
+VipInterface GNPunkts  licensed (FREE)  Parameters (c1, c2: comp);
+VipInterface SpMetLoad licensed (FREE)  Parameters (c1: word; c2: comp);
+VipInterface iKatDocOfGoods licensed (FREE);
+VipInterface iPermitPersons licensed (FREE) Parameters (pNRec: comp);

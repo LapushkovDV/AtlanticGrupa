@@ -1,0 +1,152 @@
+
+
+////////////// подменяем обработчик событий
+#component "C_DIADOC"
+alter interface IDIADOCSEND;
+var _Log : string = '';
+overload
+Procedure ShowProt;
+//Function MakeSend: boolean;
+//Function Check_Signers : boolean;
+//Function ObjDiadocSend.SendDocs(_wTable : word; _lMarker : TPtr; _pKatOrg : comp = 0) : boolean;
+//Function ObjDiadocSend.SendDocs(_wTable : word; _lMarker : TPtr) : boolean;
+end;
+
+Procedure MyLog(_Str: string);
+{
+//  Message(_Str)
+// if instr('DEBUG',_Str) <> 0 then exit;
+
+ if _Log = '' then ReadMyDSK(_Log,coATLANTIC_DIADOCAUTO_LOGNAME,true) ;
+ if _Log = '' then _Log := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'DIADOC_AUTOSEND_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+ LogStrtoFile(_log,_Str);
+}
+/*
+Function Check_Signers : boolean;
+{
+  if DiaMessageToSend.cPerson = 0h then update current DiaMessageToSend set DiaMessageToSend.cPerson := coGetTune('Diadoc.DiaAutoSigner');
+  result := inherited::Check_Signers;
+}
+*/
+/*
+Function MakeSend: boolean;
+{
+if boGetTune('USERTUNE.DIADOC.AUTOSEND') then
+ {
+    var _cSigners : comp = coGetTune('Diadoc.DiaAutoSigner');
+        SaveMyDSK(_cSigners, 'DiadocSendDocs_cSigners'); //принудительно в DSK впишем подписантов из настройки
+        MyLog('DIADOC. iDiaDocSend. MakeSend Настройка подписанты по умолчанию = '+_cSigners + ' (' + sGetTune('Diadoc.DiaAutoSigner')+ ')' );
+    DiaMessageToSend.cPerson := _cSigners;
+   update current DiaMessageToSend;
+   rereadrecord;
+ }
+ result := inherited::MakeSend;
+}
+*/
+Procedure ShowProt;
+{
+if not boGetTune('USERTUNE.DIADOC.AUTOSEND') then
+ {
+  inherited::ShowProt;
+ }
+}
+
+Window wndSendDocs 'Отправка документов' EscClose;
+  Show at (,, 110, 24);
+HandleEvent
+cmInit:
+{
+  _Log := '' ;
+  MyLog('DIADOC. wndSendDocs cmInit');
+
+
+inherited:: HandleEvent(cmInit);
+
+if boGetTune('USERTUNE.DIADOC.AUTOSEND') then
+ {
+/*
+   if not boGetTune('DiadocExport.ChooseSignerForAll')
+        {
+          set DiaMessageToSend.cPerson := _cSigners;
+          UpdateTable;
+        }
+        else
+        {
+          set DiaMessageToSend.cPerson := _cSigners;
+          UpdateTable;
+             _Loop tmpSend novisual
+             _Loop DiaMessageToSend novisual
+               update current DiaMessageToSend set DiaMessageToSend.cPerson := _cSigners;
+        }
+
+ _Loop tmpSend novisual
+  {
+    MyLog('DEBUG.  _Loop tmpSend ');
+     _Loop DiaMessageToSend novisual
+      {
+    MyLog('DEBUG. _Loop DiaMessageToSend novisual   ');
+       update current DiaMessageToSend set DiaMessageToSend.cPerson := _cSigners;
+      }
+  }
+   MyLog('DEBUG. Пытаемся отправить автоматом');
+//    PutCommand(cmOk);
+*/
+
+ if getfirst tmpSend <> tsOK
+  {
+     myLog('DIADOC: Нет документов для отправки');
+    PutCommand(cmClose);
+  }
+ var _cSigners : comp = coGetTune('Diadoc.DiaAutoSigner');
+ _Loop tmpSend novisual
+  {
+    MyLog('DEBUG.  _Loop tmpSend ');
+     _Loop DiaMessageToSend novisual
+      {
+    MyLog('DEBUG. _Loop DiaMessageToSend novisual   ');
+       update current DiaMessageToSend set DiaMessageToSend.cPerson := _cSigners;
+      }
+  }
+
+
+    if not makesend
+     then {
+          _loop tmpSend
+           {
+             myLog('DIADOC: Документы для '+ DiaOrganization.sFullName +' НЕ ОТПРАВЛЕНЫ');
+           }
+        }
+     else
+      {
+        MyLog('DIADOC: Документы успешно отправлены') ;
+      }
+  PutCommand(cmClose);
+ }
+}
+/*
+cmOk:
+{
+inherited:: HandleEvent(cmOk);
+if boGetTune('USERTUNE.DIADOC.AUTOSEND') then
+ {
+ //  message('Debug. Пытаемся отправить автоматом');
+    PutCommand(cmOk);
+ }
+}
+*/
+end;
+end;
+/*
+//Function SendDocs(_wTable : word; _lMarker : TPtr; _pKatOrg : comp = 0) : boolean;
+Function ObjDiadocSend.SendDocs(_wTable : word; _lMarker : TPtr) : boolean;
+{
+        var _cSigners : comp = coGetTune('Diadoc.DiaAutoSigner');
+        SaveMyDSK(_cSigners, 'DiadocSendDocs_cSigners'); //принудительно в DSK впишем подписантов из настройки
+        MyLog('DIADOC. Настройка подписанты по умолчанию = '+_cSigners + ' (' + sGetTune('Diadoc.DiaAutoSigner')+ ')' );
+//        MyLog('Настройка "Автоматическая отправка DIADOC" = ДА')
+
+//  result := Inherited::SendDocs(_wTable, _lMarker,_pKatOrg);
+  result := Inherited::SendDocs(_wTable, _lMarker);
+}
+*/
+end. // interface

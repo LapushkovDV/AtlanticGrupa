@@ -1,0 +1,196 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 8.10 - Управление комплектацией строительства
+// Декларация VIP-интерфейсов модуля L_UksMTO
+//------------------------------------------------------------------------------
+
+#ifdef ComponentVersion
+#component "L_UksMTO"
+#end
+
+VipInterface NaklPsd
+  Licensed( free )
+  Parameters( pwMode: word; pcRec: comp );
+
+VipInterface ProjectLots
+  Licensed( free )
+  Parameters( pwMode: word; pcRec: comp );
+
+VipInterface PsdBooks
+  Licensed( free )
+  Parameters( pwMode: word; pcRec, pcDesigner, pcProjLot, pcObject: comp );
+
+VipInterface PsdTzDocs
+  Licensed( free )
+  Parameters( pwMode: word; pcRec, pcObject, pcDesigner: comp );
+
+VipInterface ContrIspDog
+  Licensed( free )
+  Parameters(  NReport: word;  pNRec: comp );
+
+VipInterface RequestDocs
+  Licensed( free )
+  Parameters( pwMode: word; pcRec: comp );
+
+VipInterface iGetKindVagon
+  Licensed( free )
+  Parameters(pNRec: comp );
+
+VipInterface iImportAkt
+  Licensed( free );
+
+VipInterface iImportOtgr
+  Licensed( free );
+
+VipInterface iImportRZD
+  Licensed( free );
+
+VipInterface iImportCES
+  Licensed( free );
+
+VipInterface iImportStroy
+  Licensed( free );
+
+VipInterface iJournalOtgr
+  Licensed( free )
+  Parameters(c1 : comp;  wMode : word;  bPick : boolean);
+
+VipInterface iMakeDocsMTO
+  Licensed( free )
+  Parameters(wType: word );
+
+VipInterface iNastrImport
+  Licensed( free )
+  Parameters(NReport: word; pNRec : comp);
+
+VipInterface iImportVed
+  Licensed( free )
+  Parameters(wType : word);
+
+VipInterface ReestrPD
+  Parameters( wDirect, wMode: word; cRec: comp )
+  Licensed( free );
+
+VipInterface GetSoprHozDoc
+  Parameters( wMode: word; prmTiDkGal: word;  prmSoprHoz: comp)
+  Licensed( free );
+
+VipInterface UserPodr
+  Parameters (cPodr : comp; sPodr: string)
+  Licensed( free );
+
+VipInterface UserAvailStatus
+  Parameters (Checks : LongInt)
+  Licensed( free );
+
+VipInterface GetPersonsTNF
+  Parameters( wMode: word; cRec: comp )
+  Licensed( free );
+
+VipInterface PodrTNF
+  Parameters( wMode: word; cRec: comp )
+  Licensed( free );
+
+VipInterface  RepOfScanCopy
+  Licensed( free );
+
+VipInterface ReestrDogDSD
+  Licensed( free )
+  Parameters(NReport: word);
+
+VipInterface RepAnPeregruz
+  Licensed( free )
+  Parameters(NReport: word; pNRec: comp );
+
+VipInterface RepPlanOtg
+  Licensed( free )
+  Parameters(  NReport: word;  pNRec: comp );
+
+VipInterface RepOtgSht
+  Licensed( free )
+  Parameters(  NReport: word;  pNRec: comp );
+
+VipInterface RepGraphPriem
+  Licensed( free )
+  Parameters(  NReport: word;  pNRec: comp );
+
+VipInterface RepJournUchGruz
+  Licensed( free )
+  Parameters(  NReport: word;  SkPr: word );
+
+VipInterface SpDogPost
+  Parameters( pDog: comp; bEditRep : boolean; RepN : word; IsSogl : boolean)
+  Licensed( free );
+
+VipInterface CReport_UKS
+  Licensed (FREE)
+  Parameters( NReport : word; pNRec   : comp );
+
+VipInterface  RepOfDelayDoc
+  Licensed( free );
+
+VipInterface RepStateProcessReestrPD
+  licensed (FREE);
+
+VipInterface SetupRepStateProcessReestrPD
+  licensed (FREE)
+  Parameters (m_cChoiceNrec : comp);
+
+VipInterface RepStateProcessDocVendor
+  licensed (FREE);
+
+VipInterface SetupRepStateProcessDocsVendor
+  licensed (FREE)
+  Parameters (m_cChoiceNrec : comp);
+
+VipInterface RepReestrPsd
+  licensed ( free );
+
+VipInterface RepRequestDocs
+  licensed ( free );
+
+VipInterface RepReestrTZ
+  licensed ( free )
+  Parameters ( pwMode: word );
+
+VipInterface iSCanCopyOsn
+  licensed ( free )
+  Parameters ( pNRec : comp; wParam : word);
+
+VipInterface RepDelivery
+  licensed ( free );
+
+VipInterface ControlOtpMTR
+  licensed (free);
+
+VipInterface ControlAktPos
+  licensed (free);
+
+VipInterface ControlNaklPos
+  licensed (free);
+
+VipInterface RepSvodPosPZS
+  Licensed( free );
+
+VipInterface RepVedUchTr
+  Licensed( free )
+  Parameters(  NReport: word;  pNRec: comp );
+
+VipInterface RepFactOtgr
+  Licensed( free )
+  Parameters(  NReport: word;  pNRec: comp );
+
+VipInterface RepLstCoachTube
+  Licensed( free )
+  Parameters(  NReport: word;  pNRec: comp );
+
+VipInterface RepPlanOtgPrm
+  Licensed( free )
+  Parameters(  NReport: word;  pNRec: comp );
+
+VipInterface CloseDog
+  licensed ( UksMTO );
+
+VipInterface Otgr_FillCheck
+  licensed ( free )
+  Parameters ( NReport: word );

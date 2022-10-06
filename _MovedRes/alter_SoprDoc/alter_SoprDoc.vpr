@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>alter_SoprDoc</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="\\10.2.1.151\Galaktika\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.33.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\Viper 5.5\bin\5.5.30.0\Source\*
+					\\10.2.1.151\Galaktika\res\src\inc\*
+					\\10.2.1.151\Galaktika\res\SourceGal\*
+					..\..\..\FRM\AllGal.FrmSrc\*
+					..\MercuryPRJ\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_SoprBase.res
+					$[GalExe]\L_SoprDoc.res
+					$[GalExe]\L_Common.res
+				</ResourceList>
+				<OutputResource>..\..\alter_SoprDoc_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:RUMOW-VMGAL01.atlantic.grupa[1997]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>172.16.21.225:55555</HwKeyDirectory>
+					<LicFileName>..\config\prod\vip.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="alter_SoprDoc.prj" PosX="26" PosY="20" OpenEditor="True"/>
+			<File Name="alter\alter_SoprDoc.vip" PosX="35" PosY="24" OpenEditor="True" Active="True"/>
+			<File Name="CNF\L_SOPRDOC_SOPRDOC.cnf" PosX="35" PosY="10" OpenEditor="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="alter_SoprDoc.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\alter_SoprDoc\alter_SoprDoc.prj" DateTimeStart="43646,4140963889" DateTimeCompile="0,000625833337835502" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект IVIPIFCIFC ATLANTIC::EXPORTREESTRCERTIFPDF, описывающий интерфейс вызова. Параметры вызова для ATLANTIC::EXPORTREESTRCERTIFPDF не проверены." SourceFileName="C:\GALAKTIKA\RES\SRC\ALTER_SOPRDOC\ALTER\alter_SoprDoc.vip" SourceLine="31" SourceColumn="17"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект IVIPIFCIFC ATLANTIC::EXPORT_SKIF_KARGO, описывающий интерфейс вызова. Параметры вызова для ATLANTIC::EXPORT_SKIF_KARGO не проверены." SourceFileName="C:\GALAKTIKA\RES\SRC\ALTER_SOPRDOC\ALTER\alter_SoprDoc.vip" SourceLine="39" SourceColumn="17"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект IVIPIFCIFC ATLANTIC::REPORTMASSA_DO_NAKL, описывающий интерфейс вызова. Параметры вызова для ATLANTIC::REPORTMASSA_DO_NAKL не проверены." SourceFileName="C:\GALAKTIKA\RES\SRC\ALTER_SOPRDOC\ALTER\alter_SoprDoc.vip" SourceLine="23" SourceColumn="17"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="30.06.2019 9:57:12"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<MarkerList>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
+		</MarkerList>
+	</ProjectManager>
+</Viper>

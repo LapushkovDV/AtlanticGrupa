@@ -1,0 +1,15 @@
+#ifdef ComponentVersion
+#component "L_NIOKR"
+#end
+
+VipInterface GetStZatrTheme    licensed (FREE)  Parameters(wMode, wParam: word; pStage, pStZatr: comp);
+VipInterface GetExecutorTheme  licensed (FREE)  Parameters(wMode, wParam: word; pStage, pExecutor: comp);
+VipInterface GetTheme          licensed (FREE)  Parameters(wMode, wParam: word; pTheme, pStage: comp);
+VipInterface iActPerRaspr      licensed (NIOKR) Parameters(pAct: comp);
+VipInterface iThemePKPInfo     licensed (NIOKR) Parameters(pCalPlan: comp);
+VipInterface iFOT_Raspr        licensed (NIOKR) Parameters(pAct: comp);
+VipInterface rTheme_Kontr      licensed (NIOKR) Parameters(pDogovor: comp);
+VipInterface rTheme_Plan       licensed (NIOKR) Parameters(pDogovor: comp);
+VipInterface iCFO_Req          licensed (NIOKR) Parameters(pRec : Comp);
+VipInterface GtcgKau_WorkTheme licensed(FREE) Parameters(wIntMode, wKau_Real : word; cKau : comp; TempMarker: longint);
+VipInterface GtcgKau_WorkStage licensed(FREE) Parameters(wIntMode, wKau_Real : word; cKau : comp; TempMarker: longint);

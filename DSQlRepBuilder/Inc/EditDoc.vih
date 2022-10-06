@@ -1,0 +1,59 @@
+//------------------------------------------------------------------------------
+//                                                      (c) Корпорация ГАЛАКТИКА
+//------------------------------------------------------------------------------
+// Галактика 8.1 - Бухгалтерский контур
+// Запуск интерфейсов редактирования документов
+//------------------------------------------------------------------------------
+
+#ifndef _EditDoc_vih_Included
+#define _EditDoc_vih_Included
+
+#ifdef ComponentVersion
+#Component "F_Common"
+#end
+
+!-------------------------------------------------------------------------------
+#doc
+Запуск интерфейсов редактирования документов.
+#end
+ObjInterface ObjEditDoc;
+  //----------------------------------------------------------------------------
+  #doc
+  Редактирование ДО.
+  #end
+  procedure RunEditBaseDoc (VidDoc   : word;   // BaseDoc.VidDoc
+                            cBaseDoc : comp    // BaseDoc.NRec
+                           );
+  //----------------------------------------------------------------------------
+  #doc
+  Редактирование первичного документа.
+  #end
+  procedure RunEditHozDoc  (CurTbl,            // coTable - (в реализации используется только coOborot)
+                            TipGal,            // TiDkGal
+                            CurTip    : word;  // TiDk
+                            CurRec    : comp   // NRec записи
+                           );
+!-------------------------------------------------------------------------------
+end;
+!-------------------------------------------------------------------------------
+#doc
+Запуск интерфейсов редактирования документов в не модальном режиме.
+#end
+ObjInterface ObjEditDocNoModal;
+  procedure RunEditHozDocNoModal
+                           ( 
+                             CurTbl,            // coTable - (в реализации используется только coOborot)
+                             TipGal,            // TiDkGal
+                             CurTip    : word;  // TiDk
+                             CurRec    : comp   // NRec записи
+                           );
+  procedure RunEditHozDocNoModalEx(TipGal : word; CurRec : comp);
+  #doc
+  Редактирование первичного документа вне зависимости от таблицы и подтипа
+  #end
+  procedure RunEditHozDocEx(TipGal : word; CurRec : comp);
+end;
+!-------------------------------------------------------------------------------
+VipInterface EditDoc implements ObjEditDoc, ObjEditDocNoModal #Licensed_Free;
+!-------------------------------------------------------------------------------
+#end // _EditDoc_vih_Included

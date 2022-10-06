@@ -1,0 +1,478 @@
+#component 'droga'
+vipinterface importZayavkaExcel licensed(free);
+
+interface importZayavkaExcel 'Импорт заявки на поставку.';
+const
+  LogPath ='C:\TEMP\ImporOrderLog.txt';
+end;
+
+table struct tSpec (
+mcnrec    : comp,
+cspdog    : comp,
+otpednrec : comp,
+Price     : double,
+Kolvo     : double,
+cmased    : comp,
+netto     : double,
+mtara     : double,
+procub    : double
+)
+with index (
+ tSpec00 = mcnrec
+);
+
+var
+SourcePath:string; //путь к файлу-источнику
+//Переменные заголовка заявки
+zDate       : date  ;
+zPostNrec   : comp  ;
+zPostINN    : string;
+zPostBank   : comp  ;
+zGrOtprNrec : comp  ;
+zGrOtprINN  : string;
+zPlatNrec   : comp  ;
+zPlatINN    : string;
+zPlatBank   : comp  ;
+zGrPolNrec  : comp  ;
+zGrPolINN   : string;
+zAvtoNrec   : comp  ;
+zAvtoName   : string;
+zAvtoINN    : string;
+zDogovorNrec: comp  ;
+zDogMainNrec: comp  ;
+zDogovorTidk: word;
+zDogovorNom : string;
+zDogovorDat : date  ;
+//Спецификация заявки
+OneRec:Record
+				 Artikul   : string;
+				 Name      : string;
+				 OtpedName : string;
+				 OtpedKoef : double;
+				 Kolvo     : double;
+       End;//record
+
+NRow, SPCount : integer;
+sTmp : string;
+cTmp, cTmp1, cTmp2 : comp;
+vPrice :double;
+AttrnamNrec : comp;
+AllOK, vGetAnotherDogovor : boolean;
+vStatus : comp;
+
+CREATE VIEW AS SELECT *
+FROM tSpec,
+     lastnumd, basedoc,stepdoc,spstep,ttndoc,attrval,soprhoz,
+	  katmc,katotped,attrnam, katorg, dogovor, spdocs, katnotes,
+	  katbank
+;
+
+HANDLEEVENT
+cmInit:
+{
+ AllOK := true;
+ SourcePath := '';
+ SourcePath := GetFileName('*.xls', 'Выберите файл-источник для импорта заявки');
+IF SourcePath = '' THEN
+{
+ CloseInterface(cmCancel);
+}
+ELSE //Если файл выбран
+{
+ deleteFile  (logPath);
+ LogStrToFile(logPath,'                  Журнал импорта заявки на продажу');
+ LogStrToFile(logPath, '#'+sgettune('USER.DESCR')+'#'+datetostr(cur_date, 'DD.MM.YYYY')+'#'+timetostr(cur_time, 'HH:NN:SS')+'#');
+ LogStrToFile(logPath,'-----------------------------------------------------------');
+
+ If Not xlIsExcelValid xlCreateExcelWithTemplate(SourcePath, False);
+ xlSetActiveWorkBookByName('Data');
+ xlSetActiveSheetByName('Data');
+ StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Выполняется чтение файла-источника', 0);
+ //Ищем attrnam
+ IF GetFirst fastfirstrow attrnam where ((word(1150)==attrnam.wtable and 'НАИМЕНОВАНИЕ АВТОПРЕДПРИЯТИЯ' == attrnam.name)) = tsOK THEN AttrnamNrec := attrnam.nrec
+ ELSE Message('Не найден внешний атрибут "НАИМЕНОВАНИЕ АВТОПРЕДПРИЯТИЯ"');
+
+ xlGetCellValue(8 , 2, sTMP       ); zDate := StrToDate(sTMP,'DD.MM.YYYY');
+ xlGetCellValue(10, 4, zPostINN   );
+ xlGetCellValue(11, 4, zGrOtprINN );
+ xlGetCellValue(12, 4, zPlatINN   );
+ xlGetCellValue(13, 4, zGrPolINN  );
+ xlGetCellValue(14, 4, zAvtoINN   );
+ xlGetCellValue(16, 2, zDogovorNom);
+ xlGetCellValue(16, 3, sTMP       ); zDogovorDat := StrToDate(sTMP,'DD.MM.YYYY');
+
+ IF GetFirst fastfirstrow katorg where ((zPostINN  ==katorg.unn)) = tsOK THEN
+ {
+  zPostNrec  := katorg.nrec;
+  IF GetFIrst fastfirstrow katbank where ((zPostNrec == katbank.corg and 1 == katbank.aktiv)) = tsOK
+  THEN zPostBank := katbank.nrec;
+ }
+ ELSE
+ {
+  AllOK := false;
+  LogStrToFile(LogPath,'Не найдена организация с ИНН '+zPostINN+'.');
+ }
+ IF GetFirst fastfirstrow katorg where ((zGrOtprINN==katorg.unn)) = tsOK THEN zGrOtprNrec:= katorg.nrec
+ ELSE
+ {
+  AllOK := false;
+  LogStrToFile(LogPath,'Не найдена организация с ИНН '+zGrOtprINN+'.');
+ }
+ IF GetFirst fastfirstrow katorg where ((zPlatINN  ==katorg.unn)) = tsOK THEN
+ {
+  zPlatNrec  := katorg.nrec;
+  IF GetFIrst fastfirstrow katbank where ((zPlatNrec == katbank.corg and 1 == katbank.aktiv)) = tsOK
+  THEN zPlatBank := katbank.nrec;
+ }
+ ELSE
+ {
+  AllOK := false;
+  LogStrToFile(LogPath,'Не найдена организация с ИНН '+zPlatINN+'.');
+ }
+ IF GetFirst fastfirstrow katorg where ((zGrPolINN ==katorg.unn)) = tsOK THEN zGrPolNrec := katorg.nrec
+ ELSE
+ {
+  AllOK := false;
+  LogStrToFile(LogPath,'Не найдена организация с ИНН '+zGrPolINN+'.');
+ }
+ zAvtoName := '';
+ IF GetFirst fastfirstrow katorg where ((zAvtoINN  ==katorg.unn)) = tsOK THEN
+ {
+  zAvtoNrec  := katorg.nrec;
+  zAvtoName := katorg.name;
+ }
+ ELSE
+ {
+  AllOK := false;
+  LogStrToFile(LogPath,'Не найдена организация с ИНН '+zAvtoINN+'.');
+ }
+
+ zDogovorNrec := 0;
+ zDogMainNrec := 0;
+ zDogovorTidk := 0;
+ IF zDogovorNom = '' THEN
+ {
+  DO
+  {
+   vGetAnotherDogovor := false;
+   RunInterface('L_DOGOVOR::GETSOMEDOGOVOR',0,0FFFFh,1,1,false,zDogovorNrec);
+   IF zDogovorNrec <>0 THEN
+   {
+    IF GetFirst fastfirstrow Dogovor where ((zDogovorNrec==dogovor.nrec)) = tsOK {}
+	 IF zPlatNrec = dogovor.corg THEN zDogovorTidk:= dogovor.tidk
+    ELSE
+	 {
+	  Message('Контрагент выбранного Вами договора'+chr(13)+'не совпадает с контрагентом в заявке!'+chr(13)+'Выберите другой договор или откажитесь от выбора (Esc в списке договоров).');
+	  zDogovorNrec := 0;
+	  vGetAnotherDogovor := true;
+    }
+   }
+  }
+  WHILE vGetAnotherDogovor
+ }//Договор в заявке не указан
+ ELSE
+ {
+  IF GetFirst fastfirstrow dogovor where ((zDogovorDat==dogovor.ddoc and zDogovorNom == dogovor.nodoc and zPlatNrec==dogovor.corg (noindex))) = tsOK
+  THEN
+  {
+   IF zPlatNrec = dogovor.corg THEN  //если в найденном договоре тот же контрагент, что и плательщик в заявке
+	{zDogovorNrec := dogovor.nrec; zDogovorTidk:= dogovor.tidk;}
+	ELSE
+	{
+	 Message('Не совпадают контрагент по договору и плательщик, указанный в заявке!'+chr(13)+'Операция отменена');
+	 AllOK := false;
+	 zDogovorNrec := 0;
+	}//если контрагент не совпадает с плательщиком по заявке
+  }//нашелся договор по номеру и дате
+  ELSE
+  {
+   AllOK := false;
+   LogStrToFile(LogPath,'Не найден договор (соглашение) № '+zDogovorNom+ datetostr(zDogovorDat, ' от DD.MM.YYYY'));
+  }//не нашелся договор по номеру и дате
+ }//Договор указан в заявке
+ //Если найден договор, копируем из него ссылки на банки.
+ IF zDogovorNrec <>0 THEN
+ {
+  IF dogovor.cbankpol  <> 0 THEN zPostBank := dogovor.cbankpol;
+  IF dogovor.cbankplat <> 0 THEN zPlatBank := dogovor.cbankpol;
+ }
+
+
+//Если все пока в порядке, читаем спецификацию
+IF AllOK THEN
+{
+ NRow := 18;
+ DO
+ {
+  IF NOT NextVisual THEN
+  {
+   xlKillExcel;
+   DELETE ALL tSpec;
+   LogStrToFile(LogPath,'Операция прервана пользователем на этапе чтения спецификации.');
+   Break;
+  }
+  NRow:=NRow+1;
+  xlGetCellValue(NRow, 1, OneRec.Artikul);
+  IF OneRec.Artikul <> '' and OneRec.Artikul <> 'Итого' THEN
+  {
+   xlGetCellValue(NRow, 2, OneRec.Name);
+   xlGetCellValue(NRow, 3, OneRec.OtpedName);
+   xlGetCellValue(NRow, 4, OneRec.OtpedKoef);
+   xlGetCellValue(NRow, 5, OneRec.Kolvo);
+   IF OneRec.Kolvo <>0 THEN
+   {
+    cTmp:=0; cTmp1 := 0; cTmp2:=0; vPrice := 0;
+    IF GetFirst fastfirstrow katmc where ((OneRec.Artikul == katmc.barkod)) = tsOK
+    {
+     cTmp:=katmc.nrec;
+     IF GetFirst fastfirstrow katotped where ((cTmp == katotped.cmcusl and 1 == katotped.prmc and OneRec.OtpedName == katotped.name and OneRec.OtpedKoef == katotped.koef (noindex))) = tsOK
+     	  THEN cTmp1 := katotped.nrec ELSE AllOK:=false;
+ 	  IF AllOK THEN
+ 	  {
+      IF zDogovorNrec <> 0 THEN
+      {
+       zDogMainNrec := dogovor.cdogovor;
+       IF GetFirst fastfirstrow spdocs where ((zDogovorTidk==spdocs.tidk and zDogovorNrec == spdocs.cdoc and 1 == spdocs.prmc and cTmp == spdocs.cmcusl (noindex))) = tsOK
+       {
+        cTmp2 := spdocs.nrec;
+        IF GetFirst fastfirstrow katotped where ((spdocs.cotped==katotped.nrec))=tsOK THEN
+        {
+         vPrice := spdocs.price/katotped.koef; //получили цену минимальной единицы товара
+        }//getfirst katotped spdocs
+        vPrice := vPrice * OneRec.OtpedKoef; //Получили цену упаковки.
+       }//найдена позиция спецификации договора
+       ELSE
+		 {
+		  cTmp:=0; cTmp1:=0; cTmp2 :=0; vPrice := 0;
+	    }//если не найдена такая позиция в договоре
+      }//если был задан договор
+     }//aAllOK
+    }//katmc
+
+    IF cTmp = 0 THEN LogStrToFile(LogPath,'Не найдена МЦ № ' + OneRec.Artikul + '.')
+    ELSE
+	 {
+	  IF cTmp1 = 0 THEN LogStrToFile(LogPath,'Не найдена единица измерения МЦ № ' + OneRec.Artikul + '.');
+	  IF cTmp2 = 0 and zDogovorNrec <>0 THEN LogStrToFile(LogPath,'Не найдена позиция спецификации договора для МЦ № ' + OneRec.Artikul + '.');
+    }
+
+    IF cTmp<>0 and cTmp1<>0 THEN
+	 {
+	  INSERT tSpec
+        SET tSpec.mcnrec    := cTmp,
+            tSpec.cspdog    := cTmp2,
+	 	      tSpec.otpednrec := cTmp1,
+ 	 	      tSpec.Price     := vPrice,
+ 	 	      tSpec.Kolvo     := OneRec.Kolvo,
+ 	 	      tSpec.cmased    := katmc.cmased,
+ 	 	      tSpec.netto     := katmc.massa,
+ 	 	      tSpec.mtara     := katmc.mtara,
+ 	 	      tSpec.ProcUb    := katmc.Normub
+     ;//insert
+    }//Если все в порядке
+   }//Непустое количество
+  }//Непустой Артикул
+ }
+ WHILE OneRec.Artikul<>'';
+}//allok конец чтения спецификации
+
+ xlKillExcel;
+ StopVisual('',0);
+
+IF NOT AllOK THEN
+{
+ LogStrToFile(LogPath,'-----------------------------------------------------------');
+ LogStrToFile(LogPath,'Операция импорта отменена.')
+}
+ELSE
+{//НАЧИНАЕМ НЕПОСРЕДСТВЕННО ИМПОРТ
+ StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Выполняется импорт документа', 0);
+ //Увеличиваем последний номер ДО
+ IF GetFirst fastfirstrow lastnumd where ((word(101)==lastnumd.lndtype)) = tsOK
+ {
+  lastnumd.lndnum := NextNumStr(Lastnumd.lndnum);
+  UPDATE CURRENT lastnumd;
+ }//getfirst lastnumd
+ //Ищем ссылку на статус ДО
+ IF GetFirst fastfirstrow katnotes where ((word(40)==katnotes.viddoc and word(2)==katnotes.status)) = tsOK THEN vStatus := katnotes.nrec ELSE Message('Не найден статус "исполняемый"!');
+ //Вставляем ДО
+ INSERT basedoc
+    SET basedoc.descr    := sgettune('USER.DESCR'),
+        basedoc.desgr    := sgettune('USER.DESGR'),
+	     basedoc.corg     := zPlatNrec,
+	     basedoc.cbank    := zPlatBank,
+	     basedoc.cmybank  := zPostBank,
+        basedoc.viddoc   := word(201),
+        basedoc.nodoc    := lastnumd.lndnum,
+        basedoc.dform    := zDate,
+        basedoc.ddoc     := zDate,
+        basedoc.yeardoc  := Year(zDate),
+        basedoc.koldn    := 3,
+        basedoc.dend     := Add_Day(zDate,3),
+        basedoc.cgrpol   := zGrPolNrec,
+        basedoc.cgrotpr  := zGrOtprNrec,
+        basedoc.cdogovor := if(zDogMainNrec <>0,zDogMainNrec,zDogovorNrec),
+        basedoc.cappdogovor := if(zDogMainNrec <>0,zDogovorNrec,0),
+        basedoc.status   := word(2),
+        basedoc.cnote    := katnotes.nrec,
+        basedoc.tipmoney := 1,
+        basedoc.direct   := 1,
+        basedoc.name     := 'Импорт. из '+SourcePath,
+        basedoc.vhodnal  := 1 //налоги входят в цену МЦ
+ ;//basedoc
+ IF RowCount =0 THEN AllOK := false;
+
+ IF AllOK THEN
+ {
+  INSERT stepdoc
+     SET stepdoc.cbasedoc := basedoc.nrec,
+         stepdoc.nstep    := 1,
+         stepdoc.dstart   := basedoc.ddoc,
+         stepdoc.dend     := basedoc.dend,
+         stepdoc.status   := basedoc.status
+  ;//stepdoc
+  IF RowCount =0 THEN AllOK := false;
+ }
+
+ //Вставляем хозяйственную операцию по ДО
+ IF AllOK THEN
+ {
+  INSERT soprhoz
+     SET soprhoz.cdogovor := if(zDogMainNrec <>0,zDogMainNrec,zDogovorNrec),
+         soprhoz.cappdogovor := if(zDogMainNrec <>0,zDogovorNrec,0),
+         soprhoz.cstepdoc := stepdoc.nrec,
+         soprhoz.csoprdoc := basedoc.nrec,
+         soprhoz.datob    := basedoc.ddoc,
+         soprhoz.tipdoc   := 51,
+         soprhoz.tidkgal  := 51,
+         soprhoz.nodoc    := basedoc.nodoc,
+         soprhoz.descr    := basedoc.descr,
+         soprhoz.desgr    := basedoc.desgr
+  ;//soprhoz
+ }
+
+ IF AllOK and zAvtoNrec <> 0 THEN
+ {
+  INSERT ttndoc
+     SET ttndoc.wtable  := word(1102),
+         ttndoc.tidk    := 0,
+         ttndoc.cdoc    := basedoc.nrec,
+         ttndoc.corgavt := zAvtoNrec
+  ;//ttndoc
+  IF RowCount <>0
+  INSERT attrval
+     SET attrval.wtable   := word(1150),
+         attrval.crec     := ttndoc.nrec,
+         attrval.cattrnam := AttrnamNrec,
+         attrval.vstring  := zAvtoName
+  ;//attrval
+ }//AllOK and zAvtoNrec <>0
+
+ //Вставляем спецификацию ДО
+ IF AllOK THEN
+ {
+  NRow := 0;
+  _LOOP tSpec
+  {
+   IF NOT NextVisual THEN
+	{
+	 LogStrToFile(LogPath,'Операция прервана пользователем на этапе импорта спецификации.');
+	 Break;
+   }
+   IF tSpec.mcnrec <> 0 and tSpec.otpednrec <> 0 THEN
+   {
+    NRow := NRow + 1;
+    INSERT spstep
+       SET spstep.npp      := NRow,
+           spstep.prmc     := 1,
+           spstep.cmcusl   := tSpec.mcnrec,
+           spstep.cotped   := tSpec.otpednrec,
+           spstep.cdogovor := if(zDogMainNrec <>0,zDogMainNrec,zDogovorNrec),
+           spstep.cappdogovor := if(zDogMainNrec <>0,zDogovorNrec,0),
+           spstep.cspdocs  := tSpec.cspdog,
+           spstep.kol      := if(tSpec.procub<100,tSpec.kolvo*(1-tSpec.procub/100),tSpec.kolvo),
+           spstep.procub   := if(tSpec.procub<100,tSpec.procub,0),
+           spstep.cmased   := tSpec.cmased,
+           spstep.netto    := tSpec.netto,
+           spstep.mtara    := tSpec.mtara,
+           spstep.price    := tSpec.price,
+           spstep.ddoc     := basedoc.ddoc,
+           spstep.cstepdoc := stepdoc.nrec,
+           spstep.kolskl   := tSpec.kolvo
+    ;//insert spstep
+   }//mcnrec<>0
+  }//loop tspec
+ }//AllOK спецификация
+ DELETE ALL tSpec;
+
+ IF AllOK THEN
+ {
+  logStrToFile(logPath,'-----------------------------------------------------------');
+  logStrToFile(logPath,'Импортирован ДО на продажу № '+ basedoc.nodoc+ datetostr(basedoc.ddoc, ' от DD.MM.YYYY'));
+  logStrToFile(logPath,'');
+  logStrToFile(logPath,'-----------------------------------------------------------');
+  if zDogovorNrec = 0 {
+    logStrToFile(LogPath,'Не забудьте ввести цены позиций спецификации и при необходимости');
+    logStrToFile(LogPath,'выполнить пересчет сумм и налогов по документу, для чего выполните действия:');
+  }
+  else {
+    logStrToFile(LogPath,'Не забудьте выполнить пересчет сумм и налогов по документу, для чего выполните действия:');
+  }
+  logStrToFile(LogPath,'1. Закройте окно редактирования документа.'                              );
+  logStrToFile(LogPath,'2. В списке ДО, убедившись, что курсор установлен на данном документе,'  );
+  logStrToFile(LogPath,'   вызовите локальное меню щелчком правой кнопки мыши и выберите команду');
+  logStrToFile(LogPath,'   "Пересчет сумм и налогов по документам".'                             );
+  logStrToFile(LogPath,'3. Подтвердите намерение пересчитать суммы (нажмите "Да").'              );
+  logStrToFile(LogPath,'4. Отметьте пункт "только текущего документа" и нажмите "Продолжить".'   );
+  logStrToFile(LogPath,'');
+  logStrToFile(LogPath,'Чтобы стало снова доступно меню системы, закройте окно редактирования документа и список документов.');
+ }
+ StopVisual('',0);
+}//AllOK импорт
+ ProcessText(LogPath,vfDefault OR vfRunModal,'Журнал импорта заявки. ESC - закрыть.');
+ IF AllOK THEN RunInterface('L_BASEDOC::VSCHET',basedoc.nrec);
+}//Если файл выбран
+ IF AllOK THEN CloseInterface(cmDefault)
+          ELSE CloseInterface(cmCancel);
+}//cmInit
+end;//HandleEvent
+end.//interface
+
+
+//////////////////////////////////////////////
+//
+//  пункт меню в отчетах пользовател
+//
+#component 'F_UserReport'
+#include UserReport.vih
+vipInterface UserReport_DrogaZayavka implements IUserReport licensed(free);
+
+Interface UserReport_DrogaZayavka;
+
+create view;
+procedure Run;
+begin
+RunInterface('droga::importZayavkaExcel');
+end;
+function GetReportName: string;
+begin
+  GetReportName := 'Импорт заявки на поставку';
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+end;
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'SELL';
+    2 : VisibleInModule := 'DOGOVOR';
+  end;
+end;
+!-------------------------------------------------------------------------------
+end.

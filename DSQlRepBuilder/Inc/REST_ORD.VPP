@@ -1,0 +1,315 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Логистика
+// пересчет LIFO/FIFO цен в расходных ордерах
+//******************************************************************************
+
+Procedure InsertPick555(cRec_: comp);
+{
+  if GetFirst Pick555 where (( 555 == Pick555.wList AND cRec_ == Pick555.cRec)) = tsOk
+    Exit;
+
+  ClearBuffer(#Pick555);
+
+  Pick555.wList := 555;
+  Pick555.cRec := cRec_;
+
+  if insert current Pick555 <> tsOk
+    {
+      frmErr.Write('! Возможна ошибка модификации суммы в Хозоперациях (insert Pick555)');
+      frmErr.Write('! Необходимо проверить Хозоперации по ордерам');
+    }
+}
+
+//******************************************************************************
+
+Procedure SET_NEWSPORDER;
+{
+  rSpOrder.SP          := SkPr;
+  rSpOrder.VidOrder    := 1;  // расходный
+  rSpOrder.Kol         := 0; // будет заполнено в дальнейшем
+
+  #ifNdef _NalUch_
+  rSpOrder.SrPrice     := SpOrder.SrPrice;
+
+  if (SpOrder.VPrice = 0)
+    rSpOrder.VPrice    := oValFunc.GetBaseCurrency(comp(0), SpOrder.SrPrice, SpOrder.dOrd);
+  else
+    rSpOrder.VPrice    := oValFunc.GetBaseCurrency(SpOrder.cVal, SpOrder.VPrice, SpOrder.dOrd);
+
+  rSpOrder.rSrPrice    := rSpOrder.SrPrice;
+  rSpOrder.rVPrice     := rSpOrder.VPrice;
+  rSpOrder.cVal        := oValFunc.ValBase;
+  #end
+
+  rSpOrder.priceN      := SpOrder.priceN;
+  rSpOrder.SummN       := SpOrder.SummN;
+  rSpOrder.Empty       := 0; // расходный ордер
+  rSpOrder.Ostatok     := 0; // расходный ордер
+  rSpOrder.cSpOrder    := SpOrder.NRec; // расх.орд.ссылаются на приходные
+  rSpOrder.cSpOrderN   := SpOrder.NRec; // расх.орд.ссылаются на приходные для НУ
+}
+
+//******************************************************************************
+
+Function DeleteDoo: boolean; // удаление всех дооценок, Печать всех дооценок в frm_doo
+var error_: boolean;
+{
+  DeleteDoo := FALSE;
+
+  flag_report := FALSE;
+  error_ := FALSE;
+
+  While GetFirst SklOrder where (( SkPr == SklOrder.SP AND
+                                   0    == SklOrder.vidOrder AND
+                                   4   <<= SklOrder.tipOrd AND
+                                   7   >>= SklOrder.tipOrd
+                                )) = tsOk
+    Do
+      {
+        if NOT NextVisual
+          Exit;
+
+        frm_doo.Write(SklOrder.nOrder);
+        frm_doo.Write(SklOrder.dOrd);
+
+        //спецификацию
+        While GetFirst SpOrder where ((SklOrder.NRec == SpOrder.cSklOrder)) = tsOk
+        Do
+          {
+            if NOT NextVisual
+              Exit;
+
+            if GetFirst KatMC where ((SpOrder.cMC == KatMC.NRec)) <>tsOk
+              {
+                KatMC.Name := 'NRec = '+string(SpOrder.cMC)+' (удалена)';
+                KatMC.barKod := '';
+              }
+
+            frm_doo.Write(KatMC.Name);
+            frm_doo.Write(KatMC.barKod);
+            frm_doo.Write(SpOrder.srPrice);
+            frm_doo.Write(SpOrder.vPrice);
+
+            flag_report := TRUE;
+
+            if oModifOrds.AnySpOrder_Delete(TypeSpOrder(SpOrder.buffer)) <>tsOk
+              {
+                error_ := TRUE;
+                Break;
+              } //удаление
+          }//w
+
+        frm_doo.PutEvent(feBreak);
+
+        if error_ = TRUE
+          Break;
+
+        if delete current SklOrder <>tsOk
+          {
+            error_ := TRUE;
+            Break;
+          }  //удаление
+      }//W
+
+  if error_
+    {
+      frmErr.Write('!');
+      frmErr.Write('! Не удалились ордера дооценки; возможны ОШИБКИ...');
+      frmErr.Write('!');
+      Exit;
+    }
+
+  DeleteDoo := TRUE;
+}
+
+//******************************************************************************
+
+Procedure ViewDoo;
+{
+  if (frm_doo.Error)
+    frm_doo.AbortForm;
+  else
+    if (flag_report)
+      frm_doo.ShowFile('Реестр удаленных ордеров дооценки МЦ (frm_doo.OUT)');
+    else
+      frm_doo.AbortForm;
+}
+
+//******************************************************************************
+
+Procedure ViewErr;
+{
+  if (frmErr.Error)
+    frmErr.AbortForm;
+  else
+    frmErr.ShowFile('Замечания по пересчету цен');
+}
+
+//******************************************************************************
+
+Function DeleteNotLink: boolean;
+{
+  DeleteNotLink := FALSE;
+
+  StartNewVisual( vtIndicatorVisual
+                , vfTimer+vfBreak+vfConfirm
+                , 'Пересчет цен'#13'поиск "отвязанных" спецификаций'
+                , RecordsInTable(#SpOrder)
+                );
+
+  wtmp1 := 0;
+  var markerOrd: TPtr;
+  markerOrd := InitMarker('', 8, 100, 100);
+
+  _LOOP SpOrder
+    {
+      if NOT NextVisual
+        {
+          StopVisual('', 0);
+          Exit;
+        }
+
+      if GetFirst SklOrder where ((SpOrder.cSklOrder == SklOrder.NRec)) = tsOk
+        Continue;
+
+      wtmp1 := wtmp1 + 1;
+      InsertMarker(markerOrd, SpOrder.cSklOrder);
+    }//_LOOP
+
+  StopVisual('', 0);
+
+  //удаление:
+  StartNewVisual( vtIndicatorVisual
+                , vfTimer+vfBreak+vfConfirm
+                , 'Пересчет цен'#13#3'удаление "отвязанных" спецификаций'
+                , GetMarkerCount(markerOrd)
+                );
+
+  var i, markerKol: longint;
+  var markerVal: comp;
+  markerKol := GetMarkerCount(markerOrd);
+
+  For (i := 0; i < markerKol; i++)
+    {
+      if NOT NextVisual
+        {
+          StopVisual('', 0);
+          Exit;
+        }
+
+      if GetMarker(markerOrd, i, markerVal)
+        While GetFirst SpOrder where (( markerVal == SpOrder.cSklOrder)) = tsOk
+          if oModifOrds.AnySpOrder_Delete(TypeSpOrder(SpOrder.buffer)) <>tsOk
+            {
+              StopVisual('', 0);
+              Exit;
+            }
+    }
+
+  DoneMarker(markerOrd, '');
+  StopVisual('', 0);
+
+  if (wtmp1>0)
+    frmErr.Write('!!! Было удалено не меньше ' + string(wtmp1) + ' "отвязанных" спецификаций складских ордеров');
+
+  DeleteNotLink := TRUE;
+}
+
+//******************************************************************************
+// модификация или добавление SoprHoz для SklOrder
+
+Procedure UpdateSoprHoz;
+{
+  // модификация SoprHoz относящегося к НАКЛАДНОЙ
+  if (GetFirst KatSopr where (( SklOrder.cSopr == KatSopr.NRec )) <> tsOk)
+    ClearBuffer(#KatSopr);
+  else
+    if (GetFirst SoprHoz where (( KatSopr.VidSopr == SoprHoz.TipDoc AND
+                                     KatSopr.NRec == SoprHoz.cSoprDoc )) = tsOk)
+      {
+        SoprHoz.SummaSp  := StRn;
+        SoprHoz.SumValSp := StVn;
+        SoprHoz.KodValSp := oValFunc.ValBase;
+        iSHoz.UpdByHan(SoprHoz.BufferP);
+      } // else Не добавляем запись ХОТЯ ОНА ДОЛЖНА БЫТЬ !!!!!!!!!!!!!!!
+
+  // модификация SoprHoz относящегося к ОРДЕРУ
+  PushPos(#SklOrder);
+  SklOrder.vidOrder := GetSoprHozTipDoc(SklOrder.SP, SklOrder.vidOrder);
+
+  if (GetFirst SoprHoz where (( SklOrder.NRec  == SoprHoz.cSoprDoc AND
+                             SklOrder.vidOrder == SoprHoz.tipDoc   )) = tsOk )
+    {
+      SoprHoz.SummaSp  := StRn;
+      SoprHoz.SumValSp := StVn;
+      SoprHoz.KodValSp := oValFunc.ValBase;
+      iSHoz.UpdByHan(SoprHoz.BufferP);
+    }
+  else
+    { // добавляем запись
+      ClearBuffer(#SoprHoz);
+      SoprHoz.NRec     := 0;
+      SoprHoz.FilialNo := lGetTune('Konsolid.FilialNo');
+      SoprHoz.cStepDoc := KatSopr.cStepDoc;
+      SoprHoz.Descr    := SklOrder.descr;
+      SoprHoz.DesGr    := SklOrder.desGr;
+      SoprHoz.prObor   := 0;
+      SoprHoz.cHozOper := 0;
+      SoprHoz.TipDoc   := GetSoprHozTipDoc(SklOrder.SP, SklOrder.VidOrder);
+      SoprHoz.TiDkGal  := SoprHoz.tipDoc;
+      SoprHoz.Direct   := if(SklOrder.VidOrder = 0, 1  , 2  );
+      SoprHoz.SummaSp  := StRn;
+      SoprHoz.SumValSp := StVn;
+      SoprHoz.KodValSp := oValFunc.ValBase;
+      SoprHoz.cSoprDoc := SklOrder.NRec;
+      SoprHoz.NoDoc    := SklOrder.nOrder;
+      SoprHoz.DatOb    := SklOrder.dOrd;
+      iSHoz.InsByHan(SoprHoz.BufferP);
+    }
+
+  PopPos(#SklOrder);
+}
+
+//******************************************************************************
+
+Function ReCalc_SoprHoz: boolean;
+{
+  ReCalc_SoprHoz := FALSE;
+
+  SetVisualHeader('Пересчет цен, исправление сумм в ХозОперациях');
+
+  _LOOP Pick where ((555 == Pick.wList))
+    {
+      if (NOT NextVisual)
+        Exit;
+
+      if GetFirst SklOrder where ((Pick.cRec == SklOrder.NRec)) <> tsOk
+        Continue;
+
+      if ((wHoz AND 2) <> 0) // проверяем принадлежит ли ордер отчетному месяцу
+         if ((SklOrder.dOrd < Date(                             1, month(dGetTune('TekMonth')), year(dGetTune('TekMonth')))) or
+             (SklOrder.dOrd > Date(Last_Day(dGetTune('TekMonth')), month(dGetTune('TekMonth')), year(dGetTune('TekMonth')))) )
+             AND (SklOrder.SP = 0)
+        Continue;
+
+      //сумма по ордеру
+      StRn := 0;
+      StVn := 0;
+
+      _LOOP SpOrder where (( SklOrder.NRec == SpOrder.cSklOrder ))
+        {
+          if (NOT NextVisual)
+            Exit;
+
+          StRn := StRn + SpOrder.SrPrice * SpOrder.Kol;
+          StVn := StVn + SpOrder.VPrice  * SpOrder.Kol;
+        }
+
+      UpDateSoprHoz; // Модификация SoprHoz: используются переменные StRn, StVn
+    }//_LOOP Pick
+
+  ReCalc_SoprHoz := TRUE;
+}
+
+//******************************************************************************

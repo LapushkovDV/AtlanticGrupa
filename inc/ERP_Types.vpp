@@ -1,0 +1,82 @@
+#ifndef __ERP_TYPES_VPP__
+#define __ERP_TYPES_VPP__
+
+Type
+  tERPFilter = record
+  //***************
+    JournalPos
+  , JournalPos2
+      : comp;
+  //***************
+    wMode
+  , wParam1
+  , wParam2
+  , wParam3
+  , wParam4
+  , wParam5
+  , wParam6
+  , wParam7
+  , wParam8
+  , wParam9
+  , wParam10
+  , wParam11
+      : word;
+  //***************
+    BegDate
+  , EndDate
+      : date;
+  //***************
+    pCalendar
+      : comp;
+  //***************
+  end;
+
+  tERPMnPlanFilter = record
+  //***************
+    JournalPos
+      : comp;
+  //***************
+    wMode
+      : word;
+  //***************
+    BegDate
+  , EndDate
+      : date;
+  //***************
+    TypePlan: word;
+  //***************
+    Status: comp;
+  //***************
+
+  end;
+
+  tERPStaffFilter = record
+  //***************
+    YearBeg
+  , MonthBeg
+  , YearEnd
+  , MonthEnd
+      : word;
+  //***************
+    TwoMarkers: string;
+  //***************
+    DateWork
+      : date;
+  end;
+
+  tERPZarFilter = record
+  //***************
+    YearBeg
+  , MonthBeg
+  , YearEnd
+  , MonthEnd
+      : word;
+  //***************
+    PerBeg
+  , PerEnd
+      : date;
+  end;
+
+#include OLAP.const
+
+#end // __ERP_TYPES_VPP__

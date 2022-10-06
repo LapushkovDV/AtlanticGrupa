@@ -1,0 +1,110 @@
+#component 'F_UserReport'
+tKatSoprContext menu
+{
+  - 'Пометить/снять пометку',  cmInvertCurRec ,'Поставить или снять пометку с текущей строки';
+  - 'Пометить все'          ,  cmMarkAllRecs  ,'Выделить все строки';
+  - 'Снять все пометки'     ,  cmUnMarkAllRecs,'Снять все выделение';
+}
+INTERFACE Droga_GetSoprForRaznos 'Выбор накладных для распределения' DoAccept, EscClose;
+CREATE VIEW
+VAR vDate:date; vcPerevoz : comp; KolSelected:integer;
+AS SELECT * FROM tKatSopr, tKatSopr tKatSoprSelected, katsopr,ttndoc, katorg
+WHERE
+((
+    word(201)    == katsopr.vidsopr
+and vDate        == katsopr.dsopr
+and word(1109)   == ttndoc.wtable
+and katsopr.nrec/== ttndoc.cdoc
+and vcPerevoz    == ttndoc.corgavt (noindex)
+and 'V'          == tKatSoprSelected.IsPicked
+and katsopr.corg == katorg.nrec
+));
+PARAMETERS vDate, vcPerevoz, KolSelected;
+
+BROWSE br1;
+  TABLE tKatSopr;
+  FIELDS
+    tKatSopr.IsPicked 'V'                 : [1] , protect;
+    tKatSopr.dsopr    'Дата'              : [10], protect;
+    tKatSopr.nsopr    'Номер'             : [10], protect;
+    tKatSopr.OrgName  'Контрагент'        : [30], protect;
+    tKatSopr.summa    'Сумма'             : [15,'\2p[|-]366`666`666`666`666.88'], protect;
+END;
+
+Function CountSelected : integer;
+VAR tmpvar:integer;
+{
+ tmpvar := 0;
+ _LOOP tKatSoprSelected
+ {  tmpvar := tmpvar +1; }
+ CountSelected := tmpvar;
+}//countselected
+
+HANDLEEVENT
+cmInit:
+{
+ StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Отбор накладных по дате и автопредприятию', 0);
+ DELETE ALL tKatSopr;
+ SET vcPerevoz := vcPerevoz;
+ SET vDate     := vDate;
+ _LOOP katsopr
+ {
+  IF NOT NextVisual THEN Break;
+  IF GetFirst fastfirstrow ttndoc = tsOK
+  IF GetFirst fastfirstrow katorg = tsOK
+  {
+   INSERT tKatSopr
+      SET tKatSopr.ispicked := 'V',
+          tKatSopr.nrec     := katsopr.nrec,
+          tKatSopr.dsopr    := katsopr.dsopr,
+          tKatSopr.nsopr    := katsopr.nsopr,
+          tKatSopr.OrgName  := katorg.name,
+          tKatSopr.summa    := katsopr.summa
+   ;
+  }//ttndoc, katorg
+ }//loop katsopr
+ ReScanPanel(tntKatSopr);
+ StopVisual('',0);
+}//cminit
+cmHotKeys:
+{
+ PutHotCommand(RunMenu('tKatSoprContext'));
+// GetFirst fastfirstrow tKatSopr;
+// RescanPanel(tntKatSopr);
+}
+
+cmInvertCurRec:
+{
+ tKatSopr.IsPicked := IF(tKatSopr.IsPicked=' ','V',' ');
+ UPDATE CURRENT tKatSopr;
+ RereadRecord(tntKatSopr);
+}//выделить текущую
+
+cmMarkAllRecs:
+{
+ UPDATE tKatSopr SET tKatSopr.IsPicked := 'V';
+ RereadRecord(tntKatSopr);
+}//пометить все
+
+cmUnMarkAllRecs:
+{
+ UPDATE tKatSopr SET tKatSopr.IsPicked := ' ';
+ RereadRecord(tntKatSopr);
+}//снять все пометки
+
+cmDefault:
+{
+ DELETE tKatSopr WHERE ((' '==tKatSopr.ispicked));
+ KolSelected := CountSelected;
+ Message('Выделено накладных: ' + KolSelected);
+ CloseInterface(cmDefault);
+}//cmdefault
+
+cmCancel:
+{
+ DELETE ALL tKatSopr;
+ KolSelected :=0;
+ CloseInterface(cmCancel)
+}//cmcancel
+END;//handleevent
+END.

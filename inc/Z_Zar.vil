@@ -1,0 +1,558 @@
+#ifdef ComponentVersion
+#component "z_zar"
+#end
+
+vipinterface formudOZ licensed(free) parameters(Prcex: comp; Glub: word; PrizSpr: word; GroupCateg: boolean; GroupSex: boolean);
+vipinterface AddToGr licensed(free) parameters(prTabn: longint; prLschet: comp; prCex: comp);
+vipinterface ArchiveDataOnPeriodChange licensed(free);
+vipinterface ArxTar1 licensed(free) parameters(prCex: comp; p2: double);
+vipinterface ArxTar  Parameters(pnrec: comp; prtabn: longint; prcex: comp; p1: comp; p2: double);
+vipinterface PickZarEntity licensed(free) Parameters(EntryPoint: integer; coVar: comp; ChoiceMode: word; myMarker: longint);
+vipinterface PickExtrKau licensed(free) parameters(wIntMode:word;cOtpDop: comp);
+vipinterface RAZB_TBL licensed(free) parameters(wIntMode: string);
+vipinterface buhsprav
+  licensed (menuzarp,menuzarp2);
+
+vipinterface ChangePeriod
+  licensed (menuzarp,menuzarp2);
+vipinterface checksch licensed(free);
+vipinterface cklvidud licensed(free);
+vipinterface CONSNAL licensed(free);
+vipinterface CONSNAL1 licensed(free);
+vipinterface ConvAddr licensed(free);
+vipinterface importOKATO licensed(free);
+vipinterface ConvATDCodes licensed(free);
+
+vipinterface ConVz licensed(free);
+vipinterface CostsAssignmentCodes licensed(free) parameters(Flags: word; List: objref);
+vipinterface CostSharing
+  licensed
+  (
+    #include CostSharing.lih
+  ) Parameters(PersonalAccount: comp; TemplateRef: comp);
+
+vipinterface CostSharingMistiming licensed(free) parameters(PeriodBeginning: date; LSNRec: comp);
+vipinterface CostSharingRep licensed(free) parameters(PeriodBeginning: date; LSNRec: comp);
+
+vipinterface Period licensed(free) parameters(PeriodMonth: word; PeriodYear: word);
+vipinterface CreateTimeTable licensed(free);
+vipinterface AttrList licensed(free) parameters(TableCode: word; cdepround: comp; sdepround: string);
+vipinterface DepRound licensed(free) parameters(AttrRec: comp; sdepround: string; InterfaceTape: word);
+vipinterface formdop licensed(free);
+vipinterface formdop2 licensed(free) parameters(Params: ObjRef);
+vipinterface formmeg licensed(free) parameters(PrCex: comp; InsForm: integer);
+vipinterface formud1 licensed(free);
+vipinterface formud2 licensed(free) parameters(prCex: comp; prVidud: word; status: word; prsum: double; prproc1: double;
+                                prform: word; FixDate: date; prdataN: date; prDatOK: date; Name1: string;
+                                Name2: string; prcPol: comp; prcBankPol: comp; ImportFileName: string; p2: double);
+vipinterface GetEmployee licensed(free) parameters(Object: comp; AccountMarkers: longint; Options: word);
+vipinterface getkaseug licensed(free);
+vipinterface GetSnom licensed(free) parameters(tPerson: comp; what: word);
+vipinterface PersINN licensed(free) parameters(tPerson: comp);
+vipinterface NPersINN licensed(free) parameters(tPerson: comp);
+vipinterface GetVdov licensed(free) parameters(tPerson: comp);
+vipinterface GetVidOp licensed(free) parameters(Markers: longint; MultipleSelection: boolean; P2: double);
+vipinterface GetVUd licensed(free) parameters(Markers: longint; MultipleSelection: boolean; P2: double);
+vipinterface GetZIP licensed(free);
+vipinterface Get_Gr licensed(free) parameters(Gruppa: comp; p2: double);
+vipinterface GrPDopl licensed(free) parameters(prcLs: comp; prcex: comp; p2: double);
+vipinterface GrPDopl1 licensed(free) parameters(prcLs: comp; prcex: comp; GrNumber: comp;
+                                 FixDate: date; prdataN: date; prDatOK: date; p2: double);
+vipinterface Grrab licensed(free) parameters(p2: double);
+vipinterface NastrFusionLschet licensed(free);
+vipinterface FusionLschet licensed(free) parameters(NewnRec: comp; OldnRec: comp);
+vipinterface CompMarkerIterator licensed(free);
+vipinterface Indeks licensed(free);
+vipinterface PickChild4 licensed(free);
+vipinterface SprChildPos licensed(free);
+vipinterface KlChild4 licensed(free) parameters(p1: comp);
+vipinterface klLgot licensed(free) parameters(RetNom: longint; Retrec: comp);
+vipinterface klLgot1 licensed(free) parameters(RetNom: longint; Retrec: comp);
+vipinterface klpostp licensed(free) parameters(retrec: comp);
+vipinterface klpostp1 licensed(free) parameters(retrec: comp);
+
+vipinterface klsisopl licensed(free) parameters(sisopl: word);
+vipinterface KlSisOpl2 licensed(free) parameters(sisopl: word);
+vipinterface KlSisOpl1 licensed(free) parameters(p1: comp; p2: double);
+vipinterface klsovm licensed(free) parameters(p1: comp);
+vipinterface picksovm licensed(free) parameters(sovm: word; ExtSovm: word);
+vipinterface picksovmForEdit licensed(free) parameters(sovm: word; ExtSovm: word);
+vipinterface KlTGrDop licensed(free) parameters(toPick: word; GrNumber: comp; p2: double);
+vipinterface KonvArx licensed(free);
+vipinterface KonvArx1 licensed(free) parameters(YearRas1: integer; mes1: word);
+vipinterface KonvLg licensed(free);
+vipinterface KonvLg1 licensed(free);
+vipinterface KonvPMR licensed(free);
+vipinterface KONVRUS licensed(free);
+vipinterface KONVRUS1 licensed(free) parameters(mes1: word; OldMinStav: double; OldStavMonth: word);
+vipinterface KonVZ1 licensed(free);
+vipinterface LongServiceCorrection licensed(free);
+vipinterface PMAXFZP licensed(free);
+vipinterface maxfzp licensed(free) parameters(prYear: integer; prMes: word);
+vipinterface Messageperexod licensed(free);
+vipinterface PickFZP licensed(free) parameters(RabSumma: double);
+vipinterface PickFZPKl licensed(free) parameters(RabSumma: double);
+vipinterface minFZP licensed(free) parameters(p1: comp);
+vipinterface PickPFZP licensed(free);
+vipinterface minPFZP licensed(free) parameters(p1: comp);
+vipinterface ManageCostSharing licensed(free) parameters(PersonalAccount: comp);
+vipinterface MoveAtMonthBeginning licensed(free);
+vipinterface ChooseEmployeesToMove licensed(free);
+vipinterface Znenach licensed(free) parameters(LS_Nrec: comp; TabNom: longint; LS_Cex: comp; p2: double);
+vipinterface nenach licensed(free) parameters( LS_Nrec: comp; TabNom: longint; LS_Cex: comp; p1: comp; p2: double);
+vipinterface formklndr licensed(free);
+vipinterface ZNorth licensed(free);
+vipinterface North licensed(free) parameters(p1: comp; p2: double);
+vipinterface ogrfot licensed(free);
+vipinterface Packtables licensed(free);
+vipinterface Payments licensed(free);
+vipinterface PaymentsActualTimeAccumulator licensed(free);
+vipinterface PaymentsSumAccumulator licensed(free);
+vipinterface EmployeeListByDepartment licensed(free) parameters(Department: comp; Markers: longint; Options: word);
+vipinterface pensproc licensed(free);
+vipinterface zperech licensed(free) parameters(retrec: comp);
+vipinterface perech licensed(free) parameters(p1: comp; p2: double);
+vipinterface platpol licensed(free);
+vipinterface LgotPodr licensed(free) parameters(prVidPer: word);
+vipinterface perecon licensed(free);
+vipinterface PerePodN licensed(free);
+vipinterface Zperevod licensed(free) parameters(cLsh: comp; p2: double);
+vipinterface Perevod licensed(free) parameters(cLsh: comp; p1: comp; p2: double);
+vipinterface pickdop licensed(free) parameters(LS_NREC: comp; PRCEX: comp; PRTABN: longint; Prvidopl: longint; PrcPodr: comp);
+vipinterface pickopl licensed(free) parameters(var VidOpl1: longint);
+vipinterface pickopl1 licensed(free) parameters(VidOpl: longint; cSCHETD: string [20]; cSUBSCHD: string [21]; KAUD1: comp; KAUD2: comp; KAUD3: comp);
+vipinterface pickFIOm licensed(free) parameters(TabN: longint; LSchet_Nrec: comp; Persons_nrec: comp; LSchet_Cex: comp; cex: comp);
+vipinterface pickFIOv licensed(free) parameters(PrCex: comp; cex: comp; tabn: longint; clsch:comp; Options: word);
+vipinterface pickFIOO licensed(free) parameters(Prcex: comp; TabN: longint; lschet_nrec: comp; persons_nrec: comp; Cex: comp;
+                                 cSCHETD: string [20]; cSUBSCHD: string [21]; KAUD1: comp; KAUD2: comp; KAUD3: comp);
+vipinterface pickFIO2 licensed(free) parameters(TabN: longint; persons_FIO: string[60]);
+vipinterface pickud licensed(free) parameters(var Vidud1: word);
+vipinterface PickUD1 licensed(free) parameters(Vidud1: word; cSCHETK: string [20]; cSUBSCHK: string [21]; KAUKSD1: comp; KAUKS2: comp; KAUKS3: comp);
+vipinterface klprpe licensed(free);
+vipinterface klprper licensed(free);
+vipinterface pickprpe licensed(free) parameters(PrPer: word);
+vipinterface pickprper licensed(free) parameters(PrPer: word);
+vipinterface Kateg13 licensed(free) parameters(p1: comp);
+vipinterface pickat13 licensed(free) parameters(kod: word);
+vipinterface PickLschFio licensed(free) parameters(PrCex: comp; TabNMb: longint; PerNrec: comp);
+vipinterface VerifyTemplateInt licensed(free) parameters(stTemplate: string; stValue: string);
+vipinterface GetPersonDocs licensed(free) parameters(tPerson: comp; cDoc: comp);
+vipinterface GetPasL licensed(free) parameters(tPerson: comp; Status: byte; myNumber: word);
+vipinterface klnal licensed(free) parameters(p1: comp);
+vipinterface klnalog licensed(free) parameters(nalog: word);
+vipinterface picktar licensed(free) parameters(Sis: word; CODTAR, RAZR: word; tari: double; DDateSet1: date);
+vipinterface klkassir licensed(free) parameters(p1: comp);
+vipinterface pickkas licensed(free) parameters(kassir: word);
+vipinterface klkatego licensed(free) parameters(p1: comp);
+vipinterface pickkat1 licensed(free) parameters(kod: word; markers: longint; flags: word);
+vipinterface pickkat1ForEdit licensed(free) parameters(kod: word; markers: longint; flags: word);
+vipinterface klkategs licensed(free) parameters(p1: comp);
+vipinterface pickkats licensed(free) parameters(kod: word);
+vipinterface klkategV licensed(free) parameters(p1: comp);
+vipinterface pickkatV licensed(free) parameters(kod: word);
+vipinterface pickFIO3 licensed(free) parameters(FIOk: string[60]);
+vipinterface MarkpickTar licensed(free) parameters(Markers: longint);
+vipinterface RASPLAT licensed(free) parameters(p1: comp);
+vipinterface pickras licensed(free) parameters(NoCol: word);
+vipinterface Rasshap licensed(free) parameters(p1: comp);
+vipinterface PickShap licensed(free) parameters(NoCol: word);
+vipinterface PROVIDOP licensed(free) parameters(p1: comp);
+vipinterface pickprov licensed(free) parameters(prizpr: word);
+vipinterface pickPer licensed(free) parameters(vidper: word; NamePer: string[50]);
+vipinterface pickParam licensed(free) parameters(Name: string);
+vipinterface ParamTXO licensed(free) parameters(p1: comp);
+vipinterface EnteringList licensed(free) parameters(PaymentCode, Entering, EnteringRangeBeginning, EnteringRangeEnding, paymentnalg: word);
+vipinterface podotchp licensed(free) parameters(prCex: comp; p2: double);
+vipinterface podotchr1 licensed(free) parameters(prCex: comp; FormingDate: date; p1: comp; p2: double; wByWorkerMode: word);
+vipinterface podotchz licensed(free);
+vipinterface Txo_POTXO; //нет такого интерфейса
+vipinterface FieldList licensed(free);
+vipinterface Preview licensed(free) parameters(Ls_Nrec: comp; prtabn: longint; prcex: comp);
+vipinterface ZPriorApp licensed(free);
+vipinterface PriorApp licensed(free) parameters(p1: comp; p2: double);
+vipinterface RABUCH licensed(free) parameters(PrOne: word);
+vipinterface Fam licensed(free);
+vipinterface PDRZ licensed(free);
+vipinterface ShareCosts licensed(free) parameters(SharingFlags, PersonalAccountFilter: word);
+vipinterface Shtatnoe1 licensed(free) parameters(val3: word; prcex: comp);
+vipinterface Shtatnoe licensed(free);
+vipinterface picksocn licensed(free) parameters(var SysCode1: word);
+vipinterface socnal licensed(free) parameters(flagVx: boolean; p1: comp; p2: double);
+vipinterface PickSredZ licensed(free) parameters(DataM: date);
+vipinterface SredVZB licensed(free) parameters(p1: comp);
+vipinterface SRefin licensed(free);
+vipinterface Refin1 licensed(free) parameters(p1: comp; p2: double);
+vipinterface Zstag licensed(free);
+vipinterface stag licensed(free) parameters(p1: comp; p2: double);
+vipinterface ZStag13 licensed(free);
+vipinterface Stag13 licensed(free) parameters(p1: comp; p2: double);
+#ifdef Gal8_1
+vipinterface StornZap licensed(free) parameters(prLsch: comp; p2: double);
+#else
+vipinterface StornZap licensed(free) parameters(prTabn: longint; prCex: comp; p2: double);
+#end
+vipinterface SumUlSoc licensed(free) parameters(LS_Nrec: comp; p2: double);
+vipinterface SumupSoc licensed(free) parameters(LS_Nrec: comp; p2: double);
+vipinterface ZSumVidOp licensed(free) parameters(LS_Nrec: comp; TabNom: longint; LS_Cex: comp; p2: double; TM: word; S_Nrec: comp; S_Yeark, S_Mes: integer; S_Vidopl: longint);
+vipinterface SumVidOp  licensed(free) Parameters(LS_Nrec: comp; TabNom: longint; LS_Cex: comp; p1: comp; p2: double);
+vipinterface Zsumvidud licensed(free) parameters(LS_Nrec: comp; TabNom: longint; LS_Cex: comp; p2: double);
+vipinterface sumvidud licensed(free) parameters(LS_Nrec: comp;  TabNom: longint; LS_Cex: comp; p1: comp; p2: double);
+vipinterface Sys_Nast licensed(free);
+vipinterface TARIFF licensed(free);
+vipinterface TSTORN licensed(free);
+
+vipinterface PickULGT licensed(free) parameters(_lgtNrec, _lgtCode: comp; _year: integer);
+vipinterface UKLGTEDIT licensed(free) parameters(p1: comp);
+vipinterface LSCHNLGT_EDIT licensed(free) parameters(pLschet, p1: comp);
+vipinterface LSCHNLGT licensed(free) parameters(pLschet: comp; pProc: word; KolMin, KolMinI, PersStav: double);
+vipinterface unzarnet licensed(free);
+vipinterface vvodmes licensed(free) parameters(casebyte: word);
+vipinterface xarpred licensed(free);
+vipinterface zamena licensed(free);
+vipinterface ZamenaSS1 licensed(free);
+vipinterface ZamenaS2 licensed(free);
+vipinterface ZamenaSS licensed(free);
+vipinterface ZapisGr licensed(free) parameters(Gruppa: Comp; BeginningDate: date; RetentionSumTotal, DefaultRetentionSum:  Double; Tag: word; p2: double);
+vipinterface ZapisGr0 licensed(free) parameters(Gruppa: Comp; BeginningDate: date; Tag: word);
+vipinterface ZARNETR
+  licensed
+  (
+    #include ZARNETR.lih
+  ) parameters(prOne: word);
+vipinterface Zar_User licensed(free) parameters(prChoice: word; StartingWindow: string);
+vipinterface zipConvert licensed(free);
+vipinterface ZRezult licensed(free) parameters(Pnrec: comp; FTabNom: longint; LS_Cex: comp);
+vipinterface ZRezult1 licensed(free) parameters(p2: double);
+vipinterface pickFIOn licensed(free) parameters(Prcex: comp; prkassir: word; tabn: longint; CLSchet, tPerson, Cex: comp);
+vipinterface ESNCorr licensed(free);
+vipinterface getpmeuA licensed(free) parameters(DefaultRetentionSum: double; BeginningDate: date; Cashier: word; MultipleSelection: boolean);
+vipinterface ArxDolg licensed(free) parameters(Prcex: comp; Glub, Yea, Month1: word; GroupCateg: boolean; GroupSex: boolean);
+vipinterface Chisl licensed(free);
+vipinterface CurLscht licensed(free);
+vipinterface DepOtch licensed(free);
+vipinterface RasList2 licensed(free);
+vipinterface f201kaz licensed(free);
+vipinterface f201kaz_2004 licensed(free);
+vipinterface f600kaz licensed(free);
+vipinterface FillIer licensed(free);
+vipinterface filtrord licensed(free) parameters(prCex :comp);
+
+vipinterface FormDolg licensed(free) parameters(Prcex: comp; Glub, Yea, Month1: word; GroupCateg: boolean; GroupSex: boolean);
+vipinterface Formnc licensed(free) parameters(Prcex: comp; Glub, PrizSpr: word; GroupCateg: boolean; GroupSex: boolean);
+vipinterface Formnc1 licensed(free) parameters(Prcex: comp; Glub, PrizSpr: word; GroupCateg: boolean; GroupSex: boolean);
+vipinterface FormPlP licensed(free);
+vipinterface FormPlP1 licensed(free) parameters(DataDoc: date; myCurRepNo: comp; myFilialNo: longint; myPlansNo: comp);
+vipinterface Formud licensed(free) parameters(Prcex: comp; Glub, PrizSpr: word; GroupCateg: boolean; GroupSex: boolean);
+vipinterface SocInvPar licensed(free);
+vipinterface SocInv licensed(free) parameters(PerechMarker, MarkersParam: longint);
+vipinterface getalim licensed(free) parameters(prVidUd: word; prNVidUd: string);
+vipinterface GetFewPod licensed(free) parameters(p2: double);
+vipinterface getkassir licensed(free) parameters(KasN: word; KasNam: string);
+vipinterface getks1eu licensed(free) parameters(PrcPodr: comp; PrCex: comp; NamKas, NamP: string; PrizKassir: boolean; Kassir: word);
+vipinterface getPodrI licensed(free);
+vipinterface getPodrn licensed(free);
+vipinterface GetVidPos licensed(free) parameters(prVidPos: word);
+vipinterface getvidud licensed(free) parameters(shtrf, prVidUd: word);
+vipinterface getvipleu licensed(free) parameters(PrChoice, ZA: word; PaymentMarkers: longint; PrKassir: word);
+vipinterface getviplN licensed(free) parameters(PrChoice, ZA: word; PaymentMarkers: longint; PrKassir: word);
+vipinterface getvozrgr licensed(free) parameters(prYear, prMonth: word);
+vipinterface SumVidop1 licensed(free) parameters(TN: word);
+vipinterface IkESN licensed(free);
+vipinterface IkESN_Doc licensed(free);
+vipinterface InsReest licensed(free) parameters(PrPref: string; PrCex: comp; DataF: date; InsForm: integer);
+vipinterface KindVed  licensed(free);
+vipinterface KindVed_1 licensed(free);
+vipinterface kontrjur licensed(free);
+vipinterface KontrJurTmp licensed(free);
+vipinterface LschT54A licensed(free);
+vipinterface VhodOpl licensed(free);
+vipinterface markna13 licensed(free);
+vipinterface marknach licensed(free);
+vipinterface marksovm licensed(free);
+vipinterface markuder licensed(free);
+vipinterface MarkTXO licensed(free);
+vipinterface MarkKBK licensed(free)  parameters(NastrKBK: word);
+vipinterface MarkKAteg licensed(free);
+vipinterface MarkGrRab licensed(free) parameters(Gruppa: comp; p2: double);
+vipinterface mathelp licensed(free);
+vipinterface choisbon licensed(free) parameters(TM, fillflag: word;  prcex: comp);
+vipinterface vidopli licensed(free) parameters(fillflag: word);
+vipinterface obvedtim
+  licensed (menuzarp,menuzarp2);
+vipinterface opltrud
+  licensed (menuzarp,menuzarp2);
+vipinterface pechsvod licensed(free) parameters(VedSvod: word; Prizspr: word; prcex: comp; Glub: word; Grouping: word; psort: word);
+vipinterface PensOtch licensed(free);
+vipinterface VhVidOpl licensed(free) parameters(choice: word);
+vipinterface FormPensData licensed(free) parameters(PrChoice, Glub: word);
+vipinterface FormPensOtch licensed(free) parameters(PrChoice: word);
+vipinterface penspr licensed(free);
+vipinterface SumVid licensed(free);
+vipinterface PensRb licensed(free);
+vipinterface SumRB licensed(free);
+
+vipinterface PerFOT licensed(free);
+vipinterface PerFOT_3 licensed(free) parameters(NameLgot: string);
+vipinterface PerFOT_2 licensed(free) parameters(SortFlag: word; NameLgot: string);
+vipinterface PFNEWVZ
+  licensed (menuzarp,menuzarp2);
+vipinterface PFNEWVZ_2 licensed(free);
+vipinterface PFNEWVZ_3 licensed(free);
+vipinterface platzum licensed(free);
+vipinterface Plzum_1 licensed(free);
+vipinterface Pril licensed(free);
+vipinterface provparm licensed(free) parameters(typedoc: word);
+vipinterface Rasznach
+  licensed (menuzarp,menuzarp2);
+vipinterface Rasznach_02 licensed(free) parameters(Markers: longint);
+
+vipinterface LisSum licensed(free);
+vipinterface rripn
+  licensed (menuzarp,menuzarp2);
+vipinterface rripn_2 licensed(free);
+vipinterface rripn_2004 licensed(free);
+vipinterface rripn_2005 licensed(free);
+vipinterface SAMPLE licensed(free);
+vipinterface Sdohr
+  licensed (menuzarp,menuzarp2);
+vipinterface Sdohr2 licensed(free);
+vipinterface Sdohr4 licensed(free);
+vipinterface BankSpr licensed(free);
+vipinterface VedRees licensed(free);
+
+vipinterface Socnot_2 licensed(free);
+vipinterface Socnot licensed(free);
+vipinterface SoprL licensed(free);
+vipinterface SumVidop2 licensed(free);
+vipinterface Sppr15
+  licensed (menuzarp,menuzarp2);
+vipinterface Sppr15_2 licensed(free);
+
+vipinterface Sppr8 licensed(free);
+vipinterface Sppr9 licensed(free);
+vipinterface Sprb
+  licensed (menuzarp,menuzarp2);
+vipinterface Sprb_1 licensed(free);
+vipinterface sprinf licensed(free) parameters(PNrec: comp);
+vipinterface Forminf licensed(free)parameters(PNrec: comp; PrInf:word);
+vipinterface SprKaz licensed(free);
+vipinterface SumKaz licensed(free);
+vipinterface Sprsovm licensed(free);
+vipinterface SprS licensed(free);
+
+vipinterface STZATRAT licensed(free);
+vipinterface SumVidYe licensed(free);
+vipinterface svodalim licensed(free) parameters(markerUder: longint; pSort: word);
+vipinterface SvodNew licensed(free) parameters(Yea, IerGlub, Group: word);
+vipinterface SvodSGD
+  licensed (menuzarp,menuzarp2);
+vipinterface NachProf licensed(free);
+vipinterface UderProf licensed(free);
+vipinterface PerevProf licensed(free);
+
+vipinterface T54ANew licensed(free);
+vipinterface T54New licensed(free);
+vipinterface markudT54 licensed(free);
+vipinterface thesvod licensed(free);
+vipinterface UchRasx licensed(free);
+vipinterface NachProfUchRasx licensed(free) parameters(MarkKat, MarkTar, MarkDol, MarkersFOT, MarkersDopInfo, MarkersParam: longint);
+vipinterface PerevProfUchRasx licensed(free) parameters(MarkKat, MarkTar, MarkDol, MarkersFOT, MarkersDopInfo, MarkersParam: longint);
+vipinterface Ukr1 licensed(free);
+vipinterface Ukr2 licensed(free) parameters(CodeUnn, NalName: string; DataOtch: date; BFoneNumber, MbFoneNumber: string;
+                             YearOtch: word; DODBF: boolean; FileName: string; BOthF: boolean; Porciya: integer; DORTF: boolean);
+vipinterface Ukr_1df
+  licensed (menuzarp,menuzarp2);
+vipinterface Ukr_1df2 licensed(free) parameters(CodeUnn, NalName: string; DataOtch: date; BFoneNumber, MbFoneNumber: string;
+                                 YearOtch: word; DODBF: boolean; FileName: string; BOthF: boolean; Porciya: integer; DORTF: boolean);
+vipinterface UKRFORMS licensed(free);
+vipinterface vedopl licensed(free);
+vipinterface formprc licensed(free) parameters(kolgraf: byte; prnkau: word);
+vipinterface vedoplTxo licensed(free);
+vipinterface Vedpr4
+  licensed  (menuzarp,menuzarp2);
+vipinterface Vedpr4_2 licensed(free);
+vipinterface vedras licensed(free) parameters(TM, ShowFOT: word);
+vipinterface form_Ras licensed(free) parameters(kolgraf: byte; prnkau, tm: word);
+vipinterface vedraspr licensed(free);
+vipinterface VhodOpl_VN licensed(free);
+vipinterface VedRsTmp licensed(free);
+vipinterface vedrasTxo licensed(free) parameters(TM: word);
+vipinterface vedsvod licensed(free);
+
+vipinterface Vedt49_1 licensed(free) parameters(DataOtch: date; YearRas, MonthRas: integer);
+vipinterface Vedt49_2 licensed(free) parameters(DataOtch: date; YearRas, MonthRas: integer);
+vipinterface Vedt49RB licensed(free) parameters(DataOtch: date; YearRas, MonthRas: integer);
+
+vipinterface Vedt51_1 licensed(free) parameters(DataOtch: date; YearRas, MonthRas: integer);
+vipinterface Vedt51_2 licensed(free) parameters(DataOtch: date; YearRas, MonthRas: integer);
+vipinterface VhodOpl_T51 licensed(free);
+vipinterface ViborBol licensed(free) parameters(Markers: longint);
+vipinterface ViborOtp licensed(free) parameters(Markers: longint);
+
+vipinterface VoznYear licensed(free);
+vipinterface VoznYear_1 licensed(free) parameters(VidDate: date; SortFlag: word);
+vipinterface zarpmark licensed(free);
+vipinterface ATDElementTypeCorrector licensed (free);
+vipinterface KonS17 licensed (free);
+
+vipinterface RPVEDN licensed (free) parameters(My: word);
+vipinterface StrZar
+  licensed (menuzarp,menuzarp2);
+vipinterface OKLAD_OTCH
+  licensed (menuzarp,menuzarp2);
+vipinterface OKLAD2     licensed(free) parameters(My: word);
+
+vipinterface CopyToArx licensed (free);
+vipinterface RestoreArx licensed (free);
+vipinterface CompareArx licensed (free);
+vipinterface ZSumVidOpCopy licensed (free) parameters(clSCH: comp; p2: double);
+vipinterface SumVidOpCopy licensed (free) parameters(clSCH: comp; p1: comp; p2: double);
+vipinterface SumOpToFile licensed (free);
+vipinterface SumOpFromFile licensed (free);
+vipinterface CompareSumUd licensed (free);
+vipinterface CopyToCopySUD licensed (free);
+vipinterface RestoreSumVidUd licensed (free);
+vipinterface SumUdToFile licensed (free);
+vipinterface SumUdFromFile licensed (free);
+vipinterface ZSumVidUdCopy licensed (free) parameters(clSCH: comp; p2: double);
+vipinterface SumVidUdCopy licensed (free) parameters(clSCH: comp; p1: comp; p2: double);
+vipinterface CompareNeNa licensed (free);
+vipinterface CopyToCopyNeNa licensed (free);
+vipinterface RestoreNeNach licensed (free);
+vipinterface NeNaToFile licensed (free);
+vipinterface NeNaFromFile licensed (free);
+vipinterface NeNachCopy licensed (free) parameters(clSCH: comp; p2: double);
+vipinterface ComparePer licensed (free);
+vipinterface CopyToCopyPer licensed (free);
+vipinterface RestorePer licensed (free);
+vipinterface PerToFile licensed (free);
+vipinterface PerFromFile licensed (free);
+vipinterface FromFile licensed (free);
+vipinterface ZPerevodCopy licensed (free) parameters(clSCH: comp; p2: double);
+vipinterface PerevodCopy licensed (free) parameters(clSCH: comp; p1: comp; p2: double);
+vipinterface FIXEDADDITIONALPAYMENTS licensed (free) parameters(PersonalAccount: comp; NRecord: comp; Flag: word);
+vipinterface ZSHTRAF1  licensed  (free) parameters(PersonalAccount: comp);
+vipinterface ZUCHRABVR licensed  (free) parameters(Ls_Nrec: comp; prTabn: longint; prCex: comp; p2: double);
+vipinterface KOLMOKLZ  licensed  (free);
+vipinterface LGSUM22   licensed  (free);
+vipinterface ATLANT    licensed  (free);
+vipinterface RPKAZI
+  licensed (menuzarp,menuzarp2);
+vipinterface RPKAZN licensed (free) parameters(my: word);
+vipinterface FACECARD
+  licensed (menuzarp,menuzarp2);
+
+vipinterface SprVFndZ
+  licensed (menuzarp,menuzarp2);
+vipinterface RPMEGPERIOD
+  licensed (menuzarp,menuzarp2);
+vipinterface RPPARAMS
+  licensed (menuzarp,menuzarp2);
+vipinterface RPPARAMSGr
+  licensed (menuzarp,menuzarp2);
+vipinterface RPVEDNEXCEL
+  licensed (menuzarp,menuzarp2)
+  parameters(my: word);
+vipinterface RPVedBud licensed(free);
+vipinterface SprFZ licensed(free);
+vipinterface SprCZRB licensed(free);
+vipinterface SprBud licensed(free);
+vipinterface RepOplFOT licensed(free);
+vipinterface FormSobs licensed (FREE) Parameters (cFormSobs : comp);
+vipinterface PensKaz licensed(free);
+vipinterface ReportAlim licensed(free) parameters(MarkerUder: longint; psort: word);
+vipinterface RecalcSums licensed(free);
+vipinterface RecalcTaxes licensed(free);
+vipinterface RunProcessStub licensed(free) parameters(ProcessName: string);
+vipinterface SprZar licensed(free);
+vipinterface UderFiltr licensed(free) parameters(Marker: longint; Choice: word);
+vipinterface PrMinClassifier licensed(free);
+vipinterface T54form licensed(free);
+vipinterface T54Choice licensed(free);
+vipinterface T51form licensed(free);
+vipinterface T51Choice licensed(free);
+vipinterface FSZN licensed(free);
+vipinterface KontrNachVzn licensed(free);
+vipinterface FSZN1 licensed(free);
+vipinterface FilterFieldNamesExtruder licensed(free);
+vipinterface DeskMarkerManager licensed(free);
+vipinterface zarplSpravRB licensed(free);
+vipinterface vedgran licensed(free);
+vipinterface SprOfIncomeForSettingChildAllowance licensed(free);
+
+//------------------------------------------------------------------------------
+// диалоги
+//------------------------------------------------------------------------------
+// formkln.dlg
+dialog VOZamena;
+dialog VORaschet;
+dialog GetOtpuskInfo(vDataN: date; vDatOk: date);
+dialog ZODial(claster: word);
+dialog ZuDial(claster: word);
+dialog formklnZ(field1: integer);
+dialog vvodkln(dayn: byte; minn: byte; chv1: byte; minv1: byte; chn1: byte; minn1: byte; chv2: byte; minv2: byte; chn2: byte; minn2: byte; chv3: byte; minv3: byte; chn3: byte; minn3: byte; chv4: byte; minv4: byte; chn4: byte; minn4: byte; chv5: byte; minv5: byte; chn5: byte; minn5: byte; chv6: byte; minv6: byte; chn6: byte; minn6: byte; chv7: byte; minv7: byte; chn7: byte; minn7: byte);
+dialog RasPlPars(KolStr: byte; Width: byte; Claster: word; VhodTime: word; Width1: byte; Width2: byte; pFloat: word);
+dialog BuhSprDial(Claster: word);
+dialog BuhSprMonthDial(Claster: word; Month1: word; Month2: word);
+dialog RasListPars(Claster: word; MaxLines: integer; SumOrNot: word);
+dialog ConDohPars(CurOklad: double; BegDate: date; Oklad: double);
+dialog TimeVedPar(Claster: word);
+dialog UnivDial(Claster: word; Month1: word; Month2: word; PrizSpr: word);
+dialog DialSprInf(Claster: word);
+dialog UNVDDial(Claster: word; Month1: word);
+dialog UNVDDial_Uder(Claster: word; Month1: word; PrizSpr: word);
+dialog DialForm(Claster: word; MonthK: word; PrizForm: word);
+dialog RasOplw(KolStr: byte; Claster: word; pFloat: word);
+dialog MesDat(OtchDat: date; KolMes: word);
+dialog OtchetDat(claster: word; OtchDat: date);
+dialog SumEqual(SumFlag: word);
+dialog PochtDial(Vid: word; Forma: word);
+dialog SFondDial(God: integer; Kvartal: word);
+dialog BlankPerDial(Vid: word);
+dialog SpGraf(claster: word);
+dialog sozdkln(claster: word);
+dialog DialNach(claster: word);
+dialog SvodOper(Claster: word);
+dialog StatDat(Stat_Data: date);
+dialog GetReestr(NomReestr: word);
+dialog ConvDolgn(claster: word);
+dialog RasPodDial(claster: word);
+dialog GetSkidinf(ProcSkid: double);
+
+// selectmp.dlg
+dialog VVODs(sumRab: double; procRab: double; Datan: date; Dataok: date; prKau: word);
+dialog VVODdog(sumRab: double; Datan: date; Dataok: date; prKau: word);
+dialog VVODu(sumRab: double; procRab: double; Datan: date; Dataok: date; prKau: word);
+dialog VVODkau(prKau: word);
+dialog VVODkauu(prKau: word);
+dialog seldop(Ndop: string[40]; CaseByte: word);
+dialog selud(Nud: string[40]; CaseByte: word);
+dialog VVODdop(sumRab: double; procRab: double; PrForm: word; dataN: date; datok: date);
+dialog VVODud(Name1: string[70]; Name2: string[70]; sumRab: double; procRab: double; PrForm: word; dataN: date; datok: date);
+dialog VVODnar(KTYrab: double; procRab: double; Rabchas: double; Datan: date; Dataok: date; prKau: word; PrForm: word);
+dialog VVODnarI(RASCEN: double; KolVo: double; procRab: double; Rabchas: double; Datan: date; Dataok: date; prKau: word; PrNar: word);
+dialog VBrig(sumRab: double; procRab: double);
+dialog VVODKTY(procRab: double; prKau: word);
+dialog rasbon(prreg: word);
+dialog VVODkaur(prKau: word);
+dialog Getfio(fiog: string[25]);
+dialog Getfio1(fiog: string[25]; Claster: word);
+dialog VVODZR(KTYRab: double; prKau: word);
+dialog selectDU(FlagF: word);
+
+
+// selectza.dlg
+dialog selectza(TabRuch: word; CaseByte: word; KorrRuch: word);
+dialog vvodopl(vidople: longint; vidoplz: longint);
+dialog formavans(CaseByte: word);
+dialog VVODavan(ProcA: WORD; SumA: double; RoundSum: integer);
+dialog VVODavzp(ProcA: WORD; RoundSum: integer; OtlFlag: word; OtlFlagp: word);
+dialog DIALPER;
+dialog TarifDial;
+dialog peresTarif(Koffoklad: double; Rrub_2: double; Kofftarif: double; Rval_2: double);
+dialog PodotchS(FIO: string[40]; Sum: double);
+dialog datuddial1(nom: string[6]; datudN1: date; datudO1: date);
+
+// ved.dlg
+dialog IntervalOrder(BegDate: date; EndDate: date);
+dialog OrderBankParams(OrderBy: word; RoundSum: word);

@@ -1,0 +1,14 @@
+#param /linc:autoexec.vpp
+
+#include galnet.inc end;
+#include dictypes.def
+type TPtr = longint;
+//#include glovars.inc
+
+#define ComponentVersion // для vih
+
+#include ExtAttr.vih
+
+var extAttr: iExtAttr;
+#make "helpers\debitor.vip"
+#make "reports\Debitor2.frm"

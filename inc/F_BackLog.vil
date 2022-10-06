@@ -1,0 +1,11 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_BackLog
+
+#ifdef ComponentVersion
+#component "F_BackLog"
+#end
+
+VipInterface iCalcBackLog Licensed(B_Finans,NalogReg);
+VipInterface SaldoBL      Licensed(B_Finans,NalogReg);
+VipInterface iViewBackLog Licensed(B_Finans,NalogReg);
+

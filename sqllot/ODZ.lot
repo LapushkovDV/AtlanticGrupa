@@ -1,0 +1,38 @@
+sql
+ Select  sum(case when KatSopr.wadoc in(23,12,11) then 0 else 1 end * case when KatSopr.vidsopr = 106 then 0 else 1 end *KatSopr.summa) as SummaWithOutKorr
+                  , sum(tRaspredSum.summaRaspr ) as summaRaspr
+                  , sum(case when KatSopr.vidsopr = 106 then 0 else 1 end*KatSopr.summa - tRaspredSum.summaRaspr ) as SumProsrAll
+                  , KatSopr.cOrg as cOrg
+                  , katsopr.nsopr as nsopr
+                  , katsopr.dsopr as dsopr
+                  ,katsopr.vidsopr
+               from katsopr
+                left join (select //  Sum(case when KatSopr.vidsopr = 106 then Coalesce(Katsopr.Summa,0) else case when coalesce(SoprH.DatOb,0) <= #date(01,06,2018) then Coalesce(RasprSum.Summa,0) else 0 end end ) as summaRaspr
+                                  Sum(case when KatSopr.vidsopr = 106
+                                       then (SpNakl.KolFact * SpNakl.price + case when KatSopr.VhodNal <> 1 then SpNakl.SumNDS else 0 end )
+                                       else case when coalesce(SoprH.DatOb,0) <= #date(01,01,2018) then Coalesce(RasprSum.Summa,0) else 0
+                                          end end
+                                     ) as summaRaspr
+                                , KatSopr.Nrec as cNakl
+                                , KatSopr.cOrg as cOrg
+                                , KatSopr.dOpr as NaklOprDate
+                                , coalesce(StD.DOPLMAX,0)  as PlatPlanDate
+                                //, case when KatSopr.vidsopr = 106 then -1 else d_todays(#date(01,06,2018)) -  d_todays(Coalesce(StD.DOPLMAX,0) ) end  as ProsrDay
+                                , d_todays(#date(01,01,2018)) -  d_todays(Coalesce(StD.DOPLMAX,0))  as ProsrDay
+                                //, SoprH.DatOb  as PlatFactDate
+                           from KatSopr
+                                  left join spsopr SpNakl on (SpNakl.cSopr = KatSopr.Nrec)
+                                  left join SpSopHoz RasprSum on (RasprSum.cSpSopr = SpNakl.nrec)
+                                  left join SoprHoz SoprH on SoprH.nRec = RasprSum.cSoprHoz
+                                  left join StepDoc StD on StD.nrec = KatSopr.cStepDoc // STEPDOC.DOPLMAX
+                           where KatSopr.dsopr >= case when #date(01,01,2013) < #date(01,01,2018) then #date(01,01,2013) else #date(01,01,2018) end  and KatSopr.dsopr < #date(01,01,2018)
+//                                  and (SoprH.DatOb <= #date(01,06,2018) or SoprH.nrec is null) // распределены до даты или не распределены вообще
+                           group by KatSopr.Nrec, KatSopr.cOrg , KatSopr.dOpr, coalesce(StD.DOPLMAX,0), d_todays(#date(01,06,2018)) -  d_todays(Coalesce(StD.DOPLMAX,0))  // SoprH.DatOb,
+                          )  tRaspredSum on tRaspredSum.cOrg = KatSopr.cOrg and tRaspredSum.cNakl = KatSopr.nrec// tRaspredSum.summaRaspr
+                join katorg org on org.nrec = katsopr.corg
+               where KatSopr.dSopr >= case when #date(01,01,2013) < #date(01,01,2018) then #date(01,01,2013) else #date(01,01,2018) end and KatSopr.dSopr < #date(01,01,2018)
+               and (KatSopr.tipsopr =2 // оставляем только сбыт -
+                 or KatSopr.vidsopr = 106)
+                 and Org.name = '"КРЕПЫШ"'
+               group by KatSopr.cOrg, katsopr.nsopr, katsopr.dsopr, katsopr.vidsopr
+

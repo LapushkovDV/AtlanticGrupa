@@ -1,0 +1,27 @@
+Create table ATL_Vetis_request "Запросы к API"
+with table_Code = 31602
+with replace
+with tableoptions Branched
+(
+   NREC          :comp                     "Идентификатор",
+   NAME          :string                   "Наименование документа",
+   requestDate   :date                     "Дата запроса",
+   requestTime   :time                     "Дата запроса",
+   applicationID :string                   "ID запроса",
+   requestStatus :string                   "Статус запроса",
+   description   :string                   "Описание",
+
+   addComp       :array[1..5] of comp     "Дополнительное поле comp",
+   addDate       :array[1..5] of date     "Дополнительное поле date",
+   addDouble     :array[1..5] of double   "Дополнительное поле double",
+   addWord       :array[1..5] of word     "Дополнительное поле word",
+   addLongint    :array[1..5] of longint  "Дополнительное поле longint",
+   addString     :array[1..5] of string   "Дополнительное поле string"
+)
+with index
+(
+    i_NREC = NREC(Unique, Surrogate, Journal)
+   ,i_appId = applicationID
+   ,i_DateTime =requestDate + requestTime
+)
+;

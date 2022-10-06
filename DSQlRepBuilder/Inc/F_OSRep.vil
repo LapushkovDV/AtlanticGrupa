@@ -1,0 +1,61 @@
+// Галактика 8.10   2006г.
+// Описание экспортируемых интерфейсов компонента
+
+#ifdef ComponentVersion
+#component "F_OSREP"
+#end
+
+//------------------------------------------------------------------------------
+// todo  Стоило бы обрабатывать типы отчетов при отхватывании лицензий
+VipInterface OS_Report
+Licensed (mbp,NalogReg,B_Act,B_Osn)
+Parameters (NReport, pTidk, pCallFrom : word; oldp : comp);
+//------------------------------------------------------------------------------
+VipInterface RepMoveNast
+Licensed (B_Osn)
+Parameters (nReport : word; cNRecUDeskRep : comp);
+//------------------------------------------------------------------------------
+VipInterface RepMove
+Licensed (mbp,NalogReg,B_Act,B_Osn)
+Parameters (CurCode, pTidk : word; pCurLine : comp; pStatus : word);
+//------------------------------------------------------------------------------
+VipInterface RepMoveMc
+Licensed (B_Act,B_Osn)
+Parameters (parTiDk : word);
+//------------------------------------------------------------------------------
+VipInterface RepMoveOS
+Licensed (mbp,NalogReg,B_Act,B_Osn)
+Parameters (CurCode, pTidk : word; pCurLine : comp; pStatus, pCallFrom : word);
+//------------------------------------------------------------------------------
+VipInterface RepVedItogOS
+Licensed (mbp,NalogReg,B_Act,B_Osn)
+Parameters (CurCode, pTidk : word; pCurLine : comp; pStatus , pCallFrom : word);
+//------------------------------------------------------------------------------
+VipInterface AmortSet
+Licensed (B_Act,B_Osn)
+Parameters (parTiDk : word);
+//------------------------------------------------------------------------------
+VipInterface Form11Calc
+Licensed (B_Act,B_Osn);
+//------------------------------------------------------------------------------
+VipInterface Form11OS
+Licensed (B_Act,B_Osn);
+//------------------------------------------------------------------------------
+VipInterface Form11R6
+Licensed (B_Act,B_Osn);
+//------------------------------------------------------------------------------
+VipInterface InvOpis
+Licensed (mbp,NalogReg,B_Act,B_Osn)
+Parameters (CurCode, pTidk : word; pCurLine : comp; pStatus, pCallFrom : word);
+//------------------------------------------------------------------------------
+VipInterface OsInfo
+Licensed
+(
+#include OsInfo.lih
+)
+Parameters (wTip : word; pNrecKatos : comp);
+//------------------------------------------------------------------------------
+VipInterface GetStrFm       Licensed (Free) Parameters (c1,oldp : comp);
+//------------------------------------------------------------------------------
+VipInterface PereocConv     Licensed (Free);
+//------------------------------------------------------------------------------

@@ -1,0 +1,226 @@
+const
+  tsOk                                     =  0;
+  tsInvalidOperation                       =  1;
+  tsIOError                                =  2;
+  tsFileNotOpen                            =  3;
+  tsNotFound                               =  4;
+  tsDuplicateKey                           =  5;
+  tsInvalidKeyNumber                       =  6;
+  tsDifferentKeyNumber                     =  7;
+  tsInvalidPositioning                     =  8;
+  tsEndOfFile                              =  9;
+  tsModifiableKeyValueError                = 10;
+  tsInvalidFileName                        = 11;
+  tsFileNotFound                           = 12;
+  tsExtendedFileError                      = 13;
+  tsPreImageOpenError                      = 14;
+  tsPreImageIOError                        = 15;
+  tsExpansionError                         = 16;
+  tsCloseError                             = 17;
+  tsDiskFull                               = 18;
+  tsUnRecoverableError                     = 19;
+  tsRecordManagerInactive                  = 20;
+  tsDataBufferTooShort                     = 21;
+  tsDataBufferLengthError                  = 22;
+  tsPositionBlockLengthError               = 23;
+  tsPageSizeError                          = 24;
+  tsCreateIOError                          = 25;
+  tsNumberOfKeysError                      = 26;
+  tsInvalidKeyPosition                     = 27;
+  tsInvalidRecordLength                    = 28;
+  tsInvalidKeyLength                       = 29;
+  tsNotABtrieveFile                        = 30;
+  tsFileAlreadyExtended                    = 31;
+  tsExtendIOError                          = 32;
+  tsCanNotUnLoad                           = 33;
+  tsInvalidExtensionName                   = 34;
+  tsDirectoryError                         = 35;
+  tsTransactionError                       = 36;
+  tsTransactionIsActive                    = 37;
+  tsTransactionControlFileIOError          = 38;
+  tsEndAbortTransactionError               = 39;
+  tsTransactionMaxFilesError               = 40;
+  tsOperationNotAllowed                    = 41;
+  tsIncompleteAcceleratedAccess            = 42;
+  tsInvalidRecordAddress                   = 43;
+  tsNullKeyPath                            = 44;
+  tsInconsistentKeyFlags                   = 45;
+  tsAccessToFileDenied                     = 46;
+  tsMaxOpenFiles                           = 47;
+  tsInvalidAlternateSequnceDefinition      = 48;
+  tsKeyTypeError                           = 49;
+  tsOwnerAlreadySet                        = 50;
+  tsInvalidOwner                           = 51;
+  tsErrorWritingCache                      = 52;
+  tsInvalidInterface                       = 53;
+  tsVariablePageLength                     = 54;
+  tsAutoIncrementError                     = 55;
+  tsIncompleteIndex                        = 56;
+  tsDictionaryNotOpen                      = 57;
+  tsCompressionBufferTooShort              = 58;
+  tsFileAlreadyExist                       = 59;
+  tsRejectCountReached                     = 60;
+  tsWorkSpaceTooSmall                      = 61;
+  tsDescriptorIsIncorrect                  = 62;
+  tsInsExtendedDataBufIsInvalid            = 63;
+  tsFilterLimitReached                     = 64;
+  tsFieldOffsetIsIncorrect                 = 65;
+  tsMaxOpenDatabasesExceeded               = 66;
+  tsCannotOpenSQLDataDictionaries          = 67;
+  tsCannotPerfomRIDelCascadeOperation      = 68;
+  tsRIDefinitionIsOutOfSync                = 73;
+  tsBtrieveAbortedTransaction              = 74;
+  tsConflictOnReferencedFile               = 76;
+  tsEncounteredWaitError                   = 77;
+  tsDeadLock                               = 78;
+  tsProgrammingErrorOccured                = 79;
+  tsConflict                               = 80;
+  tsLockError                              = 81;
+  tsLostPosition                           = 82;
+  tsReadOutSideTransaction                 = 83;
+  tsRecordInUse                            = 84;
+  tsFileInUse                              = 85;
+  tsFileTableFull                          = 86;
+  tsHandleTableFull                        = 87;
+  tsIncompatibleModeError                  = 88;
+  tsRedirectedDeviceTableFull              = 90;
+  tsServerError                            = 91;
+  tsTransactionTableError                  = 92;
+  tsIncompatibleLockType                   = 93;
+  tsPermissionError                        = 94;
+  tsSessionNoLongerValid                   = 95;
+  tsCommunicationEnvironmentError          = 96;
+  tsDataMessageTooSmall                    = 97;
+  tsInternalTransactionError               = 98;
+  tsIncorrectRecordManager                 = 99;
+  tsNoCasheBuffersAvailable                = 100;
+  tsInsufficientOperateSystAvailable       = 101;
+  tsInsufficientStackSpaceAvailable        = 102;
+  tsChunkOffsetTooBig                      = 103;
+  tsLocaleInfoCouldNotBeFound              = 104;
+  tsFileCannotCreatedWithVAT               = 105;
+  tsOperationCannotGetNextChunk            = 106;
+  tsChunkOperationsCannotPerformed         = 107;
+  tsNotFilialTable                         = 109;
+  tsFilialTableIsFilial                    = 110;
+  tsFilialTableIsCommon                    = 111;
+  tsRepositoryInitError                    = 112;
+
+  tsInitError                              = 200;
+  tsHavingNotOk                            = 201;
+  tsBadStructure                           = 202;
+  tsSurrKeyZero                            = 203;
+  tsFileNameTooLong                        = 204;
+  tsNeedDropRegim                          = 206;
+  tsNeedBtrieve6                           = 207;
+  tsInvalidIndexNumber                     = 208;
+  tsIndexNowExist                          = 209;
+  tsNoDictForRestoreIndex                  = 210;
+  tsDemoOverflow                           = 254;
+
+  tsEngineNotLoaded                        = 300;
+  tsNoCallBackFunction                     = 301;
+  tsInitSubSelectError                     = 302;
+  tsTableHandlersOverflow                  = 303;
+  tsInvalidTableHandler                    = 304; // Если используется некорректная ссылка на таблицу
+  tsInvalidSubSelect                       = 305; // При вызове драйвера неверная ссылка на выборку
+  tsIndexNotFound                          = 306;
+  tsFieldNotFound                          = 307;
+  tsFilterNotFound                         = 308;
+  tsInvalidFilterTranslation               = 309;
+  tsNoPosition                             = 310;
+  tsInternalError                          = 311;
+  tsNotAvailableInThisVersion              = 312; // Возможность не поддерживает7ся данной версией драйвера
+  tsInvalidFilterCondition                 = 313; // Не выполнилось условие фильтра
+  tsInvalidInfoCode                        = 314; // Неверный код для операции GetInfo
+  tsInvalidHardLink                        = 315; // Невыполненно условие жесткой подцепки
+  tsInvalidDriverNumber                    = 316;
+  tsFatalLostPosition                      = 317;
+  tsNoOrderField                           = 318; // Нет зарегистрированных полей,соответствующих порядку
+  tsInvalidRelation                        = 319; // Не выполненна ссылочная целостность
+  tsFatalError                             = 320; // !!! Самая ужасная ошибка !!!
+  tsInsertOkButPositionLast                = 321; // После операции вставки запись нормально вставилась,
+                                                  // но позиция в таблице не изменилась,так как не
+                                                  // выполнены жесткие связи для вставленной записи
+  tsRecordLengthTooBig                     = 322; // Длина записи превышает MaxBufSize
+  tsReadAfterMemo                          = 323;
+  tsJournalMemoError                       = 324; // Ошибка при работе с мемо полем журнала
+  tsErrorMessageNotFound                   = 325; // for ErrorMessage
+  tsPreviousErrorStatus                    = 326;
+  tsDropPermanentIndex                     = 327;
+  tsDriverNotFound                         = 328; // Нельзя загрузить драйвер
+  tsDriverAlReadyActive                    = 329; // Нельзя несколько раз активизировать драйвер одним приложением
+  tsInvalidParameters                      = 330; // Заданны неверные параметры
+  tsAccessToFieldDenied                    = 331; // Попытка чтения значения из
+                                                  // поля, доступ к которому закрыт для пользователя.Этот статус устанавливается
+                                                  // только на уровне таблицы, не вызывает блокировки выборки и выносится наверх
+                                                  // скорее всего через Verify=False соответствующего поля. В поле заносятся
+                                                  // значения по умолчанию
+  tsCompressError                          = 332; // Ошибка архивации\дезархивации. Детальную информацию драйвер может возвратить через ErrorMessage
+  tsFileInTransaction                      = 333; // Попытка открыть файл, вовлеченный в файловую транзакцию другим пользователем
+
+  // Статусы групповых операций
+  tsTransactionCommitDisabled              = 334;
+  tsUserAbort                              = 335;
+  tsGroupOperationNotAllowed               = 336;
+  tsCurrentTransactionCrashed              = 337;
+
+  // Циклицеская ссылка
+  tsRecursiveLink                          = 339; // Рекуривное реляционное отношение
+
+  // Ошибки открытия словаря
+  tsWrongDictionaryVersion                 = 340; // Несовпадение версий словаря
+  tsDictionaryAccessDenied                 = 341; // У пользователя нет прав для работы со словарем
+  tsTmpDictionaryLock                      = 342; // Временно доступ к словарю запрещен. Возможно производится эксклюзивная операция
+  tsCantOpenDictFiles                      = 343; // Невозможно открыть словарные таблицы
+  tsWrongDictParameters                    = 344; // Неверные параметры инициализации словаря
+  tsDictionaryError                        = 345; // Ошибка открытия словаря, не поддающаяся классификации
+  tsWrongUserWorkStation                   = 346; // Пользователь не имеет права работать с этой рабочей станции
+  tsNotClosedWindows                       = 347; // Невозможно открыть словарь - не закрыты окна
+  tsWrongDictionaryChecksum                = 348; // Не совпадают контрольные суммы в словаре и в использующей его программе
+
+  // Ошибки при работе с семафорами
+  tsSemaphorNotExist                       = 350; // При операции снятия семафора, требуемого семафора не указалось
+  tsSemaphorIsBusy                         = 351; // Невозможно установить семафор, т.к. семафор с таким именем уже установлен
+  tsSemaphorModeError                      = 352; //
+  tsSemaphorError                          = 353; // Общая ошибка работы с семафорами
+  tsSemaphorNotAllowed                     = 349; // В данный момент выполнить требуемую операцию с семафором невозможно. Например, попытка установить\снять семафор внутри активной транзакции
+  
+  tsRRJSNoExclusive                        = 354; // Коды ошибок для саппорта (функция ReReadJournalSettings)
+  tsRRJSInsideTransaction                  = 355; // Коды ошибок для саппорта (функция ReReadJournalSettings)
+
+  // Ошибки при смене текущего оффиса
+  tsUserFromNewOffice                      = 356; // Текущий юзер не может быть из нового оффиса
+  tsCannotMoveUser                         = 357; // В новом оффисе есть юзер с тем же именем, что и текущий
+  tsCannotRenameCurrentUser                = 358; // Текущего юзера нельзя переименовывать или менять ему оффис
+  tsModifyDeniedInUnknownBranch            = 359;
+
+    tsRecursiveCallToBuildGraph                          = 360;
+    tsInvalidTableReferencedInOrder          = 361;
+    tsBrowseListStructureMismatch            = 362;
+    tsBrowseListFilterValuesMismatch         = 363;
+    tsInvalidPosInBrowseList                 = 364;
+    tsTableReferencedInExprNotPresentInFrom  = 365;
+    tsPracticalOverflow                      = 366;
+    tsTheoreticalOverflow                    = 367;
+    tsRecentExecuteFailed                    = 368;
+    tsFetchAfterNotSelect                    = 369;
+    tsUserNameTooLong                        = 370;
+    tsUserNameBadSymbols                     = 371;
+    tsCursorDroppedTran                      = 372;
+    tsCursorDroppedOther                     = 373;
+    tsCannotDropOnlineUser                   = 374;
+    tsStateSaverRecursion                    = 375;
+    tsPasswordCheckFailed                    = 376;
+
+  tsOperationAbortedByTrigger              = 30000;
+  tsOperationAbortedByUser                 = 30001;
+  tsStaticModifierStructChanged            = 30002;
+  tsDirectSQLIfcError                      = 30003;
+  tsDirectSQLCompileError                  = 30004;
+  tsDirectSQLProtectStored                 = 30005;
+  tsDirectSQLStoredNotFound                = 30006;
+  tsDirectSQLFieldsCountMismatch           = 30007;
+  tsDirectSQLInvalidParameters             = 30008;
+  tsDirectSQLDuplicatedParameter           = 30009; // Этап выполнения определен параметр как именованный, так по позиции в запросе
+  tsDirectSQLParameterNotAssigned          = 30010; // Этап выполнения определен параметр как именованный, так по позиции в запросе

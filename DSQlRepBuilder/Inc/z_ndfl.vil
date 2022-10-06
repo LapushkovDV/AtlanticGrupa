@@ -1,0 +1,70 @@
+#ifdef ComponentVersion
+#component "z_ndfl"
+#end
+vipinterface getinform licensed(free);
+vipinterface spravbuh licensed(free) parameters(NSpr: word);
+vipinterface sconspr licensed(free) parameters(Par: word);
+vipinterface Zpodnal1
+  licensed (menuzarp,menuzarp2);
+vipinterface ZPodNal2 licensed(free);
+vipinterface Zpodnal3 licensed(free);
+vipinterface ZPodLgot licensed(free);
+vipinterface PodLgot  licensed(free) parameters(p1: comp; p2: double);
+
+vipinterface SaveIn licensed(free) parameters(OthetName: string; DataOtch: date; AllCount: word);
+vipinterface SaveIn_New licensed(free) parameters(OthetName: string; DataOtch: date; AllCount: word);
+vipinterface Sppr2
+  licensed (menuzarp,menuzarp2);
+vipinterface bfrm2T
+  licensed (menuzarp,menuzarp2);
+vipinterface PickVich licensed(free);
+vipinterface Podnal6 licensed(free) parameters(p1: comp; p2: double);
+vipinterface minhelp licensed(free) parameters(p1: comp);
+vipinterface Pickhelp licensed(free) parameters(RabSumma: double);
+vipinterface minPodar licensed(free) parameters(p1: comp);
+vipinterface PickPo licensed(free) parameters(RabSumma: double);
+vipinterface bfrm_New licensed(free);
+vipinterface bfrm_2007 licensed(free);
+vipinterface INCOMNEW licensed(free) parameters(toPick: word; var p1: longint);
+vipinterface INCOMNEWRB licensed(free) parameters(toPick: word; var p1: longint);
+vipinterface SKIDNEW licensed(free) parameters(p2: word; p1: comp);
+vipinterface SKIDNEWRB licensed(free) parameters(p2: word; p1: comp);
+vipinterface markgni licensed(free);
+vipinterface NDFL
+  licensed (menuzarp,menuzarp2);
+vipinterface NDFL_Form licensed(free);
+vipinterface NDFLForm2005 licensed(free);
+vipinterface NDFLOZ licensed(free);
+vipinterface NDFLOZ2005 licensed(free);
+vipinterface klincom licensed(free) parameters(toPick: word; p1: longint);
+vipinterface klskid licensed(free) parameters(p2: word; p1: comp);
+vipinterface IA licensed(free) parameters(VidDoc: word);
+vipinterface IAL licensed(free);
+vipinterface MoldCard licensed(free);
+vipinterface MoldCard_1 licensed(free);
+vipinterface MIA302SeekGNI licensed(free) parameters(Sotr: string[80]);
+vipinterface nalsprr licensed(free) parameters(wtype: word; p2: double);
+vipinterface uchsovm licensed(free);
+vipinterface uchsovm1 licensed(free) parameters(word1:word;CheckMon1:word;CheckMon2:word;YearRas:integer);
+vipinterface DopNal licensed(free) parameters(LS_Nrec: comp; p2: double);
+vipinterface Dopnap licensed(free) parameters(LS_Nrec: comp; p2: double);
+vipinterface SumUdNal licensed(free) parameters(LS_Nrec: comp; p2: double);
+vipinterface SumUdNap licensed(free) parameters(LS_Nrec: comp; p2: double);
+vipinterface SumUdArch licensed(free) parameters(LS_Nrec: comp; p2: double);
+vipinterface conudnap licensed(free) parameters(TM: word);
+vipinterface conu11 licensed(free);
+vipinterface sprav_DSV licensed(free);
+vipinterface psprav_DSV licensed(free);
+vipinterface BFRM_2008 licensed(free);
+vipinterface BFRM_2009 licensed(free);
+vipinterface MoldNal licensed(free);
+vipinterface Podnal1 licensed(free);
+vipinterface Podnal2 licensed(free);
+vipinterface Podnal3 licensed(free);
+vipinterface SprForChlildAllowanceAndZhilSubs licensed(free) parameters(NSpr: word);
+vipinterface SprDohodGr licensed(free);
+vipinterface VkladPens licensed(free);
+//------------------------------------------------------------------------------
+// диалоги
+//------------------------------------------------------------------------------
+dialog ConDohMonth(CheckMon1: word; CheckMon2: word);

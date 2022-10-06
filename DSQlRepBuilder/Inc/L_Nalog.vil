@@ -1,0 +1,8 @@
+#ifdef ComponentVersion
+#component "L_Nalog"
+#end
+
+VipInterface GetGRNAL licensed (FREE) Parameters (ccGrNal :comp;  TipGrNal :word);
+VipInterface GetNalog licensed (FREE) Parameters (c1 :comp);
+VipInterface GetPayment licensed (FREE) Parameters (c1 :comp);
+VipInterface GetSomeNalog licensed (FREE);

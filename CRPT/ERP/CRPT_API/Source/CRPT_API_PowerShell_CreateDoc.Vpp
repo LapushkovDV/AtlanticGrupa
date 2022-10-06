@@ -1,0 +1,125 @@
+procedure fillrecArray_CreateDoc; {
+
+}
+
+procedure InsertCreateDoc; {
+
+}
+
+Procedure FillPS1_CrptAPI_CreateDoc(_OleGenerateGUID: string; _par1 : string; _par2 : string; _par3 : string; _par4 : string; _par5 : string); {
+
+MyLog(sGetTune('USERTUNE.CRPT_PRJ.CryptoCrtf'));
+MyLog(sGetTune('USERTUNE.CRPT_PRJ.tokenPath'));
+
+MyWriteLN('[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12');
+MyWriteLN('$scriptPath = $MyInvocation.MyCommand.Path | Split-Path -Parent                                              ');
+MyWriteLN('$crtf = "'+sGetTune('USERTUNE.CRPT_PRJ.CryptoCrtf')+'";                                                      ');
+MyWriteLN('$tokenPath = '''+GetTokenPath+''';                                       ');
+MyWriteLN('$conStrinGal  = '''+GetConnString+''' ');
+MyWriteLN('$circuitserviceID= "CRPT_CreateDoc"                                                                          ');
+MyWriteLN('$RQST_GUID = "'+_OleGenerateGUID+'"                                                                          ');
+//MyWriteLN('$xmlDocPath = $scriptPath + '+_par2+ ''';                                                                 ');  // Parameter2 xml doc name
+MyWriteLN('$xmlDocPath = '''+_par2+ ''';                                                                 ');  // Parameter2 xml doc name. Путь полный приходит до файла
+MyWriteLN('$base64docPath = $scriptPath + ''\''+$RQST_GUID+''_base64Body.txt'';                                         ');
+MyWriteLN('$signDocPathOut = $scriptPath + ''\''+$RQST_GUID+''_signed_Body.txt'';                                       ');
+
+MyWriteLN('function Invoke-DatabaseQuery {                                                         ');
+MyWriteLN('        [CmdletBinding()]                                                               ');
+MyWriteLN('        param (                                                                         ');
+MyWriteLN('                [string]$connectionString,                                              ');
+MyWriteLN('                [string]$query,                                                         ');
+MyWriteLN('                [switch]$isSQLServer                                                    ');
+MyWriteLN('        )                                                                               ');
+MyWriteLN('        if ($isSQLServer) {                                                             ');
+MyWriteLN('                Write-Verbose ''in SQL Server mode''                                    ');
+MyWriteLN('                $connection = New-Object -TypeName System.Data.SqlClient.SqlConnection  ');
+MyWriteLN('        } else {                                                                        ');
+MyWriteLN('                Write-Verbose ''in OleDB mode''                                         ');
+MyWriteLN('                $connection = New-Object -TypeName System.Data.OleDb.OleDbConnection    ');
+MyWriteLN('        }                                                                               ');
+MyWriteLN('        $connection.ConnectionString = $connectionString                                ');
+MyWriteLN('        $command = $connection.CreateCommand()                                          ');
+MyWriteLN('        $command.CommandText = $query                                                   ');
+MyWriteLN('        $connection.Open()                                                              ');
+MyWriteLN('        $command.ExecuteNonQuery()                                                      ');
+MyWriteLN('        $connection.close()                                                             ');
+MyWriteLN('}                                                                                       ');
+
+MyWriteLN('Function GetResponse() {                                                                                     ');
+MyWriteLN('    try {                                                                                                    ');
+MyWriteLN('        $token = Get-Content -Path $tokenPath                                                                ');
+MyWriteLN('                                                                                                             ');
+MyWriteLN('        Set-Content -Path $xmlDocPath -Value (Get-Content -Path $xmlDocPath) -Force -NoNewline               ');
+MyWriteLN('        $xmlDoc = Get-Content -Path $xmlDocPath                                                              ');
+MyWriteLN('                                                                                                             ');
+MyWriteLN('        New-Item $base64docPath -Force                                                                       ');
+//MyWriteLN('        $base64Doc = [System.Convert]::ToBase64String($xmlDoc.ToCharArray());                                ');  // Не конвертирует кириллицу
+MyWriteLN('        $base64Doc = [System.Convert]::ToBase64String([Text.Encoding]::Default.GetBytes($xmlDoc));           ');
+MyWriteLN('        Set-Content -Path $base64docPath -Value $base64Doc -Force -NoNewline                                 ');
+MyWriteLN('                                                                                                             ');
+//MyWriteLN('        csptest -sfsign -sign -in $base64docPath -out $signDocPathOut -MY $crtf -detached -base64 -add       ');
+//MyWriteLN('        [string]$signedDoc = (Get-Content -Path $signDocPathOut).Replace("`n`r","")                          ');
+MyWriteLN('        csptest -sfsign -sign -in $xmlDocPath -out $signDocPathOut -MY $crtf -detached -base64 -add          ');
+MyWriteLN('                                                                                                             ');
+MyWriteLN('        Set-Content -Path $signDocPathOut -Value (Get-Content -Path $signDocPathOut) -Force -NoNewline       ');
+MyWriteLN('        [string]$signedDoc = (Get-Content -Path $signDocPathOut)                                             ');
+MyWriteLN('                                                                                                             ');
+MyWriteLN('        $headers = @{Authorization = "Bearer " + $token}                                                     ');
+MyWriteLN('        $Body = @{                                                                                           ');
+MyWriteLN('            document_format = "'+_par1+'";                                                                   ');   // Parameter1 docForamt
+MyWriteLN('            product_document= $base64Doc;                                                                    ');
+MyWriteLN('            type = "'+_par3+'";                                                                              ');   // Parameter3 docType
+MyWriteLN('            signature = $signedDoc;                                                                          ');
+MyWriteLN('        } | ConvertTo-Json                                                                                   ');
+MyWriteLN('                                                                                                             ');
+MyWriteLN('                                                                                                             ');
+MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/lk/documents/create?pg=water" -Headers $headers -Body $Body -ContentType "application/json;charset=UTF-8" -Method Post ');
+MyWriteLN('                                                                                                             ');
+MyWriteLN('        #$response                                                                                           ');
+MyWriteLN('                                                                                                             ');
+MyWriteLN('        If ( $response.StatusCode -eq 201) {                                                                 ');
+MyWriteLN('          Write-Host "Создан документ. OID = "$response.Content -Fore Yellow                                 ');
+MyWriteLN('        }                                                                                                    ');
+
+
+case _par3 of
+  'LP_GOODS_IMPORT_XML','LP_FTS_INTRODUCE_XML' : {
+     MyWriteLN('             $sqlQuery = ''update t$CRPT_Docs set f$CRPT_Oid = ''''''+$response.Content+'''''' where f$nrec = dbo.toComp('+_par4+')''   ');
+  }
+  'DISAGGREGATION_DOCUMENT_XML' : {
+     MyWriteLN('             $sqlQuery = ''update t$CRPT_AggrDocs set f$CRPT_Oid = ''''''+$response.Content+'''''' where f$nrec = dbo.toComp('+_par4+')''   ');
+  }
+  'AGGREGATION_DOCUMENT_XML' : {
+     MyWriteLN('             $sqlQuery = ''update t$CRPT_AggrDocs set f$CRPT_Oid = ''''''+$response.Content+'''''' where f$nrec = dbo.toComp('+_par4+')''   ');
+  }
+  'LP_SHIP_GOODS_XML' : {
+     MyWriteLN('             $sqlQuery = ''update t$CRPT_ShipmentDocs set f$CRPT_Oid = ''''''+$response.Content+'''''' where f$nrec = dbo.toComp('+_par4+')''   ');
+  }
+  'LP_CANCEL_SHIPMENT' : {
+     MyWriteLN('             $sqlQuery = ''update t$CRPT_ShipmentDocs set f$cancelDoc_CRPT_oid = ''''''+$response.Content+'''''' where f$nrec = dbo.toComp('+_par4+')''   ');
+  }
+ 'LK_RECEIPT_XML' : {
+     MyWriteLN('             $sqlQuery = ''update t$CRPT_ReceiptDocs set f$CRPT_Oid = ''''''+$response.Content+'''''' where f$nrec = dbo.toComp('+_par4+')''   ');
+  }
+end;
+
+
+MyWriteLN('        $res = Invoke-DatabaseQuery -connectionString $conStrinGal -query $sqlQuery -isSQLServer             ');
+MyWriteLN('                                                                                                             ');
+MyWriteLN('        Remove-Item $base64docPath -Force                                                                    ');
+MyWriteLN('        Remove-Item $signDocPathOut -Force                                                                   ');
+MyWriteLN('    } catch {                                                                                                ');
+MyWriteLN('        if ($response.errorCode -eq 401) {                                                                   ');
+MyWriteLN('                                                                                                             ');
+MyWriteLN('        }                                                                                                    ');
+MyWriteLN('        Write-Host $_ -Fore Yellow                                                                           ');
+MyWriteLN('    }                                                                                                        ');
+MyWriteLN('}                                                                                                            ');
+MyWriteLN('GetResponse;                                                                                                 ');
+}
+
+
+Function PostRequestToAPICreateDoc(_docFormat: string; _docPath: string; _docType: string; _galDoc: string): boolean;
+{
+  #BodyProcedurePostRqst(CreateDoc,_docFormat, _docPath, _docType, _galDoc, '');
+}

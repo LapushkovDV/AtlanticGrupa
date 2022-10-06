@@ -1,0 +1,28 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента C_JOIN
+
+#ifdef ComponentVersion
+#component "C_JOIN"
+#end
+
+VipInterface KatOrgOb licensed (FREE);
+VipInterface MesJoi licensed (FREE);
+VipInterface KatBOb licensed (FREE);
+VipInterface JoinDoGroups licensed (FREE);
+VipInterface KatMcOb licensed (FREE);
+VipInterface UserAnalit licensed (FREE);
+VipInterface KatMolOb licensed (FREE);
+VipInterface KatMolOb1 licensed (FREE);
+VipInterface KatPodrOb licensed (FREE);
+VipInterface KatPodrOb1 licensed (FREE);
+VipInterface JoinUslGroups licensed (FREE);
+VipInterface KatUslgOb licensed (FREE);
+VipInterface RazdKau licensed (FREE) Parameters(tmpnRec : comp);
+VipInterface ReplaceKau licensed (FREE) Parameters(KauOldFlt:word; KauNewFlt:word; NrecPick:comp);
+VipInterface ZamTab licensed (FREE) Parameters(tmpnRec : comp);
+VipInterface GrNalOb licensed (FREE);
+VipInterface KatNalogOb licensed (FREE);
+VipInterface KatEdOb licensed (FREE);
+VipInterface KatStroyOb licensed (FREE);
+VipInterface ObDriver licensed (FREE);
+VipInterface ObTC licensed (FREE);

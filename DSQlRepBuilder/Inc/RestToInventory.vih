@@ -1,0 +1,27 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - складской учет - инвентаризация
+// Дополнение спецификации инвентаризации остатками МЦ в соответствующем разрезе
+//********************************************************************************
+#ifndef _RestToInventory_vih_
+#define _RestToInventory_vih_
+
+#ifdef ComponentVersion
+#component "L_Sklad"
+#end
+
+objinterface IRestToInventory;
+  #doc
+  Дополняет спецификацию инвентаризации остатками МЦ в соответствующем разрезе
+  #end
+  public function AddRestToInv(
+    _cInvTab: comp;     //#docl инвентаризация (InvTab.NRec)
+    _ViewPole: longint; //#docl условия фильтрации (настройку условий осущ. посредством интерфейса GetSome_Any)
+    _wSP: word;         //#docl вид учета (см. oper.inc)
+    _isSerialN: boolean //#docl инвентаризация по серийным номерам?
+  ): boolean;           //#docl возвращает false, если нет остатков в данном разрезе.
+end;
+
+vipinterface RestToInventory implements IRestToInventory licensed(free);
+
+#endif // _RestToInventory_vih_

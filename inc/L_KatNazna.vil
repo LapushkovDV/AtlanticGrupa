@@ -1,0 +1,13 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компоненты
+
+#ifdef ComponentVersion
+#component "L_KatNazna"
+#end
+
+VipInterface GetNazna       licensed (FREE) Parameters (c1 : comp);
+VipInterface GetSomKatNazna licensed (FREE) Parameters (OkOne : boolean; pKatNazna : comp);
+/*
+//---чисто-объектные интерфейсы ч/з vih-подключения---
+//----------------------------------------------------
+*/

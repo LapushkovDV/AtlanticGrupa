@@ -1,0 +1,25 @@
+//Маршрут движения по получателю
+object 'M_TRANSP::GET_DOR' : InterfaceWindow {
+
+
+  object MARAVTGET : Browser {
+
+    object 'string(maravt.nrec)' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Nrec маршрута';
+      HelpLine = 'Nrec маршрута';
+      FieldName = 'string(maravt.nrec)';
+      Index = 8;
+      DefaultWidth = 26;
+      ButtonType = 0;
+    } // string(maravt.nrec) : Column
+
+  } // MARAVTGET : Browser
+
+
+} // M_TRANSP::GET_DOR : InterfaceWindow
+//-----------------------------------------------------------------------------

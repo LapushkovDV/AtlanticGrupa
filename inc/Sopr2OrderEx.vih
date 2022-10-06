@@ -1,0 +1,72 @@
+//------------------------------------------------------------------------------
+//                                            (c) 2011 корпорация Галактика
+// Галактика 8.10 - Контур логистики.
+// Пакетное формирование ордеров по накладным
+//------------------------------------------------------------------------------
+
+// Интерфейс - наследник Sopr2Order. Создан, чтобы использовать функционал Sopr2Order как объект, вызывая
+// методы объектного интерфейса, а не ограничиваться RunInterface.
+
+#ifndef _Sopr2OrderEx_vih_
+#define _Sopr2OrderEx_vih_
+
+#ifdef ComponentVersion
+#component "L_Sklad"
+#end
+
+objinterface ISopr2OrderEx;
+
+  #doc
+  Формирование ордера для приходного документа в пакетном режиме (без взаимодействия с пользователем).
+  Метод также выполняет распределения по складам.
+  #end
+  function BatchMakePrihOrder(
+    _cKatSopr: comp;
+
+    #doc
+    Если _dOpr задана - используется для установки даты ордера. Если = ZeroDate - используется дата накладной.
+    #end
+    _dOpr: date;
+
+    #doc
+    Если необходимо задать конкретные подразделение и мол - указываем. Иначе - оставляем 0,
+    тогда будут использованы KatSopr.cPodrTo, cMolTo.
+    #end
+    _cPodr: comp;
+    _cMol: comp;
+
+    #doc
+    Установить в true, если необходимо переформировывать ордера всегда, даже если они ранее были сформированы
+    (старые при этом будут удалены).
+    #end
+    _forceMakeOrders: boolean;
+
+    #doc
+    Режим работы.
+    Поддерживается бит WMODE_LOG_TO_MSGBATCH (см. OrderFuncModes.inc). Если этот бит установлен, сообщения
+    протоколируются в объект MsgBatch. Поэтому перед вызовом функции необходимо выполнить oMsgBatch.StartLog с
+    необходимыми опциями протоколирования (в частности, mfBatch для подавления возможных сообщений message).
+    По окончании работы функции выполнить oMsgBatch.EndMsgLog().
+    Если протокол не нужен - сбросить этот бит.
+    #end
+    wMode: word;
+
+    var _firstRozn: boolean;
+    var _prRozn: boolean
+  ): boolean; //#docl возвращает true, если завершена успешно.
+
+  #doc
+  Печать ордеров по результатам пакетного формирования
+  #end
+  Function PrintOrders(NumPick : word; TypeSopr : word; _oprSklad, _oprMOL : comp; oprDate : date; KatOrgName : string; frmHandle: TPtr; var ferr : boolean) : boolean;
+
+  #doc
+  Привязка ТХО при пакетном формировании ордеров по документам
+  #end
+  Function MakeTXO( NumPick : word) : boolean;
+
+end;
+
+vipinterface Sopr2OrderEx(Sopr2Order) implements ISopr2OrderEx;
+
+#endif // _Sopr2OrderEx_vih_

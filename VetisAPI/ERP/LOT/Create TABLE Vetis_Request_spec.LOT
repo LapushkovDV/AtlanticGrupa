@@ -1,0 +1,47 @@
+Create table ATL_VetisRqstSp "Спецификация к запросам"
+with table_Code = 31603
+with replace
+with tableoptions Branched
+(
+   NREC          :comp       "Идентификатор",
+   requestNrec   :comp       "nrec запроса",
+   description   :string     "Описание",
+
+   guid              :string "GUID записи складского журнала",
+   entryNumber       :string "Номер записи складского журнала",
+   name              :string "Наименование продукции",
+   volume            :string "Объём в КГ",
+   dateOfProduction  :string "Дата производства",
+   expiryDate        :string "Срок годности",
+   perishable        :string "Скоропорт",
+   quantity2         :string "Количество штук",
+   quantity4         :string "Количество коробок",
+   status            :string "Статус версии записи журнала",
+   createDate        :string "Дата создания записи журнала",
+   updateDate        :string "Дата изменения записи журнала",
+   productType       :string "Тип продукции",
+   productGuid       :string "GUID продукции",
+   subProductGuid    :string "GUID вида продукции",
+   globalID          :string "GTIN",
+   batchID           :string "BatchNumber",
+   level2            :string "Уровень упаковки(2)",
+   packingTypeId_2   :string "Идентификатор упаковки",
+   productMarksEan_2 :string "EAN13",
+   level4            :string "Уровень упаковки(4)",
+   packingTypeId_4   :string "Идентификатор упаковки по классиф. ЕК",
+   productMarksEan_4 :string "EAN13(4)",
+   productMarks_4    :string "EAN128(4)",
+   vetDocumentUuid   :string "GUID связанного ВСД"
+  , country_guid  : string "Страна происхождения партии GUID"
+   ,producer_guid : string "Контрагент-производитель GUID"
+   ,producer_role : string "Контрагент-производитель роль"
+
+
+
+)
+with index
+(
+    i_NREC = NREC(Unique, Surrogate, Journal)
+   ,i_Rqst = requestNrec
+)
+;

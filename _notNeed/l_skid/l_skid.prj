@@ -1,0 +1,16 @@
+#param /linc:autoexec.vpp
+#statusline "statgal"
+
+#include galnet.inc end;
+#include glovars.inc
+
+#include extAttr.vih
+#include posMarker.vih
+
+#define ComponentVersion
+#component "L_SKID"
+
+#define last_col 18  //последняя колонка в файле загрузки
+
+#make "reports\*.vip"
+#make "katskid\*.vip"

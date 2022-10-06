@@ -1,0 +1,199 @@
+!╔═══════════════════════════════════════════════════════════════════════════╗
+!║ Назначение    : Формирование партий (накладные на приход,вн.перемещение)  ║
+!╚═══════════════════════════════════════════════════════════════════════════╝
+
+#ifndef _MKPARTY_VIH
+#define _MKPARTY_VIH
+
+#ifdef ComponentVersion
+#component "L_SOPRDOC"
+#end
+
+#doc
+структура для формирования новой партии
+#end
+type
+  tNewPartyRec = record
+    KatSopr_VidSopr  : word;
+    KatSopr_DSopr    : date;
+    KatSopr_NSopr    : string;
+    KatSopr_Name     : string;
+    KatSopr_cOrgBase : comp;
+    KatSopr_cVal     : comp;
+    KatOrg_Name      : string;
+    KatOrg_UNN       : string;
+    KatOrg_Code      : string;
+    SpSopr_nSertif   : string;
+    Sopr_Cena        : double;
+    Sopr_Valuta      : string;
+    OrdB_Cena        : double;
+    OrdB_Valuta      : string;
+    _OtpEdKoef       : double;
+    Tip_kons         : word;
+    FactoryPrice     : string;
+    FactoryProcNac   : string;
+    Sopr_cUKS        : comp;
+    KatMC_NRec       : comp;
+    KatMC_Name       : string;
+    KatMC_BarKod     : string;
+  end;
+
+  tNewPartyRec_V2 = record
+    KatSopr_VidSopr  : word;
+    KatSopr_DSopr    : date;
+    KatSopr_NSopr    : string;
+    KatSopr_Name     : string;
+    KatSopr_cOrgBase : comp;
+    KatSopr_cVal     : comp;
+    KatOrg_Name      : string;
+    KatOrg_UNN       : string;
+    KatOrg_Code      : string;
+    SpSopr_nSertif   : string;
+    Sopr_Cena        : double;
+    Sopr_Valuta      : string;
+    OrdB_Cena        : double;
+    OrdB_Valuta      : string;
+    _OtpEdKoef       : double;
+    Tip_kons         : word;
+    FactoryPrice     : string;
+    FactoryProcNac   : string;
+    Sopr_cUKS        : comp;
+    KatMC_NRec       : comp;
+    KatMC_Name       : string;
+    KatMC_BarKod     : string;
+    KatSopr_NVagon   : string;
+  end;
+
+  tNewPartyRec_V3 = record
+    KatSopr_VidSopr  : word;
+    KatSopr_DSopr    : date;
+    KatSopr_NSopr    : string;
+    KatSopr_Name     : string;
+    KatSopr_cOrgBase : comp;
+    KatSopr_cVal     : comp;
+    KatOrg_Name      : string;
+    KatOrg_UNN       : string;
+    KatOrg_Code      : string;
+    SpSopr_nSertif   : string;
+    Sopr_Cena        : double;
+    Sopr_Valuta      : string;
+    OrdB_Cena        : double;
+    OrdB_Valuta      : string;
+    _OtpEdKoef       : double;
+    Tip_kons         : word;
+    FactoryPrice     : string;
+    FactoryProcNac   : string;
+    Sopr_cUKS        : comp;
+    KatMC_NRec       : comp;
+    KatMC_Name       : string;
+    KatMC_BarKod     : string;
+    KatSopr_NVagon   : string;
+    KatSopr_DPrice   : date;
+  end;
+//******************************************************************************
+#doc
+  Формирование партий (накладные на приход, вн.перемещение)
+#end
+//******************************************************************************
+
+ObjInterface objMakeParty;
+
+//******************************************************************************
+#doc
+Назначение:
+  проверяет на корректность партии одну позицию накладной
+Параметры:
+  aPart        - ссылка на партию (возвращаемый)
+  aSpSopr      - ссылка на позицию накладной
+  ProtParty    - 1 - формирование протокола
+  AutoSetParty - 1 - формирование партии
+#end
+//******************************************************************************
+
+function OnCheckPosParty(var aPart: comp; aSpSopr: comp;
+                                ProtParty, AutoSetParty: word): boolean;
+
+//******************************************************************************
+#doc
+Назначение:
+  формирование(проверка) партий по накладной
+Параметры:
+  aKatSopr     - ссылка на накладною
+  ProtParty    - 1 - формирование протокола
+  AutoSetParty - 1 - формирование партии
+#end
+//******************************************************************************
+
+function CheckPartys  (aKatSopr: comp; ProtParty, AutoSetParty: word): boolean;
+
+//******************************************************************************
+#doc
+Назначение:
+  формирование новой партии по позиции накладной
+Параметры:
+  aSpSopr      - ссылка на позицию накладной
+  ProtParty    - 1 - формирование протокола
+  AutoSetParty - 1 - формирование партии
+#end
+//******************************************************************************
+
+function MakeNewParty (aSpSopr: comp; ProtParty, AutoSetParty: word) : comp;
+
+//******************************************************************************
+#doc
+Назначение:
+  формирование новой партии по позиции накладной (по NewPartyRec)
+Параметры:
+  NewPartyRec  - запись партии
+  ProtParty    - 1 - формирование протокола
+  AutoSetParty - 1 - формирование партии
+#end
+//******************************************************************************
+
+function MakeNewParty_2 (NewPartyRec: tNewPartyRec; ProtParty, AutoSetParty: word) : comp;
+
+//******************************************************************************
+#doc
+Назначение:
+  показать протокол формирование партий
+Параметры:
+  нет
+#end
+//******************************************************************************
+
+procedure ShowProtParty;
+
+end;
+
+ObjInterface objMakeParty_V2(objMakeParty);
+//******************************************************************************
+#doc
+Назначение:
+  формирование новой партии по позиции накладной (по NewPartyRec)
+Параметры:
+  NewPartyRec  - запись партии
+  ProtParty    - 1 - формирование протокола
+  AutoSetParty - 1 - формирование партии
+#end
+//******************************************************************************
+
+function MakeNewParty_3 (NewPartyRec: tNewPartyRec_V2; ProtParty, AutoSetParty: word) : comp;
+
+//******************************************************************************
+#doc
+Назначение:
+  формирование новой партии по позиции накладной (по NewPartyRec)
+Параметры:
+  NewPartyRec  - запись партии
+  ProtParty    - 1 - формирование протокола
+  AutoSetParty - 1 - формирование партии
+#end
+//******************************************************************************
+
+function MakeNewParty_4 (NewPartyRec: tNewPartyRec_V3; ProtParty, AutoSetParty: word) : comp;
+end;
+
+VipInterface iMakeParty implements objMakeParty_V2
+  Licensed(FREE);
+
+#end

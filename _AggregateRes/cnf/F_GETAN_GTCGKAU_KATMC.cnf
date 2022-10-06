@@ -1,0 +1,29 @@
+object 'F_GETAN::GTCGKAU_KATMC' : InterfaceWindow {
+  Centered = True;
+  object BRGETKAU : Browser {
+    StatusCtx = 6945;
+    ViewFlags = 6;
+    RowColorDark = 10;
+    VerDelimiterWidth = 1;
+    // Информация: объект "'Field: KATMC.BARKOD2'" типа Column не найден в базовой конфигурации!
+    object 'Field: KATMC.BARKOD2' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      StatusCtx = -1;
+      Title = 'SAP code';
+      HelpLine = 'SAP code';
+      FieldName = 'Field: KATMC.BARKOD2';
+      Index = 3;
+      DefaultWidth = 26;
+      ButtonType = 0;
+      DefaultPickButton = False;
+      HeaderAlign = 3;
+    } // Field: KATMC.BARKOD2 : Column
+  }
+} // F_GETAN::GTCGKAU_KATMC : InterfaceWindow
+//-----------------------------------------------------------------------------

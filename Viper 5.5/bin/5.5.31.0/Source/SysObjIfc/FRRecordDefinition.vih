@@ -1,0 +1,138 @@
+#ifndef __FRRecordDefinition_vih__
+#define __FRRecordDefinition_vih__
+
+const
+  frExportBIFF       = 0;
+  frExportXML        = 1;
+  frExportRTF        = 2;
+  frExportPDF        = 3;
+  frExportODS        = 4;
+  frExportODT        = 5;
+  frExportHTML       = 6;
+  frExportSimpleText = 13;
+  frExportXLSX       = 15;
+  frExportFP3        = 20;
+  frPrintParam       = 21;
+  frMailParam        = 22;
+  frEmbeddedID       = 30;
+
+  frcShowReport      = 1000;
+  frcExportReport    = 1001;
+  frcSendMailReport  = 1002;
+  frcPrintReport     = 1003;
+  frcDesignReport    = 1004;
+end;
+
+type
+  frxBiffExportParam = record
+    Pages           : String;
+    PageBreaks      : Boolean;
+    PagesPerSheet   : LongInt;
+    Picture         : Boolean;
+    DeleteEmptyRows : Boolean;
+    Formulas        : Boolean;
+    ShowDialog      : Boolean;
+    OpenAfterExport : Boolean;
+  end;
+
+  frxXMLExportParam = record
+    Pages           : String;
+    SuppressPageHeadersFooters : Boolean;
+    WYSIWYG         : Boolean;
+    PageBreaks      : Boolean;
+    Background      : Boolean;
+    SplitMode       : Byte;
+    RowsCount       : LongInt;
+    ShowDialog      : Boolean;
+    OpenAfterExport : Boolean;
+  end;
+
+  frxRTFExportParam = record
+    Pages           : String;
+    Picture         : Boolean;
+    WISYWIG         : Boolean;
+    PageBreaks      : Boolean;
+    SuppressPageHeadersFooters : Boolean;
+    HeaderFooter    : LongInt;
+    ShowDialog      : Boolean;
+    OpenAfterExport : Boolean;
+  end;
+
+  frxPDFExportParam = record
+    Pages           : String;
+    Compressed      : Boolean;
+    EmbedFonts      : Boolean;
+    HighResolution  : Boolean;
+    Outline         : Boolean;
+    Background      : Boolean;
+    Quality         : LongInt;
+    ShowDialog      : Boolean;
+    OpenAfterExport : Boolean;
+  end;
+
+  frxODExportParam = record
+    Pages           : String;
+    SuppressPageHeadersFooters : Boolean;
+    WISYWIG         : Boolean;
+    PageBreaks      : Boolean;
+    Background      : Boolean;
+    ShowDialog      : Boolean;
+    OpenAfterExport : Boolean;
+  end;
+
+  frxHTMLExportParam = record
+    Pages           : String;
+    Styles          : Boolean;
+    FixedWidth      : Boolean;
+    AllInOneFolder  : Boolean;
+    MultiPage       : Boolean;
+    PageNavigator   : Boolean;
+    BackGround      : Boolean;
+    PictureType     : Byte;
+    ShowDialog      : Boolean;
+    OpenAfterExport : Boolean;
+  end;
+
+  frxSimpleTextExportParam = record
+    Pages           : String;
+    PageBreaks      : Boolean;
+    EmptyLines      : Boolean;
+    Frames          : Boolean;
+    OEM             : Boolean;
+    ShowDialog      : Boolean;
+    OpenAfterExport : Boolean;
+  end;
+
+  frxXLSXExportParam = record
+    Pages           : String;
+    SuppressPageHeadersFooters : Boolean;
+    Picture         : Boolean;
+    DeleteEmptyRows : Boolean;
+    ShowDialog      : Boolean;
+    OpenAfterExport : Boolean;
+  end;
+
+  frxPrintParam = record
+    Pages       : String;
+    PrinterName : String;
+    PrintToFile : Boolean;
+    FileName    : String;
+    CopiesCount : LongInt;
+    Collate     : Boolean;
+    ShowDialog  : Boolean;
+  end;
+
+  frxSendMailParam = record
+    MailTo     : String;
+    Subject    : String;
+    Body       : String;
+    ShowDialog : Boolean;
+  end;
+
+  frxChoiceDialogParam = record
+    Action      : LongInt;
+    ActionIndex : LongInt;
+    IsSilence   : Boolean;
+  end;
+
+#endif

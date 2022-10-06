@@ -1,0 +1,1108 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 8.1 - Логистика
+// Удаление складского ордера
+//******************************************************************************
+
+Create view loDelOrd
+var
+  _cMC, _ccPodr,
+  _ccMol, _cParty: comp;
+  _dOrd: Date;
+  _SkPr: word;
+
+from
+  SpOrder
+, KatSopr
+, SpSopr
+, SpOrder SpOrder2
+, SpOrder SpOrderPrih
+, SpOrder SpOrderRash
+, SklOrder
+, SklOrder SklOrder2
+, SklOrder SklOrderRash
+
+where
+((
+       _SkPr     == SpOrder2.SP
+  AND  word(1)   == SpOrder2.vidOrder
+  AND  _cMC      == SpOrder2.cMC
+  AND  _dOrd    <<= SpOrder2.dOrd
+  AND  _SkPr     ==  SpOrderRash.SP
+  AND  word(1)   ==  SpOrderRash.vidOrder
+  AND  SpOrderPrih.cMC    == SpOrderRash.cMC
+  AND  SpOrderPrih.dOrd  <<= SpOrderRash.dOrd
+  AND  (SpOrderPrih.NRec  <> SpOrderRash.NRec)
+  AND  SpOrderPrih.cParty == SpOrderRash.cParty (noIndex)
+  AND  SpOrderRash.cMC == KatMC.Nrec (noIndex)
+))
+
+bounds cPodr   _ccPodr == SpOrder2.ccPodr (noIndex)
+bounds cMol    _ccMol  == SpOrder2.ccMol  (noIndex)
+bounds cParty  _cParty == SpOrder2.cParty (noIndex)
+
+;
+
+Form frm1wed('errwed1.OUT', 'ERRR') with novisual;
+//******************************************************************************
+// пользовательская функция выполняется перед удалением ордера False - прервать удаление
+Function OnBeforeDeleteOrder: boolean;
+{
+  IsRecModif := False;
+  OnBeforeDeleteOrder := True;
+}
+
+
+//******************************************************************************
+// пользовательская процедура выполняется после удаления ордера
+Procedure OnAfterDeleteOrder;
+{
+  IsRecModif := False;
+}
+
+
+//******************************************************************************
+// удаление ордеров по настройке
+Function IsDelOrder(pKatSopr: comp): boolean;
+var
+  sTuneVal: string;
+{
+  IsDelOrder := True;
+
+  KatSoprNRec := pKatSopr;
+
+  if (GetFirst KatSopr <> tsOk)
+    Exit;
+
+  if (GetFirst SklOrder <> tsOk)
+    Exit;
+
+  case KatSopr.VidSopr of
+  // снабжение
+    101, 108, 206, 111, 117:
+      sTuneVal := 'Oper.Buy.Nakl.IsDelOrder';
+  // сбыт
+    201, 106, 211:
+      sTuneVal := 'Oper.Sell.Nakl.IsDelOrder';
+  // остальные удалять по-умолчанию можно
+  else
+    Exit;
+  end;
+
+  case wGetTune(sTuneVal) of
+    1: {
+
+      ShowTune('Удаление ордеров запрещено настройкой', sTuneVal);
+
+      IsDelOrder := False;
+    }
+
+    2: {
+
+      if (oKatSoprFunc.IsSchfactExist(KatSopr.Buffer))
+      {
+        ShowTune('По накладной/акту создан документ для учета НДС.'#13 +
+                 'Удаление ордеров запрещено настройкой', sTuneVal);
+
+        IsDelOrder := False;
+      }
+    }
+
+    3: {
+      case wGetTune('Doc.Visible') of
+        dcOwnOnly, dcGrpRead, dcOwnModifAllRead:
+        {
+          if (SklOrder.Descr <> sGetTune('User.Descr'))
+          {
+            ShowTune('Ордер создан под другим дескриптором (' + SklOrder.Descr + ').'#13 +
+                     'Удаление ордеров запрещено настройкой', sTuneVal);
+
+            IsDelOrder := False;
+          }
+        }
+
+        dcGrpModif, dcGrpModifAllRead:
+        {
+          if (SklOrder.DesGr <> sGetTune('User.DesGr'))
+          {
+            ShowTune('Ордер создан под другой группой дескрипторов (' + SklOrder.DesGr + ').'#13 +
+                     'Удаление ордеров запрещено настройкой', sTuneVal);
+
+            IsDelOrder := False;
+          }
+        }
+      end;
+    }
+
+  end;
+}
+
+
+//********************************************************************************
+// проверка возможности удаления ордера
+Function CanDelOrdEx(pKatSopr: comp; MesPrmt, checkTune: boolean; wMode: word): boolean;
+var
+  FoundOrders : boolean;
+  KSVidSopr   : word;
+  SOdOrd      : date;
+{
+  CanDelOrdEx := False;
+
+  FoundOrders := False;
+
+  KatSoprNRec := pKatSopr;
+
+  if (GetFirst KatSopr <> tsOk)
+    Exit;
+
+  StartNewVisual( vtRotateVisual
+                 , vfTimer+vfScreenBottom
+                 , 'Проверка возвратов по документу ' + f_sNumDate(PrintNumber(KatSopr.Descr, KatSopr.NSopr), KatSopr.dSopr)
+                 , 1
+                 );
+
+  _LOOP SklOrder
+  {
+    if (SklOrder.tipOrd >= 3)
+      Continue;
+
+    NextVisual;
+
+    FoundOrders := True;
+
+    KSVidSopr := if (SklOrder.vidOrder = 0, 206, 106);
+
+    SOdOrd := SklOrder.dOrd;
+
+    if (lodelOrd.GetFirst KatSopr where (( KSVidSopr == KatSopr.vidSopr AND
+                                           SOdOrd    <<= KatSopr.dOpr       )) <> tsOk)
+      Continue; //сторно-накладной нету!
+
+    //------------------------------------------------------------------------------
+    // нашли накладную - ищем ссылки в спецификациях других ордеров
+    // хотя бы на одну из позиций текущего ордера
+
+    _LOOP SpOrder where ((SklOrder.NRec == SpOrder.cSklOrder))
+    {
+      NextVisual;
+
+      var NRec_: comp;  NRec_ := SpOrder.NRec;
+
+      if (lodelOrd.GetFirst SpOrder where ((nRec_ == SpOrder.cSpOrdV)) = tsOk)
+      {
+        StopVisual('', vfSilent);
+
+        if (MesPrmt)
+          Message('Выполнение операции невозможно, т.к. по документу '
+                 + f_sNumDate(PrintNumber(KatSopr.Descr, KatSopr.NSopr), KatSopr.dSopr)
+                 + ' были возвраты...', Information);
+        Exit;
+      }
+    }
+  }
+
+  StopVisual('', vfSilent);
+
+  if (wMode = 0)
+    if FoundOrders and checkTune          // ПИР 102.49976 если есть ордера и требуется проверять настройку
+      if NOT boGetTune('Doc.ModOrder')    // и настройка запрещает их редактирование
+      {                                   // выдаем сообщение
+        ShowTune('Установлен запрет редактирования складских ордеров', 'Doc.ModOrder');
+        Exit;                             // и выходим со значением функции False
+      }
+
+  CanDelOrdEx := True;
+}
+
+//********************************************************************************
+// проверка для приходных на "уже было списание по данному ордеру" - на самом деле по разрезу
+
+Function Check_wasSpis: boolean;
+{
+  Check_wasSpis := False;
+
+  if GetFirst SpOrder where ((SklOrder.NRec == SpOrder.cSklOrder)) <> tsOk
+    Exit;
+
+  var wRazrez: word;
+  wRazrez := 0;
+
+  if ((SpOrder.SP = 0) OR (SpOrder.SP = 2))
+    {
+      wRazrez := wGetTune('Oper.Razrez');
+
+      if wRazrez = 1 //старое представление
+        {
+          wRazrez := 2+4+8;
+          SetTune('Oper.Razrez', wRazrez);
+        }
+    }
+
+  if (SpOrder.SP = 1) //производство
+    case wGetTune('Manuf.MetodSpis') of
+    //=================================
+      1: wRazrez := 2+4;
+    //=================================
+      2: wRazrez := 2+8;
+    //=================================
+      3: wRazrez := 2+4+8;
+    //=================================
+    else wRazrez := 2;
+    //=================================
+    end; //case
+
+
+  if ((wRazrez AND 2) <> 0)
+    loDelOrd.AddBounds(loDelOrd.tbcPodr);
+
+  if ((wRazrez AND 4) <> 0)
+    loDelOrd.AddBounds(loDelOrd.tbcMol);
+
+  if ((wRazrez AND 8) <> 0)
+    loDelOrd.AddBounds(loDelOrd.tbcParty);
+
+  _LOOP SpOrder where ((SklOrder.NRec == SpOrder.cSklOrder))
+    {
+      loDelOrd._SkPr   := SpOrder.SP;
+      loDelOrd._dOrd   := SpOrder.dOrd;
+      loDelOrd._cMC    := SpOrder.cMC;
+      loDelOrd._ccPodr := SpOrder.ccPodr;
+      loDelOrd._ccMol  := SpOrder.ccMol;
+      loDelOrd._cParty := SpOrder.cParty;
+
+      if (loDelOrd.GetFirst SpOrder2 = tsOk)
+        do
+        {
+          if ((loDelOrd.SpOrder2.TipOrd = 3) and (wRazrez = 0)) or (KatSopr.VidSopr = 630 or KatSopr.VidSopr = 632)
+          {
+            if loDelOrd.GetFirst Sklorder2 where ((SpOrder2.cSklOrder == SklOrder2.NRec)) = tsOk
+            {
+              if (loDelOrd.SklOrder2.csopr <> SklOrder.csopr)
+              {
+                if (wGetTune('Oper.Sklad.EditPrihOrdWithRash') = 2)
+                {
+                  if (loDelOrd.SpOrder2.dOrd = SpOrder.dOrd)
+                  {
+                    if (loDelOrd.SpOrder2.Atl_LastDate > SpOrder.Atl_LastDate)
+                      Check_wasSpis := True;
+                    else
+                      if (loDelOrd.SpOrder2.Atl_LastDate = SpOrder.Atl_LastDate)
+                        and (loDelOrd.SpOrder2.Atl_LastTime > SpOrder.Atl_LastTime)
+                          Check_wasSpis := True;
+                  }
+                  else
+                    Check_wasSpis := True;
+                }
+                else
+                  Check_wasSpis := True;
+              }
+            }
+          }
+          else
+          {
+            if (wGetTune('Oper.Sklad.EditPrihOrdWithRash') = 2)
+            {
+              if (loDelOrd.SpOrder2.dOrd = SpOrder.dOrd)
+              {
+                if (loDelOrd.SpOrder2.Atl_LastDate > SpOrder.Atl_LastDate)
+                  Check_wasSpis := True;
+                else
+                  if (loDelOrd.SpOrder2.Atl_LastDate = SpOrder.Atl_LastDate)
+                    and (loDelOrd.SpOrder2.Atl_LastTime > SpOrder.Atl_LastTime)
+                      Check_wasSpis := True;
+              }
+              else
+                Check_wasSpis := True;
+            }
+            else
+              Check_wasSpis := True;
+          }
+
+          if (Check_wasSpis)
+            Break;
+        }
+        while (loDelOrd.GetNext SpOrder2 = tsOK)
+    }
+
+  var nrecSklOrder : comp;
+  if (Check_wasSpis)
+  {
+    nrecSklOrder := SklOrder.NRec;
+    loDelOrd._LOOP SpOrderPrih where ((nRecSklOrder == SpOrderPrih.cSklOrder))
+    {
+      if loDelOrd.GetFirst SpOrderRash = TsOk
+      {
+        if ((loDelOrd.SpOrderPrih.TipOrd = 3) and (wRazrez = 0)) or (KatSopr.VidSopr = 630 or KatSopr.VidSopr = 632)
+        {
+          if loDelOrd.GetFirst Sklorder2 where ((SpOrderRash.cSklOrder == SklOrder2.NRec)) = tsOk
+            if (loDelOrd.SklOrder2.csopr <> SklOrder.csopr)
+            {
+              frm1wed.write('По МЦ: '+ '  Б' + loDelOrd.KatMC.Name + '  Б');
+              frm1wed.write('Проводилось списания по следующим расходным ордерам:');
+
+              do
+              {
+                if (wGetTune('Oper.Sklad.EditPrihOrdWithRash') = 2)
+                {
+                  if (loDelOrd.SpOrderRash.dOrd = loDelOrd.SpOrderPrih.dOrd)
+                  {
+                    if (loDelOrd.SpOrderRash.Atl_LastDate > loDelOrd.SpOrderPrih.Atl_LastDate)
+                    {
+                      if (loDelOrd.GetFirst SklOrderRash where ((SpOrderRash.cSklOrder == SklOrderRash.Nrec))) = tsOk
+                      {
+                        frm1wed.write(' ИДата: ' + DateToStr(lodelOrd.SKlOrderRash.DOrd, 'DD/MM/YYYY') +
+                        ' Номер: ' +  loDelOrd.SKlOrderRash.NOrder + ' Количество: ' +
+                        DoubleToStr(loDelOrd.SpOrderRash.kol, '\3p[|-]36`666`666`666`666.888') + ' Цена в НДЕ: ' +
+                        DoubleToStr(loDelOrd.SpOrderRash.srprice, '\2p[|-]36`666`666`666`666.88') + '  И')
+                      }
+                    }
+                    else
+                      if (loDelOrd.SpOrderRash.Atl_LastDate = loDelOrd.SpOrderPrih.Atl_LastDate)
+                       and (loDelOrd.SpOrderRash.Atl_LastTime > loDelOrd.SpOrderPrih.Atl_LastTime)
+                      {
+                        if (loDelOrd.GetFirst SklOrderRash where ((SpOrderrash.cSklOrder == SklOrderRash.Nrec))) = tsOk
+                        {
+                          frm1wed.write(' ИДата: ' + DateToStr(loDelOrd.SKlOrderRash.DOrd, 'DD/MM/YYYY') +
+                          ' Номер: ' +  loDelOrd.SKlOrderRash.NOrder + ' Количество: ' +
+                          DoubleToStr(loDelOrd.SpOrderRash.kol, '\3p[|-]36`666`666`666`666.888') + ' Цена в НДЕ: ' +
+                          DoubleToStr(loDelOrd.SpOrderRash.srprice, '\2p[|-]36`666`666`666`666.88') + '  И')
+                        }
+                      }
+                  }
+                  else
+                  {
+                    if (loDelOrd.GetFirst SklOrderRash where ((SpOrderRash.cSklOrder == SklOrderRash.Nrec))) = tsOk
+                    {
+                      frm1wed.write(' ИДата: ' + DateToStr(loDelOrd.SKlOrderRash.DOrd, 'DD/MM/YYYY') +
+                      ' Номер: ' +  loDelOrd.SKlOrderRash.NOrder + ' Количество: ' +
+                      DoubleToStr(loDelOrd.SpOrderRash.kol, '\3p[|-]36`666`666`666`666.888') + ' Цена в НДЕ: ' +
+                      DoubleToStr(loDelOrd.SpOrderRash.srprice, '\2p[|-]36`666`666`666`666.88') + '  И')
+                    }
+                  }
+                }
+                else
+                {
+                  if (loDelOrd.GetFirst SklOrderRash where ((SpOrderRash.cSklOrder == SklOrderRash.Nrec))) = tsOk
+                  {
+                    frm1wed.write(' ИДата: ' + DateToStr(loDelOrd.SKlOrderRash.DOrd, 'DD/MM/YYYY') +
+                    ' Номер: ' +  loDelOrd.SKlOrderRash.NOrder + ' Количество: ' +
+                    DoubleToStr(loDelOrd.SpOrderRash.kol, '\3p[|-]36`666`666`666`666.888') + ' Цена в НДЕ: ' +
+                    DoubleToStr(loDelOrd.SpOrderRash.srprice, '\2p[|-]36`666`666`666`666.88') + '  И')
+                  }
+                }
+              }
+              while lodelOrd.GetNext SpOrderRash = tsOk
+
+              frm1wed.write('');
+              }
+        }
+        else
+        {
+          frm1wed.write('По МЦ: '+ '  Б' + loDelOrd.KatMC.Name + '  Б');
+          frm1wed.write('Проводилось списания по следующим расходным ордерам:');
+
+          do
+          {
+            if (wGetTune('Oper.Sklad.EditPrihOrdWithRash') = 2)
+            {
+               if (loDelOrd.SpOrderRash.dOrd = loDelOrd.SpOrderPrih.dOrd)
+               {
+                 if (loDelOrd.SpOrderRash.Atl_LastDate > loDelOrd.SpOrderPrih.Atl_LastDate)
+                 {
+                   if (loDelOrd.GetFirst SklOrderRash where ((SpOrderRash.cSklOrder == SklOrderRash.Nrec))) = tsOk
+                   {
+                     frm1wed.write(' ИДата: ' + DateToStr(lodelOrd.SKlOrderRash.DOrd, 'DD/MM/YYYY') +
+                     ' Номер: ' +  loDelOrd.SKlOrderRash.NOrder + ' Количество: ' +
+                     DoubleToStr(loDelOrd.SpOrderRash.kol, '\3p[|-]36`666`666`666`666.888') + ' Цена в НДЕ: ' +
+                     DoubleToStr(loDelOrd.SpOrderRash.srprice, '\2p[|-]36`666`666`666`666.88') + '  И')
+                   }
+                 }
+                 else
+                   if (loDelOrd.SpOrderRash.Atl_LastDate = loDelOrd.SpOrderPrih.Atl_LastDate)
+                   and (loDelOrd.SpOrderRash.Atl_LastTime > loDelOrd.SpOrderPrih.Atl_LastTime)
+                   {
+                     if (loDelOrd.GetFirst SklOrderRash where ((SpOrderRash.cSklOrder == SklOrderRash.Nrec))) = tsOk
+                     {
+                       frm1wed.write(' ИДата: ' + DateToStr(loDelOrd.SKlOrderRash.DOrd, 'DD/MM/YYYY') +
+                       ' Номер: ' +  loDelOrd.SKlOrderRash.NOrder + ' Количество: ' +
+                       DoubleToStr(loDelOrd.SpOrderRash.kol, '\3p[|-]36`666`666`666`666.888') + ' Цена в НДЕ: ' +
+                       DoubleToStr(loDelOrd.SpOrderRash.srprice, '\2p[|-]36`666`666`666`666.88') + '  И')
+                     }
+                   }
+               }
+               else
+               {
+                 if (loDelOrd.GetFirst SklOrderRash where ((SpOrderRash.cSklOrder == SklOrderRash.Nrec))) = tsOk
+                 {
+                   frm1wed.write(' ИДата: ' + DateToStr(loDelOrd.SKlOrderRash.DOrd, 'DD/MM/YYYY') +
+                   ' Номер: ' +  loDelOrd.SKlOrderRash.NOrder + ' Количество: ' +
+                   DoubleToStr(loDelOrd.SpOrderRash.kol, '\3p[|-]36`666`666`666`666.888') + ' Цена в НДЕ: ' +
+                   DoubleToStr(loDelOrd.SpOrderRash.srprice, '\2p[|-]36`666`666`666`666.88') + '  И')
+                 }
+               }
+             }
+             else
+             {
+               if (loDelOrd.GetFirst SklOrderRash where ((SpOrderRash.cSklOrder == SklOrderRash.Nrec))) = tsOk
+               {
+                 frm1wed.write(' ИДата: ' + DateToStr(loDelOrd.SKlOrderRash.DOrd, 'DD/MM/YYYY') +
+                 ' Номер: ' +  loDelOrd.SKlOrderRash.NOrder + ' Количество: ' +
+                 DoubleToStr(loDelOrd.SpOrderRash.kol, '\3p[|-]36`666`666`666`666.888') + ' Цена в НДЕ: ' +
+                 DoubleToStr(loDelOrd.SpOrderRash.srprice, '\2p[|-]36`666`666`666`666.88') + '  И')
+               }
+             }
+           }
+           while lodelOrd.GetNext SpOrderRash = tsOk
+
+           frm1wed.write('');
+        }
+      }
+    }
+  }
+
+  if loDelOrd.BoundActive(loDelOrd.tbcPodr)
+    loDelOrd.SubBounds(loDelOrd.tbcPodr);
+
+  if loDelOrd.BoundActive(loDelOrd.tbcMOL)
+    loDelOrd.SubBounds(loDelOrd.tbcMol);
+
+  if loDelOrd.BoundActive(loDelOrd.tbcParty)
+    loDelOrd.SubBounds(loDelOrd.tbcParty);
+}
+
+//********************************************************************************
+
+Function CheckDelete(var askContinue: boolean;
+                     var No_Order: string;
+                     var Date_Order: date): boolean;
+var cRec_: comp;
+{
+  CheckDelete := True;
+  askContinue := False;
+
+   _LOOP SklOrder where ((KatSopr.NRec == SklOrder.cSopr))
+    {
+      //проверка по настройке "запрет редактирования ордеров задним числом"
+      if (IsOstOnMSPrPer(0, SklOrder.dOrd))
+        {
+          askContinue := False;
+          No_Order    := SklOrder.nOrder;
+          Date_Order  := SklOrder.dOrd;
+          CheckDelete := False;
+          Message('В настройке стоит запрет на редактирование ордеров в закрытом периоде');
+          Exit;
+        }
+
+      //******************************************************************************
+      //для ячеек
+
+      var pBoxFuncs: BoxFuncs;
+
+      if (boGetTune('Oper.useBoxes'))
+        if (boGetTune('Oper.BoxMethod'))
+          if (NOT pBoxFuncs.UndoSklOrderBoxOperations(SklOrder.NRec, True))
+            {
+              Message('Нельзя удалить операции по ячейкам - установлен контроль за объемом ячеек');
+
+              AskContinue := False;
+              no_Order    := SklOrder.nOrder;
+              Date_Order  := SklOrder.dOrd;
+
+              // смысл нижеследующего вот в чем: если нет автоматического распределения по ячейкам,
+              // то надо разрешать удалять ордера
+
+              if (ExistTune('Oper.BoxAutoNew'))
+              {
+                if (wGetTune('Oper.BoxAutoNew') = 1)
+                  CheckDelete := False;
+              }
+              else
+                if (boGetTune('Oper.BoxAuto'))
+                  CheckDelete := False;
+
+              Exit;
+            }
+
+      if ((KatSopr.vidSopr = 106) OR (KatSopr.vidSopr = 206)) //для рекламации - не нужно
+        Continue;
+
+      if (SklOrder.vidOrder <> 0) //для расходного больше не надо
+        Continue;
+
+      if ((SklOrder.tipOrd >= 4) AND (SklOrder.tipOrd <= 7))
+        Continue;
+
+      cRec_:= KatSopr.nRec;
+      if KatSopr.vidSopr = 101 or KatSopr.vidSopr = 108
+        if lodelOrd.GetFirst KatSopr where ((cRec_ == KatSopr.cKatSopr)) =tsOk
+          if lodelOrd.GetFirst SklOrder where ((KatSopr.nRec == SklOrder.cSopr)) = tsOk
+            {
+             askContinue := False;
+             No_Order    := SklOrder.nOrder;
+             Date_Order  := SklOrder.dOrd;
+             CheckDelete := False;
+             Message('У накладной есть акт на прием услуг, по которому создан ордер дооценки - удаление приходного ордера невозможно', information);
+             Exit;
+           }
+
+     //проверка для приходных на "уже было списание по данному ордеру" для ЛИФОФИФО
+     if ( (SklOrder.SP <> 0) OR
+          (oMSview.GetMethodSpisPodr(SklOrder.cPodr) = 0) OR
+          (oMSview.GetMethodSpisPodr(SklOrder.cPodr) = 4)
+        )  // для производства или средние цены или по цене приобретения
+       {
+         if Check_wasSpis //проверка по специф.ордера
+           {
+             askContinue := True;
+             no_Order    := SklOrder.nOrder;
+             Date_Order  := SklOrder.dOrd;
+             CheckDelete := False;
+             Exit;
+           }
+        }
+     else // не средние цены и не производство
+       if ( (SklOrder.tipOrd <> 3) OR (oMSview.GetMethodSpisPodr(SklOrder.cPodr) = 3) )
+         _LOOP SpOrder where ((SklOrder.NRec == SpOrder.cSklOrder))
+           if (SpOrder.empty <> 1)
+             if (SpOrder.method = oMSview.GetMethodSpisPodr(SpOrder.ccPodr))
+               {
+                 CheckDelete := False;
+                 no_Order    := SklOrder.nOrder;
+                 Date_Order  := SklOrder.dOrd;
+                 Exit;
+               }
+    }//_LOOP SklOrder
+}
+
+
+//******************************************************************************
+// проверка удаления ордера
+Function CanDelOrd(MesPrmt: boolean; wMode: word): boolean;
+{
+  CanDelOrd := oMakeOrder.CanDelOrdEx(KatSopr.NRec, MesPrmt, True, wMode);
+}
+
+
+//********************************************************************************
+// Удаление ордеров
+// wParam
+// 1-й бит - обработка дефайна #define smetakoladd
+// 2-й бит - обработка дефайна #define _USE_SERIAL_
+// 3-й бит - обработка дефайна #define g_l_pr_vpp
+// 4-й бит - обработка дефайна #define _BoxNeedAuto
+// 5-й бит - обработка дефайна #define _prihod_
+// 6-й бит - обработка дефайна #define __PAKET_VIP__
+// формирование приходного складского ордера
+Function DeleteOrders (pKatSopr: comp; MesPrmt, make_prih, make_rash: boolean; wMode, wParam: word): boolean;
+{
+  DeleteOrders := True;
+
+  KatSoprNRec := pKatSopr;
+
+  if (GetFirst KatSopr <> tsOk)
+    Exit;
+
+  if (GetFirst SklOrder <> tsOk)
+    Exit;
+
+  if (Not OnBeforeDeleteOrder)
+    Exit
+  else
+    if (IsRecModif)
+      ReReadRecord(#KatSopr);
+
+  var prMod    : boolean;   prMod    := True;
+  var isFnd    : boolean;   isFnd    := False;
+
+  var del_prih : boolean;   del_prih := True;
+  var del_rash : boolean;   del_rash := True;
+
+  if (KatSopr.VidSopr = 630)
+  Or (boGetTune('Oper.MakeMove') And (KatSopr.vidSopr = 600 OR KatSopr.vidSopr = 607))
+  Or (boGetTune('UKS.MakeMove')  And (KatSopr.VidSopr = 229 Or KatSopr.VidSopr = 210))
+  {
+    del_prih := make_prih;
+    del_rash := make_rash;
+
+    if (Not del_prih) And (Not del_rash)
+    {
+      del_prih := True;
+      del_rash := True;
+    }
+  }
+
+  if ((KatSopr.wADoc = adSoprDocSN) And (KatSopr.VidSopr = 101))
+  {
+     //удалять ордера без сообщения для стронирующей накладной(накладная не видна в списке док-ов)
+     //пир 180.906
+  }
+  else
+  {
+    if (Not CheckTXO)
+      case  wGetTune('Fin.User.ModHaveProvod') of
+        2: //запрет
+        {
+          DeleteOrders := False;
+
+          if (MesPrmt)
+            ShowTune('Документ доступен только для просмотра.', 'Fin.User.ModHaveProvod');
+
+          Exit;
+        }
+
+        1: // по  запросу
+        {
+          DeleteOrders := False;
+
+          if (MesPrmt)
+            Message('Установлен запрет на редактирования данного документа !');
+
+          Exit;
+        }
+      end;//c
+
+    if (MesPrmt AND del_prih AND del_rash)
+      if (Message('Документу соответствуют ордера.'#13'Удалить их?', OkCancel+Confirmation) <> cmOk)
+      {
+        DeleteOrders := False;
+        Exit;
+      }
+  }
+
+  var askContinue : boolean;
+  var no_Order    : string;
+  var Date_Order  : Date;
+
+  if (NOT CheckDelete(askContinue, no_Order, Date_Order))
+  {
+    if (NOT askContinue)
+    {
+      DeleteOrders := False;
+      Message('Нельзя удалять сформированные ордера по документу № ' + KatSopr.nSopr, Information);
+      Exit;
+    }
+    else
+    {
+      case KatSopr.VidSopr of
+      //==============================================================================
+        502
+      , 505
+      , 552
+      , 553, 554, 557  //ремонты
+      , 601..606:
+          {  }    // ничего не делать для этих типов
+      //==============================================================================
+      else
+        if (del_Prih)
+        {
+          if (wGetTune('Oper.Sklad.EditPrihOrdWithRash') = 1)
+            or (wGetTune('Oper.Sklad.EditPrihOrdWithRash') = 2)
+          {
+            ShowTune( 'Запрещена модификация приходных ордеров при наличии после них расходных!'
+                    , 'Oper.Sklad.EditPrihOrdWithRash');
+            DeleteOrders := False;
+            if frm1wed.Error
+              frm1wed.AbortForm;
+            else
+              frm1wed.ShowFile('Протокол расходных документов по приходному ордеру')
+            Exit;
+          }
+
+          if (MesPrmt)
+            if (Message('По разрезу оприходования ордера ' + f_sNumDate(No_Order, Date_Order) +
+                        'уже были проведены списания.'#13+
+                        'При удалении данного приходного ордера возможны неверные цены списания в расходных ордерах.'#13 +
+                        'Продолжить?', YesNo + mfSwapButtons) <> cmYes)
+            {
+              DeleteOrders := False;
+              SaveMyDsk('confirm Cancel del nakl', 'delord_del_nakl');
+              if frm1wed.Error
+                frm1wed.AbortForm;
+              else
+                frm1wed.ShowFile('Протокол расходных документов по приходному ордеру')
+
+              Exit;
+            }
+        }
+      //==============================================================================
+      end; //case
+    }
+  }
+
+  if (GetFirst SklOrder <> tsOk)
+    Exit;
+
+  //------------------------------------------------------------------------------
+  //для производства
+
+  case KatSopr.VidSopr of
+  //---------------------------------------
+    101: {
+           if ( coGetTune('Oper.Buy.Nakl.BeforeDelOrder') <> 0 )
+             if ( RunInterface( SimpleWayToRunAlgorithm
+                              , coGetTune('Oper.Buy.Nakl.BeforeDelOrder')
+                              , word(2101)
+                              , KatSopr.NRec
+                              , comp(0)
+                              ) = cmCancel )
+               Exit
+             else
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    201: {
+           if ( coGetTune('Oper.Sell.Nakl.BeforeDelOrder') <> 0 )
+             if ( RunInterface( SimpleWayToRunAlgorithm
+                              , coGetTune('Oper.Sell.Nakl.BeforeDelOrder')
+                              , word(2201)
+                              , KatSopr.NRec
+                              , comp(0)
+                              ) = cmCancel )
+               Exit
+             else
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    202: {
+           if ( coGetTune('Doc.OtpCons.Nakl.BeforeDelOrder') <> 0 )
+             if ( RunInterface( SimpleWayToRunAlgorithm
+                              , coGetTune('Doc.OtpCons.Nakl.BeforeDelOrder')
+                              , word(2202)
+                              , KatSopr.NRec
+                              , comp(0)
+                              ) = cmCancel )
+               Exit
+             else
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    106: {
+           if ( coGetTune('Oper.Sell.NaklVozv.BeforeDelOrder') <> 0 )
+             if ( RunInterface( 'SimpleWayToRunAlgorithm'
+                              , coGetTune('Oper.Sell.NaklVozv.BeforeDelOrder')
+                              , word(2106)
+                              , KatSopr.NRec
+                              , comp(0)
+                              ) = cmCancel )
+               Exit
+             else
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    206: {
+           if (coGetTune('Oper.Buy.NaklVozv.BeforeDelOrder') <> 0)
+             if ( RunInterface( 'SimpleWayToRunAlgorithm'
+                              , coGetTune('Oper.Buy.NaklVozv.BeforeDelOrder')
+                              , word(2206)
+                              , KatSopr.NRec
+                              , comp(0)
+                              ) = cmCancel )
+               Exit
+             else
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    210: {
+           if (coGetTune('UKS.RunAlgoritm.AktOutObrMontag.BeforeDelOrder') <> 0)
+             if ( RunInterface( 'SimpleWayToRunAlgorithm'
+                              , coGetTune('UKS.RunAlgoritm.AktOutObrMontag.BeforeDelOrder')
+                              , word(2210)
+                              , KatSopr.NRec
+                              , comp(0)
+                              ) = cmCancel )
+               Exit
+             else
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    229: {
+           if (coGetTune('UKS.RunAlgoritm.AktOutMatStroy.BeforeDelOrder') <> 0)
+             if ( RunInterface( 'SimpleWayToRunAlgorithm'
+                              , coGetTune('UKS.RunAlgoritm.AktOutMatStroy.BeforeDelOrder')
+                              , word(2229)
+                              , KatSopr.NRec
+                              , comp(0)
+                              ) = cmCancel )
+               Exit
+             else
+               ReReadRecord(#KatSopr);
+         }
+    600:
+         {
+           if (coGetTune('Sklad.Akt_Move.BeforeDelOrder') <> 0)
+             if (RunInterface( 'SimpleWayToRunAlgorithm'
+                             , coGetTune('Sklad.Akt_Move.BeforeDelOrder')
+                             , word(2600)
+                             , KatSopr.NRec
+                             , comp(0)
+                             ) = cmCancel )
+               Exit
+             else
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+  end; // case
+
+
+  //для управления качеством продукции
+  #ifdef Kachestvo
+  if ( RunInterface( RunQualAlg
+                   , KatSopr.NRec
+                   , comp(0)
+                   , KatSopr.VidSopr
+                   , KatSopr.dOpr
+                   , word(107)
+                   ) = cmCancel )
+    {
+      DeleteOrders := False;
+      Exit;
+    }
+  #end
+
+  _LOOP SklOrder where ((KatSopr.NRec == SklOrder.cSopr))
+  {
+    if (NOT oSDfuns.CanDeleteDocument(SklOrder.DOrd))
+    {
+      DeleteOrders := False;
+      Exit;
+    }
+
+    if (NOT oSDfuns.CanDeleteDocumentOborot(SklOrder.NRec, if(SklOrder.vidOrder = 0, word(150), word(250))))
+    {
+      DeleteOrders := False;
+      Exit;
+    }
+  }
+
+  if (NOT SetSemaphoreSklad('KatSopr_DeleteOrders', KatSopr.NRec))
+  {
+    DeleteOrders := False;
+    Exit;
+  }
+
+  StartNewVisual( vtRotateVisual
+                , vfTimer+vfScreenBottom
+                , 'Удаление ордеров по документу ' + f_sNumDate(KatSopr.nSopr, KatSopr.dSopr) + ''
+                , 1
+                );
+
+  var mark_Ord: longint;  mark_Ord := InitMarker('', 8, 100, 100);
+
+  iKB.SaveInfoforBal(KatSopr.VidSopr, KatSopr.NRec);
+
+  _LOOP SklOrder where ((KatSopr.NRec == SklOrder.cSopr))
+  {
+    NextVisual;
+
+    if (KatSopr.VidSopr = 630)
+    Or (boGetTune('Oper.MakeMove') And (KatSopr.vidSopr = 600 OR KatSopr.vidSopr = 607))
+    Or (boGetTune('UKS.MakeMove')  And (KatSopr.VidSopr = 229 Or KatSopr.VidSopr = 210))
+    {
+      var canDel: boolean;
+      canDel := ( del_Prih AND (SklOrder.vidOrder = 0) ) OR
+                ( del_Rash AND (SklOrder.vidOrder = 1) );
+
+      if (NOT canDel)
+        Continue;
+    }
+
+    //Удаление ХозОпераций и Оборотов
+    oSDfuns.DeleteSoprHoz(SklOrder.NRec, GetSoprHozTipDoc(SklOrder.SP, SklOrder.VidOrder));
+
+    //удаление спецификации
+    ResetBounds(#SpOrder);
+
+    var isLifo_Fifo: boolean;
+    isLifo_Fifo:= ((oMSview.GetMethodSpisPodr(SklOrder.cPodr) > 0) and (SklOrder.SP = 0));
+
+    While GetFirst SpOrder where ((SklOrder.NRec == SpOrder.cSklOrder)) = tsOk
+    {
+      NextVisual;
+
+      //для ЛИФО/ФИФО для расходного восст.остаток в соотв.приходном
+      if (SklOrder.vidOrder = 1)  // складской расходный
+        if (isLifo_Fifo) OR (oMSview.GetTuneMSForPodr(SklOrder.cPodr) = 1) // не средние цены
+          RestoreOnePrihOrd(True);
+
+      if (SklOrder.vidOrder = 0) AND
+         (SpOrder.method    = 3) AND
+         (SpOrder.tipOrd   >= 4) AND
+         (SpOrder.tipOrd   <= 7) // lf_ дооценка
+        UpdateDooc_toRash_SpOrders(False);
+
+      if ((wParam And 2) = 2)
+        oSerialMove.RemoveHistory(SpOrder.nRec);
+
+      if (OneSpOrder_Delete <> tsOk) // УДАЛЕНИЕ СПЕЦИФИКАЦИИ ОРДЕРА
+        Break;
+    }
+
+    SetBounds(#SpOrder);
+
+    InsertMarker(mark_Ord, SklOrder.NRec);  // запоминаем SklOrder
+  } // _LOOP
+
+
+  //удаление номеров и SklOrder:
+  var mark_Ord_cnt, ii_: longint;
+  var mark_Ord_value   : comp;
+
+  mark_Ord_cnt := GetMarkerCount(mark_Ord) - 1; //т.к. нумерация с 0
+
+  For (ii_ := mark_Ord_cnt; ii_ >= 0; ii_ := ii_ -1) //для удаления номеров (с последнего) при нум. по таблице
+    if (GetMarker(mark_Ord, ii_, mark_Ord_value))
+    {
+      NextVisual;
+
+      if (GetFirst SklOrder where ((mark_Ord_value == SklOrder.NRec)) <> tsOk)
+        Continue;
+
+      AbortOrdNom;
+
+      oChkSchem.RemoveDocFromSpSchem(SklOrder.NRec, if(SklOrder.VidOrder = 0, word(150), word(250)));
+
+      delete current SklOrder;
+    }
+
+  DoneMarker(mark_Ord, '');
+
+  if (GetFirst SklOrder where (( KatSopr.NRec == SklOrder.cSopr )) <> tsOk)
+  {
+    set KatSopr.dOpr := ZeroDate;
+
+    loDelOrd.update SpSopr where (( pKatSopr == SpSopr.cSopr )) set SpSopr.dOprTTN := ZeroDate;
+  }
+
+  //модификация SoprHoz накладной
+  if (GetFirst SoprHoz = tsOk)
+  {
+    SoprHoz.SummaSp  := 0;
+    SoprHoz.SumValSp := 0;
+    SoprHoz.cFilKor  := if (KatSopr.cOrg <> 0, Filial.NRec, 0);
+    iSHoz.UpdByHan(SoprHoz.BufferP);
+  }
+
+  iKB.ModiKontrBal(KatSopr.VidSopr, KatSopr.NRec);
+
+  Update_Current_KatSopr;
+  OnAfterDeleteOrder;
+
+  if (IsRecModif)
+    ReReadRecord(#KatSopr);
+
+  //********************************************************************************
+  //для производства
+
+  case KatSopr.VidSopr of
+  //---------------------------------------
+    101: {
+           if ( coGetTune('Oper.Buy.Nakl.AfterDelOrder') <> 0 )
+             if ( RunInterface( SimpleWayToRunAlgorithm
+                              , coGetTune('Oper.Buy.Nakl.AfterDelOrder')
+                              , word(2101)
+                              , KatSopr.NRec
+                              , comp(0)
+                              ) <> cmCancel )
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    201: {
+           if ( coGetTune('Oper.Sell.Nakl.AfterDelOrder') <> 0 )
+             if ( RunInterface( SimpleWayToRunAlgorithm
+                              , coGetTune('Oper.Sell.Nakl.AfterDelOrder')
+                              , word(2201)
+                              , KatSopr.NRec
+                              , comp(0)
+                              ) <> cmCancel )
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    202: {
+           if ( coGetTune('Doc.OtpCons.Nakl.AfterDelOrder') <> 0 )
+             if ( RunInterface( SimpleWayToRunAlgorithm
+                              , coGetTune('Doc.OtpCons.Nakl.AfterDelOrder')
+                              , word(2202)
+                              , KatSopr.NRec
+                              , comp(0)
+                              ) <> cmCancel )
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    106: {
+           if ( coGetTune('Oper.Sell.NaklVozv.AfterDelOrder') <> 0)
+             if ( RunInterface( 'SimpleWayToRunAlgorithm'
+                               , coGetTune('Oper.Sell.NaklVozv.AfterDelOrder')
+                               , word(2106)
+                               , KatSopr.NRec
+                               , comp(0)
+                               ) <> cmCancel )
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    206: {
+           if (coGetTune('Oper.Buy.NaklVozv.AfterDelOrder') <> 0)
+             if (RunInterface( 'SimpleWayToRunAlgorithm'
+                             , coGetTune('Oper.Buy.NaklVozv.AfterDelOrder')
+                             , word(2206)
+                             , KatSopr.NRec
+                             , comp(0)
+                             ) <> cmCancel)
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    210: {
+           if (coGetTune('UKS.RunAlgoritm.AktOutObrMontag.AfterDelOrder') <> 0)
+             if (RunInterface( 'SimpleWayToRunAlgorithm'
+                             , coGetTune('UKS.RunAlgoritm.AktOutObrMontag.AfterDelOrder')
+                             , word(2210)
+                             , KatSopr.NRec
+                             , comp(0)
+                             ) <> cmCancel)
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+    229: {
+           if (coGetTune('UKS.RunAlgoritm.AktOutMatStroy.AfterDelOrder') <> 0)
+             if (RunInterface( 'SimpleWayToRunAlgorithm'
+                             , coGetTune('UKS.RunAlgoritm.AktOutMatStroy.AfterDelOrder')
+                             , word(2229)
+                             , KatSopr.NRec
+                             , comp(0)
+                             ) <> cmCancel)
+               ReReadRecord(#KatSopr);
+         }
+    600:
+         {
+           if (coGetTune('Sklad.Akt_Move.AfterDelOrder') <> 0)
+             if (RunInterface( 'SimpleWayToRunAlgorithm'
+                             , coGetTune('Sklad.Akt_Move.AfterDelOrder')
+                             , word(2600)
+                             , KatSopr.NRec
+                             , comp(0)
+                             ) <> cmCancel)
+               ReReadRecord(#KatSopr);
+         }
+  //---------------------------------------
+  end; // case
+
+
+  //********************************************************************************
+  //для управления качеством продукции
+
+  #ifdef Kachestvo
+  if ( RunInterface( RunQualAlg
+                   , KatSopr.NRec
+                   , comp(0)
+                   , KatSopr.VidSopr
+                   , ZeroDate
+                   , word(108)
+                   ) = cmCancel )
+    { }
+  #end // #ifdef Kachestvo
+
+  //********************************************************************************
+
+  StopVisual('', 0);
+
+  ClearSemaphoreSklad('KatSopr_DeleteOrders', KatSopr.NRec);
+}

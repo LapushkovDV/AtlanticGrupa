@@ -1,0 +1,13 @@
+
+#ifndef _CreateAttrRef_Gal
+#define _CreateAttrRef_Gal
+
+#ifdef ComponentVersion
+#component "C_ExtClass"
+#endif
+
+#include GetAttrTable.vih
+
+VipInterface CreateAttrRef_Gal implements ObjCreateAttrRefPlugin, ObjCreateAttrRefPluginEx licensed (FREE);
+
+#end

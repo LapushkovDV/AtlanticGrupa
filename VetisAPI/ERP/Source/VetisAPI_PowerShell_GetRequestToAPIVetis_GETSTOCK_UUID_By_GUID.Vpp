@@ -1,0 +1,307 @@
+procedure fillrecArray_GetStockUUIDbyGUID;
+{
+    var _npp: byte;
+        _npp := 1;
+    SetLimit(_recArray, 0);
+    SetLimit(_recArray, 1);
+
+  _recArray[_npp].def := coPS1_GetStockUUIDbyGUID_GUID         ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_GetStockUUIDbyGUID_UUID         ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := coPS1_GetStockUUIDbyGUID_UNITGUID; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := co_PS1_REQUESTERROR   ;
+
+}
+Procedure Insert_GetStockUUIDbyGUID;
+{
+  var _i: byte;
+
+  clearBuffer(tntStockGUIDUUID);
+  for(_i := 1; _I <= getLimit(_recArray); _i++)
+  {
+    case upcase(_recArray[_i].def) of
+      Upcase(coPS1_GetStockUUIDbyGUID_GUID )    : tStockGUIDUUID.guid  := Trim(_recArray[_i].value);
+      Upcase(coPS1_GetStockUUIDbyGUID_UUID )    : tStockGUIDUUID.uuid  := Trim(_recArray[_i].value);
+      Upcase(co_PS1_REQUESTERROR)               : tStockGUIDUUID.Error := Trim(_recArray[_i].value);
+      Upcase(coPS1_GetStockUUIDbyGUID_UNITGUID) : tStockGUIDUUID.UNITGUID := Trim(_recArray[_i].value);
+    end;
+  }
+     Insert Current tStockGUIDUUID;
+}  // tInsertSaldoMC
+Procedure FillPS1_VetisAPI_GetStockUUIDbyGUID(_ExcelFileOut, _OleGenerateGUID: string; _StockGUID : string);
+{
+  MyWriteLN('Get-ChildItem -Path $PSScriptRoot -Include @("*.ps1","*.log", "*.xls*") -Recurse | Where-Object -Property CreationTime -lt (Get-Date).AddDays(-8) | Remove-Item -Force -ErrorAction SilentlyContinue');
+  MyWriteLN('$circuitserviceID="'+coCircuit_serviceID+'"                              ');
+  MyWriteLN('$circuitendpointUrl="'+coCircuit_endpointUrlGetStockUUIDbyGUID+'"                          ');
+  MyWriteLN('$circuitlogin="'+coCircuit_login+'"                                      ');
+  MyWriteLN('$circuitpassword="'+coCircuit_password+'"                                ');
+  MyWriteLN('$circuitapiKey="'+coCircuit_apiKey+'"                            ');
+  MyWriteLN('$circuitissureId="'+coCircuit_issureId+'"                                ');
+  MyWriteLN('$circuitsysLogin="'+coCircuit_sysLogin+'"                                 ');
+  MyWriteLN('$circuitenterpriseGuid="'+coCircuit_enterpriseGuid+'"                     ');
+  MyWriteLN('$circuitbusinessEntityGuid ="'+coCircuit_businessEntityGuid+'"            ');
+  MyWriteLN('                                                                           ');
+  MyWriteLN('$circuitCountTry           = '+coCircuit_CountTry+'                        ');
+  MyWriteLN('$circuitPause              = '+coCircuit_Pause+'                           ');
+  MyWriteLN('                                                                                     ');
+  MyWriteLN('$ReportPath = "'+_ExcelFileOut +'"                                         ');
+  MyWriteLN('[String]$GlobError                                                                   ');
+  MyWriteLN('$GlobError = ""                                                                      ');
+  MyWriteLN('$RQST_GUID = "'+_OleGenerateGUID+'"                                                                                     ');
+  MyWriteLN('$conStrinGal  = '''+GetConnString+'''');
+  MyWriteLN('$StockGUID = "'+_StockGUID+'"');
+  MyWriteLN('function Invoke-DatabaseQuery {                                                         ');
+  MyWriteLN('        [CmdletBinding()]                                                               ');
+  MyWriteLN('        param (                                                                         ');
+  MyWriteLN('                [string]$connectionString,                                              ');
+  MyWriteLN('                [string]$query,                                                         ');
+  MyWriteLN('                [switch]$isSQLServer                                                    ');
+  MyWriteLN('        )                                                                               ');
+  MyWriteLN('        if ($isSQLServer) {                                                             ');
+  MyWriteLN('                Write-Verbose ''in SQL Server mode''                                    ');
+  MyWriteLN('                $connection = New-Object -TypeName System.Data.SqlClient.SqlConnection  ');
+  MyWriteLN('        } else {                                                                        ');
+  MyWriteLN('                Write-Verbose ''in OleDB mode''                                         ');
+  MyWriteLN('                $connection = New-Object -TypeName System.Data.OleDb.OleDbConnection    ');
+  MyWriteLN('        }                                                                               ');
+  MyWriteLN('        $connection.ConnectionString = $connectionString                                ');
+  MyWriteLN('        $command = $connection.CreateCommand()                                          ');
+  MyWriteLN('        $command.CommandText = $query                                                   ');
+  MyWriteLN('        $connection.Open()                                                              ');
+  MyWriteLN('        $command.ExecuteNonQuery()                                                      ');
+  MyWriteLN('        $connection.close()                                                             ');
+  MyWriteLN('}                                                                                       ');
+  MyWriteLN('Function GetDataFromWeb([xml]$fnXML, [string]$URL)                                   ');
+  MyWriteLN('{                                                                                    ');
+  MyWriteLN('                                                                                     ');
+  MyWriteLN('$headers = @{}                                                                       ');
+  MyWriteLN('$headers.add("SOAPAction","GetResponse")                                             ');
+  MyWriteLN('$headers.add("Accept","text/xml")                                                    ');
+  MyWriteLN('$resultValue = $null                                                                 ');
+  MyWriteLN('$credentials = New-Object System.Management.Automation.PSCredential -ArgumentList @($circuitlogin,(ConvertTo-SecureString -String $circuitpassword -AsPlainText -Force))');
+  MyWriteLN('#write-host "try Invoke-WebRequest"  -ForegroundColor Green                                                                                                                                      ');
+  MyWriteLN('   try                                                                                                                                                                  ');
+  MyWriteLN('    {                                                                                                                                                                   ');
+  MyWriteLN('     $resultValue = Invoke-WebRequest -URI $URL -Headers $headers -Method Post -Body $fnXML -ContentType ''text/xml;charset="utf-8"'' -Credential $credentials -UseBasicParsing');
+  MyWriteLN('    # write-host "Invoke-WebRequest OK"  -ForegroundColor Green                                            ');
+  MyWriteLN('    }                                                                             ');
+  MyWriteLN('    catch                                                                         ');
+  MyWriteLN('    {                                                                             ');
+  MyWriteLN('     # write-host "Invoke-WebRequest error"                                       ');
+  MyWriteLN('      $GlobError = $error[0].ToString()                                           ');
+  MyWriteLN('      #write-host $error[0].ToString()                                            ');
+  MyWriteLN('    }                                                                             ');
+  MyWriteLN('    #write-host $resultValue                                                      ');
+  MyWriteLN(' $resultValue                                                                     ');
+  MyWriteLN('}                                                                                 ');
+
+
+  MyWriteLN('Function GetResponse()                                                            ');
+  MyWriteLN('{                                                                                 ');
+  MyWriteLN('$str1 = ''xmlns:dt="http://api.vetrf.ru/schema/cdm/dictionary/v2" ''              ');
+  MyWriteLN('$str1 = $str1 + ''xmlns:bs="http://api.vetrf.ru/schema/cdm/base" xmlns:merc="http://api.vetrf.ru/schema/cdm/mercury/g2b/applications/v2" xmlns:apldef="http://api.vetrf.ru/schema/cdm/application/ws-definitions"'' ');
+  MyWriteLN('$str2 = '' xmlns:apl="http://api.vetrf.ru/schema/cdm/application" xmlns:vd="http://api.vetrf.ru/schema/cdm/mercury/vet-document/v2" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"'' ');
+  MyWriteLN(' $template = @''                                                                  ');
+  MyWriteLN('<SOAP-ENV:Envelope {6}{7}>');
+  MyWriteLN('  <SOAP-ENV:Header/>                          ');
+  MyWriteLN('  <SOAP-ENV:Body>                             ');
+  MyWriteLN('    <apldef:submitApplicationRequest>         ');
+  MyWriteLN('     <apldef:apiKey>{0}</apldef:apiKey>       ');
+  MyWriteLN('      <apl:application>                       ');
+  MyWriteLN('        <apl:serviceId>{1}</apl:serviceId>    ');
+  MyWriteLN('        <apl:issuerId>{2}</apl:issuerId>      ');
+  MyWriteLN('        <apl:issueDate>2019-07-04T17:24:45+03:00</apl:issueDate>');
+  MyWriteLN('        <apl:data>                                              ');
+  MyWriteLN('          <merc:getStockEntryByGuidRequest>                     ');
+  MyWriteLN('            <merc:localTransactionId>a10f03</merc:localTransactionId>');
+  MyWriteLN('            <merc:initiator>                                         ');
+  MyWriteLN('              <vd:login>{3}</vd:login>                               ');
+  MyWriteLN('            </merc:initiator>                                        ');
+  MyWriteLN('            <bs:guid>{4}</bs:guid>                                   ');
+  MyWriteLN('            <dt:enterpriseGuid>{5}</dt:enterpriseGuid>               ');
+  MyWriteLN('          </merc:getStockEntryByGuidRequest>                         ');
+  MyWriteLN('        </apl:data>                                                  ');
+  MyWriteLN('      </apl:application>                                             ');
+  MyWriteLN('    </apldef:submitApplicationRequest>                               ');
+  MyWriteLN('  </SOAP-ENV:Body>                                                   ');
+  MyWriteLN('</SOAP-ENV:Envelope>                                                 ');
+  MyWriteLN('                                                                     ');
+  MyWriteLN('''@                                                                  ');
+  MyWriteLN('                                                                     ');
+  MyWriteLN('#            webRequest.Credentials = credentials;                   ');
+  MyWriteLN('                                                                     ');
+  MyWriteLN('$fnc_RqstBody = $template -f $circuitapiKey, $circuitserviceID, $circuitissureId, $circuitsysLogin, $StockGUID, $circuitenterpriseGuid, $str1, $str2');
+  MyWriteLN('                                                                                                                                      ');
+  MyWriteLN('                                                                                                                                      ');
+  MyWriteLN('[xml] $XmlPrepare = $fnc_RqstBody                                                                                                     ');
+  MyWriteLN('                                                                                                                                      ');
+  MyWriteLN('$response = GetDataFromWeb -fnXML $XmlPrepare -URL $circuitendpointUrl                                                                ');
+  MyWriteLN('                                                                                                                                      ');
+  MyWriteLN('    If ( ($response.StatusCode -eq 200) -and ($response -ne $null))                                                                   ');
+  MyWriteLN('    {                                                                                                                                 ');
+  MyWriteLN('     [xml] $XmlResponse = $response.content                                                                                           ');
+  MyWriteLN('     #write-host $response.content                                                                                                    ');
+  MyWriteLN('     $XmlResponse.GetElementsByTagName(''applicationId'').Item(0).FirstChild.data                                                       ');
+  MyWriteLN('    }                                                                                                                                 ');
+  MyWriteLN('    else                                                                                                                              ');
+  MyWriteLN('    {                                                                                                                                 ');
+  MyWriteLN('     $null                                                                                                                            ');
+  MyWriteLN('    }                                                                                                                                 ');
+  MyWriteLN('}                                                                                                                                     ');
+  MyWriteLN('                                                                                                                                      ');
+  MyWriteLN('Function RecieveApplRqst([string]$requestAplId)                                                                                       ');
+  MyWriteLN('{                                                                                                                                     ');
+  MyWriteLN('$template=@''                                                                                                                          ');
+  MyWriteLN('<SOAP-ENV:Envelope                                                                                                                    ');
+  MyWriteLN('                    xmlns:dt="http://api.vetrf.ru/schema/cdm/dictionary/v2"                                                           ');
+  MyWriteLN('                    xmlns:bs="http://api.vetrf.ru/schema/cdm/base"                                                                    ');
+  MyWriteLN('                    xmlns:merc="http://api.vetrf.ru/schema/cdm/mercury/g2b/applications/v2"                                           ');
+  MyWriteLN('                    xmlns:apldef="http://api.vetrf.ru/schema/cdm/application/ws-definitions"                                          ');
+  MyWriteLN('                    xmlns:apl="http://api.vetrf.ru/schema/cdm/application"                                                            ');
+  MyWriteLN('                    xmlns:vd="http://api.vetrf.ru/schema/cdm/mercury/vet-document/v2"                                                 ');
+  MyWriteLN('                    xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"                                                        ');
+  MyWriteLN('                    xmlns:ws="http://api.vetrf.ru/schema/cdm/application/ws-definitions">                                             ');
+  MyWriteLN('                <SOAP-ENV:Header/>                                                                                                    ');
+  MyWriteLN('                <SOAP-ENV:Body>                                                                                                       ');
+  MyWriteLN('                    <ws:receiveApplicationResultRequest>                                                                              ');
+  MyWriteLN('                        <ws:apiKey>{0}</ws:apiKey>                                                                                    ');
+  MyWriteLN('                        <ws:issuerId>{1}</ws:issuerId>                                                                                ');
+  MyWriteLN('                        <ws:applicationId>{2}</ws:applicationId>                                                                      ');
+  MyWriteLN('                    </ws:receiveApplicationResultRequest>                                                                             ');
+  MyWriteLN('                </SOAP-ENV:Body>                                                                                                      ');
+  MyWriteLN('</SOAP-ENV:Envelope>                                                                                                                  ');
+  MyWriteLN('''@                                                                                                                                    ');
+  MyWriteLN('#            webRequest.Credentials = credentials;                                                                                    ');
+  MyWriteLN('                                                                                                                                      ');
+  MyWriteLN('$fnc_RqstBody = $template -f $circuitapiKey, $circuitissureId, $requestAplId                                                          ');
+  MyWriteLN('  $isContinue = $true                                                                                                                 ');
+  MyWriteLN('  $CountTRy = 0                                                                                                                       ');
+  MyWriteLN('[xml] $XmlPrepare = $fnc_RqstBody                                                                                                     ');
+  MyWriteLN('[xml] $result = $null                                                                                                                 ');
+  MyWriteLN('                                                                                                                                      ');
+  MyWriteLN('                                                                                                                                      ');
+  MyWriteLN('  while ($isContinue -eq $true)                                                                                                       ');
+  MyWriteLN('  {                                                                                                                                   ');
+  MyWriteLN('    Wait-Event -Timeout $circuitPause                                                                                                 ');
+  MyWriteLN('   $CountTRy = $CountTRy + 1                                                                                                          ');
+  MyWriteLN('   $response = GetDataFromWeb -fnXML $XmlPrepare -URL $circuitendpointUrl                                                             ');
+  MyWriteLN('   [string] $currentStatus = ""                                                                                                       ');
+  MyWriteLN('    If ( ($response.StatusCode -eq 200) -and ($response -ne $null))                                                                   ');
+  MyWriteLN('    {                                                                                                                                 ');
+  MyWriteLN('     [xml] $XmlResponse = $response.content                                                                                           ');
+  MyWriteLN('     $currentStatus = $XmlResponse.GetElementsByTagName(''status'').Item(0).FirstChild.data                                             ');
+  MyWriteLN('     if ($currentStatus -eq "COMPLETED")                                                                                              ');
+  MyWriteLN('      {                                                                                                                               ');
+  MyWriteLN('       $isContinue = $false                                                                                                           ');
+  MyWriteLN('       $result = $XmlResponse                                                                                                         ');
+  MyWriteLN('       # write-host $response.content                                                                                                 ');
+  MyWriteLN('      }                                                                                                                               ');
+  MyWriteLN('     if ($currentStatus -eq "REJECTED")                                                                                               ');
+  MyWriteLN('      {                                                                                                                               ');
+  MyWriteLN('       $isContinue = $false                                                                                                           ');
+  MyWriteLN('       $result = $null                                                                                                                ');
+  MyWriteLN('       write-host "Запрос отклонен"                                                                                                   ');
+  MyWriteLN('        $GlobError = $XmlResponse.Envelope.Body.receiveApplicationResultResponse.application.errors.error.''#text''                   ');
+  MyWriteLN('      }                                                                                                                               ');
+  MyWriteLN('                                                                                                                                      ');
+  MyWriteLN('    }                                                                                                                                 ');
+  MyWriteLN('    else                                                                                                                              ');
+  MyWriteLN('    {                                                                                                                                 ');
+  MyWriteLN('     $null                                                                                                                            ');
+  MyWriteLN('    }                                                                                                                                 ');
+  MyWriteLN('    #write-host "try number $CountTRy of $circuitCountTry | Curent state: $currentStatus"                                             ');
+  MyWriteLN('    write-host "Запрос GetStock UUID by GUID. Прослушивание ответа API. Запрос $CountTRy из $circuitCountTry. Получен ответ: $currentStatus"  -ForegroundColor Green');
+  MyWriteLN('    if ($circuitCountTry -lt $CountTRy )                                                 ');
+  MyWriteLN('     {                                                                                   ');
+  MyWriteLN('      $isContinue = $false                                                               ');
+  MyWriteLN('     }                                                                                   ');
+  MyWriteLN('  }                                                                                      ');
+  MyWriteLN(' $result                                                                                 ');
+  MyWriteLN('}                                                                                        ');
+  MyWriteLN('[xml]$stockEntryElementList = $null                                                      ');
+  MyWriteLN(' write-host "Запрос GetStock UUID by GUID. Отправка запроса"  -ForegroundColor Green                     ');
+  MyWriteLN('$requestAplId = GetResponse                                                              ');
+  MyWriteLN('if ($GlobError -eq "")                                                                   ');
+  MyWriteLN('{                                                                                        ');
+  MyWriteLN(' write-host "Запрос GetStock UUID by GUID. Прослушивание ответа API"  -ForegroundColor Green             ');
+  MyWriteLN(' $stockEntryElementList = RecieveApplRqst($requestAplId)                                 ');
+  MyWriteLN('                                                                                         ');
+  MyWriteLN('}                                                                                        ');
+  MyWriteLN('else                                                                                     ');
+  MyWriteLN('{                                                                                        ');
+  MyWriteLN(' $GlobError                                                                              ');
+  MyWriteLN('}                                                                                        ');
+  MyWriteLN('                                                                                         ');
+  MyWriteLN('$FinalReport = $null                                                                     ');
+  MyWriteLN('                                                                                         ');
+  MyWriteLN('if ($stockEntryElementList -ne $null)                                                    ');
+  MyWriteLN('{                                                                                 ');
+  MyWriteLN('  $Response = $stockEntryElementList                                              ');
+  MyWriteLN(' Write-host "Запрос stock by guid. Разбор XML"  -ForegroundColor Green            ');
+  MyWriteLN('[System.Collections.ArrayList] $FinalReport = @();                                ');
+  MyWriteLN('  foreach($stockEntry in $stockEntryElementList.Envelope.Body.receiveApplicationResultResponse.application.result.getStockEntryByGuidResponse.stockEntry) ');
+  MyWriteLN('    {                                                                                                                                                     ');
+  MyWriteLN('     $item = New-Object PSObject                                                                                                                           ');
+  MyWriteLN('     $item | Add-Member -type NoteProperty -Name "'+coPS1_GetStockUUIDbyGUID_GUID+'" -value $stockEntry.Guid              ');
+  MyWriteLN('     $item | Add-Member -type NoteProperty -Name "'+coPS1_GetStockUUIDbyGUID_UUID+'" -value $stockEntry.uuid             ');
+  MyWriteLN('     $item | Add-Member -type NoteProperty -Name "'+co_PS1_REQUESTERROR+'" -value $GlobError.ToString()             ');
+  MyWriteLN('     $item | Add-Member -type NoteProperty -Name "'+coPS1_GetStockUUIDbyGUID_UNITGUID +'" -value $stockEntry.batch.unit.guid');
+
+  MyWriteLN('     $FinalReport +=,$item                                                                                      ');
+  MyWriteLN('    }                                                                                                               ');
+  MyWriteLN('[string]$sqlQuery = "" ');
+  MyWriteLN(' [int]$npp = 1                                                                       ');
+  MyWriteLN(' write-host "Запрос GETSTOCK UUID by GUID. Запись в буферную таблицу" -ForegroundColor Green         ');
+  MyWriteLN(' foreach($item in $FinalReport)                                                      ');
+  MyWriteLN('  {                                                                                  ');
+  MyWriteLN('   if([math]::Truncate($npp/23) -eq $npp/23) ');
+  MyWriteLN('    {                                       ');
+  MyWriteLN('     write-host "Запись в буферную таблицу полученных результатов" -ForegroundColor Cyan       ');
+  MyWriteLN('     $res = Invoke-DatabaseQuery -connectionString $conStrinGal -query $sqlQuery -isSQLServer ');
+  MyWriteLN('     $sqlQuery = "" ');
+  MyWriteLN('    }                                       ');
+
+  MyWriteLN('   write-host "Запрос GetStock UUID by GUID. Запись запроса " $npp.tostring()  -ForegroundColor Cyan       ');
+  MyWriteLN('   foreach( $property in $item.psobject.properties.name )                            ');
+  MyWriteLN('    {                                                                                ');
+  MyWriteLN('      if ($item.$property -eq $null)                                                 ');
+  MyWriteLN('        {                                                                            ');
+  MyWriteLN('         $itemproperty = ""                                                          ');
+  MyWriteLN('        }                                                                            ');
+  MyWriteLN('        else                                                                         ');
+  MyWriteLN('         {                                                                           ');
+  MyWriteLN('          $itemproperty = $item.$property                                            ');
+  MyWriteLN('         }                                                                           ');
+  MyWriteLN('      $sqlQuery = $sqlQuery + ''Insert t$ATL_RQSTAPIVALUES (f$RQST_GUID, f$RSQT_PROVIDER, f$NROW, f$COLUMNNAME, f$VALUE)    ');
+  MyWriteLN('                   values (''''''+$RQST_GUID+'''''',''''''+$circuitserviceID+'''''',''+$npp.tostring()+'',''''''+$property.Replace("''","''''")+'''''',''''''+$itemproperty.Replace("''","''''")+'''''') ');
+  MyWriteLN('                    ''                                                                            ');
+  MyWriteLN('    }                                                                                          ');
+  MyWriteLN('    $npp = $npp + 1                                                                            ');
+  MyWriteLN('  }                                                                                            ');
+  MyWriteLN('   write-host "Запись в буферную таблицу полученных результатов" -ForegroundColor Cyan       ');
+  MyWriteLN('      $res = Invoke-DatabaseQuery -connectionString $conStrinGal -query $sqlQuery -isSQLServer ');
+  MyWriteLN('      $sqlQuery = "" ');
+
+  MyWriteLN('}                                                                                                                                      ');
+
+}
+Function GetRequestToAPIVetis_GetStockUUIDbyGUID(_GUID: string; var _UUID, _UNITGUID: string) : boolean;
+{
+  _rqstError := '';
+  delete all tStockGUIDUUID;
+   #BodyProcedureGetRqst(GetStockUUIDbyGUID,_GUID)
+
+  IF (getfirst tStockGUIDUUID where tStockGUIDUUID.GUID = _GUID) = tsOK
+   {
+     _UUID     := tStockGUIDUUID.UUID;
+     _UNITGUID := tStockGUIDUUID.UNITGUID;
+     Result := true;
+     MyLog('По GUID '+_GUID+' найден stock uuid ' +_UUID);
+   }
+   else
+   {
+     Result := false;
+    _UUID := tStockGUIDUUID.Error;
+    _UNITGUID := '';
+     MyLog('ОШИБКА: ' + tStockGUIDUUID.Error);
+   }
+}

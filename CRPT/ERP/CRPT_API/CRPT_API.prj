@@ -1,0 +1,109 @@
+#include PreDefs.inc;
+const
+#include GloConst.inc;
+#include TUNES.INC
+#include fldcolor.inc
+#include Galnet.csc;
+#include Galnet.ccm;
+#include Money.ccm
+#include Money.csc //без Galnet.inc надо
+
+end;
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include DicTypes.def
+#include GloDefs.inc
+//-----------------------------------
+// Описания объектов
+//-----------------------------------
+
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include ExtAttr.vih
+var extAttr: iExtAttr;
+
+#include Query.vih
+
+
+const
+
+//identifytools/info
+coPS1_IdntToolsInf_cis                  = 'cis';
+coPS1_IdntToolsInf_cparent              = 'cparent';
+coPS1_IdntToolsInf_emissionDate         = 'Дата эмиссии КИ';
+coPS1_IdntToolsInf_producedDate         = 'Дата ввода товара с КИ в оборот';
+coPS1_IdntToolsInf_ownerInn             = 'Текущий владелец КИТУ';
+coPS1_IdntToolsInf_participantInn       = 'Текущий владелец КИГУ';
+coPS1_IdntToolsInf_lastDocId            = 'Последний рег номер док. в ГИС МТ по КИ';
+coPS1_IdntToolsInf_lastDocType          = 'Тип последнего документа';
+coPS1_IdntToolsInf_emissionType         = 'Тип эмиссии';
+coPS1_IdntToolsInf_status               = 'Статус КИ';
+coPS1_IdntToolsInf_packType             = 'Тип упаковки';
+coPS1_IdntToolsInf_uit                  = 'КИ';
+coPS1_IdntToolsInf_lastStatusChangeDate = 'Дата последнего изменения статуса';
+coPS1_IdntToolsInf_productGroup         = 'Товарная группа';
+coPS1_IdntToolsInf_uitu                 = 'КИТУ';
+coPS1_IdntToolsInf_gtin                 = 'Код товара';
+coPS1_IdntToolsInf_sgtin                = 'Код товара и серийный номер КИ';
+
+
+//kitu/info
+coPS1_KituInfo_cis                  = 'cis';
+coPS1_KituInfo_cparent              = 'cparent';
+coPS1_KituInfo_emissionDate         = 'Дата эмиссии КИ';
+coPS1_KituInfo_producedDate         = 'Дата ввода товара с КИ в оборот';
+coPS1_KituInfo_lastDocType          = 'Тип последнего документа';
+coPS1_KituInfo_emissionType         = 'Тип эмиссии';
+coPS1_KituInfo_status               = 'Статус КИ';
+coPS1_KituInfo_packType             = 'Тип упаковки';
+coPS1_KituInfo_lastStatusChangeDate = 'Дата последнего изменения статуса';
+coPS1_KituInfo_productGroup         = 'Товарная группа';
+
+
+end;
+
+table struct tBuffer
+(
+  TextBuffer : string
+)
+with index
+(
+  iBuffer01 = TextBuffer
+);
+
+//-----------------------------------
+// публичные Функции
+//-----------------------------------
+//-----------------------------------
+// Макроопределения
+//-----------------------------------
+//----------------------------
+// TEST GAL_FUNCTION
+//----------------------------
+
+//******************************************
+#component "ATLANTIC"
+//----------------------------------
+#include Source\CRPT_API_PowerShell_VarsTypes.vpp
+#include Source\CRPT_API_PowerShell.vih
+#make "source\CRPT_API_PowerShell.vip"
+#make "source\CRPT_API_Viewer_InfoTools.vip"
+#make "source\CRPT_API_InfoToolsLoader.vip"
+#make "source\CRPT_API_PowerShellPost.vip"
+
+#make "source\CRPT_PRJ_tune.vip"
+
+#make "source\CRPT_API_ImportDocs.vip"
+#make "source\CRPT_API_AggrDocsList.vip"
+#make "source\CRPT_API_ShipmentDocsList.vip"
+#make "source\CRPT_API_ReceiptDocsList.vip"
+
+
+//-------------------------------------
+// Импорт

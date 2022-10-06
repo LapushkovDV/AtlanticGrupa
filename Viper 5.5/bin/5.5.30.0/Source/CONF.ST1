@@ -1,0 +1,204 @@
+
+  (scCfgAbsObjects..scCfgAbsObjects)
+  {
+    '~F1~ Помощь',      cmHelp,          kbF1;
+    '',                 cmOk,            kbEnter;
+    '~Ctrl+Enter~ Открыть',     cmTreeOpenNode,  kbCtrlEnter;
+    '~Ctrl+Backspace~ Закрыть', cmTreeCloseNode, kbCtrlBack;
+  }
+  (scCfgObjects..scCfgObjects)
+  {
+    '~F1~ Помощь',      cmHelp,          kbF1;
+    '~Ins~ Пометка',    cmAqaMarkRec,    kbIns;
+    '~Серый +~ Все',    cmAqaMarkAll,    kbGrayPlus;
+    '~Серый -~ Ничего', cmAqaUnMarkAll,  kbGrayMinus;
+    '~F3~ Один/Много',  cmPick, kbF3;
+    '',                 cmOk,            kbEnter;
+    '~Ctrl+Enter~ Открыть',     cmTreeOpenNode,  kbCtrlEnter;
+    '~Ctrl+Backspace~ Закрыть', cmTreeCloseNode, kbCtrlBack;
+  }
+  (scCfgObjectCreator..scCfgObjectCreator)
+  {
+    '~F1~ Помощь',cmHelp,kbF1;
+    '',                 cmOk,            kbEnter;
+  }
+  (scCfgAbsObjectInspector..scCfgAbsObjectInspector)
+  {
+    '~F1~ Помощь',cmHelp,kbF1;
+    '~F3~ Выбор значения',cmPick,kbF3;
+  }
+  (scCfgObjectInspector..scCfgObjectInspector)
+  {
+    '~F1~ Помощь',cmHelp,kbF1;
+    '~F3~ Выбор значения',cmPick,kbF3;
+    '~F4~ Объект',cmConfPickObj,kbF4;
+  }
+  (scCfgPropValues..scCfgPropValues)
+  {
+    '~F1~ Помощь',cmHelp,kbF1;
+    '~Enter~ Ввод',   cmOk,  kbEnter;
+  }
+  (scCfgReports..scCfgReports)
+  {
+    '~F1~ Помощь',cmHelp,kbF1;
+    '~Ins~ Пометка',    cmAqaMarkRec,    kbIns;
+    '~Серый +~ Все',    cmAqaMarkAll,    kbGrayPlus;
+    '~Серый -~ Ничего', cmAqaUnMarkAll,  kbGrayMinus;
+    '',                 cmOk,            kbEnter;
+  }
+  (scCfgMenu..scCfgMenu)
+  {
+    '~F1~ Помощь',cmHelp,kbF1;
+    '~Ins~ Пометка',    cmAqaMarkRec,    kbIns;
+    '~Серый +~ Все',    cmAqaMarkAll,    kbGrayPlus;
+    '~Серый -~ Ничего', cmAqaUnMarkAll,  kbGrayMinus;
+    '',                 cmOk,            kbEnter;
+    '~Ctrl+Enter~ Открыть',     cmTreeOpenNode,  kbCtrlEnter;
+    '~Ctrl+Backspace~ Закрыть', cmTreeCloseNode, kbCtrlBack;
+  }
+  (scCfgMenuWithPick..scCfgMenuWithPick)
+  {
+    '~F1~ Помощь',cmHelp,kbF1;
+    '~F3~ Выбор',cmPick,kbF3;
+    '~Ins~ Пометка',    cmAqaMarkRec,    kbIns;
+    '~Серый +~ Все',    cmAqaMarkAll,    kbGrayPlus;
+    '~Серый -~ Ничего', cmAqaUnMarkAll,  kbGrayMinus;
+    '',                 cmOk,            kbEnter;
+    '~Ctrl+Enter~ Открыть',     cmTreeOpenNode,  kbCtrlEnter;
+    '~Ctrl+Backspace~ Закрыть', cmTreeCloseNode, kbCtrlBack;
+  }
+  (scCfgShowHidden..scCfgShowHidden)
+  {
+    '~F1~ Помощь',cmHelp,kbF1;
+    '~Ins~ Пометка',    cmAqaMarkRec,    kbIns;
+    '~Серый +~ Все',    cmAqaMarkAll,    kbGrayPlus;
+    '~Серый -~ Ничего', cmAqaUnMarkAll,  kbGrayMinus;
+    '',                 cmOk,            kbEnter;
+   }
+
+   (scCfgSelAttr2..scCfgSelAttr2)
+   {
+     '~F7~ Новая',                 cmInsert,               kbF7;
+     '~F8~ Удалить',               cmDelete,               kbF8;
+     '~Enter~ Выбрать',            cmDefault,              kbEnter;
+   }
+   (scCfgSelAttr3..scCfgSelAttr3)
+   {
+     '~F3~ Выбор',                 cmPick,                 kbF3;
+     '~F7~ Новая',                 cmInsert,               kbF7;
+     '~F8~ Удалить',               cmDelete,               kbF8;
+     '~Enter~ Выбрать',            cmDefault,              kbEnter;
+   }
+
+  (scCfgClassifier..scCfgClassifier)
+  {
+    '~F4~ Редактировать',       cmInternalEdit,  kbF4;
+    '~Enter~ Выбрать',          cmDefault,       kbEnter;
+    '~Alt+S~ Переключить',      cmInternalSwitch,kbAltS;
+    '~Ctrl+Del~ Очистить',      cmInternalClear, kbCtrlDel;
+  }
+
+  (scCfgClassifier2..scCfgClassifier2)
+  {
+    '~F4~ Редактировать',       cmInternalEdit,  kbF4;
+    '~Enter~ Выбрать',          cmDefault,       kbEnter;
+  }
+
+  (scCfgClassifierTree..scCfgClassifierTree)
+  {
+    '~F4~ Редактировать',       cmInternalEdit,  kbF4;
+    '~Enter~ Выбрать',          cmDefault,       kbEnter;
+    '~Alt+S~ Переключить',      cmInternalSwitch,kbAltS;
+    '~Ctrl+Del~ Очистить',      cmInternalClear, kbCtrlDel;
+    '',                         cmTreeOpenNode,  kbCtrlEnter;
+    '',                         cmTreeCloseNode, kbCtrlBack;
+    '',                         cmTreeExpand,    kbCtrlGrayPlus;
+    '',                         cmTreeCollapse,  kbCtrlGrayMinus;
+  }
+
+  (scCfgClassifierEdit..scCfgClassifierEdit)
+  {
+    '~F7~ Создать',             cmInsert,        kbF7;
+    '~F8~ Удалить',             cmDelete,        kbF8;
+    '~Alt+S~ Переключить',      cmInternalSwitch,kbAltS;
+  }
+
+  (scCfgClassifierEditTree..scCfgClassifierEditTree)
+  {
+    '~F7~ Создать',             cmInsert,        kbF7;
+    '~F8~ Удалить',             cmDelete,        kbF8;
+    '~Alt+S~ Переключить',      cmInternalSwitch,kbAltS;
+    '',                         cmTreeOpenNode,  kbCtrlEnter;
+    '',                         cmTreeCloseNode, kbCtrlBack;
+    '',                         cmTreeExpand,    kbCtrlGrayPlus;
+    '',                         cmTreeCollapse,  kbCtrlGrayMinus;
+  }
+
+   (scCfgParamStringEdit..scCfgParamStringEdit)
+   {
+     '~F1~ Справка',     cmHelp,           kbF1;
+     '~F7~ Новая',       cmInsert,         kbF7;
+     '~F8~ Удалить',     cmDelete,         kbF8;
+     '~Ctrl+Up~ Вверх',  cmAqaItemMoveUp,  kbCtrlUp;
+     '~Ctrl+Down~ Вниз', cmAqaItemMoveDown,kbCtrlDown;
+   }
+
+   (scCfgParamPathEdit..scCfgParamPathEdit)
+   {
+     '~F1~ Справка',     cmHelp,           kbF1;
+     '~F3~ Выбор',       cmPick,           kbF3;
+     '~F7~ Новая',       cmInsert,         kbF7;
+     '~F8~ Удалить',     cmDelete,         kbF8;
+     '~Ctrl+Up~ Вверх',  cmAqaItemMoveUp,  kbCtrlUp;
+     '~Ctrl+Down~ Вниз', cmAqaItemMoveDown,kbCtrlDown;
+   }
+ 
+   (scCfgParamTree..scCfgParamTree)
+   {
+     '~F1~ Справка',             cmHelp,          kbF1;
+     '~Ctrl+Enter~ Открыть',     cmTreeOpenNode,  kbCtrlEnter;
+     '~Ctrl+Backspace~ Закрыть', cmTreeCloseNode, kbCtrlBack;
+   }
+ 
+   (scCfgParamTreePick..scCfgParamTreePick)
+   {
+     '~F1~ Справка',             cmHelp,          kbF1;
+     '~F3~ Выбор',               cmPick,          kbF3;
+     '~Ctrl+Enter~ Открыть',     cmTreeOpenNode,  kbCtrlEnter;
+     '~Ctrl+Backspace~ Закрыть', cmTreeCloseNode, kbCtrlBack;
+   }
+
+   (scCfgServiceFunctions..scCfgServiceFunctions)
+   {
+     '~F1~ Справка',          cmHelp,          kbF1;
+     '',              cmResize,   kbCtrlF5;
+     '',              cmZoom,     kbF5;
+     '',              cmNext,     kbF6;
+     '',              cmLastHelp, kbAltF1;
+     '',              cmHotKeys,  kbAltF10;
+     '',              cmMenu,     kbF10;
+   }
+
+   (scCfgServiceFunctionsTypesFilter..scCfgServiceFunctionsTypesFilter)
+   {
+     '~F1~ Справка',          cmHelp,          kbF1;
+     '',                      cmMarkRec,       kbIns;
+     '',                      cmMarkRec,       kbSpace;
+     '',                      cmMarkAll,       kbGrayPlus;
+     '',                      cmUnMarkAll,     kbGrayMinus;
+     '',                      cmInvertMark,    kbGrayMul;
+     '',              cmResize,   kbCtrlF5;
+     '',              cmZoom,     kbF5;
+     '',              cmNext,     kbF6;
+     '',              cmLastHelp, kbAltF1;
+     '',              cmHotKeys,  kbAltF10;
+     '',              cmMenu,     kbF10;
+   }
+
+   (scCfgObjInspectorEditList..scCfgObjInspectorEditList)
+   {
+     '~F1~ Помощь',        cmHelp,   kbF1;
+     '~F7~ Добавить',      cmInsert, kbF7;
+     '~F8~ Удалить',       cmDelete, kbF8;
+     '~Enter~ Сохранить',  cmOk,     kbEnter;
+   }

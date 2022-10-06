@@ -1,0 +1,13 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_GetAn
+
+#ifdef ComponentVersion
+#Component "F_GetAn"
+#end
+
+VipInterface  ThreePickKau  Licensed(Free);
+VipInterface  KauTest       Licensed(Free);
+VipInterface  KauCheck01    Licensed(Free)  Parameters(wIntMode : word);
+
+Menu HotKeys_AllGtKau_ForTree_Tree;
+Menu HotKeys_AllGtKau_ForTree_Browse;

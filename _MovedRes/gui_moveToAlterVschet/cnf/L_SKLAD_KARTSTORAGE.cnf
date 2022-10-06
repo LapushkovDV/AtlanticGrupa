@@ -1,0 +1,19 @@
+object 'L_SKLAD::KARTSTORAGE' : InterfaceWindow {
+    // Информация: объект "'Field: KATMCMY.BARKOD2'" типа Column не найден в базовой конфигурации!
+  object BRKARTSTOR : Browser {
+    object 'Field: KATMCMY.BARKOD2' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      StatusCtx = 16;
+      Title = 'Артикул';
+      HelpLine = 'Артикул';
+      FieldName = 'Field: KATMCMY.BARKOD2';
+      Index = 2;
+      DefaultWidth = 26;
+    } // Field: KATMCMY.BARKOD2 : Column
+  } // BRKARTSTOR : Browser
+} // L_SKLAD::KARTSTORAGE : InterfaceWindow
+//-----------------------------------------------------------------------------

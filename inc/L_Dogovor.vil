@@ -1,0 +1,260 @@
+#ifdef ComponentVersion
+#component "L_DOGOVOR"
+#end
+
+VipInterface AktForm            Licensed (FREE)    Parameters (pAktSver : comp);
+VipInterface AktSverP           Licensed (FREE)    Parameters (AktNRec : comp);
+VipInterface AttrDog            Licensed (FREE)    Parameters (pNumber : word; pDogovor : comp);
+VipInterface GetBatAppDogMakerParams
+                                Licensed (FREE)    Parameters (wParam : word;
+                                                               pDogovor : comp;
+                                                               dDate,
+                                                               dFrom,
+                                                               dD1,
+                                                               dD2 : date;
+                                                               pKatVidD,
+                                                               pNote : comp;
+                                                               wExtra : word;
+                                                               doDiscount : double;
+                                                               wVidExtra,
+                                                               CopySpec,
+                                                               wOrgs1,
+                                                               wOrgs2
+                                                                : word
+                                                             );
+VipInterface BatchGeneretePlPor
+  Licensed (dogovor);
+
+VipInterface LinkDOCwithBD      Licensed (FREE)    Parameters (cRecBD : comp; pcoTbl : word);
+VipInterface BegFil
+  Licensed (FREE)
+  Parameters
+  (
+    Number_Screen : word;
+    v_ProcOpl     : double;
+    wParams       : word;
+    DskParams     : longint
+  );
+
+VipInterface CheckPln           Licensed (FREE)    Parameters (prmCalPlan, prmPlanPays : comp; prmMode, prmCondStatus : word);
+VipInterface ChkKatNotes1       Licensed (FREE)    ;
+VipInterface CheckKatNotes      Licensed (FREE)    Parameters (pVidDoc : word);
+VipInterface DogBatDeleter
+  Licensed (dogovor);
+
+VipInterface DogRelat           Licensed (FREE)    Parameters (pDogovor : comp);
+
+VipInterface Dog2Akt
+  Licensed (dogovor);
+
+VipInterface Dog2DO
+  Licensed (dogovor,Realting)
+  Parameters
+  (
+    Tip : word
+  );
+
+VipInterface DogFinder          Licensed (FREE)    Parameters (FldNo : word; pDogovor : comp);
+VipInterface GetCalPlan         Licensed (FREE)    Parameters (wStatus, wParam : word; prmDogovor, prmCalPlan : comp);
+VipInterface GetDocForLinks     Licensed (FREE)    Parameters (pBaseDoc : comp; pTiDk2, p1, p2 : word; c1 : comp);
+VipInterface GetDocs            Licensed (FREE)    Parameters (pDogovor, pAppDogovor, pCalPlan : comp; DskParams : longint; wIntMode : word);
+#include FltDog.rec
+VipInterface GetDocs2           Licensed (FREE)    Parameters (pDogovor, pAppDogovor : comp; DskParams : longint; FilterInfo : TFilterDog);
+
+VipInterface Dog2AnyDocs
+  Licensed (dogovor,Realting)
+  Parameters
+  (
+    FunctionID  : word;
+    Realization : string
+  );
+
+VipInterface GetDogovorMC       Licensed (FREE)    Parameters (pDocOwner : comp; TiDkOwner, wPrMc, wDirect : word; p1 : comp);
+VipInterface GetDOMC            Licensed (FREE)    Parameters (pDocOwner, p1 : comp);
+VipInterface GetDocSver         Licensed (FREE)    Parameters (pAktSver : comp; pTiDkSver : word);
+VipInterface GetKatSopr         Licensed (FREE)    Parameters (p1 : comp; w1 : word);
+VipInterface GetResOtgr         Licensed (FREE)    Parameters (c1 : comp);
+#ifdef _WOOD_
+VipInterface GetSomeDogovor;
+public:
+ function GetTreeBrowseDog : longint;
+ function GetBrowseDog: longint;
+end;
+#else
+VipInterface GetSomeDogovor     Licensed (FREE)    Parameters (wVidDog, pStatus, pDirect, pAttach : word;
+                                                               OkOne : boolean;
+                                                               prmDogovor : comp;
+                                                               OneLevel : boolean;
+                                                               pOwn : comp);
+#end
+
+VipInterface GetSomeDogovorEx
+  licensed (FREE)
+Parameters (wVidDog, pStatus, pDirect, pAttach : word;
+            OkOne      : boolean;
+            prmDogovor : comp;
+            OneLevel   : boolean;
+            pOwn       : comp;
+            prmCalPlan : comp);
+VipInterface GetSomKatNotes     Licensed (FREE)    Parameters (pVidDoc, pSysNum, pStatus : word; OkOne : boolean; pKatNotes : comp);
+VipInterface GetSomNZakaz       Licensed (FREE)    Parameters (pStatus, pTypeDoc : word;
+                                                               OkOne : boolean;
+                                                               prmNZakaz : comp;
+                                                               OneLevel : boolean;
+                                                               pOwn,
+                                                               pPunktP,
+                                                               pKontr2,
+                                                               pGruzTo : comp);
+VipInterface GetSomVidD         Licensed (FREE)    Parameters (pVidDog, pDirect : word; OkOne : boolean; pKatVidD : comp; wDirect : word);
+VipInterface GetSoprHoz         Licensed (FREE)    Parameters (prmTiDkGal, prmTiDkSver : word; pDogovor, prmSoprHoz : comp);
+VipInterface GetGrOtgOrder      Licensed (FREE)    Parameters (pStatus : word;
+                                                               OkOne : boolean;
+                                                               prmOtgOrder : comp;
+                                                               OneLevel : boolean;
+                                                               pOwn : comp);
+VipInterface GetSpecToCopy      Licensed (FREE)    Parameters (pDoc : comp; pTiDk : word);
+VipInterface GetTipOtg          Licensed (FREE)    Parameters (c1 : comp);
+VipInterface GetSomeSpDocs1     Licensed (FREE)    Parameters (OkMulti : boolean;
+                                                               pDocOwner : comp;
+                                                               TiDkOwner : word;
+                                                               p1 : comp;
+                                                               EmptyFlt : word;
+                                                               curSpDocs : comp;
+                                                               pCopyZam,
+                                                               pDirect : word);
+VipInterface GetSomeSpDocs2     Licensed (FREE)    Parameters (OkMulti : boolean;
+                                                               pDocOwner : comp;
+                                                               TiDkOwner : word;
+                                                               p1 : comp;
+                                                               EmptyFlt : word;
+                                                               pDocFrom : comp;
+                                                               TiDkFrom : word);
+VipInterface IerDogPlanFunc     Licensed (FREE) ;
+VipInterface Language           Licensed (FREE)    Parameters (Rendering : word; pLanguage : comp; NameMarker : string);
+VipInterface LinkDocs           Licensed (FREE)    Parameters (pDoc : comp; pTiDk : word);
+VipInterface MakeDetailedNZak   Licensed (FREE)    Parameters (pNZakaz : comp);
+VipInterface MakePKPCorpoPlan   Licensed (FREE)    Parameters (pDogovor : comp; pDirect, pDirectPKP : word);
+VipInterface ModStatusDog       Licensed (FREE) ;
+VipInterface MouldAir           Licensed (FREE)    Parameters (Rendering : word; pMouldAir : comp; NameMarker : string);
+VipInterface MouldDoc           Licensed (FREE)    Parameters (WayRendering : word; pMouldDoc : comp);
+VipInterface NIOKR_bat
+  Licensed (dogovor);
+
+VipInterface NZakaz
+  Licensed
+  (
+  #include NZakaz.lih
+  )
+  Parameters
+  (
+    pNZakUp, pNZak : comp
+  );
+
+VipInterface PickKatNotes       Licensed (FREE)    Parameters (pVidDoc, pSysNum, pStatus : word; OkOne : boolean; pKatNotes : comp);
+VipInterface PickDogovor        Licensed (FREE)    Parameters (pVidDog, pStatus, pDirect, pAttach : word;
+                                                               OkOne : boolean;
+                                                               prmDogovor : comp;
+                                                               OneLevel : boolean;
+                                                               pOwn : comp);
+VipInterface PickNZak           Licensed (FREE)    Parameters (pStatus, pTypeDoc : word;
+                                                               OkOne : boolean;
+                                                               prmNZakaz : comp;
+                                                               OneLevel : boolean;
+                                                               pOwn, pPunktP, pKontr2, pGruzTo : comp);
+VipInterface PickOtgOrder       Licensed (FREE)    Parameters (pStatus : word; OkOne : boolean; prmOtgOrder : comp; OneLevel : boolean; pOwn : comp);
+VipInterface PickSomKlProg      Licensed (FREE)    Parameters (OkOne : boolean; pKlProg : comp);
+VipInterface PickSomVidD        Licensed (FREE)    Parameters (pVidDog, pDirect : word; OkOne : boolean; pKatVidD : comp; wDirect : word);
+VipInterface PickByGrMCUsl      Licensed (FREE)    Parameters (GrNRec : comp; _PrMc : word; TotalKol : double; OtpEdnRec : comp);
+VipInterface PickByGrMCUsl_1    Licensed (FREE)    Parameters (GrNRec : comp; PrMc : word; TotalKol : double; OtpEdnRec : comp; OneSelect : boolean);
+
+VipInterface RO2Nakl
+  Licensed (dogovor)
+  Parameters
+  (
+    Tip : word
+  );
+
+VipInterface ROtg
+  Licensed (dogovor)
+  Parameters
+  (
+    parNRec : comp
+  );
+
+VipInterface ROtg_R
+  Licensed (dogovor);
+
+VipInterface ROtg_R01
+  Licensed (dogovor);
+
+VipInterface ROtg_R02
+  Licensed (dogovor)
+  Parameters
+  (
+    parNRec : comp
+  );
+
+VipInterface ROtg_R03
+  Licensed (dogovor)
+  Parameters
+  (
+    parNRec : comp
+  );
+
+VipInterface SchemeOplOnTovPKP  Licensed (FREE)    Parameters (pCalPlan : comp);
+VipInterface StatusChanger      Licensed (FREE)    Parameters (_vidDoc : word;
+                                                               _cDoc : comp;
+                                                               _OldStat, _NewStat : word;
+                                                               _cNote : comp;
+                                                               _Comment : string[80]);
+VipInterface StatLog            Licensed (FREE)    Parameters (pViewType : word;
+                                                               pDoc : comp;
+                                                               pDocType,
+                                                               pStatus : word;
+                                                               pNote : comp;
+                                                               wMaska : word);
+VipInterface GetStFolder        Licensed (FREE) Parameters (parVidDoc, parNotView, parRetRec : comp);
+
+VipInterface SvodRazn
+  Licensed (dogovor);
+
+VipInterface ViewDObyDog        Licensed (FREE)    Parameters (DogNRec, AppDogNRec, PlanNRec : comp);
+VipInterface ViewNaklbyOR       Licensed (FREE)    Parameters (ORNRec : comp);
+VipInterface ViewNZbyDog        Licensed (FREE)    Parameters (DogNRec : comp);
+VipInterface ZamenMcSPec        Licensed (FREE)    Parameters (pTiDkSpDocs : word; pNRecSpDocs : comp);
+
+VipInterface LongDog
+  Licensed (DOGOVOR);
+
+VipInterface BuildSumOnSpec     Licensed (FREE)    Parameters (pPaySchem : comp; SumLimit : double; NeedToLimit : boolean);
+
+VipInterface DogBatChanger
+  Licensed (dogovor);
+
+VipInterface vipPlanNIOKR       Licensed (FREE)    Parameters(IsPick, PickLevel: word; pPlanNIOKR: comp);
+VipInterface UrgentM            Licensed (FREE)    Parameters(cCalPlan : comp);
+VipInterface GetMeasures        Licensed (FREE)    Parameters(cRec : comp; bPick: boolean);
+VipInterface DogMail            Licensed (FREE)    Parameters(cDog : comp; cAppDog : comp; cCalPlan : comp);
+
+VipInterface RPriemOtpBase      Licensed (FREE)    Parameters(pcRec: comp; pwParam: word);
+VipInterface RPriemOtp(RPriemOtpBase) Licensed (FREE);
+VipInterface RVozvrOtp(RPriemOtpBase) Licensed (FREE);
+VipInterface RVnutrPerem(RPriemOtpBase) Licensed (FREE);
+
+VipInterface RPriemOtpWithType(RPriemOtp)
+                                Licensed (FREE)    Parameters (wTypeRasp1, wTypeRasp2: word);
+
+VipInterface RPriemOtp_Prn      Licensed (FREE)    Parameters(pcRec: comp; wTip : word);
+VipInterface RepVozvOtp         Licensed (FREE)    Parameters(pcRec: comp; wTip : word);
+VipInterface RepPriemOtp        Licensed (FREE)    Parameters(pcRec: comp; wTip : word);
+VipInterface DogPriceChanger
+  Licensed (dogovor);
+VipInterface BatchCopyMTR       Licensed (FREE)    Parameters(pDogovor: comp; hMarker: longint);
+VipInterface VidRabot           Licensed (FREE)    Parameters(cur_CatalPSD: comp; ES: boolean);
+VipInterface GetSpDog           Licensed (FREE)    Parameters(pNRec: comp; wPrMC: word; wFiltr: word; wPList: word);
+
+VipInterface MTR_Sp             Licensed (FREE)    Parameters(pDogovor : Comp; pPrint : Boolean);
+VipInterface ComplMcSpec        Licensed (FREE)    Parameters(pNRecSpDocs : Comp; pParam : Word);
+VipInterface SetDogIcons        Licensed (FREE)    Parameters(pVidDoc: word; cKatNotes: comp; wStatus : word; sStatName: string);
+VipInterface ListSogl           Licensed (Dogovor);
+VipInterface ListSoglMask       Licensed (Dogovor) Parameters(wMode: word; pMask: comp);

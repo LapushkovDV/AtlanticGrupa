@@ -1,0 +1,10 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента
+
+#ifdef ComponentVersion
+#component "F_Alg"
+#end
+
+VipInterface GetFields   licensed (FREE) Parameters (TipDoc:word;outstr:string);
+
+VipInterface ChkOsAlg  licensed (FREE) Parameters (pTiDK: word);

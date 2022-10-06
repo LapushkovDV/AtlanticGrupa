@@ -1,0 +1,12 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_Saldo
+
+#ifdef ComponentVersion
+#component "F_Saldo"
+#end
+
+VipInterface SaldMoun #Licensed_KBU  Parameters(wIntMode : word; mySetRec : comp);
+VipInterface SaldDay  #Licensed_KBU  Parameters(wIntMode : word; mySetRec : comp);
+VipInterface SaldoNM  #Licensed_Free Parameters(wIntMode : word; mySetRec : comp);
+
+Menu Saldo_HotKeys;

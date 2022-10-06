@@ -1,0 +1,32 @@
+// Галактика 8.00   2004г.
+// Описание интерфейсов компонента C_ExtClass
+
+#ifdef ComponentVersion
+#component "C_ExtClass"
+#end
+
+#include  Attribu_.vih
+VipInterface AttrNames     licensed (FREE)  Parameters (w1: word);
+VipInterface PickAttrNam   licensed (FREE)  Parameters (lCode: comp; wTab: word);
+VipInterface PickAttrNamType licensed (FREE)  Parameters (lCode: comp; wTab: word; aType: word);
+VipInterface PickTable     licensed (FREE)  Parameters (code: word);
+VipInterface GetAttrTable  licensed (FREE)  Parameters (_SysNum: word; _code: word; _coTable: word);
+VipInterface PickAttrVal   licensed (FREE)  Parameters (Mode: word; TableCode: word; RecordNumber: comp; c1: comp);
+
+
+#include ExClass.vih
+VipInterface ExExtClass        licensed (FREE) Parameters (wMode: word; wTbl: word; lClassSeg: comp; UniqFeat: word);
+VipInterface GetExClassifier   licensed (FREE) Parameters ( KodTable: word; lClassCode: comp);
+
+// #include ArcExCl.vih
+VipInterface PickExClassifier  licensed (FREE) Parameters (wObjType: word; lClassSeg: comp; UniqFeat: word);
+VipInterface PickExClassifier2 licensed (FREE) Parameters (wObjType: word; ClassCode: word; lClassSeg: comp; UniqFeat: word);
+VipInterface SomeExClassifier  licensed (FREE) Parameters (wObjType: word; c1: comp; c2: comp);
+VipInterface GetSomeKL         licensed (FREE) Parameters (paramwTable: word; paramcClassNam: comp);
+VipInterface GetKL             licensed (FREE) Parameters (paramwTable: word; paramcClassNam: comp);
+VipInterface GetAllSegs        licensed (FREE) Parameters (p_wTable: word; p_ClassName: string; p_cRec: comp; p_Value: string);
+VipInterface PickExClassVal    licensed (FREE) Parameters (Mode: word; wTable: word; cRec: comp; c1: comp);
+
+VipInterface ExClassRepl       licensed (FREE) Parameters (wTable, wwList: word; cRec: comp; KZ_Marker: longint);
+
+//********************************************************************************

@@ -1,0 +1,18 @@
+Create table ATL_Vetis_DocSpRefD "Связанные документы к ЭВСД"
+with table_Code = 31630
+with replace
+with tableoptions Branched
+(
+   NREC               : comp       "Идентификатор",
+   cATL_Vetis_DocList : ref(ATL_Vetis_DocList)       "nrec документа",
+   IssueNumber        : string "Номер",
+   IssueDate          : date   "Дата",
+   Issuetype          : string "Тип документа",
+   IssueRelatType     : string "Тип отношений"
+)
+with index
+(
+    i_NREC = NREC(Unique, Surrogate, Journal)
+   ,i_Rqst = cATL_Vetis_DocList + IssueDate
+)
+;

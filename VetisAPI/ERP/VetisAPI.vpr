@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>VetisAPI</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.33.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\..\inc\*
+					..\..\..\SourceGal\*
+					..\..\..\..\FRM\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\L_SoprBase.res
+					$[GalExe]\L_SoprDoc.res
+					$[GalExe]\C_EXTCLASS.res
+				</ResourceList>
+				<OutputResource>..\..\..\VetisAPI_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:RUMOW-VMGAL01.atlantic.grupa[1997]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
+					<LicFileName>..\..\..\..\..\Sup910\exe\License.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="VetisAPI.prj" PosX="28" PosY="192" OpenEditor="True" Active="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="VetisAPI.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\VetisAPI\ERP\VetisAPI.prj" DateTimeStart="43983,8769257986" DateTimeCompile="0,000608923612162471" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\VetisAPI\ERP\SOURCE\VetisAPI_PowerShell.VIP" SourceLine="6" SourceColumn="1"/>
+					<CompileMessage MessageType="mtHint" MessageText="Добавление полей структурного типа в логическую таблицу не рекомендуется" SourceFileName="C:\Galaktika\res\src\VetisAPI\ERP\SOURCE\VetisAPI_PowerShell.VIP" SourceLine="93" SourceColumn="44"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;VETISAPI_POWERSHELL.CheckFileFillValues&quot;, объявленный в VETISAPI_POWERSHELL_OPENFILEEXCELSEARCHCELLS.VPP, не был использован" SourceFileName="C:\Galaktika\res\src\VetisAPI\ERP\SOURCE\VetisAPI_PowerShell.VIP" SourceLine="340" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\VetisAPI\ERP\SOURCE\VetisAPI_Viewer_STOCK.VIP" SourceLine="171" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не указан порядок округления. Автоматическое округление до 4 символов" SourceFileName="C:\Galaktika\res\src\VetisAPI\ERP\SOURCE\VetisAPI_Viewer_STOCK.VIP" SourceLine="275" SourceColumn="76"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не указан порядок округления. Автоматическое округление до 4 символов" SourceFileName="C:\Galaktika\res\src\VetisAPI\ERP\SOURCE\VetisAPI_Viewer_STOCK.VIP" SourceLine="283" SourceColumn="79"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не указан порядок округления. Автоматическое округление до 4 символов" SourceFileName="C:\Galaktika\res\src\VetisAPI\ERP\SOURCE\VetisAPI_Viewer_STOCK.VIP" SourceLine="285" SourceColumn="85"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Переменная _result не была инициализирована" SourceFileName="C:\Galaktika\res\src\VetisAPI\ERP\SOURCE\VetisAPI_Viewer_STOCK.VIP" SourceLine="463" SourceColumn="4"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\VetisAPI\ERP\SOURCE\VetisAPI_Viewer_Product.VIP" SourceLine="71" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\VetisAPI\ERP\SOURCE\VetisAPI_Viewer_SpKau.VIP" SourceLine="69" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект IVIPIFCIFC L_MCU::KATMC, описывающий интерфейс вызова. Параметры вызова для L_MCU::KATMC не проверены." SourceFileName="C:\GALAKTIKA\RES\SRC\VETISAPI\ERP\SOURCE\VetisAPI_Viewer_Product.VIP" SourceLine="103" SourceColumn="70"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="01.06.2020 21:03:39"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<MarkerList>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
+			<Marker FileName="Source\VetisAPIViewer.VIP" Caption="Нумерованная закладка 1" Line="21" NumIndex="1" MarkerType="mtNumBookmark" Comment="tVETIS_VidSubPRoduct"/>
+		</MarkerList>
+	</ProjectManager>
+</Viper>

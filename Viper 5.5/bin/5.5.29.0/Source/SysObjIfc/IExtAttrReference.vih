@@ -1,0 +1,34 @@
+//-------------------------------------------------------------------
+//--- Copyright(c) 2004 by Galaktika Corporation                  ---
+//--- функции для работы с внешними атрибутами типа ссылка        ---
+//-------------------------------------------------------------------
+
+#ifndef _IExtAttrReference_
+#define _IExtAttrReference_
+
+#Component ""
+
+ObjInterface IExtAttrReference; 
+// #docl Системный интерфейс для работы с внешними ссылками. </brief>
+  function GetRefParams // #docl Системный интерфейс для работы с внешними ссылками. </brief>
+                        (var _rType             // #docl Тип
+                         : word; var _rObject   // #docl Объект
+                         : word; var _coTable   // #docl Таблица
+                         : word): boolean; // #docl Результат работы. </brief>
+  function PickValue    // #docl Выбор и установка значения атрибута. </brief>
+                        (_wTable            // #docl Таблица
+                        : word; _cAttrNam   // #docl Атрибут
+                        : comp; _cRec       // #docl Запись
+                        : comp): boolean;   // #docl Результат работы метода. </brief>
+
+  function sGetValue    // #docl Для показа в интерфейсе значения типа ссылка. Возвращает строку - значение ссылки. </brief>
+                        (_wTable            // #docl Таблица
+                        : word; _cAttrNam   // #docl Атрибут
+                        : comp; _cRec       // #docl Запись
+                        : comp): string;    // #docl Возвращаемое значение ссылки. </brief>
+end; 
+
+var ExtAttrRef: IExtAttrReference; 
+//VipInterface  ExtAttrRef implements IExtAttrReference ;
+
+#endif

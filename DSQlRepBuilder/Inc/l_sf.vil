@@ -1,0 +1,311 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента L_SF
+
+#ifdef ComponentVersion
+#component "L_SF"
+#end
+
+VipInterface SchFact
+  Licensed
+  (
+  #include SCHFACT.lih
+  )
+  Parameters (p1: comp; pDirect, pBounds: word;
+              pKatOrg, pBaseDoc, pStepDoc, pVal: comp;
+              pStatus, pTipNum, pAction: word);
+// SchPrint.vih
+//   VipInterface BookPrZk
+//   VipInterface BlBkPrZk
+
+VipInterface JournalB
+  Licensed
+  (
+  #include JOURNALB.lih
+  )
+  Parameters(wTipDoc: word; cTune: comp; lParam: longint; mDocs: longint; cDoc: comp);
+
+VipInterface SoprSchf
+  Licensed (sell,remont,postpol,buy,stroy)
+  Parameters(GloDirect: word);
+
+VipInterface ExpRegSf
+  Licensed (sell, postpol);
+
+VipInterface ExpReg_Bel
+  Licensed (sell, postpol);
+
+VipInterface RegStornoInBkPrZk
+  Licensed (sell,postpol,buy)
+  Parameters(_pRegDoc: word);
+
+VipInterface iRegisterAvansP
+  Licensed (B_Finans);
+
+VipInterface DOC1EDIT
+  Licensed
+  (
+  #include DOC1EDIT.lih
+  )
+  Parameters(cDoc:comp; wTipDoc:word; cTune:comp; wAction:word);
+
+VipInterface GetSchfTipDoc
+  Licensed (FREE)
+  Parameters(p1:word; pTipGal:word; pBounds:word; pAction:word);
+
+VipInterface GetSchfTipDocTmp
+  Licensed (FREE)
+  Parameters(p1:word; pTipGal:word; pBounds:word);
+
+VipInterface GetSomeUsersDoc
+  Licensed (FREE)
+  Parameters(p1:word; pTipGal:word; pBounds:word);
+
+VipInterface AllTunes
+  Licensed (FREE)
+  Parameters (cTuneRec: comp; TuneID: word);
+//#include SchFactFunctions.vih
+
+VipInterface EdBkPrZkRec
+  Licensed
+  (
+  #include EDBKPRZKREC.lih
+  )
+  Parameters (pcDoc : comp; pwTipDoc : word; pcTune : comp; pwAction : word);
+
+VipInterface iUpdateSp
+  Licensed (FREE);
+
+VipInterface VisualStornoInBkPrZk
+  Licensed (FREE);
+
+VipInterface iUksSchf
+  Licensed
+  (
+  #include IUKSSCHF.lih
+  )
+  Parameters (pDirect, pFilterDoc : word);
+
+VipInterface FreeNumSchf
+  Licensed
+  (
+  #include FREENUMSCHF.lih
+  )
+  Parameters (pTipGal : word);
+
+VipInterface EditReserve
+  Licensed (FREE)
+  Parameters (bPick : boolean; cRec, pFormPlace : comp);
+
+VipInterface EditRange
+  Licensed (FREE)
+  Parameters (cRange: comp; wAction: word);
+
+VipInterface GetFormPlace
+  Licensed (FREE)
+  Parameters (cFormPlace: comp; wParam: word);
+
+VipInterface FormPlace
+  Licensed (FREE)
+  Parameters (cFormPlace: comp);
+
+VipInterface UnLinkSF_Obj
+  Licensed (stroy);
+
+Vipinterface GetSchFact
+  Licensed (FREE)
+  Parameters (p1: comp;
+              pDirect, pBounds: word;
+              pKatOrg, pBasedoc, pStepdoc, pVal: comp;
+              pStatus, pTipNum: word
+             );
+
+VipInterface SchfNakl
+  Licensed (FREE)
+  Parameters (GloSchFact :comp; GloDirect :word;
+              GloKatOrg, GloBaseDoc, GloStepDoc :comp);
+
+VipInterface SchfReep
+  Licensed (FREE)
+  Parameters (pDirect, pSwitcher, pSchFactTipNum, pByNumEnable :word;
+              pNum1, pNum2 :string;
+              pYear :word;
+              pd1, pd2 :date;
+              pFilterParam :word;
+              pBou, pDoc :longint;
+              pSchfKatOrg, pSchfStepDoc :comp;
+              pFiltVal :word; pSchfVal  :comp;
+              pGroup, pSort, pPrintParam:word;
+              cDopNalog :comp;
+              MrkGetSomeKatOrg,MrkGetSomeUsersDoc,MrkGetSomeBaseDoc,MrkGetSomeKatPodr :longint ;
+              format : word
+             );
+
+VipInterface SchfRees
+  Licensed (FREE)
+  Parameters (pDirect :word;
+              pNrec   :comp;
+              pSwitcher2, pFiltDate :word;
+              pSortFact :boolean;
+              pd12, pd22:date;
+              pFiltNum, pSchFactTipNum2 :word;
+              pNum12, pNum22 :string;
+              pYear2 :word;
+              pFiltOrg :word; pSchfKatOrg2 :comp;
+              pFiltDO  :word; pSchfStepDoc2:comp;
+              pFiltState, pSchfSta2, pFiltVal2 :word;
+              pSchfVal2 :comp;
+              MrkGetSomeSchFact, MrkGetSomeKatOrg, MrkGetSomeUsersDoc,
+              MrkGetSomeBaseDoc, MrkGetSomeKatPodr : longint
+             );
+
+VipInterface SchfSchP
+  Licensed (FREE)
+  Parameters (pDirect, wPrintParam :word;
+              cDopNalog :comp;
+              format: word
+             );
+
+VipInterface SfGetSoprHoz
+  Licensed (FREE)
+  Parameters (p1 :comp; p2 :word; p3, p4, p5 :comp; p6 :word);
+
+VipInterface SFOilReestr
+  Licensed (FREE);
+
+VipInterface iAvansRegTune
+  Licensed (FREE)
+  Parameters (cTuneRec: comp; TuneID, wAction : word);
+
+VipInterface ExpRegTune
+  Licensed (FREE)
+  Parameters (cTuneRec: comp; TuneID, wAction : word);
+
+VipInterface ExpRegTune_Bel
+  Licensed (FREE)
+  Parameters (cTuneRec: comp; TuneID, wAction : word);
+
+VipInterface DelayedUKSRegistrationTune
+  Licensed (FREE)
+  Parameters (p_cTuneRec: comp; p_TuneID, p_wAction, p_Mode: word);
+
+VipInterface iRegNDSZk
+  Licensed (FREE)
+  Parameters (p_wMode: word; p_cObject: comp);
+
+VipInterface iUksSfTune
+  Licensed (FREE)
+  Parameters (cTuneRec: comp; TuneID, wAction : word);
+
+VipInterface KzRep_100_06
+  Licensed (FREE);
+
+VipInterface kzMGD20
+  Licensed (FREE);
+
+VipInterface kzMGDbook
+  Licensed (FREE)
+  Parameters (pFormID: word);
+
+VipInterface kzRee100
+  Licensed (FREE)
+  Parameters (p_reportID: string);
+
+VipInterface kzRee307
+  Licensed (FREE);
+
+VipInterface BNdsReep
+  Licensed (FREE)
+  Parameters (pDirect, pSwitcher, pSchFactTipNum, pByNumEnable :word;
+              pNum1, pNum2 :string;
+              pYear :word;
+              pd1, pd2 :date;
+              pFilterParam :word;
+              pBou, pDoc :longint;
+              pSchfKatOrg, pSchfStepDoc :comp;
+              pFiltVal :word; pSchfVal  :comp;
+              pGroup, pSort, pPrintParam:word;
+              cDopNalog :comp;
+              MrkGetSomeKatOrg,MrkGetSomeUsersDoc,MrkGetSomeBaseDoc,MrkGetSomeKatPodr :longint;
+              format : word
+             );
+
+VipInterface Doc1Tune
+  Licensed (FREE)
+  Parameters (cTuneRec: comp; TuneID, wAction : word);
+
+VipInterface EdTnBkPr
+  Licensed (FREE)
+  Parameters (pcUserDeskRep: comp; pwTuneID, pwAction: word);
+
+VipInterface PrnSchFVariatMcUsl
+  Licensed (FREE)
+  Parameters ( pSpSchf     : comp;
+               wParam      : word
+             );
+
+VipInterface GetBookPrZk
+  Licensed (FREE)
+  Parameters (pBookPrZk, pSF, pCurrBookPrZk : Comp; pDirect, pRegDoc : Word;
+              parTipUser : Word);
+
+VipInterface CheckNDSByOborot
+  Licensed (FREE);
+
+VipInterface TunRepDocNds
+  Licensed (FREE)
+  Parameters(NReport : Word; pNRec : Comp);
+
+VipInterface Sv_BK_Oborot_Buy
+  Licensed (FREE);
+
+VipInterface SvTune_BK_Oborot_Buy
+  Licensed (FREE)
+  Parameters(pNRec : Comp);
+
+VipInterface RegisterByEndAdapterPeriod
+  Licensed (postpol)
+  Parameters(pDirect : Word);
+
+VipInterface ExportRegistration_Buy
+  Licensed (postpol,buy)
+  Parameters(MarketInOrOut : Word);
+
+VipInterface RegistrationPartNDS_Buy
+  Licensed (postpol, buy);
+
+VipInterface ConvertStornoVozvrAvans
+  Licensed (FREE);
+
+VipInterface ConvertBkZk_2007Zak
+  Licensed (FREE);
+
+VipInterface ConvertOldCorrectedToNew
+  Licensed (FREE);
+
+VipInterface utilDuplNum
+  Licensed (FREE);
+
+VipInterface CorrectDateOpl
+  Licensed (FREE);
+
+Dialog SchFactGetCreateType
+(
+  wCreateType : word
+);
+
+Dialog NalNaklGetRKTip
+(
+  wRKZnak : word;
+  wRKTip  : word
+);
+
+Dialog NalNaklPickDO1
+(
+  myMode : word
+);
+
+DIALOG NalNaklGetRegBarter
+(
+  TipUserNo : string;
+  myMode    : word
+);

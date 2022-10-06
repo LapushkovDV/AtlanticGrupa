@@ -1,0 +1,24 @@
+// Стороннее платежное поручение
+object 'F_PLPOR::PLPOR' : InterfaceWindow {
+
+  //Список поручений
+  object BRPLPORPLAT2 : Browser {
+
+    object 'Field: PLPOR.NAMEPL1' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Примечание';
+      FieldName = 'Field: PLPOR.NAMEPL1';
+      Index = 10;
+      DefaultWidth = 26;
+      ButtonType = 0;
+    } // STEPDOC.NKONT : Column
+
+  } // BRPLPORPLAT2 : Browser
+
+
+} // F_PLPOR::PLPOR : InterfaceWindow
+//-----------------------------------------------------------------------------

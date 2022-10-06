@@ -1,0 +1,75 @@
+/*
+drop table ATL_PickingRep_LOG;
+drop table ATL_PickingRep_HEAD;
+drop table ATL_PickingRep_SPEC;
+*/
+
+Create table  ATL_PickingRep_LOG "Лог запуска заданий PickingReport"
+With table_Code = 31645
+With replace
+with tableoptions Branched
+(
+    NRec      : comp "Номер записи"
+  , LogDate   : DateTime "Дата-время запуска задания"
+  , State     : word "0draft,1readyToSend,2send,3NotNeedToSen"
+  , timeSend  : DateTime "Дата-время посылки на почту"
+  , Email     : String "E-Mails"
+  , cEmail    : String "Copy Emails"
+  , Log       : LVAR  "Сам лог импорта"
+)
+With index
+(
+   i_nrec  = NRec(Unique, Surrogate, Journal)
+ , i_LogDate = LogDate
+)
+;
+
+Create table  ATL_PickingRep_HEAD "Шапка из файла PickingReport"
+With table_Code = 31646
+With replace
+with tableoptions Branched
+(
+    NRec      : comp "Номер записи"
+  , cSopr     : ref(katsopr) "Ссылка на накладную"
+  , cBaseDoc  : ref(BaseDoc) "Ссылка на ДО"
+  , filename  : string "название файла"
+  , Nakl_Num  : string "Номер накладной из файла"
+  , isOK      : boolean "Корректный документ"
+  , ErrDescr  : String "Описание ошибок"
+  , cPickingRepLog : ref(ATL_PickingRep_LOG) "Ссылка на операцию импорта"
+)
+With index
+(
+    i_nrec  = NRec(Unique, Surrogate, Journal)
+  , i_cSopr = cSopr
+  , i_cBaseDoc = cBaseDoc
+  , i_cLog  = cPickingRepLog
+)
+;
+
+Create table  ATL_PickingRep_SPEC "Спецификация из файла PickingReport"
+With table_Code = 31647
+With replace
+with tableoptions Branched
+(
+    NRec       : comp "Номер записи"
+  , cHead      : ref(ATL_PickingRep_HEAD) "ссылка на шапку документа"
+  , isManual   : Boolean "Данные введены вручную"
+  , DateSborka : String "дата и время сборки"
+  , Nsopr      : String "номер нашей накладной"
+  , SapCode    : String "код продукта"
+  , SSCCWMS    : String "SSCC код из WMS"
+  , DataMatrix : String "Data Matrix код либо FULL"
+  , SSCCManuf  : String "заводской код SSCC, скан при приёмке"
+  , cSpSopr    : ref(spSopr) "ссылка на позицию накладной"
+  , cMc        : ref(katmc) "ссылка на МЦ"
+  , ErrDescr   : String "Описание ошибок"
+)
+With index
+(
+   i_nrec  = NRec(Unique, Surrogate, Journal)
+ , i_cSopr = cSpSopr
+ , i_cHead = cHead
+)
+;
+

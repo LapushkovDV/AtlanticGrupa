@@ -1,0 +1,7 @@
+#component "L_BASEDOC"
+Alter Interface PrnDocs;
+create view
+where if(BaseDoc.viddoc = 201, SpStep.kol <> 0,true)
+;
+end.
+

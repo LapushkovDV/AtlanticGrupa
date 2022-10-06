@@ -1,0 +1,59 @@
+#ifndef __GetFilials_vih__
+#define __GetFilials_vih__
+
+#Component ""
+
+  ObjInterface IChooseFilials;
+    property Title                // #docl Заголовок окна интерфейса. </brief>
+                                  :  String  Read Write;
+    function GetSomeAvailFilials  // #docl Выбрать несколько филиалов из доступных. </brief>
+                                  (aMarkers: LongInt):   word;
+    function GetSomeSelectFilials // #docl Выбрать несколько филиалов из текущих. </brief>
+                                  (aMarkers: LongInt):   word;
+    function GetOneAvailFilial    // #docl Выбрать один филиал из доступных. </brief>
+                                  (var aFilialID: Comp): word;
+    function GetOneSelectFilial   // #docl Выбрать один филиал из текущих. </brief>
+                                  (var aFilialID: Comp): word;
+  end;
+
+
+  VipInterface CheckFilialConditions licensed(free);
+  // #docl Системный интерфейс. </brief>
+  Public:
+    constructor Init // #docl Инициализация экземпляра интерфейса. </brief>
+                   ;
+  end;
+
+  VipInterface GetFilials(CheckFilialConditions);
+  // #docl Системный интерфейс для доступа к филиалам (данные из базы данных). </brief>
+  Public:
+    constructor Init // #docl Инициализация экземпляра интерфейса. </brief>
+                   ;
+
+    property Title    // #docl Заголовок окна интерфейса. </brief>
+                   :  String  Read Write;
+    function GetFilial // #docl Получить филиал(ы). </brief>
+                       (aMarkers // #docl Если филиалов несколько, они сохранятся в эту коллекцию. </brief>
+                                    : LongInt; var aFilialID // #docl Если филиал один, он сохранится здесь. </brief>
+                                                                : Comp) : boolean; // #docl Результат работы: </brief> True или False.
+  end;
+
+  VipInterface ChooseFilials(CheckFilialConditions)
+    implements IChooseFilials;
+  // #docl Системный интерфейс для доступа к филиалам (данные из базы данных). </brief>
+  Public:
+    constructor Init // #docl Инициализация экземпляра интерфейса. </brief>
+                   ;
+    destructor Done;
+  end;
+
+
+  VipInterface SelectFilial(CheckFilialConditions);
+  // #docl Системный интерфейс для выбора текущего филиала. </brief>
+  Public:
+    constructor Init // #docl Инициализация экземпляра интерфейса. </brief>
+                   ;
+    destructor Done;
+  end;
+
+#endif

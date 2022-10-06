@@ -1,0 +1,8 @@
+#ifdef ComponentVersion
+#component "z_staffMoves"
+#end
+
+vipinterface MovePersonsToOtherFilial licensed(free);
+vipinterface ChoiseFilial licensed (free) parameters(cFilial: comp; Markers: longint; Flags: word);
+vipinterface ChoisePersonsFromFilial licensed (free) parameters(cPsn: comp; Markers: longint; Flags: word; cFilial: comp; FilialMarker: longint);
+vipinterface ChoiseDepartMent licensed (free) parameters(cPodr: comp; Markers: longint; Flags: word);

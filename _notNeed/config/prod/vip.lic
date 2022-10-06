@@ -1,0 +1,45 @@
+Версия файла лицензий : 9
+Программный продукт : Support 5.5.14
+Название организации  : Дрога Калинска
+Дата приостановки абонентского обслуживания : 30/11/2017
+Номер лицензии : 100
+Список доступных контуров { 
+  OL_ADMIN
+   BILMENU
+   CORPOSERVER
+   FASTREPORT
+   FCENVMAIN
+   JOURNALMENU
+   PROTECTMENU
+   REPOSITORY
+   SQLMAIN
+  ST_ALONE
+   ARMRESOURCE
+   BTMAINMENU
+   CONMANAGEMENT
+   GALAGRAFMAIN
+   IMEXMAIN
+   LOCMAINMENU
+   OBJBROWSERMENU
+   REPAIRMENU
+}
+Список доступных платформ {
+   ERP
+   MSSQLSERVER
+}
+Список атрибутов {
+}
+Серийный номер 1 аппаратного ключа : 4479669
+Серийный номер 2 аппаратного ключа : -928776850
+Серийный номер 3 аппаратного ключа : 1416945944
+Серийный номер 4 аппаратного ключа : 173307601
+Серийный номер 5 аппаратного ключа : 593467811
+Дополнительная информация 1 : ZgCzNtBKSc3LLIaSWj6u/n4hrmG64RZaxgZ6BsZ6hqYKhmZWhobWRqYmZsaGBsYmWumJOYnZJZnZifHpqUW5iXla7o4+jt4hnt6OMAEtLSOgZks9Q3MFQyMrY0sAcOjgq6rYT6ni7TGZPtYAMbS3iyYyLlY+a9Sx9ZMyESbBT5pARPl37ew9PhL4FROlQzoToXo6LV6r3VtcxmpNd/tkBJYwrEpM
+Дополнительная информация 2 : HdhAS4rP0hkMgdxqmtTaPB7PeC5xBUoPm42VeXeKMokI1851Aj7wVcAoHn8BxlaRiXOpi/uz6x+I0BUC5v5sOf6rSstWULKz9pYsgnBzqU9TNJhkK8MXvRjyVB+tvbwsECDNhTLa58HAU60tSmvp7fcTZwPgTZTEO0wxCdAmfcYJDyBlaw2F5Ff/9CShvRPVMgWNNZaNFALUhpRS2gMiNuR0WA==
+Идентификатор клиента (первая часть) : 5487
+Идентификатор клиента (вторая часть) : 1
+Пароль 1 для аппаратного ключа : -1428109588
+Пароль 2 для аппаратного ключа : 1702287378
+Код лицензии (первая часть) : -542870975
+Код лицензии (вторая часть) : -544793841
+Контрольная сумма : 1866233356

@@ -1,0 +1,27 @@
+#include PreDefs.inc; 
+const
+#include GloConst.inc;
+#include Galnet.csc;
+#include Galnet.ccm;
+#include Money.ccm
+#include Money.csc //без Galnet.inc надо
+
+end;
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include DicTypes.def
+#include GloDefs.inc
+#include StatDefs.inc
+
+#define ComponentVersion  
+#include ExtAttr.vih
+
+#include MercuryPRJ_View.vih
+
+#Component "L_SoprDoc"
+
+#make "alter\alter_SoprDoc.vip"
+#make "CNF\L_SOPRDOC_SOPRDOC.cnf"

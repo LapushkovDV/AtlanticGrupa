@@ -1,0 +1,8 @@
+#ifdef ComponentVersion
+#component "Z_STAFFBuilder"
+#end
+
+vipinterface QReportsSetups
+  licensed (staffmainmenu,staffmainmenu2) parameters (CurRepCode : word);
+vipinterface Quastion_Reports licensed(free) parameters (SetupNRec: comp ; isNeedBuild: boolean);
+vipinterface StoreReports licensed(free);

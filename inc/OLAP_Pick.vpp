@@ -1,0 +1,47 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика ERP - логистика
+// Экспорт в хранилище данных
+// Процедуры сохранения/восстановления списка значений параметров
+//********************************************************************************
+Create view vOP From Pick;
+
+Procedure StorePickToMemo(mf_handle: longint; wPick: word);
+var
+  lCount: longint;
+{
+  lCount := 0;
+
+  vOP._LOOP Pick where (( wPick == Pick.wList ))
+    lCount := lCount + 1;
+
+  StoreFieldToMemo(mf_handle, lCount);
+
+  vOP._LOOP Pick where (( wPick == Pick.wList ))
+    StoreFieldToMemo(mf_handle, vOP.Pick.cRec);
+}
+
+//********************************************************************************
+Procedure LoadPickFromMemo(mf_handle : longint; wPick: word);
+var
+  i, lCount: longint;
+  PickRec  : comp;
+{
+  vOP.delete Pick where (( wPick == Pick.wList ));
+
+  if File_EOF(mf_handle) // для совместимости со старыми параметрами, иначе - ошибка при чтении
+    Exit;
+
+  LoadFieldFromMemo(mf_handle, lCount);
+
+  for (i := 1; i <= lCount; i := i + 1)
+    {
+      if File_EOF(mf_handle)
+        Break;
+
+      LoadFieldFromMemo(mf_handle, PickRec);
+
+      vOP.insert Pick set Pick.wList := wPick, Pick.cRec := PickRec;
+    }
+}
+//********************************************************************************

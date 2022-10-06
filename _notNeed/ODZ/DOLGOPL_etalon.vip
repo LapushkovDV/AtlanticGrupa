@@ -1,0 +1,1903 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 7.12 - логистика
+// Отчет "Задолженность и просрочка"
+//********************************************************************************
+
+#include PickDescr.vih
+#include CLNDRFNC.VIH
+#include xlReport.vih
+#include pMarkFun.vih  // Функции для работы с маркерами и Pick-таблицами
+
+#doc
+Интерфейс отчета "Задолженность и просрочка"
+#end
+Interface DolgOpl 'Отчеты по накладным' doaccept, Gray;
+  Show at (, , 87, 27);
+
+Table Struct memTbl_KS
+(
+  cRecKS  : comp,
+  dOpr    : Date,
+  Nomer   : string[20],
+  Summa   : double,
+  Descr   : string[20]
+)
+With INDEX
+(
+  memtbl_KS01 = dOpr
+);
+
+Table Struct memTbl_KatOrg
+(
+  cRec    : comp,
+  Name    : string
+)
+With INDEX
+(
+  memTbl_KatOrg01 = Name
+);
+
+Function IsPickedDescr (DescrDoc: string[20]): boolean; Forward;
+
+Var pxlrepsetup : xlrepsetup;
+//------------------------------------------------------------------------------
+Create view vSchfRees
+var
+
+  pXL
+                : XlsRepBuilder;
+//------------------------
+  iMarkFuncs
+                : pMarkFun;       // Объект для работы с маркерами и Pick
+//------------------------
+  prvid
+, VidOt
+, pType
+, nType
+, BwList
+, o1
+, o2
+, tmpFiltr
+, Vozv
+, _wModeCalcDays
+, _wModeCalcSrokDO
+, wModeCalcDays
+, wModeCalcDateOpl
+, wModeCalcSrokDO
+, wParamPrn
+, wOpr
+                : word;
+//------------------------
+  d1
+, d2
+, d3
+, ddMax
+                : Date;
+//------------------------
+  SXLTFileName
+, sXLSFileName
+, KatName
+, pDescrFio
+, Parotch
+, Filtr
+, AllKontrTxt
+, strDogovor
+, AllStatTxt
+, pDesGr
+, pDesGrFio
+, bDsc
+, id
+                : string;
+  pDescr
+                : string [20];
+//------------------------
+  cSoprB
+, cRecCalendar
+, cRecCalendar1
+, MyRepVAL
+                : comp;
+//------------------------
+  PrDn
+, itog
+, itogm
+, itog1
+, itog2
+, itogo2
+, itogo
+, itogom
+, itogo1
+, doMinRubDolg
+, RubDolg
+, SpOplKol
+, SpOplSum
+, SpOplSumVal
+                : double;
+//------------------------
+  bSort
+, boBreak
+, noData
+                : boolean;
+//------------------------
+  MarkerDescr
+, MarkerKontr
+, MarkerDesGr
+, MarkerStat
+, MarkerDog
+                : TPtr;
+  AllStat
+, AllDog
+, AllKontr
+, TMoney
+
+                : longint;
+
+As select
+ if ( ((pType AND 4)<>0), 'прогноз', 'задолженность')
+    ( FieldName = P_O )
+
+, if ( nType = 1
+     , 'накладным'
+     , if ( nType = 2
+          , 'актам'
+          , if ( nType = 3
+               , 'накладным и актам'
+               , ''
+               )
+          )
+     )
+    ( FieldName = NaklTxt )
+,  if(MyRepVAL<>0,oValFunc.GetValSimv(MyRepVAL),KlVal.SimvolV)
+    ( FieldName = SimvolV )
+
+From
+    KatOrg
+  , KatOrg KatOrg2
+  , KatSopr
+  , BaseDoc
+  , StepDoc
+  , KatSopr KatSopr1
+  , SpSopr
+  , SpSopHoz
+  , SoprHoz
+  , Pick (Pick02)
+  , GrDescr
+  , memTbl_KS
+  , Calendar
+  , Calendar Calendar1
+  , BaseFin
+  , memTbl_KatOrg
+  , KatNotes
+  , Dogovor
+  , KlVal
+
+Where
+((
+    BwList            ==  Pick.wList
+and ROOT              ==  KatOrg.Name
+and KatOrg.Nrec       ==  KatSopr.cOrg
+and cSoprB            ==  SpSopr.cSopr
+and SpSopr.Nrec       ==  SpSopHoz.cSpSopr
+and SpSopHoz.cSoprHoz ==  SoprHoz.Nrec
+and KatSopr.cStepDoc  ==  KatSopr1.cStepDoc
+and KatSopr.cStepDoc  ==  StepDoc.Nrec
+and StepDoc.cBaseDoc  ==  BaseDoc.Nrec
+and ( BaseDoc.Direct = 1 )
+and cRecCalendar      == Calendar.nRec
+and cRecCalendar1     == Calendar1.nRec
+and Pick.cRec         == KatOrg2.NRec
+))
+order by memTbl_KatOrg.Name
+
+bounds memTblKatOrg =
+         memTbl_KatOrg.cRec == KatOrg.Nrec
+
+bounds PickKatOrg =
+         Pick.cRec == KatOrg.Nrec
+
+Bounds byDOpr =  KatOrg.Nrec  ==  KatSopr.cOrg
+             and d1          <<=  KatSopr.dOpr
+             and d2          >>=  KatSopr.dOpr
+
+Bounds byDSopr =  KatOrg.Nrec  ==  KatSopr.cOrg
+             and d1           <<=  KatSopr.dSopr
+             and d2           >>=  KatSopr.dSopr
+;
+
+form frmDolgOpl('Dolgopl.OUT', 'Dolgopl') with NoVisual;
+
+var iface_Calendar: CalendarFunctions;
+var iDescr        : iPickDescr;
+
+Procedure LoadOrg;
+{
+  Delete all memTbl_KatOrg;
+
+  ResetBounds(#KatOrg);
+
+  if (AllKontr = 0)
+    _LOOP KatOrg
+      {
+        ClearBuffer(#memTbl_KatOrg);
+
+        memTbl_KatOrg.cRec := KatOrg.NRec;
+        memTbl_KatOrg.Name := KatOrg.Name;
+
+        insert current memTbl_KatOrg;
+      }
+  else
+    {
+    _LOOP Pick
+      {
+        ClearBuffer(#memTbl_KatOrg);
+
+        memTbl_KatOrg.cRec := KatOrg2.NRec;
+        memTbl_KatOrg.Name := KatOrg2.Name;
+
+        insert current memTbl_KatOrg;
+      }
+    }
+}
+
+
+Function DescrFio(Dsc: String): string;
+{
+  Result := Dsc;
+}
+
+Function GetKolPick : word;
+{
+  Result := 0;
+
+  _LOOP Pick
+    Result++;
+}
+
+Function IsPickedDescr (DescrDoc: string[20]): boolean;
+{
+  Result := iDescr.IsFilterDescr(DescrDoc);
+}
+
+Function RabDn(dd1: Date;dd2: Date): longint;
+var Ws : word;
+    Wm : word;
+    Wms: word;
+{
+  if ( dd1 >= dd2 )
+    {
+      Result := 0;
+      Exit;
+    }
+
+  Result := To_Days(dd2) - To_Days(dd1);
+
+  Wm  := word(Result mod 7);
+  Ws  := Day_Of_Week(dd1);
+  Wms := Wm + Ws;
+
+  Result -= 2 * (Result div 7);
+
+  if ( ( Wm > 0 ) AND ( Wms > 6 ) )
+    if ( ( Wms > 7 ) AND ( Ws <> 7 ) )
+      Result -= 2
+    else
+      Result -= 1;
+}
+
+Function DatePlus(dd: date; dn: longint): date;
+var dd1: longint;
+{
+  if ( dd = ZeroDate )
+    {
+      Result := 0;
+      Exit;
+    }
+
+  dd1 := dn + 2*(dn div 7);
+
+  Result := dd;
+
+  do
+    {
+      Result := Add_Day(Result, dd1);
+
+      dd1 := dn - RabDn(dd, Result);
+    }
+  while ( dd1 > 0 );
+}
+
+// Расчет количества дней между двумя датами (включительно)
+Function CalcDaysInPeriod(dFirstDate    : Date;
+                          dLastDate     : Date;
+                          wIsWorkDays   : word;
+                          _cRecCalendar: comp): longint;
+{
+  Result := 0;
+
+  dFirstDate := Add_Day(dFirstDate, 1);
+
+  case wIsWorkDays of
+
+    0: {// в календарных днях
+         Result := CalcDaysBetweenDates(dFirstDate, dLastDate, FALSE);
+       }
+
+    1: {// в рабочих днях(понедельник...пятница) с празниками
+         Result := CalcDaysBetweenDates(dFirstDate, dLastDate, TRUE);
+       }
+
+    2: {// без выходных(суббота, воскресенье) и праздничных дней
+        /*
+         !!! пока  неправильно работает функция
+         Result := iface_Calendar.WorkDaysBetween(tmpComp, // NRec календаря
+                                                  dFirstDate, // дата начала периода
+                                                  dLastDate  // дата окончания периода
+                                                 );
+        */
+         var tmpComp     : comp;
+         var tmpDate     : Date;
+         var _KolWorkDay : longint;
+         var _PriznDay   : byte;
+
+         tmpComp     := _cRecCalendar;
+         _KolWorkDay := 0;
+
+         for (tmpDate := dFirstDate; tmpDate <= dLastDate; tmpDate := Add_Day(tmpDate, 1))
+           {
+             _PriznDay := if ( iface_Calendar.isHoliday(tmpComp, tmpDate)
+                             , 2
+                             , if ( iface_Calendar.isWeekEnd(tmpComp, tmpDate), 1, 0 ) );
+
+             if (_PriznDay = 0)
+               _KolWorkDay++;
+           }
+
+         Result := _KolWorkDay;
+       }
+  end
+}
+
+Function Add_DaysToDate(dSource     : Date;
+                        nCountDay   : longint;
+                        wMode       : word;
+                       _cRecCalendar: comp): Date;
+{
+  Result := dSource;
+
+  case wMode of
+
+    0: Result := Add_Day (dSource, nCountDay); // календарные дни
+
+    1: Result := DatePlus(dSource, nCountDay); // в рабочих днях(понедельник...пятница) с празниками
+
+    2: {// без выходных(суббота, воскресенье) и праздничных дней
+         var i, j      : longint;
+         var tmpComp   : comp;
+         var _PriznDay : byte;
+
+         Result  := dSource;
+         tmpComp := _cRecCalendar;
+
+         i := 1;
+         j := 10000000; // - чтобы не зациклить
+
+         while ( (i <= nCountDay) AND (j > 0) ) do
+          {
+            Result := Add_Day(Result, 1);
+
+            j--;
+
+            _PriznDay := if ( iface_Calendar.isHoliday(tmpComp, Result)
+                            , 2
+                            , if ( iface_Calendar.isWeekEnd(tmpComp, Result), 1, 0 ) );
+
+            if (_PriznDay = 0)
+              i++;
+          }
+       }
+  end
+}
+
+// Критическая дата оплаты
+Function GetDateOplBD: Date;
+{
+  Result := 0;
+
+  if IsValid(tnStepDoc)
+    Result := StepDoc.dOplMax;
+
+  if IsValid(tnBaseDoc) AND ( Result = ZeroDate )
+    if ( wModeCalcDateOpl = 0 )
+      Result := Add_DaysToDate(BaseDoc.dDoc, BaseDoc.KolDn, _wModeCalcSrokDO, cRecCalendar1)
+    else
+      {
+        var dTmp : date;
+        dTmp := dGetAttr(coKatSopr, KatSopr.NRec, 'Дата ППС');
+
+        dTmp := if((KatSopr.dOpr > dTmp), KatSopr.dOpr, dTmp);
+
+        Result := Add_DaysToDate(dTmp, BaseDoc.KolDn, _wModeCalcSrokDO, cRecCalendar1);
+      }
+}
+
+Procedure PrintHeadReport;
+  var dd1, dd2, dd3: Date;
+  var sOpr         : String;
+{
+  dd1  := d1;
+  dd2  := d2;
+  dd3  := d3;
+  sOpr := if (( wOpr = 0 ), 'проведенным ', 'оформленным ');
+
+  if (prvid = 0)
+    {
+      frmDolgOpl.Write(dd1);
+      frmDolgOpl.Write(dd2);
+      frmDolgOpl.Write(dd3);
+      frmDolgOpl.Write(sOpr);
+      frmDolgOpl.Write(NaklTxt);
+      frmDolgOpl.Write(AllKontr);
+      frmDolgOpl.Write(pDescr);
+      frmDolgOpl.Write(pDescrFIO);
+      frmDolgOpl.Write(pDesGr);
+      frmDolgOpl.Write(pDesGrFIO);
+    }
+  else
+    {
+      Set sXLSFileName := pXL.CreateReport(sXLTFileName, TRUE);
+      pXL.CreateVar(sXLSFileName);
+      pXL.SetStringVar('header', CommonFormHeader);
+      pXL.SetNumberVar('Вид1', o1 );
+      pXL.SetNumberVar('Вид2', o2 );
+      pXL.SetNumberVar('Вид3', VidOt );
+      pXL.SetStringVar('Дата',  'НА ' + DateToStr(dd3,'DD/MM/YYYY'));
+      pXL.SetStringVar('Период','по ' + sOpr
+                                      + NaklTxt + ' за период '
+                                      + ' с ' + DateToStr(dd1,'DD/MM/YYYY') + ' по '
+                                      + DateToStr(dd2,'DD/MM/YYYY' + if ((TMoney > 1), (' в валюте '+SimvolV), '')));
+      pXL.PublishVar;
+      pXL.CreateTbls(sXLSFileName);
+      pXL.CreateTbl('DolgOpl');
+      pXL.ClearTblBuffer;
+      pXL.CreateTblFld('Ном1');
+      pXL.CreateTblFld('Ном2');
+      pXL.CreateTblFld('Ном3');
+      pXL.CreateTblFld('Ном4');
+      pXL.CreateTblFld('Ном5');  // Отсрочка платежа
+      pXL.CreateTblFld('Ном6');
+      pXL.CreateTblFld('Ном7');
+      pXL.CreateTblFld('Ном8');
+      pXL.CreateTblFld('Ном9');
+      pXL.CreateTblFld('Ном10');
+      pXL.CreateTblFld('Ном11');
+      pXL.CreateTblFld('Ном12');
+      pXL.CreateTblFld('Ном13');
+    }
+}
+
+Procedure PrintHeadKatOrg;
+{
+  if (prvid = 0)
+    {
+      frmDolgOpl.PutEventById(feDoLoop, fcDKontr);
+      frmDolgOpl.Write(KatOrg.Name);
+    }
+  else
+    {
+      pXL.ClearTblBuffer;
+      pXL.SetTblStringFldValue('Ном1', KatOrg.Name);
+
+      if (o1 = 0)
+        pXL.InsTblRow;
+    }
+}
+
+Procedure PrintKatSopr(dNakl : date);
+{
+  if (prvid = 0)
+    {
+      frmDolgOpl.PutEventById(feDoLoop, fcDKatSopr);
+
+      if IsValid(tnBaseDoc)
+        frmDolgOpl.Write(BaseDoc.nRec)
+      else
+        frmDolgOpl.SkipFormat(1);
+
+      frmDolgOpl.Write(KatSopr.nRec);
+
+      var dPPS : date; dPPS := dGetAttr(coKatSopr, KatSopr.NRec, 'Дата ППС');
+
+      frmDolgOpl.Write(if((dNakl > dPPS), dNakl, dPPS));
+      frmDolgOpl.Write(if((dNakl > dPPS) AND (dPPS <> ZeroDate), 'Дата ППС меньше даты отпуска', ''));
+
+      frmDolgOpl.Write(KatSopr.Summa);
+      frmDolgOpl.Write(RubDolg);
+      frmDolgOpl.SkipFormat(1);   //frmDolgOpl.Write(BaseDoc.KolDn); ПИР 102.39689
+
+      if (ddMax = ZeroDate )
+        frmDolgOpl.SkipFormat(1)
+      else
+        frmDolgOpl.Write(ddMax);
+
+      if ( ddMax < d3 )
+        {
+          frmDolgOpl.Write(RubDolg);
+          frmDolgOpl.Write(if ( ddMax <> ZeroDate, CalcDaysInPeriod(ddMax, d3, _wModeCalcDays, cRecCalendar), 0 ));
+        }
+      else
+        frmDolgOpl.SkipFormat(2);
+
+      frmDolgOpl.Write(KatSopr.Descr);
+      frmDolgOpl.Write(DescrFio(KatSopr.Descr)+'/'+KatSopr.NSopr);
+
+      if IsValid(tnBaseDoc)
+        {
+          if (StepDoc.dOplMax = ZeroDate )
+            frmDolgOpl.SkipFormat(1)
+          else
+            frmDolgOpl.Write(StepDoc.dOplMax);
+
+          frmDolgOpl.Write(BaseDoc.KolDn);
+        }
+      else
+        frmDolgOpl.SkipFormat(2);
+    }
+  else
+    {
+      if (o1 = 0)
+        pXL.ClearTblBuffer;
+
+      var dPPS : date; dPPS := dGetAttr(coKatSopr, KatSopr.NRec, 'Дата ППС');
+
+      if (dNakl <> ZeroDate) OR (dPPS <> ZeroDate)
+        {
+          pXL.SetTblStringFldValue('Ном2' , DateToStr(if((dNakl > dPPS), dNakl, dPPS), 'DD/MM/YYYY'));
+          pXL.SetTblStringFldValue('Ном13', if((dNakl > dPPS) AND (dPPS <> ZeroDate), 'Дата ППС меньше даты отпуска', ''));
+        }
+
+      pXL.SetTblNumberFldValue('Ном3', if ((VidOt = 1) and (o2 = 1), RubDolg / 1000000, RubDolg));
+
+      if (ddMax <> ZeroDate)
+        pXL.SetTblStringFldValue('Ном4', DateToStr(ddMax, 'DD/MM/YYYY'));
+
+      if ddMax < d3
+        {
+          PrDn := if ( ddMax <> ZeroDate, CalcDaysInPeriod(ddMax, d3, _wModeCalcDays, cRecCalendar), 0 );
+          pXL.SetTblNumberFldValue('Ном6',  if ((VidOt = 1) and (o2 = 1), RubDolg / 1000000, RubDolg));
+
+          if (PrDn <> 0)
+            pXL.SetTblNumberFldValue('Ном7',  PrDn);
+
+          pXL.SetTblStringFldValue('Ном8',  If(PrDn <= 5,  '<=5',
+                                            If(PrDn <= 10, '> 5',
+                                            If(PrDn <= 15, '>10',
+                                            If(PrDn <= 20, '>15',
+                                            If(PrDn <= 30, '>20', '>30')))) + ' дней') );
+          itogm += RubDolg;
+        }
+
+      pXL.SetTblStringFldValue('Ном11', DescrFio(KatSopr.Descr)+'/'+KatSopr.NSopr);
+
+      if (o1 = 0)
+        pXL.InsTblRow;
+
+      NoData := false;
+
+      itog += RubDolg;
+
+      If (ddMax = d3)
+        itog2  += RubDolg;
+    }
+}
+
+Procedure PrintKatSopr1;
+{
+  if (prvid = 0)
+    {
+      frmDolgOpl.PutEventById(feDoLoop, fcDKatSopr1);
+
+      frmDolgOpl.Write(memTbl_KS.cRecKS);
+      frmDolgOpl.Write(memTbl_KS.dOpr);
+      frmDolgOpl.Write(memTbl_KS.Summa);
+      frmDolgOpl.Write(RubDolg);
+      frmDolgOpl.Write(memTbl_KS.Descr);
+      frmDolgOpl.Write(DescrFio(memTbl_KS.Descr) + '/' + memTbl_KS.Nomer);
+    }
+  else
+    if (VidOt = 1) and (o1 = 0)
+      {
+        pXL.ClearTblBuffer;
+
+        if (memTbl_KS.dOpr <> ZeroDate)
+          pXL.SetTblStringFldValue('Ном9', DateToStr(memTbl_KS.dOpr,'DD/MM/YYYY'));
+
+        pXL.SetTblNumberFldValue('Ном10', memTbl_KS.Summa/1000000);
+
+        pXL.SetTblStringFldValue('Ном11', DescrFio(memTbl_KS.Descr)+'/'+memTbl_KS.Nomer);
+        pXL.InsTblRow;
+
+        NoData := false;
+
+        itog1 += memTbl_KS.Summa/1000000;
+      }
+}
+
+Procedure CalcSpOplKol;
+{
+  SpOplKol := 0.000;
+  SpOplSum := 0.00;
+  SpOplSumVal := 0.00;
+
+
+ _LOOP SpSopHoz
+    if IsValid(#SoprHoz)
+      if (SoprHoz.DatOb >= d3)
+        continue
+      else
+        {
+          SpOplKol += SpSopHoz.kolvo;
+          SpOplSum += SpSopHoz.Summa;
+
+      if (SpSopHoz.cVal = 0)
+        SpOplSumVal += oValFunc.GetAnyCurrency(0, SpSopHoz.Summa, SoprHoz.DatOb, MyRepVal);
+      else
+        if((SpSopHoz.cVal = MyRepVal))
+          SpOplSumVal += SpSopHoz.SumVal;
+        else
+          SpOplSumVal += oValFunc.GetAnyCurrency(SpSopHoz.cVal, SpSopHoz.SumVal, SoprHoz.DatOb, MyRepVal);
+      }
+}
+
+//=========================================================================
+// расчет суммы курсовой разницы по валютным ДО
+//=========================================================================
+
+function GetKursPaznDO (pDO : comp; bDate : date; eDate : date) : double;
+var
+  SumNDE
+, SumVal
+, Sum0
+, SumR
+, SumV     : double;
+  DirectDO : word;
+  cValDO   : comp;
+  dCurse   : date;
+{
+  Result := 0;
+
+  case BaseDoc.VidDoc of
+   101 : DirectDO := 2;
+   201 : DirectDO := 1;
+  else
+    Exit;
+  end; //case
+
+  cValDO := BaseDoc.cVal;
+
+  SumNDE := SumVal := SumR := SumV := 0;
+
+  dCurse := KatSopr.dSopr;
+
+  // Определяем какую сумму выставили и в какой валюте
+  if (KatSopr.cVal = comp(0))
+    {
+      SumR := KatSopr.Summa;
+      SumV := oValFunc.GetAnyCurrency(0, KatSopr.Summa, dCurse, cValDO);
+    }
+  else
+    {
+      SumR := oValFunc.GetNatCurrency(KatSopr.cVal, KatSopr.SumVal, dCurse);
+
+      if (KatSopr.cVal = cValDO)
+        SumV := KatSopr.SumVal
+      else
+        SumV := oValFunc.GetAnyCurrency(KatSopr.cVal, KatSopr.SumVal, dCurse, cValDO);
+    }
+
+  SumNDE += SumR;
+  SumVal += SumV;
+
+  Sum0 := 0;
+
+  // Определяем какую сумму заплатили и в какой валюте
+  _LOOP BaseFin where ((BaseDoc.nRec == BaseFin.cBaseDoc))
+    {
+      if (BaseFin.dDoc > eDate)
+        continue;
+
+      dCurse := if (BaseFin.dDoc < bDate, Sub_Day(bDate, 1), BaseFin.dDoc);
+      dCurse := BaseFin.dDoc;
+
+      SumR := SumV := 0;
+
+      if (BaseFin.cVal = 0)
+        {
+          SumR := BaseFin.Summa;
+          SumV := oValFunc.GetAnyCurrency(0, BaseFin.Summa, dCurse, cValDO);
+        }
+      else
+        {
+          SumR := oValFunc.GetNatCurrency(BaseFin.cVal, BaseFin.SumVal, dCurse);
+
+          if (BaseFin.cVal = cValDO)
+            SumV := BaseFin.SumVal
+          else
+            SumV := oValFunc.GetAnyCurrency(BaseFin.cVal, BaseFin.SumVal, dCurse, cValDO);
+        }
+
+      if (BaseFin.Direct = DirectDO)
+        {
+          SumNDE -= SumR;
+          SumVal -= SumV;
+        }
+      else
+        {
+          SumNDE += SumR;
+          SumVal += SumV;
+        }
+
+    }
+
+  Sum0 := oValFunc.GetNatCurrency(cValDO, SumVal, eDate);
+
+  // Определяем курсовую разницу
+  Result := Sum0 - SumNDE;
+}
+
+#include s_1rekl.vpp  // возвраты по позиции спецификации накладной
+
+Function IsDolg(cc: Comp): boolean;
+var SumRekl
+  , SumRekl_V
+  , doKursRazn
+  , PriceV
+  , NdsV
+  , VozvV: double;
+{
+  Result := FALSE;
+
+  RubDolg := 0.0;
+  cSoprB  := cc;
+
+  var dRateDate : Date = if (KatSopr.dPrice = ZeroDate, KatSopr.dSopr, KatSopr.dPrice);
+
+  _LOOP SpSopr
+    {
+      if (not NextVisual)
+        {
+          boBreak := TRUE;
+          Break;
+        }
+
+      CalcSpOplKol;
+
+      if (TMoney = 1) 
+      RubDolg += SpSopr.KolOpl * SpSopr.Price + if (KatSopr.VhodNal = 1, 0, SpSopr.SumNDS) - SpOplSum;
+      else
+        {
+          if (KatSopr.cVal = 0)
+          {
+            PriceV := oValFunc.GetAnyCurrency(0,SpSopr.Price, dRateDate, MyRepVal);
+            if (KatSopr.VhodNal = 1)
+               NdsV:= oValFunc.GetAnyCurrency(0,SpSopr.SumNDS, dRateDate, MyRepVal);
+          }
+         else
+           {
+             if((KatSopr.cVal = MyRepVal))
+               {
+                 PriceV:=SpSopr.vPrice;
+                 if (KatSopr.VhodNal = 1)
+                   NdsV:= SpSopr.SUMVNDS;
+               }
+             else
+               {
+                 PriceV := oValFunc.GetAnyCurrency(KatSopr.cVal, SpSopr.vPrice, dRateDate, MyRepVal);
+                 if (KatSopr.VhodNal = 1)
+                   NdsV:= oValFunc.GetAnyCurrency(KatSopr.cVal,SpSopr.SUMVNDS, dRateDate, MyRepVal);
+               }
+           }
+
+          RubDolg += SpSopr.KolOpl * PriceV + if (KatSopr.VhodNal = 1, 0, NdsV) - SpOplSumVal;
+        }
+
+      if ( Vozv = 1 )
+        {
+          //Расчет суммы возврата
+          SumReklSpSopr(SpSopr.nRec,
+                        word(1),     // 1/0 - оприходованные/ все
+                        d1,          // отчетный период
+                        d3,
+                        SumRekl,
+                        SumRekl_V);
+
+          if (TMoney = 1)
+            RubDolg -= SumRekl;
+          else
+          {
+            if (KatSopr.cVal = comp(0))
+              VozvV := oValFunc.GetAnyCurrency(0, SumRekl_V, dRateDate, MyRepVal);
+            else
+              if((KatSopr.cVal = MyRepVal))
+                VozvV := SumRekl_V;
+              else
+                VozvV := oValFunc.GetAnyCurrency(KatSopr.cVal, SumRekl_V, dRateDate, MyRepVal);
+
+            RubDolg -= VozvV;
+          }
+        }
+    }
+
+    doKursRazn := 0.0;
+
+    if ((wParamPrn AND 1) = 0)
+      if (BaseDoc.TipMoney = 2)  // курсовая разница рассчитывается только для валютных ДО
+        doKursRazn := GetKursPaznDO(BaseDoc.nRec, d1, d3);
+
+    RubDolg += doKursRazn;
+
+  Result := ( Abs(RubDolg) >= doMinRubDolg );
+}
+
+Function IsFilterKatSopr: boolean;
+var _cTmp: comp;
+    iInd  : longint;
+{
+  Result := FALSE;
+
+  if    ((KatSopr.VidSopr  = 201) AND ((nType AND 1) = 0))
+     OR ((KatSopr.VidSopr  = 211) AND ((nType AND 2) = 0))
+     OR ((KatSopr.VidSopr <> 201) AND (KatSopr.VidSopr <> 211))
+    Exit;
+
+  if (pDesGr <> '')
+    {
+     _cTmp := 0;
+
+     if (GetFirst GrDescr where ((KatSopr.DesGr == GrDescr.DesGr)) = tsOk)
+      _cTmp := GrDescr.nRec;
+
+     if not (SearchMarker(MarkerDesGr, _cTmp, iInd))
+       Exit
+    }
+
+  if (pDescr <> '')
+    if not (IsPickedDescr(KatSopr.Descr))
+      Exit;
+
+  if (AllStat > 0)
+    if NOT FoundMarker(MarkerStat, KatSopr.cNote)
+      Exit;
+
+  if (AllDog > 0)
+    if NOT FoundMarker(MarkerDog, KatSopr.cDogovor)
+      Exit;
+
+  Result := TRUE;
+}
+
+var isFirstKatSopr: boolean;
+
+Procedure DoKatSopr(dNakl : date);
+{
+  if ( not IsFilterKatSopr )
+    Exit;
+
+  if (IsDolg(KatSopr.Nrec))
+    {
+      ddMax := GetDateOplBD;
+
+      if ( ( pType = 4 ) AND ( ddMax <> d3 ) )
+        Exit;
+
+      if (isFirstKatSopr)
+        {
+          isFirstKatSopr := FALSE;
+          PrintHeadKatOrg;
+        }
+
+      PrintKatSopr(dNakl);
+
+      if ( ( KatSopr.cStepDoc <> 0 )
+       AND ( ddMax < d3 )
+       AND ( ( pType AND 2 ) <> 0 )
+         )
+        {
+          _LOOP KatSopr1
+            {
+              if ( (not NextVisual) OR boBreak )
+                {
+                  boBreak := TRUE;
+                  Break;
+                }
+
+              var dNakl1 : date; dNakl1 := if((KatSopr1.wADoc = adSoprDocKD), KatSopr1.dSopr, KatSopr1.dOpr);
+
+              if ( ( KatSopr1.nRec <> KatSopr.nRec)
+               AND ( dNakl1 > ddMax)
+               AND ( dNakl1 > dNakl)
+               AND ( d1    <= dNakl1)
+               AND ( d3    >= dNakl1)
+                 )
+                {
+                  ClearBuffer(tnmemTbl_KS);
+
+                  memTbl_KS.cRecKS := KatSopr1.Nrec;
+                  memTbl_KS.dOpr   := dNakl1;
+                  memTbl_KS.Summa  := KatSopr1.Summa;
+                  memTbl_KS.Descr  := KatSopr1.Descr;
+                  memTbl_KS.Nomer  := KatSopr1.NSopr;
+
+                  if (Insert Current memTbl_KS = tsOk) {}
+                }
+            }
+
+           _LOOP memTbl_KS
+             {
+               IsDolg(memTbl_KS.cRecKS);
+               PrintKatSopr1;
+             }
+
+           Delete All memTbl_KS;
+        }
+    }
+}
+
+
+Procedure DoKatOrg;
+{
+  isFirstKatSopr := TRUE;
+
+  _LOOP KatSopr
+    {
+      if ( ( not NextVisual ) OR boBreak )
+        {
+          boBreak := TRUE;
+          Break;
+        }
+
+      DoKatSopr(if((wOpr = 1) OR (KatSopr.wADoc = adSoprDocKD), KatSopr.dSopr, KatSopr.dOpr));
+    }
+
+  if (wOpr = 0) AND (d1 <> ZeroDate)
+    {
+      var dTmp1 : date; dTmp1 := d1;
+      var dTmp2 : date; dTmp2 := d2;
+      var dNakl : date;
+
+      set d1 := ZeroDate;
+      set d2 := ZeroDate;
+
+      _LOOP KatSopr
+        {
+          if ( ( not NextVisual ) OR boBreak )
+            {
+              boBreak := TRUE;
+              Break;
+            }
+
+          dNakl := if((wOpr = 1) OR (KatSopr.wADoc = adSoprDocKD), KatSopr.dSopr, KatSopr.dOpr);
+
+          if (dTmp1 > dNakl) OR (dTmp2 < dNakl)
+            Continue;
+
+          DoKatSopr(dNakl);
+        }
+
+      set d1 := dTmp1;
+      set d2 := dTmp2;
+    }
+}
+
+Procedure CreateReport;
+var nCountRec: longint;
+var bRepEmpty: boolean;
+{
+   itogo  := 0;
+   itogom := 0;
+   itogo1 := 0;
+   itogo2 := 0;
+   noData := True;
+
+  if ( AllKontr = 0 )
+    nCountRec := RecordsInTable(tnKatOrg)
+  else
+    {
+      nCountRec := 0;
+      _LOOP Pick
+        nCountRec := nCountRec+1;
+    }
+
+  _wModeCalcDays := wModeCalcDays;
+
+  if ( wModeCalcDays = 1) AND ( isValid(tnCalendar) )
+    _wModeCalcDays := 2;
+
+  _wModeCalcSrokDO := wModeCalcSrokDO;
+
+  if ( wModeCalcSrokDO = 1) AND (isValid(tnCalendar1) )
+    _wModeCalcSrokDO := 2;
+
+  StartNewVisual(vtNumericVisual, vfTimer + vfBreak + vfConfirm,
+                 'Формируется отчет', nCountRec);
+
+  DoneMarker(MarkerDescr, 'DolgOplDescr');
+
+  iDescr.CreateTmpPickedDescr('DolgOplDescr');    // для множественного выбора дескрипторов
+
+  MarkerDescr := InitMarker('DolgOplDescr', 8, 100, 10, FALSE);
+
+  boBreak := FALSE;
+
+  if (prvid = 0)
+  case pType of
+
+    1: frmDolgOpl.SetGroup('Задолженности по накладным');
+
+    3: frmDolgOpl.SetGroup('Накладные с последующими отгрузками'#1+
+                           'Задолженности по накладным'
+                          );
+
+    4: frmDolgOpl.SetGroup('Прогноз на дату');
+  end; // case
+
+  Delete All memTbl_KS;
+
+  PrintHeadReport;
+
+  bRepEmpty := TRUE;
+
+  PushBounds(if(wOpr = 0, tbbyDOpr, tbbyDSopr));
+
+  if (bSort)
+    {
+      LoadOrg;
+
+      PushBounds(tbmemTblKatOrg);
+
+      _LOOP memTbl_KatOrg
+        if ( boBreak )
+          Break
+        else
+          {
+            itog   := 0;
+            itogm  := 0;
+            itog1  := 0;
+            noData := True;
+            itog2  := 0;
+
+            DoKatOrg;
+
+            if (prvid = 1) and (not noData)
+              {
+                bRepEmpty := noData;
+
+                if (o1 = 0)
+                  {
+                    pXL.ClearTblBuffer;
+                    pXL.SetTblStringFldValue('Ном1', 'По должнику:');
+                  }
+
+                pXL.SetTblNumberFldValue('Ном3', if ((VidOt = 1) and (o2 = 1), itog/1000000, itog));
+                pXL.SetTblNumberFldValue('Ном6', if ((VidOt = 1) and (o2 = 1), itogm/1000000, itogm));
+
+                if (VidOt = 1)
+                  pXL.SetTblNumberFldValue('Ном10',itog1);
+
+                pXL.SetTblNumberFldValue('Ном12', itog2);
+                pXL.InsTblRow;
+              }
+            itogo  += itog;
+            itogom += itogm;
+            itogo1 += itog1;
+            itogo2 += itog2;
+          }
+      PopBounds(tbmemTblKatOrg);
+    }
+  else
+    if (AllKontr = 0)
+      {
+        _LOOP KatOrg
+          if ( boBreak )
+            Break
+          else
+            {
+              itog   := 0;
+              itogm  := 0;
+              itog1  := 0;
+              itog2  := 0;
+              noData := True;
+
+              DoKatOrg;
+
+              if (prvid = 1) and (not noData)
+                {
+                  bRepEmpty := noData;
+
+                  if (o1 = 0)
+                    {
+                      pXL.ClearTblBuffer;
+                      pXL.SetTblStringFldValue('Ном1', 'По должнику:');
+                    }
+                  pXL.SetTblNumberFldValue('Ном3', if ((VidOt = 1) and (o2 = 1), itog/1000000, itog));
+                  pXL.SetTblNumberFldValue('Ном6', if ((VidOt = 1) and (o2 = 1), itogm/1000000, itogm));
+                  if (VidOt = 1)
+                    pXL.SetTblNumberFldValue('Ном10',itog1);
+                  pXL.SetTblNumberFldValue('Ном12', itog2);
+                  pXL.InsTblRow;
+                }
+              itogo  += itog ;
+              itogom += itogm;
+              itogo1 += itog1;
+              itogo2 += itog2;
+            }
+      }
+    else
+      {
+        PushBounds(tbPickKatOrg);
+
+        _LOOP Pick
+          if ( boBreak )
+            Break
+          else
+            {
+              itog   := 0;
+              itogm  := 0;
+              itog1  := 0;
+              itog2  := 0;
+
+              noData := True;
+
+              DoKatOrg;
+
+              if (prvid = 1) and (not NoData)
+                {
+                  bRepEmpty := noData;
+
+                  if (o1 = 0)
+                    {
+                      pXL.ClearTblBuffer;
+                      pXL.SetTblStringFldValue('Ном1', 'По должнику:');
+                    }
+
+                  pXL.SetTblNumberFldValue('Ном3', if ((VidOt = 1) and (o2 = 1), itog/1000000, itog));
+                  pXL.SetTblNumberFldValue('Ном6', if ((VidOt = 1) and (o2 = 1), itogm/1000000, itogm));
+
+                  if (VidOt = 1)
+                    pXL.SetTblNumberFldValue('Ном10',itog1);
+
+                  pXL.SetTblNumberFldValue('Ном12', itog2);
+                  pXL.InsTblRow;
+                }
+              itogo  += itog ;
+              itogom += itogm;
+              itogo1 += itog1;
+              itogo2 += itog2;
+            }
+
+        PopBounds(tbPickKatOrg)
+      }
+
+  PopBounds(if(wOpr = 0, tbbyDOpr, tbbyDSopr));
+
+  StopVisual('', 0);
+
+  if (prvid = 0)
+    if ( boBreak OR ( frmDolgOpl.Error ) )
+      frmDolgOpl.AbortForm
+    else
+      frmDolgOpl.ShowFile('');
+  else
+    if (not bRepEmpty)
+      {
+        pXL.ClearTblBuffer;
+
+        if (o1 = 0)
+          pXL.SetTblStringFldValue('Ном1', 'Итого:');
+        else
+           pXL.SetTblStringFldValue('Ном1', 'Итого прогноз поступлений:');
+
+        pXL.SetTblNumberFldValue('Ном3', if ((VidOt = 1) and (o2 = 1), itogo /1000000, itogo));
+        pXL.SetTblNumberFldValue('Ном6', if ((VidOt = 1) and (o2 = 1), itogom/1000000, itogom));
+
+        if (VidOt = 1)
+          pXL.SetTblNumberFldValue('Ном10',itogo1);
+
+        pXL.SetTblNumberFldValue('Ном12', itogo2);
+        pXL.InsTblRow;
+
+        pXL.PublishTbl('DolgOpl');
+        StartNewVisual(vtRotateVisual, vfTimer, 'Выгрузка данных в Excel', 1);
+        NextVisual;
+        pXL.LoadReport(sXLSFileName);
+        StopVisual('', 0);
+        pXL.DisConnectExcel;
+      }
+    else
+      {
+        Message('За данный период данные отсутствуют.', Information);
+        xlSetAppVisibleMode(False);
+        xlKillExcel;
+      }
+}
+
+Screen scParams (, hcSellDolgOpl, sci13EnEsc);
+  bevel b2 {1, 10, 87, 17, bsLowered, bsBox};
+  bevel b1 {1,  0, 87, 10, bsLowered, bsBox};
+Fields
+  Parotch     (,,): skip, {font = {color = ColorSysBlack; bold = true}};
+  o1          ('Вид отчета', , ):
+        [List 'просроченная дебиторская задолженность', 'прогноз поступления денежных средств'], Protect;
+  o2          ('Включать отгрузки после появления просроченной дебиторской задолженности', , sci1EnEsc): noprotect;
+  prvid :
+        [List 'Текст','Excel'], Protect;
+  TMoney      ('Тип по валюте'): [LIST 1 'в НДЕ', 'валютный'], protect;
+  SimvolV     ('Валюта', , ): NoProtect;
+  d3          ('Дата задолженности', , ): [, 'DD/MM/YYYY'], NoProtect;
+  d1          ('Дата начала периода накладных', , ): [, 'DD/MM/YYYY'], NoProtect;
+  d2          ('Дата окончания периода накладных', , ): [, 'DD/MM/YYYY'], NoProtect;
+  wOpr        ('Выберите способ отбора сопроводительных документов', , )
+      : [LIST 'проведенным накладным'
+            , 'оформленным накладным'
+        ]
+      , Protect;
+  NaklTxt     ('Тип сопроводительных документов', , ): protect;
+  Vozv        ('Учитывать возвратные накладные'  ,, sci1EnEsc): NoProtect;
+  bSort       ('Сортировать отчет по контрагенту',, sci1EnEsc) : NoProtect;
+  Filtr       (,,): skip, {font = {color = ColorSysBlack; bold = true}};
+  AllKontrTxt ('Фильтр по контрагентам', , ): Protect;
+  pDesGrFIO   ('Фильтр по группе дескрипторов', , ): Protect;
+  pDescrFIO   ('Фильтр по дескриптору', , ): Protect;
+  AllStatTxt  ('Фильтр по статусам', , ): Protect;
+  strDogovor  ('Фильтр по договорам', , ): Protect;
+
+  VidOt       ('Вид отчета',,):
+        [list    'Отчет о просроченной дебиторской задолженности','Отчет по группам дебиторской задолженности'], Protect;
+
+  wParamPrn    ('Параметр печати', , sci1EnEsc): NoProtect;
+  [MinRubDolgTxt] if(o1 = 0, 'Не учитывать задолженность меньше', ''): skip;
+  doMinRubDolg ('Минимальная учитываемая сумма задолженности в НДЕ', , sci1EnEsc): [5.2], NoProtect;
+  [NDESimvRub] if(o1 = 0, oValFunc.GetValSymbol(0), ''): skip;
+
+  [ModeCalcDaysTxt] 'Расчет количества просроченных дней: ' : Skip;
+  wModeCalcDays ('Способ расчета количества дней просроченной задолженности'):
+    [List 'в календарных днях', 'в рабочих днях'], Protect;
+  Calendar.Name ('Выберите календарь рабочих дней', , ): Protect;
+  [ModeCalcDateOplTxt] 'от даты (если в ДО не заполнено "Оплатить до..."): ' : Skip;
+  wModeCalcDateOpl ('Способ расчета критической даты оплаты'):
+    [List 'выписки ДО', 'отгрузки'], Protect;
+  [ModeCalcSrokDOTxt] 'плюс срок действия ДО' : Skip;
+  wModeCalcSrokDO ('Способ расчета даты окончания действия ДО'):
+  [List 'в календарных днях', 'в рабочих днях'], Protect;
+  Calendar1.Name  ('Выберите календарь рабочих дней', , ): Protect;
+
+Buttons
+  cmOk, Default, , 'Формирование журнала учета', , sci1EnEsc;
+  cmValue11,,,,, sci1EnEsc;
+  cmCancel, , , 'Отказ от формирования журнала учета', , sci1EnEsc;
+<<
+  .@@@@@@@@@@@@@@@@
+  `Вид отчета:`.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  [.] с отгрузками после появления просрочки`
+  `Тип отчета:`.@@@@@@@@@@@@@@ `Тип по валюте`.@@@@@@@@@@  `Валюта`.@@@@@@@@@@
+  `Формировать на:`.@@@@@@@@@@
+  `За период с`.@@@@@@@@@@@`по`.@@@@@@@@@@@`по`.@@@@@@@@@@@@@@@@@@@@@
+  `По документам:` .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  [.] с учетом возвратов`
+
+   [.] сортировать отчет по контрагенту`
+
+  .@@@@@@@@@@
+  `Контрагентам`   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `Группе`         .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `Дескриптору`    .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `Статусам`       .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  `Договорам`      .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  `Вид отчета:`    .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+   [.]  не учитывать курсовую разницу`   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@ .@@@@@@@ .@@@@
+
+  .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ .@@@@@@@@@@@@@@@@@.@@@@@@@@@@@@@@@@@@@@@@@@@
+  .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ .@@@@@@@@@@@@@@@@@
+  .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ .@@@@@@@@@@@@@@@@@.@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    <.  Сформировать  .>       <.Настройка Excel отчета.>       <.     Отмена     .>
+>>
+end; // screen
+
+Panel pUserTune;
+
+procedure SetVisisbility;
+{
+  if (TMoney = 1)
+  {
+    SetFieldAndLabelVisible(#SimvolV, FALSE);
+    Set WPARAMPRN=1;
+    SetFieldAndLabelVisible(#WPARAMPRN, true);
+  }
+  else
+  {
+    SetFieldAndLabelVisible(#SimvolV, true);
+    Set WPARAMPRN=0;
+    SetFieldAndLabelVisible(#WPARAMPRN, FALSE);
+  }
+} 
+
+HandleEvent
+
+cmPick: ProcessCommand(cmValue9);
+
+cmDelOnProtect:
+  case CurField of
+
+    #pDescrFIO:
+      {
+        set pDescr    := '';
+        set pDescrFio := '';
+        ClearMarker(MarkerDescr);
+      }
+
+    #pDesGrFIO:
+      {
+        set pDesGr    := '';
+        set pDesGrFio := '';
+        ClearMarker(MarkerDesGr);
+      }
+
+    #Calendar.Name:
+      set cRecCalendar := 0;
+
+    #Calendar1.Name:
+      set cRecCalendar1 := 0;
+
+    #AllKontrTxt:
+      {
+        AllKontr := 0;
+        Set AllKontrTxt := '';
+        ClearMarker(MarkerKontr);
+      }
+
+    #strDogovor:
+      {
+        AllDog := 0;
+        Set strDogovor := '';
+        ClearMarker(MarkerDog);
+      }
+
+    #AllStatTxt:
+      {
+        set AllStatTxt := '';
+        ClearMarker(MarkerStat);
+        AllStat := 0;
+      }
+
+  end;
+
+cmCheckField:
+  {
+    case CurField of
+      #prvid:
+        {
+          SetEnableCommand(cmValue11, prvid = 1);
+          SetFieldAndLabelVisible(#VidOt, (prvid = 1) and (o1 = 0) and (o2 = 1));
+
+          SaveMyDsk(prvid, Id + 'toc');
+        }
+      #o1:
+        if (o1 = 0)
+          {
+            ClusterDisabledField(#o2, 0);
+
+            set o2 := 1;
+            set pType := if(o1 = 0, word(1), word(0)) + if(o2 = 1, word(2), word(0));
+
+            ToggleFieldVisible(#ModeCalcDaysTxt   , TRUE);
+            ToggleFieldVisible(#wModeCalcDays     , TRUE);
+            ToggleFieldVisible(#ModeCalcDateOplTxt, TRUE);
+            ToggleFieldVisible(#wModeCalcDateOpl  , TRUE);
+            ToggleFieldVisible(#ModeCalcSrokDOTxt , TRUE);
+            ToggleFieldVisible(#wModeCalcSrokDO   , TRUE);
+            ToggleFieldVisible(#doMinRubDolg      , TRUE);
+
+
+            ToggleFieldVisible(#Calendar.Name , wModeCalcDays   = 1);
+            ToggleFieldVisible(#Calendar1.Name, wModeCalcSrokDO = 1);
+
+            SetFieldAndLabelVisible(#VidOt, (prvid = 1));
+          }
+        else
+          {
+            ClusterDisabledField( #o2, 1 );
+            set o2    := 0;
+            set pType := 4;
+
+            ToggleFieldVisible(#ModeCalcDaysTxt   , FALSE);
+            ToggleFieldVisible(#wModeCalcDays     , FALSE);
+            ToggleFieldVisible(#ModeCalcDateOplTxt, FALSE);
+            ToggleFieldVisible(#wModeCalcDateOpl  , FALSE);
+            ToggleFieldVisible(#ModeCalcSrokDOTxt , FALSE);
+            ToggleFieldVisible(#wModeCalcSrokDO   , FALSE);
+            ToggleFieldVisible(#doMinRubDolg      , FALSE);
+            ToggleFieldVisible(#Calendar.Name     , FALSE);
+            ToggleFieldVisible(#Calendar1.Name    , FALSE);
+
+            SetFieldAndLabelVisible(#VidOt, FALSE);
+          }
+
+      #o2:
+        {
+          set pType := if(o1 = 0, word(1), word(0)) + if(o2 = 1, word(2), word(0));
+
+          SetFieldAndLabelVisible(#VidOt, (o2 = 1) and (prvid = 1));
+        }
+
+      #wModeCalcDays:
+        ToggleFieldVisible(#Calendar.Name , wModeCalcDays   = 1);
+
+      #wModeCalcSrokDO:
+        ToggleFieldVisible(#Calendar1.Name, wModeCalcSrokDO = 1);
+
+      #doMinRubDolg:
+        if (doMinRubDolg < 0.0)
+          doMinRubDolg := Abs(doMinRubDolg);
+
+      #TMoney:
+        SetVisisbility;
+
+   end;
+
+    if ( D2 < D1 )
+      {
+        d2 := Add_Months(d1, 1);
+        set d2 := Sub_Day(Date(1, Month(d2), Year(d2)), 1);
+      }
+  }
+
+end; //HandleEvent
+end; //Panel pUserTune;
+
+Procedure SaveParamOtch;
+{
+  SaveMyDsk(o1              , 'DolgOpl_O1');
+  SaveMyDsk(o2              , 'DolgOpl_O2');
+  SaveMyDsk(nType           , 'DolgOpl_TypeSopr');
+  SaveMyDsk(wModeCalcDays   , 'DolgOpl_ModeCalcDays');
+  SaveMyDsk(cRecCalendar    , 'DolgOpl_Calendar');
+  SaveMyDsk(Vozv            , 'DolgOpl_Vozv');
+  SaveMyDsk(bSort           , 'DolgOpl_bSort');
+  SaveMyDsk(d1              , 'DolgOpl_d1');
+  SaveMyDsk(d2              , 'DolgOpl_d2');
+  SaveMyDsk(wModeCalcDateOpl, 'DolgOpl_ModeCalcDateOpl');
+  SaveMyDsk(wModeCalcSrokDO , 'DolgOpl_ModeCalcSrokDO');
+  SaveMyDsk(cRecCalendar1   , 'DolgOpl_Calendar1');
+  SaveMyDsk(doMinRubDolg    , 'DolgOpl_MinRubDolg');
+  SaveMyDsk(wParamPrn       , 'DolgOpl_wParamPrn');
+  SaveMyDsk(VidOt           , 'DolgOpl_VidOt');
+  SaveMyDsk(prvid           , 'DolgOpl_VID');
+  SaveMyDsk(wOpr            , 'DolgOpl_wOpr');
+  SaveMyDsk(pDesGrFio       , 'DolgOpl_pDesGrFio');
+  SaveMyDsk(TMoney          , 'DolgOpl_TMoney');
+  SaveMyDsk(MyRepVAL        , 'DolgOpl_SimvolV');
+}
+
+Procedure ReadParamOtch;
+var Datechanged: boolean;
+{
+  ReadMyDsk(VidOt, 'DolgOpl_VidOt',true);
+  ReadMyDsk(prvid, 'DolgOpl_VID',true);
+
+  if (not ReadMyDsk(o1, 'DolgOpl_O1', Datechanged))
+    o1 := 0;
+
+  if (not ReadMyDsk(o2, 'DolgOpl_O2', Datechanged))
+    o2 := 1;
+
+  if (not ReadMyDsk(nType, 'DolgOpl_TypeSopr', Datechanged))
+    nType := 1;
+
+  if (not ReadMyDsk(wModeCalcDays, 'DolgOpl_ModeCalcDays', Datechanged))
+    wModeCalcDays := 0;
+
+  if (not ReadMyDsk(cRecCalendar, 'DolgOpl_Calendar', Datechanged))
+    cRecCalendar := 0;
+
+  if (not ReadMyDsk(Vozv, 'DolgOpl_Vozv', Datechanged))
+    Vozv := 0;
+
+  if (not ReadMyDsk(bSort, 'DolgOpl_bSort', Datechanged))
+    bSort := FALSE;
+
+  if (not ReadMyDsk(d1, 'DolgOpl_d1', Datechanged)) {}
+
+  if (not ReadMyDsk(d2, 'DolgOpl_d2', Datechanged)) {}
+
+  if ((D1 = ZeroDate) or (D2 = ZeroDate))
+    {
+      d1 := Date(1, Month(Cur_date), Year(Cur_date));
+      d2 := Add_Months(d1, 1);
+      set d2 := Sub_Day(Date(1, Month(d2), Year(d2)), 1);
+    }
+
+  if (not ReadMyDsk(wModeCalcDateOpl, 'DolgOpl_ModeCalcDateOpl', Datechanged))
+    wModeCalcDateOpl := 0;
+
+  if (not ReadMyDsk(wModeCalcSrokDO, 'DolgOpl_ModeCalcSrokDO', Datechanged))
+    wModeCalcSrokDO := 0;
+
+  if (not ReadMyDsk(cRecCalendar1, 'DolgOpl_Calendar1', Datechanged))
+    cRecCalendar1 := 0;
+
+  if (not ReadMyDsk(doMinRubDolg, 'DolgOpl_MinRubDolg', Datechanged))
+    doMinRubDolg := 1.00;
+
+  if (not ReadMyDsk(wParamPrn, 'DolgOpl_wParamPrn', Datechanged))
+    wParamPrn := 0;
+
+  if (not ReadMyDsk(wOpr, 'DolgOpl_wOpr', True))
+    wOpr := 0;
+
+  if (not ReadMyDsk(pDesGrFio, 'DolgOpl_pDesGrFio', Datechanged))
+    pDesGrFio := '';
+
+  if (not ReadMyDsk(MyRepVAL,  'DolgOpl_SimvolV',    true))
+    MyRepVAL  := 0;
+
+  if (not ReadMyDsk(TMoney,     'DolgOpl_TMoney',    true))
+    TMoney  := 1;
+
+  ToggleFieldVisible(#ModeCalcDaysTxt   , o1 = 0);
+  ToggleFieldVisible(#wModeCalcDays     , o1 = 0);
+  ToggleFieldVisible(#ModeCalcDateOplTxt, o1 = 0);
+  ToggleFieldVisible(#wModeCalcDateOpl  , o1 = 0);
+  ToggleFieldVisible(#ModeCalcSrokDOTxt , o1 = 0);
+  ToggleFieldVisible(#wModeCalcSrokDO   , o1 = 0);
+  ToggleFieldVisible(#doMinRubDolg      , o1 = 0);
+
+  if (o1 = 0)
+    {
+      ClusterDisabledField(#o2, 0);
+      set pType := if(o1 = 0, word(1), word(0)) + if(o2 = 1, word(2), word(0));
+    }
+  else
+    {
+      ClusterDisabledField(#o2, 1);
+      set pType := 4;
+    }
+
+  ToggleFieldVisible(#Calendar.Name , wModeCalcDays   = 1);
+  ToggleFieldVisible(#Calendar1.Name, wModeCalcSrokDO = 1);
+  SetVisisbility;
+}
+//------------------------------------------------------------------------------
+HandleEvent
+
+cmInit:
+{
+  BwList    := 6; // контрагенты!
+  pDescr    := '';
+  pDescrFIO := '';
+  ParOtch   := 'Параметры отчета:';
+  Filtr     := 'Фильтры по:';
+
+  iDescr.CreateTmpPickedDescr('DolgOplDescr');
+  MarkerDescr := InitMarker('DolgOplDescr', 8, 100, 10, FALSE);
+  pDescr := iDescr.GetFullNameFltDescr;
+  if (pDescr = '')
+    pDescrFIO := ''
+  else
+    pDescrFio   := 'По дескриптору: '+DescrFio(pDescr);
+
+  pDesGr      := '';
+  pDesGrFIO   := '';
+
+  MarkerKontr := InitMarker('DolgOplKontr', 8, 100, 10, FALSE);
+  AllKontr    := GetMarkerCount(MarkerKontr);
+
+  MarkerDesGr := InitMarker('DolgOplDesGr', 8, 100, 10, FALSE);
+
+  MarkerStat  := InitMarker('DolgOplStat', 8, 100, 10);
+  AllStat     := GetMarkerCount(MarkerStat);
+
+  MarkerDog   := InitMarker('DolgOplDog', 8, 100, 10);
+  AllDog      := GetMarkerCount(MarkerDog);
+
+  case AllKontr of
+    0    : set AllKontrTxt := '';
+    1    : {
+             var pRec : comp;
+
+             if GetMarker(MarkerKontr, 0, pRec)
+               if (GetFirst KatOrg where (( pRec == KatOrg.nRec )) = tsOk)
+                 set AllKontrTxt := KatOrg.Name;
+           }
+    else set AllKontrTxt := 'Множественный выбор (' + string(AllKontr) + ')';
+  end;
+
+  case AllStat of
+    0    : set AllStatTxt := '';
+    1    : {
+             var pRec : comp;
+
+             if GetMarker(MarkerStat, 0, pRec)
+               if (GetFirst KatNotes where (( pRec == KatNotes.nRec )) = tsOk)
+                 set AllStatTxt := KatNotes.Name;
+           }
+    else set AllStatTxt := 'Множественный выбор (' + string(AllStat) + ')';
+  end;
+
+  case AllDog of
+    0    : set strDogovor := '';
+    1    : {
+             var pRec : comp;
+
+             if GetMarker(MarkerDog, 0, pRec)
+               if (GetFirst Dogovor where (( pRec == Dogovor.nRec )) = tsOk)
+                 set strDogovor := 'Договор №' + Dogovor.noDoc;
+           }
+    else set strDogovor := 'Множественный выбор (' + string(AllDog) + ')';
+  end;
+
+  ReadParamOtch;
+
+  d3 := Cur_Date;
+  GetVipInterface(iface_Calendar);
+
+  SetFieldAndLabelVisible(#sXLTFileName, prvid = 1);
+  SetFieldAndLabelVisible(#VidOt       , (prvid = 1) and (o1 = 0) and (o2 = 1));
+
+  ID := 'L_RepOper\DolgOpl';
+
+  if (not ReadMyDsk(sXLTFileName,ID,true))
+    set sXLTFileName := TranslatePath('%ClientStartPath%') + 'XLS\' + ID + '.xlt';
+
+  if (not ReadMyDsk(prvid, ID+'toc',true))
+    prvid := 0;
+
+  if prvid = 0
+    {
+      DisableCommand(cmValue11); // выключение кнопки
+      SetFieldAndLabelVisible(#VidOt, False);
+    }
+
+  ReadMyDsk(sXLTFileName,ID,true);
+}
+//------------------------------------------------------------------------------
+cmValue11:
+{
+  RunInterface('xlrepsetup',1,ID,sXLTFileName);
+  ReadMyDsk(sXLTFileName,ID,true);
+}
+//------------------------------------------------------------------------------
+cmOpenSearch:
+  ProcessCommand(cmValue9);
+//------------------------------------------------------------------------------
+cmValue9: // общий cmPick
+{
+  case CurField of
+
+   #SimvolV:
+     {
+       var CursSumR : double; var CursSumV : double;
+       RunInterface('GetValuta', MyRepVAL, cur_date, CursSumR, CursSumV);
+       set MyRepVAL := MyRepVAL;
+       SaveMyDsk(MyRepVAL, 'DolgOpl_SimvolV');
+     }
+
+   #D1:
+     {
+       if ( Longint(D1 ) = 0 )
+         D1 := Date(1, Month(Cur_date), Year(Cur_date))
+       else
+         if ( Day(d1) <> 1 )
+           set D1 := Date(1, Month(d1), Year(d1))
+         else
+           set D1 := Sub_Months(d1, 1);
+
+       set d2 := 0;
+     }
+
+   #D2:
+     if ( D2 > d1 )
+       {
+         D2 := Add_Months(date(1, Month(d2), Year(d2)), 2);
+         set d2 := Sub_Day(Date(1, Month(d2), Year(d2)), 1);
+       }
+
+   #D3:
+     set D3 := Cur_Date;
+
+   #AllKontrTxt:
+     {
+       StoreMarker(MarkerKontr, 'KatOrg');
+
+       if (RunInterface('GetSomeKontr', TRUE) <> cmCancel)
+       {
+         var lMark : TPtr;
+
+         lMark := InitMarker('KatOrg', 8, 100, 10, FALSE);
+
+         CopyMarker(MarkerKontr, lMark);
+
+         AllKontr := 1;
+         if ( GetKolPick = 1 )
+           if GetFirst Pick where (( word(6) == Pick.wList )) = tsOk
+             if GetFirst Katorg where (( Pick.cRec == KatOrg.nRec )) = tsOk
+               KatName:= Katorg.name;
+
+         Set AllKontrTxt := if( GetKolPick > 1, 'Множественный выбор (' + string(GetKolPick) + ')',
+                                  if( GetKolPick = 1, KatName, ''));
+       }
+     }
+
+   #strDogovor:
+      {
+        StoreMarker(MarkerDog, 'MDogovor');
+
+        var oGetSDog: GetSomeDogovor;
+
+        oGetSDog.SetGtSDogParameter('GetSDog_SaveSelect', 1);
+
+        var pRec : comp;
+
+        if oGetSDog.Run(0, 65535, 0, 1, TRUE, pRec, FALSE, 0)
+        {
+          var lMark : TPtr;
+
+          lMark := InitMarker('MDogovor', 8, 100, 10, FALSE);
+
+          CopyMarker(MarkerDog, lMark);
+
+          AllDog := GetMarkerCount(MarkerDog);
+
+          if (AllDog > 1)
+            set strDogovor := 'Множественный выбор (' + string(AllDog) + ')';
+          else
+            if (GetFirst Dogovor where (( pRec == Dogovor.nRec )) = tsOk)
+              set strDogovor := 'Договор №' + Dogovor.noDoc;
+        }
+      }
+
+   #AllStatTxt:
+     {
+       StoreMarker(MarkerStat, 'MKatNotes');
+
+       var pRec : comp;
+
+       if (RunInterface('GetSomKatNotes', word(100), word(0), word(0), True, pRec) <> cmCancel)
+       {
+         var lMark : TPtr;
+
+         lMark := InitMarker('MKatNotes', 8, 100, 10, FALSE);
+
+         CopyMarker(MarkerStat, lMark);
+
+         AllStat := GetMarkerCount(MarkerStat);
+
+         if (AllStat > 1)
+           set AllStatTxt := 'Множественный выбор (' + string(AllStat) + ')';
+         else
+           if (GetFirst KatNotes where (( pRec == KatNotes.nRec )) = tsOk)
+             set AllStatTxt := KatNotes.Name;
+       }
+     }
+
+   #NaklTxt:
+     {
+       set nType := nType mod 3 + 1;
+
+       if (nType = 2)
+         {
+           set Vozv := 0;
+           ClusterDisabledField(#Vozv, 1);
+         }
+       else
+         ClusterDisabledField(#Vozv, 0);
+     }
+
+   #pDescrFIO:
+     {
+       var OldDescr: string;
+
+       OldDescr := pDescr;
+       DoneMarker(MarkerDescr, 'UserTuneDescr');
+       if ( RunInterface('GetSomeDescr', TRUE) = cmDefault )
+         {
+           iDescr.CreateTmpPickedDescr('UserTuneDescr');
+           MarkerDescr := InitMarker('UserTuneDescr', 8, 100, 10, FALSE);
+           pDescr := iDescr.GetFullNameFltDescr;
+           if (pDescr = '')
+             pDescrFIO := ''
+           else
+             pDescrFio   := 'По дескриптору: '+DescrFio(pDescr);
+         }
+       else
+         {
+           pDescr := OldDescr;
+           MarkerDescr := InitMarker('DolgOplDescr', 8, 100, 10, FALSE);
+         }
+      }
+
+   #pDesGrFIO:
+     {
+       var OldDesGr, strDesGr: string;
+
+       OldDesGr := pDesGr;
+       strDesGr := '';
+       DoneMarker(MarkerDesGr, 'UserTuneGrDescr');
+       if ( RunInterface(GetGrDescr, strDesGr, TRUE, TRUE, comp(0)) <> cmCancel )
+         {
+           MarkerDesGr := InitMarker('UserTuneGrDescr', 8, 100, 10, FALSE);
+           set pDesGr := strDesGr;
+         }
+       else
+         {
+           pDesGr := OldDesGr;
+           MarkerDesGr := InitMarker('DolgOplDesGr', 8, 100, 10, FALSE);
+         }
+
+       if (pDesGr = '')
+         pDesGrFIO := ''
+       else
+         pDesGrFio := 'По группе дескрипторов: '+pDesGr;
+     }
+
+   #Calendar.Name:
+     {
+       var tmpComp: comp;
+       tmpComp := cRecCalendar;
+
+       if (RunInterface('Calendar', tmpComp) <> cmCancel)
+         {
+           set cRecCalendar := tmpComp;
+
+           if (cRecCalendar1 = comp(0))
+             set cRecCalendar1 := tmpComp;
+         }
+     }
+
+   #Calendar1.Name:
+     {
+       var tmpComp: comp;
+       tmpComp := cRecCalendar1;
+
+       if ( RunInterface('Calendar', tmpComp) <> cmCancel )
+         {
+           set cRecCalendar1 := tmpComp;
+
+           if (cRecCalendar = comp(0))
+             set cRecCalendar := tmpComp;
+         }
+     }
+  end;
+
+  if ( D2 < D1 )
+    {
+      d2 := Add_Months(d1, 1);
+      set d2 := Sub_Day(Date(1, Month(d2), Year(d2)), 1);
+    }
+
+  RereadRecord;
+}
+//------------------------------------------------------------------------------
+cmOk:
+{
+  if prvid = 1
+    if not pxlrepsetup.checkParam(0,ID,sXLTFileName)
+      if (not pXLRepSetup.RunSetUpDialog(2, ID, sXLTFileName) )
+        Exit;
+
+  SaveParamOtch;
+  CreateReport;
+}
+//------------------------------------------------------------------------------
+cmDone:
+{
+  FreeVipInterface(iface_Calendar);
+
+  DoneMarker(MarkerDescr, 'DolgOplDescr');
+  DoneMarker(MarkerDesGr, 'DolgOplDesGr');
+  DoneMarker(MarkerStat , 'DolgOplStat');
+  DoneMarker(MarkerDog  , 'DolgOplDog');
+  DoneMarker(MarkerKontr, 'DolgOplKontr');
+}
+
+end; // HandleEvent
+End. // Interface

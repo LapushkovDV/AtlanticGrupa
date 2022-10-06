@@ -1,0 +1,16 @@
+#param /linc:autoexec.vpp
+
+//#include galnet.inc end;
+//#include glovars.inc
+
+#define ComponentVersion // для vih
+#include ExtAttr.vih
+#include ExtClass.vih
+
+
+
+#component 'ATLANTIC'
+
+
+#define _Update_20190308_
+#make "source\ExportReestrCertifPDF.vip"

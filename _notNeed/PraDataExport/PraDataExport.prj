@@ -1,0 +1,39 @@
+#include PreDefs.inc; 
+const
+#include GloConst.inc;
+#include Galnet.csc;
+#include Galnet.ccm;
+#include TUNES.INC
+#include fldcolor.inc
+end;
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include DicTypes.def
+#include GloDefs.inc
+#include StatDefs.inc
+#define ComponentVersion
+#include ExtAttr.vih
+
+
+var PiextAttr : iExtAttr;
+#include NalogFun.vih
+#include DOfuns.vih
+#include DOfuns.var
+#include SpNext.vih
+#include SpNext.var
+#include GetKau.vih
+#include GetKau.var
+#include CreateTune.vih
+#include marker.vih
+
+#include DOfuns.vih
+
+
+
+
+#component "ATLANTIC"
+#make    "vip\PraDataExport.vip"
+#make    "vip\PraDataExport_tune.vip"

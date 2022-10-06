@@ -1,0 +1,75 @@
+interface iDrogaFunc;
+
+var extAttr: iExtAttr;
+
+create view as select * from katsopr, spsopr, katmc, spkau where ((
+10020 == spkau.kodgrkau
+and '002' == spkau.code
+));
+
+//получаем  idAtrMc код МЦ покупателя для организации
+function getAtrMc(crec: comp): comp;
+var str: string;
+{
+  result := 0;
+  str := extAttr.sGetAttr(coKatOrg, crec, 'атрибут Код МЦ');
+  if str <> '' result := extAttr.attrID(coKatMC, str);
+}
+
+function getDocBasis: string;
+{
+  result := '';
+  if getfirst spkau = tsOk
+    result := spkau.name;
+}
+
+function getBuyerItemCode(cSpSopr: comp): string;
+{
+  result := '';
+  if (getfirst spsopr where ((cSpSopr == nrec)) = tsOk)
+    if (spsopr.prmc = 1) //МЦ
+      if (getfirst spsopr where ((cSpSopr == nrec)) = tsOk)
+        if (getfirst katsopr where ((spsopr.csopr == nrec)) = tsOk)
+          result := trim(extAttr.sGetAttrID(coKatMC, spsopr.cmcusl, getAtrMC(katsopr.corg)));
+}
+
+function getSAPItemCode(cSpSopr: comp): string;
+{
+  result := '';
+  if (getfirst spsopr where ((cSpSopr == nrec)) = tsOk)
+    if (spsopr.prmc = 1) //МЦ
+      if (getfirst katmc where ((spsopr.cmcusl == nrec)) = tsOk)
+        result := katmc.barkod2;
+}
+
+function getMercuryCode(cKatSopr: comp): string;
+{
+  result := '';
+  if (getfirst katsopr where ((cKatSopr == nrec)) = tsOk)
+    result := extAttr.sGetAttr(coKatOrg, katsopr.cgruzto, 'Меркурий номер предприятия');
+}
+
+function getCountInPack(cSpSopr: comp): string;
+{
+  result := '';
+  if (getfirst spsopr where ((cSpSopr == nrec)) = tsOk)
+    if (spsopr.prmc = 1) //МЦ
+      if (getfirst spsopr where ((cSpSopr == nrec)) = tsOk)
+          result := trim(extAttr.sGetAttr(coKatMC, spsopr.cmcusl, 'Кол-во в упаковке'));
+}
+
+function getPackVol(cSpSopr: comp): string;
+{
+  result := '';
+  if (getfirst spsopr where ((cSpSopr == nrec)) = tsOk)
+    if (spsopr.prmc = 1) //МЦ
+      if (getfirst spsopr where ((cSpSopr == nrec)) = tsOk)
+          result := trim(extAttr.sGetAttr(coKatMC, spsopr.cmcusl, 'Объем короба м3'));
+}
+
+//------------------------------------------------------------------------------
+handleEvent
+  cmOnVipLoad: {}
+  cmOnVipUnload: {}
+end;
+end.

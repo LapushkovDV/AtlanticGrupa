@@ -1,0 +1,258 @@
+#include PreDefs.inc;
+const
+#include GloConst.inc;
+#include TUNES.INC
+#include fldcolor.inc
+#include Galnet.csc;
+#include Galnet.ccm;
+#include Money.ccm
+#include Money.csc //без Galnet.inc надо
+
+end;
+
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include DicTypes.def
+#include GloDefs.inc
+//-----------------------------------
+// Описания объектов
+//-----------------------------------
+
+#params
+[vip]
+LicenseControlInclude=""
+#end
+
+#include ExtAttr.vih
+var extAttr: iExtAttr;
+
+#include Query.vih
+
+const
+coVETIS_PackageLevelType  = 10031; // VETIS.PackageLevelType
+coVETIS_ProductType       = 10032; // VETIS.ProductType
+coVETIS_PackingCodeType   = 10033; // VETIS.PackingCodeType
+coVETIS_EdIzm             = 10034; // VETIS.Единицы измерения
+coVETIS_VidPRoduct        = 10035; // VETIS.Виды продукции
+coVETIS_Status            = 10036; // VETIS.Виды продукции
+coVETIS_DiscrepancyReason = 10037; // VETIS.Причины инвентаризации
+coVETIS_DocumentStatus    = 10038; // VETIS.DocumentStatus
+coVETIS_TransportType     = 10039; // VETIS.TransportType
+coVETIS_ReferenceType     = 10040; // VETIS.ReferenceType
+coVETIS_DocumentType      = 10041; // VETIS.DocumentType
+
+
+
+
+coAttrNam_ExternalCode     = 'ExternalCode' ;
+coAttrNam_GUID             = 'GUID';
+coAttrNam_BusinessEntity   = 'VETIS_BusinessEntity';
+coAttrNam_VETIS_Enterprise = 'VETIS_Enterprise';
+co_PS1_REQUESTERROR       = 'REQUESTERROR';
+co_formatToDate           = 'DD.MM.YYYY';
+// GetStockList
+coPS1_stock_APPLICATIONID     = 'APPLICATIONID';
+coPS1_stock_REQUESTSTATUS     = 'REQUESTSTATUS';
+coPS1_stock_GUID              = 'GUID записи складского журнала';
+coPS1_stock_ENTRYNUMBER       = 'Номер записи складского журнала';
+coPS1_stock_NAME              = 'Наименование продукции';
+coPS1_stock_VOLUME            = 'Объём в КГ';
+coPS1_stock_DATEOFPRODUCTION  = 'Дата производства';
+coPS1_stock_EXPIRYDATE        = 'Срок годности';
+coPS1_stock_PERISHABLE        = 'Скоропорт';
+coPS1_stock_QUANTITY2         = 'Количество штук';
+coPS1_stock_QUANTITY4         = 'Количество коробок';
+coPS1_stock_STATUS            = 'Статус версии записи журнала';
+coPS1_stock_CREATEDATE        = 'Дата создания записи журнала';
+coPS1_stock_UPDATEDATE        = 'Дата изменения записи журнала';
+coPS1_stock_PRODUCTTYPE       = 'Тип продукции';
+coPS1_stock_PRODUCTGUID       = 'GUID продукции';
+coPS1_stock_SUBPRODUCTGUID    = 'GUID вида продукции';
+coPS1_stock_GLOBALID          = 'GTIN';
+coPS1_stock_BATCHID           = 'BatchNumber';
+coPS1_stock_LEVEL2            = 'Уровень упаковки(2)';
+coPS1_stock_PACKINGTYPEID_2   = 'Идентификатор упаковки';
+coPS1_stock_PRODUCTMARKSEAN_2 = 'EAN13';
+coPS1_stock_LEVEL4            = 'Уровень упаковки(4)';
+coPS1_stock_PACKINGTYPEID_4   = 'Идентификатор упаковки по классификатору ЕК 013 - 2010(ред.1)';
+coPS1_stock_PRODUCTMARKSEAN_4 = 'EAN13(4)';
+coPS1_stock_PRODUCTMARKS_4    = 'EAN128(4)';
+coPS1_stock_country_guid      = 'Страна происхождения партии GUID';
+coPS1_stock_producer_guid     = 'Контрагент-производитель GUID';
+coPS1_stock_producer_role     = 'Контрагент-производитель роль';
+coPS1_stock_lowGradeCargo     = 'Является ли груз некачественным';
+
+//GetBusinessEntity
+coPS1_BissnEntity_uuid        = 'uuid';
+coPS1_BissnEntity_guid        = 'guid';
+coPS1_BissnEntity_active      = 'active';
+coPS1_BissnEntity_name        = 'name';
+coPS1_BissnEntity_Fullname    = 'Fullname';
+coPS1_BissnEntity_inn         = 'inn';
+coPS1_BissnEntity_kpp         = 'kpp';
+coPS1_BissnEntity_ogrn        = 'ogrn';
+coPS1_BissnEntity_addressView = 'addressView';
+
+//GetBusinessEntity
+coPS1_ProdList_GUID               = 'Глобальный идентификатор номенклатуры';
+coPS1_ProdList_ACTIVE             = 'Активная';
+coPS1_ProdList_GLOBALID           = 'Trade Identification Number (GTIN)';
+coPS1_ProdList_NAME               = 'Наименование продукции';
+coPS1_ProdList_CODE               = 'Артикул';
+coPS1_ProdList_PRODUCTTYPE        = 'Тип продукции';
+coPS1_ProdList_PRODUCTIONGUID     = 'Глобальный идентификатор продукции';
+coPS1_ProdList_PRODUCTIONTYPEGUID = 'Глобальный идентификатор вида продукции';
+coPS1_ProdList_PACKAGEGUID        = 'Глобальный идентификатор упаковки';
+coPS1_ProdList_QUANTITY           = 'Количество единиц упаковки';
+coPS1_ProdList_VOLUME             = 'Объём единицы упаковки товара';
+coPS1_ProdList_MEASUREGUID        = 'Глобальный идентификатор единицы измерения';
+
+//GetUnitList
+coPS1_UnitList_GUID               = 'Глобальный идентификатор единицы измерения';
+coPS1_UnitList_ACTIVE             = 'Активная';
+coPS1_UnitList_NAME               = 'Наименование единицы измерения';
+
+// GetProductType
+coPS1_ProductType_Guid   = 'Глобальный идентификатор продукции';
+coPS1_ProductType_Active = 'Активная';
+coPS1_ProductType_Name   = 'Название продукции';
+coPS1_ProductType_Code   = 'Код ТН ВЭД продукции';
+
+coPS1_SubProductType_ProductGuid = 'Глобальный идентификатор продукции';
+coPS1_SubProductType_Guid        = 'Глобальный идентификатор вида продукции';
+coPS1_SubProductType_Active      = 'Активная';
+coPS1_SubProductType_Name        = 'Название вида продукции';
+coPS1_SubProductType_Code        = 'Код ТН ВЭД вида продукции';
+
+coPS1_GetStockUUIDbyGUID_GUID = 'GUID записи стока';
+coPS1_GetStockUUIDbyGUID_UUID = 'UUID записи стока';
+coPS1_GetStockUUIDbyGUID_UNITGUID = 'GUID Единицы измерения';
+
+//GetDocumentList
+coPS1_GetDocListAPPLICATIONID      = 'APPLICATIONID';
+coPS1_GetDocListREQUESTSTATUS      = 'REQUESTSTATUS';
+coPS1_GetDocListUUID               = 'UUID ЭВСД';
+coPS1_GetDocListDataEVSD           = 'дата оформления ЭВСД';
+coPS1_GetDocListSTATUS             = 'Статус';
+coPS1_GetDocListBusinessEntityGuid = 'consignee.businessEntity.guid';
+coPS1_GetDocListEnterpriseGuid     = 'consignee.enterprise.guid';
+coPS1_GetDocListTrasporttype       = 'Тип транспортного средства';
+coPS1_GetDocListCar                = 'Автомобиль';
+coPS1_GetDocListGlobalID           = 'GlobalID продукции';
+coPS1_GetDocListProductName        = 'Наименование продукции';
+coPS1_GetDocListVolume             = 'Объем';
+coPS1_GetDocListKatEd              = 'Единица объема';
+coPS1_GetDocListDataProizv         = 'Дата производства';
+coPS1_GetDocListSrokGodn           = 'Срок годности';
+coPS1_GetDocListBatchID            = 'batchID';
+/*
+coPS1_GetDocListLevel_2            = 'Уровень упаковки(2)';
+coPS1_GetDocListPACKINGTYPEID_2    = 'Идентификатор упаковки(2)';
+coPS1_GetDocListQuantity_2         = 'Количество штук';
+coPS1_GetDocListEAN13_2            = 'EAN13(2)';
+coPS1_GetDocListLevel_4            = 'Уровень упаковки(4)';
+coPS1_GetDocListPACKINGTYPEID_4    = 'Идентификатор упаковки(4)';
+coPS1_GetDocListQuantity_4         = 'Количество коробок';
+coPS1_GetDocListEAN13_4            = 'EAN13(4)';
+coPS1_GetDocListEAN128_4           = 'EAN128(4)';
+*/
+coPS1_GetDocListLevel            = 'Уровень упаковки_';
+coPS1_GetDocListPACKINGTYPEID    = 'Идентификатор упаковки_';
+coPS1_GetDocListQuantity         = 'УпаковкаКоличество_';
+coPS1_GetDocListEAN13            = 'УпаковкаEAN13_';
+coPS1_GetDocListEAN128           = 'УпаковкаEAN128_';
+coPS1_GetDocListSSCC           = 'УпаковкаSSCC_';
+
+coPS1_GetDocListReferencedDocumentIssueNumber = 'referencedDocumentIssueNumber_';
+coPS1_GetDocListReferencedDocumentissueDate   = 'referencedDocumentissueDate_';
+coPS1_GetDocListReferencedDocumentissuetype   = 'referencedDocumentissuetype_';
+coPS1_GetDocListReferencedDocumentissuerelationshipType = 'referencedDocumentissuerelationshipType_';
+coPS1_GetDocListDocumentstatusChangeStatus              = 'DocumentstatusChange.status_';
+coPS1_GetDocListDocumentstatusChangeSpecifiedPerson     = 'DocumentstatusChange.specifiedPerson.fio_';
+coPS1_GetDocListDocumentstatusChangeActualDateTime      = 'DocumentstatusChange.actualDateTime_';
+
+/*
+//# TEST
+
+coCircuit_serviceID          = 'mercury-g2b.service';
+coCircuit_endpointUrl        = 'https://api2.vetrf.ru:8002/platform/services/2.0/ApplicationManagementService';
+coCircuit_login              = 'atlanticgrupa-180401';
+coCircuit_password           = 'Gi95LgXm4';
+coCircuit_apiKey             = 'NTI5OTE1ZDUtNGY2MC00YzZmLTkxNjktYmNkY2ViZTg2Y2YzZmRiYTdhZWYtMjE4YS0xMWUyLWE2OWItYjQ5OWJhYmFlN2Vh';
+coCircuit_issureId           = 'fdba7aef-218a-11e2-a69b-b499babae7ea';
+coCircuit_sysLogin           = 'topolov_ns_190626';
+coCircuit_enterpriseGuid     = 'a251c4dd-3b79-4088-9787-51c77bc7ab71';
+coCircuit_businessEntityGuid = 'fdba7aef-218a-11e2-a69b-b499babae7ea';
+coCircuit_endpointUrlGetSTOCKList       = 'https://api2.vetrf.ru:8002/platform/services/2.0/ApplicationManagementService';
+coCircuit_endpointUrlGetBusinessEntity  = 'https://api2.vetrf.ru:8002/platform/services/2.1/EnterpriseService';
+coCircuit_endpointUrlGetProductList     = 'https://api2.vetrf.ru:8002/platform/services/2.1/ProductService';
+coCircuit_endpointUrlGetUnitList        = 'https://api2.vetrf.ru:8002/platform/services/2.1/DictionaryService';
+coCircuit_endpointUrlGetProductType     = 'https://api2.vetrf.ru:8002/platform/services/2.1/ProductService';
+coCircuit_endpointUrlGetSubProductList  = 'https://api2.vetrf.ru:8002/platform/services/2.1/ProductService';
+coCircuit_endpointUrlGetStockUUIDbyGUID = 'https://api2.vetrf.ru:8002/platform/services/2.0/ApplicationManagementService';
+
+coCircuit_endpointUrlResolveDiscrepancy = 'https://api2.vetrf.ru:8002/platform/services/2.1/ApplicationManagementService';
+
+*/
+
+//#prod
+coCircuit_serviceID          = 'mercury-g2b.service';
+coCircuit_login              = 'atlanticgrupa-180410';
+coCircuit_password           = 'F5jD7gn4Z';
+coCircuit_apiKey             = 'N2ZhYTYxOTktMTJjZi00Yzc3LWE4OTAtODcxOWJlYmFmZTg2ZmRiYTdhZWYtMjE4YS0xMWUyLWE2OWItYjQ5OWJhYmFlN2Vh';
+coCircuit_issureId           = 'fdba7aef-218a-11e2-a69b-b499babae7ea';
+coCircuit_sysLogin           = 'ordynec_el_200114';
+//20200717 поменяли coCircuit_enterpriseGuid     = '9f0bca9c-d927-4676-8969-248b3e724701';
+//20210521 поменяли назад coCircuit_enterpriseGuid     = '9c314b84-225b-4ac6-b2db-2c2d71b41ba5';
+coCircuit_enterpriseGuid     = '9f0bca9c-d927-4676-8969-248b3e724701';
+coCircuit_businessEntityGuid = 'fdba7aef-218a-11e2-a69b-b499babae7ea';
+
+coCircuit_endpointUrlGetSTOCKList       = 'https://api.vetrf.ru/platform/services/2.0/ApplicationManagementService';
+coCircuit_endpointUrlGetBusinessEntity  = 'https://api.vetrf.ru/platform/services/2.1/EnterpriseService';
+coCircuit_endpointUrlGetProductList     = 'https://api.vetrf.ru/platform/services/2.1/ProductService';
+coCircuit_endpointUrlGetUnitList        = 'https://api.vetrf.ru/platform/services/2.1/DictionaryService';
+coCircuit_endpointUrlGetProductType     = 'https://api.vetrf.ru/platform/services/2.1/ProductService';
+coCircuit_endpointUrlGetSubProductList  = 'https://api.vetrf.ru/platform/services/2.1/ProductService';
+coCircuit_endpointUrlGetStockUUIDbyGUID = 'https://api.vetrf.ru/platform/services/2.0/ApplicationManagementService';
+coCircuit_endpointUrlResolveDiscrepancy = 'https://api.vetrf.ru/platform/services/2.1/ApplicationManagementService';
+
+coCircuit_endpointUrlGetDocumentList    = 'https://api.vetrf.ru/platform/services/2.1/ApplicationManagementService';
+
+coCircuit_endpointUrlGetStockEntryVersionListRequest = 'https://api.vetrf.ru/platform/services/2.1/ApplicationManagementService' ;
+
+coCircuit_CountTry           = 150;
+coCircuit_Pause              = 2;
+
+//coReportPath                 = 'C:\Galaktika\_Vetis_PS\RQST\';
+end;
+
+
+//-----------------------------------
+// публичные Функции
+//-----------------------------------
+//-----------------------------------
+// Макроопределения
+//-----------------------------------
+//----------------------------
+// TEST GAL_FUNCTION
+//----------------------------
+
+//******************************************
+#component "ATLANTIC"
+
+//----------------------------------
+
+#include Source\VetisAPI_PowerShell_VarsTypes.vpp
+#include Source\VetisAPI_PowerShell.vih
+#make "Source\VetisAPI_tune.vip"
+#make "Source\VetisAPI_PowerShell.vip"
+#make "Source\VetisAPI_Viewer_DocList.vip"
+#make "Source\VetisAPI_Viewer_STOCK.vip"
+#make "Source\VetisAPI_Viewer_Product.VIP"
+#make "Source\VetisAPI_Viewer_SpKau.VIP"
+
+//-------------------------------------
+// Импорт

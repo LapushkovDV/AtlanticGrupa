@@ -1,0 +1,247 @@
+#doc
+CRPT_API используя POWERSHELL POST
+#end
+Interface CRPT_API_PowerShellPost 'CRPT_API POWERSHELL_POST' doaccept, Gray;
+
+table struct tServerBase
+(
+  ServerName : string
+ ,DBName     : string
+)
+with index
+(
+ ind0 = ServerName
+)
+;
+
+table struct tCurRQSTAPI
+(
+ nrow : longint
+)
+with index
+ (
+  ind0 = nrow
+ )
+;
+
+Create view
+ var _Parameter : string;
+     _ListName : string = '';
+     _MylogFile : string;
+     _rqstError : string;
+     _par1   : string;
+     _par2   : string;
+     _par3   : string;
+     _par4   : string;
+     _par5   : string;
+     _LogFile : string;
+select
+  CRPT_INFOLIST.cis
+from
+  CRPT_INFOLIST
+ ,tServerBase
+ ,tCurRQSTAPI
+ ,ATL_RQSTAPIVALUES
+;
+Parameters
+ _Parameter,
+ _par1,
+ _par2,
+ _par3,
+ _par4,
+ _par5
+ ;
+File PS1Body;
+
+Procedure FillInsertTables; forward;
+Procedure fillrecArrayByTypeTable; forward;
+
+
+Function curdatetimestr: string; {
+  result := datetostr(Cur_date,'YYYY-MM-DD') + ' ' + timeToStr(Cur_time,'HH:MM:SS') + ' ';
+}
+
+procedure myLog(_log : string);
+{
+  if _LogFile = '' then _LogFile := 'CRPT_API_PowerShellPost_'+datetostr(Cur_date,'YYYY-MM-DD') + ' ' + timeToStr(Cur_time,'HHMMSS') + '.log';
+  logstrtofile(_LogFile,curdatetimestr + _log)
+}
+
+Function MysqlAddStr(var query_handle: longInt; add_query_str: string): longInt;
+{
+   Result:=sqlAddStr(query_handle, add_query_str);
+//уберем, т.к. подтормажтивает при частых выборках   MyLog(add_query_str);
+} //Function MysqlAddStr(var query_handle: longInt; add_query_str: string): longInt;
+
+Function GetCredentials: string;
+{
+  //Унести все в настройки модуля по обмену
+var _SQLUserName : string ='galaktikatasks';
+var _SQLPassword : string ='61!JuGa#34';
+var _trustedConn : boolean = false;
+
+ if _trustedConn
+  then result := 'Trusted_Connection=True'
+  else result := 'User Id='+_SQLUserName+';Password='+_SQLPassword;
+}
+Function GetTokenPath: string;
+{
+   result := replace(sGetTune('USERTUNE.CRPT_PRJ.tokenPath')+'\','\\','\')  + 'token.txt'
+}
+
+Function GetConnString: string; // MSSQL ТОлько для него пока, на оракле нет у меня никого
+{
+ result := '';
+   var hstr : longint = 0;
+    delete all tServerBase;
+
+    MysqlAddStr(hstr, 'select ATL_GET_SERVERNAME() as ServerName, ATL_GET_DB_NAME() as DBName');
+
+
+    var objQuery: iQuery;
+      objQuery := queryManager.createQuery(hstr);
+    if objQuery.execute.errorCode != tsOk
+     then {
+           MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+           exit;
+          }
+        else
+        {sqlCopyInto(objQuery, tntServerBase, true);
+        }
+
+ if getfirst tServerBase = tsOK
+  {
+    Result := 'Server='+tServerBase.ServerNAme+';Database='+tServerBase.DBName+';'+GetCredentials+';'
+ }
+}
+
+
+Function CheckValuesFromAPI(_OleGenerateGUID: string): boolean; {
+
+ result := true;
+   var hstr : longint = 0;
+    delete all tServerBase;
+  StartNewVisual(vtRotateVisual, vfTimer, 'Подсчет количества полученных строк', 1);
+    MysqlAddStr(hstr, 'select distinct    ');
+    MysqlAddStr(hstr, 'nrow               ');
+    MysqlAddStr(hstr, 'from ATL_RQSTAPIVALUES ');
+    MysqlAddStr(hstr, 'where rqst_guid = '''+_OleGenerateGUID+''' ');
+
+    delete all tCurRQSTAPI;
+    var objQuery: iQuery;
+      objQuery := queryManager.createQuery(hstr);
+    if objQuery.execute.errorCode != tsOk
+     then {
+           MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+           exit;
+          }
+        else
+        {sqlCopyInto(objQuery, tntCurRQSTAPI, true);
+        }
+  stopvisual;
+  StartNewVisual(vtIndicatorVisual, vfTimer, 'Разбор полученных данных', recordsintable(tntCurRQSTAPI));
+  _loop tCurRQSTAPI
+   {
+     nextvisual;
+     _loop ATL_RQSTAPIVALUES where ((_OleGenerateGUID == ATL_RQSTAPIVALUES.rqst_guid and tCurRQSTAPI.nrow == ATL_RQSTAPIVALUES.nrow))
+      {
+       var _i: byte;
+       for(_i := 1; _I <= getLimit(_recArray); _i++) {
+            if _recArray[_i].def = Trim(ATL_RQSTAPIVALUES.COLUMNNAME) {
+              _recArray[_i].value := Trim(ATL_RQSTAPIVALUES.VALUE);
+              break;
+            }
+       }
+      }
+
+    FillInsertTables;
+   }
+  delete  ATL_RQSTAPIVALUES where ((_OleGenerateGUID == ATL_RQSTAPIVALUES.rqst_guid));
+  stopvisual;
+}
+
+procedure MyWriteLN(_s: string); {
+  PS1Body.writeLN(Oem2Ansi(rtrim(_s)));
+}
+#declare BodyProcedurePostRqst(parameter, par1, par2, par3, par4, par5)
+  result := false;
+  set _Parameter := '#parameter';
+  _ListName := _Parameter;
+  var aDosCode, aErrorCode: integer;
+  var _psFile  : string = GetStringParameter('Files','OutputFilesDirectory',0)+ '\CRPT_API_'+_Parameter+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.ps1' ;
+  _psFile := replace(_psFile,'\\','\');
+  _MylogFile := GetStringParameter('Files','OutputFilesDirectory',0)+ '\CRPT_API_'+_Parameter+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.log' ;
+  _MylogFile := replace(_MylogFile,'\\','\');
+  deletefile(_MylogFile);
+  PS1Body.openfile(_psFile,stCreate);
+  var _OleGenerateGUID : string = OleGenerateGUID;
+
+  MyLog('Заполняем файл POWERSHELL');
+
+  FillPS1_CrptAPI_#parameter(_OleGenerateGUID,#par1, #par2, #par3, #par4, #par5);
+  PS1Body.Close;
+  MyLog('Запускаем POWERSHELL');
+
+  aDosCode:= ExecProgram('powershell.exe','-executionpolicy RemoteSigned -file "'+_psFile+'"', 'CRPT API. Запрос ' + _Parameter, pfKeepWindow, aErrorCode);
+  MyLog('Закрыли POWERSHELL');
+  if aDosCode <> 0 then {
+     //Message('Программа не запустилась !', mfError);
+     MyLog('Программа не запустилась !');
+     exit;
+  } else   {
+    if aErrorCode <> 0 then
+     {
+     //Message('Ошибка выполнения !', mfError);
+     MyLog('Ошибка выполнения !');
+     exit;
+     }
+   }
+   // Для отладки можно не удалать, но в проакшне надо - там пароль
+//   DeleteFile(_psFile);
+    MyLog('Данные получены. Начинаем их обработку');
+   // fillrecArrayByTypeTable;
+
+   result := CheckValuesFromAPI(_OleGenerateGUID);
+
+    MyLog('Обработка закончена. Завершаем работу');
+
+#end
+
+#include CRPT_API_PowerShell_CreateDoc.Vpp
+#include CRPT_API_PowerShell_GetDocumentStatus.Vpp
+
+Procedure fillrecArrayByTypeTable;
+{
+  case _Parameter of
+    'CreateDoc'             : {var _empty : boolean; _empty:= true;}//fillrecArray_GetInformation
+  end;
+}
+
+Procedure FillInsertTables;
+{
+  case _Parameter of
+    'GetInformation'  :   {var _empty : boolean; _empty := true;}  ;
+  end;
+} // PROCEdURE FillInsertTableeNaklSFO(_log: string);
+
+HandleEvent
+cmInit:
+{
+ _ListName := _Parameter;
+
+ case _Parameter of
+    'CreateDoc'  :     {
+      // par1 = document_format string Тип документа
+      // par2 = product_document string Тело формируемого документа, переведённое в base64 !!! Передаем ПУТЬ !!!
+      // par3 = type string Код типа документа
+      // par4 = cDoc - ссылка на документ который отправляют в CRPT
+      PostRequestToAPICreateDoc(_par1, _par2, _par3, _par4)
+    }
+    'GetDocumentStatus' : GetRequestToAPIGetDocStatus(_par1, _par2, _par3);
+ else {
+    mylog('Значения параметра "' + _Parameter+'" нет у данного интерфейса')
+ }
+ end;
+}
+end;
+End. // Infterface

@@ -1,0 +1,9 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компоненты
+
+#ifdef ComponentVersion
+#component "L_VPr"
+#end
+
+!#include oVPr.vih
+VipInterface GetVPrKatalog        licensed (FREE) Parameters (pRezim : word; pTable : word; pVPr : comp);

@@ -1,0 +1,129 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента L_UKS
+
+#ifdef ComponentVersion
+#component "L_UKS"
+#end
+
+!#include KatStroy.vih
+VipInterface KatStrZ licensed (FREE) Parameters (nRecObj : comp);
+VipInterface AddSumTune
+  licensed
+  (
+    #include ADDSUMTUNE.lih
+  )
+  Parameters (cRec : comp);
+VipInterface AlgDefuneSumTune licensed (FREE);
+VipInterface GetClassObj licensed (FREE) Parameters (c1 : word; EV : boolean; cObj : comp; Tit : string);
+VipInterface TuneVisibleFieldOfKart licensed (FREE) Parameters (coTab : word);
+!#include naloguks.vih
+!#include docs2obj.vih
+!#include uksserv.vih
+VipInterface Peresch licensed (FREE) Parameters (wMode : word);
+VipInterface KorrSumIer licensed (FREE);
+VipInterface Per_Objs licensed (FREE);
+VipInterface Per_Dogs licensed (FREE);
+VipInterface FormaKS3 licensed (FREE) Parameters (nRecKatSopr : comp; MarkerNZ : longint);
+VipInterface Rep_F1_4 licensed (FREE);
+VipInterface RepTitleSpisok licensed (FREE);
+!#include vzatrat.vih
+VipInterface VypPlan licensed (FREE);
+VipInterface PrintDogovorStroy licensed (FREE);
+VipInterface PrintInvStroy licensed (FREE);
+VipInterface PlatPoKV licensed (FREE) Parameters (Par : word);
+VipInterface RepOsvInv licensed (FREE);
+VipInterface SpravkaVypPlanaPoIstFin licensed (FREE);
+VipInterface RepUKS_S1 licensed (FREE);
+VipInterface RepUKS_S2 licensed (FREE);
+VipInterface RepUKS_1BZ licensed (FREE);
+VipInterface iRepZatrObj  licensed (FREE) Parameters (pTipRep : word);
+VipInterface RepObjSmet   licensed (FREE) Parameters (pTipRep : word);
+VipInterface UksFormP2    licensed (FREE);
+VipInterface iSvodVedZatr licensed (FREE);
+VipInterface iSvodVedVR   licensed (FREE);
+VipInterface GetTypSt licensed (FREE) Parameters (c1 : comp; EV : boolean);
+VipInterface GetVidSt licensed (FREE) Parameters (c1 : comp; EV : boolean);
+VipInterface GetOtrsl licensed (FREE) Parameters (c1 : comp; EV : boolean);
+VipInterface GetInvest licensed (FREE) Parameters (c1 : comp; EV : boolean);
+VipInterface UKSKoeff licensed (FREE);
+VipInterface GetKatPlace licensed (FREE) Parameters (c1 : comp; pr : word; EV : boolean);
+VipInterface ChangeAtrib licensed (FREE);
+vipinterface LinksSchem licensed (FREE) Parameters (pSchem : comp; pDoc : comp; pTiDk1 : word; pBaseDoc : comp; pTiDk2 : word; pSpSchem : comp; Pcode : word);
+vipinterface reUksFin licensed (FREE);
+vipinterface DogovorInSchem licensed (FREE) Parameters (cDog : comp; TiDKDog : word);
+vipinterface GetSpDocsUKS licensed (FREE) Parameters (pRez, pTable : word; pDoc : comp);
+vipinterface GetZatr licensed (FREE) Parameters (c1 : comp);
+vipinterface GetZatrForSP licensed (FREE) Parameters (c1 : comp);
+vipinterface GetZatrAny licensed (FREE) Parameters (c1 : Comp; wParam : Word);
+vipinterface GetStrZ licensed (FREE) Parameters (P : comp; B : boolean; COPar : comp);
+
+vipinterface SetRule  licensed (FREE) Parameters (Attribut : string; Beg : boolean);  // для настроек
+vipinterface SetRuleZ licensed (FREE) Parameters (Attribut : string; Beg : boolean);
+vipinterface SetPrior licensed (FREE) Parameters (Attribut : string);
+vipinterface DocOfStr licensed (FREE) Parameters (pStroy : comp);
+vipinterface IEquipment4Obj licensed (FREE) Parameters (vcObj : comp);
+vipinterface KC14 licensed (FREE) Parameters (_cVvStroy: comp; _SpVvStroy : comp; trep : word);
+vipinterface KC14Svod licensed (FREE) Parameters (pcKatStroy, pcVvStroy: comp; trep: word);
+vipinterface VVodMosch licensed (FREE);
+vipinterface DocToSchem licensed (FREE) Parameters (nRecSpSchem : comp; NameBaseDoc : string);
+vipinterface GetNameMC licensed (FREE) Parameters (pSpVVStroy : comp; sName : string);
+vipinterface GetSoprUKS licensed (FREE) Parameters (pKatStroy : comp; cnRec : comp; pAllPick : boolean);
+vipinterface GetSummaSopr licensed (FREE) Parameters (pKatStroy : comp; pSpVVStroy : comp; Stoimost : double; StoimostNU : double);
+
+vipinterface GetMcFromKatSopr licensed (FREE) Parameters (pNRec, pMc, pUks, pZtr : comp; PrMCUsl : word);
+vipinterface GetObj licensed (FREE) Parameters (P : comp; B : boolean; pcDoc : comp; pTiDk : word; COPar : comp);
+VipInterface AktUsl_UKS_Paket licensed (FREE);
+vipinterface nSetDefOb licensed (FREE);
+vipinterface Print_M29 licensed (FREE) Parameters (pNRec: comp; MarkerNZ: longint; wParam: word);
+vipinterface PrintReestrDocsUKS licensed (FREE) Parameters (pcUKS : comp);
+vipinterface PrintReestrDocsUKSZatr licensed (FREE) Parameters (pcUKS : comp);
+vipinterface GroupNastrVhodNalog licensed (FREE);
+vipinterface PrintIerarhInt licensed (FREE) Parameters (MyTitle : string);
+vipinterface PrintAllFromUKS licensed (FREE);
+vipinterface PrintAkt100  licensed (FREE) Parameters (pNrec: comp; MarkerNZ: longint);
+vipinterface PrintAktOs15 licensed (FREE) Parameters (pNrec: comp; MarkerNZ: longint);
+
+vipinterface PrnKSKoeff licensed (FREE) Parameters (pKatSopr: comp);
+
+VipInterface RepAktPS licensed (FREE);
+VipInterface SetAktPS licensed (FREE) Parameters (pNRec : comp);
+VipInterface PereocenkaNZS licensed (FREE);
+VipInterface PrnPereocenkaNZS licensed (FREE);
+
+VipInterface PrnOstatkiMC licensed (FREE) Parameters (pwVid : word);
+VipInterface PrnMoveMC licensed (FREE) Parameters (pwVid : word);
+VipInterface PrnVedMC licensed (FREE);
+VipInterface PrnReestrOborud licensed (FREE);
+VipInterface Print_KS_With_KAU3 licensed (FREE) Parameters (pNrec: comp; MarkerNZ: longint; wParam: word);
+VipInterface PrnVedNachalo licensed (FREE) Parameters (pcKatSopr : comp);
+VipInterface iRepSosMon  licensed (FREE);
+
+vipinterface GetObjKS licensed (FREE) Parameters (pStroy : comp; pObject : comp; OkOne : boolean);
+vipinterface CopyVvStroy licensed (FREE) Parameters (pVVStroy : comp; pwMode : word);
+vipinterface MakeRasprBatch licensed (FREE) Parameters (wMode : word);
+vipinterface MakeInvObj licensed (FREE) Parameters (pVVStroy : comp);
+vipinterface GetKatStroy licensed (FREE) Parameters (pcKatStroy : comp; pbMulti : boolean; pbClear : boolean; pwMask : word);
+VipInterface Forma2KS licensed (FREE);
+VipInterface DocsToOrder licensed (FREE);
+VipInterface KodRule licensed (FREE) Parameters( plValue: longint; psValue: string );
+
+
+DIALOG GetValutaVV
+(
+  tip : word
+);
+
+DIALOG GetKoeffNDS
+(
+  dKoeff : double
+);
+
+DIALOG GetFormRaspr
+(
+  myDat : date
+);
+
+Menu UKS_Edit_Stroy;
+Menu Start_Rule;
+Menu mnuShowHideTree;
+Menu mnuUks_SprIstFin_HotKeys;

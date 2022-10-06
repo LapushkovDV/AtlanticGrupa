@@ -1,0 +1,62 @@
+#ifdef ComponentVersion
+#component "z_wt"
+#end
+
+vipinterface PrintT13
+  licensed (staffmainmenu,staffmainmenu2,tabel,menuzarp,menuzarp2);
+vipinterface PrintWrkTabel
+  licensed (staffmainmenu,staffmainmenu2,tabel,menuzarp,menuzarp2);
+vipinterface PrintWrkTabel4 licensed(free) parameters(prCLschet: comp; prMonth, prYear, Glub: word);
+vipinterface VariancesProcessing
+  licensed (staffmainmenu,staffmainmenu2,tabel,menuzarp,menuzarp2);
+
+vipinterface ProcessVariances
+  licensed
+  (
+    #include ProcessVariances.lih
+  )
+  parameters (PersonalAccount: comp);
+
+vipinterface Vedt12
+  licensed (staffmainmenu,staffmainmenu2,tabel,menuzarp,menuzarp2);
+vipinterface PrazdnikPersonal licensed(free) parameters(prrec:comp;i_year:integer;i_month:integer);
+vipinterface Vedt12_1 licensed(free) parameters(DataOtch: date; YearRas, MonthRas: integer);
+vipinterface VedP12_1 licensed(free) parameters(DataOtch: date; YearRas, MonthRas: integer);
+vipinterface VhodOpl_T12 licensed(free);
+vipinterface Vedt12_3 licensed(free) parameters(DataOtch: date; YearRas, MonthRas: integer);
+vipinterface Vedt12_4 licensed(free)  parameters(DataOtch: date; YearRas, MonthRas: integer);
+vipinterface VIDNej licensed(free);
+vipinterface kindOfAbsencesReport licensed(free);
+#include GroupingAndSorting.vih
+vipinterface kindOfAbsencesReport_print licensed(free) parameters(GAS: IGroupingAndSorting);
+
+vipinterface Get_UO licensed(free) parameters(p1: comp);
+vipinterface pickkat licensed(free) parameters(kod: word);
+vipinterface VarianceStandardSymbolicNotations licensed(free) parameters(Code: string);
+vipinterface Get_Mark licensed(free) parameters(Markers: longint; Flags: word);
+vipinterface ArcFormWrktabel
+  licensed
+  (
+    #include ArcFormWrktabel.lih
+  )
+  parameters(TM, vYear, VedMonth: word);
+
+vipinterface ArcFormWrktabel2
+  licensed
+  (
+    #include ArcFormWrktabel2.lih
+  )
+  parameters(prFile: integer; prMonth, prYear: word);
+
+vipinterface zlstab
+  licensed
+  (
+    #include zlstab.lih
+  )
+  parameters(TM: word; prNrec, prcex: comp; prYear: word; prMes: byte; p2: double);
+
+vipinterface ConvertOldTableVariances licensed(free);
+vipinterface MenuVisible licensed(free) parameters (StartMenu: string);
+vipinterface OverworkControlReport licensed (free);
+vipinterface WorkingTimeBalanceReport licensed(free);
+vipinterface CalcPayRollAvgFactor licensed(free) parameters(PersonalAccount: comp; MonthRas: integer; YearRas: integer);

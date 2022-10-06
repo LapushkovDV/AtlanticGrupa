@@ -1,0 +1,9 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента C_CheckKbu
+
+#ifdef ComponentVersion
+#component "C_CHECKKBU"
+#end
+
+VipInterface CheckKBU licensed (FREE);
+VipInterface NastrSoprHoz licensed (FREE);

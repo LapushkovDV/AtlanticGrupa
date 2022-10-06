@@ -1,0 +1,97 @@
+//Редактирование прайс-листа
+// Убрал колонки с баркодом и группой, добавил колонку баркод 2, переместил дату расчета в конец
+object 'L_PRICES::PRICELS' : InterfaceWindow {
+  object BRPRICELS1 : Browser {
+    StatusCtx = 6958;
+    object c_BRPRICELS1 : Column {
+      NoAutoSize = True;
+    } // c_BRPRICELS1 : Column
+    object 'c_BRPRICELS1_PRICES.KOD_Группа' : Column {
+      Hidden = True;
+      StatusCtx = 6959;
+    } // c_BRPRICELS1_PRICES.KOD_Группа : Column
+    object 'c_BRPRICELS1_PRICES.BARKOD_Номенклатурный_номер' : Column {
+      Hidden = True;
+    } // c_BRPRICELS1_PRICES.BARKOD_Номенклатурный_номер : Column
+    // Информация: объект "'Field: KATMC.BARKOD2'" типа Column не найден в базовой конфигурации!
+    object 'Field: KATMC.BARKOD2' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = False;
+      UpCase = False;
+      Password = False;
+      StatusCtx = 10;
+      Title = 'SAP Code';
+      HelpLine = 'SAP Code';
+      FieldName = 'Field: KATMC.BARKOD2';
+      Index = 4;
+      DefaultWidth = 16;
+      ButtonType = 0;
+    } // Field: KATMC.BARKOD2 : Column
+    object 'c_BRPRICELS1_PRICES.NAME_Наименование' : Column {
+      Index = 5;
+    } // c_BRPRICELS1_PRICES.NAME_Наименование : Column
+    object 'c_BRPRICELS1_KATPODR.NAME_Склад' : Column {
+      Index = 6;
+      Visible = False;
+    } // c_BRPRICELS1_KATPODR.NAME_Склад : Column
+    object 'c_BRPRICELS1_KATMOL.NAME_МОЛ' : Column {
+      Index = 7;
+      Visible = False;
+    } // c_BRPRICELS1_KATMOL.NAME_МОЛ : Column
+    object 'c_BRPRICELS1_PRICES.NPARTY_Партия' : Column {
+      Visible = False;
+      Index = 8;
+    } // c_BRPRICELS1_PRICES.NPARTY_Партия : Column
+    object 'c_BRPRICELS1_OTPEDNAME_Отп._ЕдИзм' : Column {
+      Index = 9;
+    } // c_BRPRICELS1_OTPEDNAME_Отп._ЕдИзм : Column
+    object 'c_BRPRICELS1_PRICES.SUMVAL_Цена_в_валюте' : Column {
+      Visible = False;
+      StatusCtx = 6959;
+      Index = 10;
+    } // c_BRPRICELS1_PRICES.SUMVAL_Цена_в_валюте : Column
+    object 'c_BRPRICELS1_SIM_V_Вал' : Column {
+      Visible = False;
+      Index = 11;
+    } // c_BRPRICELS1_SIM_V_Вал : Column
+    object 'c_BRPRICELS1_PRICES.PRICE_Цена_в_НДЕ' : Column {
+      StatusCtx = 6959;
+      Index = 12;
+    } // c_BRPRICELS1_PRICES.PRICE_Цена_в_НДЕ : Column
+    object 'c_BRPRICELS1_PRICES.PRAVT_Корр_цены' : Column {
+      StatusCtx = 6958;
+      Index = 13;
+    } // c_BRPRICELS1_PRICES.PRAVT_Корр_цены : Column
+    object 'c_BRPRICELS1_PRICES.CALCKOEF_Коэфф._пересчета' : Column {
+      Index = 14;
+    } // c_BRPRICELS1_PRICES.CALCKOEF_Коэфф._пересчета : Column
+    object 'c_BRPRICELS1_ATTRVAL.VDATE_Дата_расчета' : Column {
+      Index = 15;
+    } // c_BRPRICELS1_ATTRVAL.VDATE_Дата_расчета : Column
+
+    object 'c_BRPRICELS1_VKOLKPN_Кол.КПН' : Column {
+      Visible = False;
+      Index = 16;
+    } // c_BRPRICELS1_VKOLKPN_Кол.КПН : Column
+    object 'c_BRPRICELS1_VEDIZMKPN_ЕдИзм_КПН' : Column {
+      Visible = False;
+      Index = 17;
+    } // c_BRPRICELS1_VEDIZMKPN_ЕдИзм_КПН : Column
+    object 'c_BRPRICELS1_DOGUSLFUNCS_CURR_Базовый_учебный_план' : Column {
+      Visible = False;
+      Index = 18;
+    } // c_BRPRICELS1_DOGUSLFUNCS_CURR_Базовый_учебный_план : Column
+    object 'c_BRPRICELS1_DOGUSLFUNCS_RANK_Категория_плательщика' : Column {
+      Visible = False;
+      Index = 19;
+    } // c_BRPRICELS1_DOGUSLFUNCS_RANK_Категория_плательщика : Column
+    object 'c_BRPRICELS1_DOGUSLFUNCS_KURS_Курс' : Column {
+      Visible = False;
+      Index = 20;
+    } // c_BRPRICELS1_DOGUSLFUNCS_KURS_Курс : Column
+  } // BRPRICELS1 : Browser
+} // L_PRICES::PRICELS : InterfaceWindow
+//-----------------------------------------------------------------------------

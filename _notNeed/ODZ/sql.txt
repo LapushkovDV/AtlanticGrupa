@@ -1,0 +1,115 @@
+sql
+select
+    t3.orgname
+  , t3.cOrg
+  , t3.DolgOpl
+  , t3.sumNeProsr
+  , t3.SumProsrAll
+  , t3.sumProsr1_1_15
+  , t3.sumProsr2_16_30
+  , t3.sumProsr3_31_90
+  , t3.sumProsr4_91_180
+  , t3.sumProsr5_181_3000
+  , t3.sumProsr6_3000_
+  , case when t3.sumProsrWithOutDateOpl <> 0 then t3.sumProsr7 + t3.sumProsrWithOutDateOpl else t3.sumProsr7 end as sumProsr7
+  , t3.sumProsrWithOutDateOpl
+from
+(
+select
+     t2.orgname
+   , t2.cOrg
+   , sum( case when t2.dSopr <= #date(01,08,2018) then t2.sumNakl - t2.summaRasprBegWith106 else 0 end ) as DolgOpl
+   , sum( case when t2.dSopr <= #date(01,08,2018) then case when t2.ProsrDaywith106    > 0 then 0 else t2.sumNakl - t2.summaRasprBegWith106 end else 0 end) as sumNeProsr
+   , sum( case when t2.dSopr <= #date(01,08,2018) then case when t2.ProsrDaywith106 <= 0 then 0 else t2.sumNakl - t2.summaRasprBegWith106 end else 0 end) as SumProsrAll
+   , sum(case when t2.ProsrDaywith106 between 1   and 15   then 1 else 0 end *(case when t2.dSopr <= #date(01,08,2018) then case when t2.ProsrDaywith106 <= 0 then 0 else t2.sumNakl - t2.summaRasprBegWith106 end else 0 end)) as sumProsr1_1_15
+   , sum(case when t2.ProsrDaywith106 between 16  and 30   then 1 else 0 end *(case when t2.dSopr <= #date(01,08,2018) then case when t2.ProsrDaywith106 <= 0 then 0 else t2.sumNakl - t2.summaRasprBegWith106 end else 0 end)) as sumProsr2_16_30
+   , sum(case when t2.ProsrDaywith106 between 31  and 90   then 1 else 0 end *(case when t2.dSopr <= #date(01,08,2018) then case when t2.ProsrDaywith106 <= 0 then 0 else t2.sumNakl - t2.summaRasprBegWith106 end else 0 end)) as sumProsr3_31_90
+   , sum(case when t2.ProsrDaywith106 between 91  and 180  then 1 else 0 end *(case when t2.dSopr <= #date(01,08,2018) then case when t2.ProsrDaywith106 <= 0 then 0 else t2.sumNakl - t2.summaRasprBegWith106 end else 0 end)) as sumProsr4_91_180
+   , sum(case when t2.ProsrDaywith106 between 181 and 3000 then 1 else 0 end *(case when t2.dSopr <= #date(01,08,2018) then case when t2.ProsrDaywith106 <= 0 then 0 else t2.sumNakl - t2.summaRasprBegWith106 end else 0 end)) as sumProsr5_181_3000
+   , sum(case when t2.ProsrDaywith106 between 3001 and 10000 then 1 else 0               end *(case when t2.dSopr <= #date(01,08,2018) then case when t2.ProsrDaywith106 <= 0 then 0 else t2.sumNakl - t2.summaRasprBegWith106 end else 0 end)) as sumProsr6_3000_
+   , sum(0) as sumProsr7
+   , Sum(case when t2.ProsrDaywith106 > 10000                then 1 else 0               end *(case when t2.dSopr <= #date(01,08,2018) then case when t2.ProsrDaywith106 <= 0 then 0 else t2.sumNakl - t2.summaRasprBegWith106 end else 0 end)) as sumProsrWithOutDateOpl
+//   ,t2.ProsrDay
+//   , t2.summaRasprBeg
+//   , t2.nsopr
+//   , t2.dSopr
+//   , t2.NaklOprDate
+//   , t2.PlatPlanDate
+//   , t2.ProsrDaywith106
+//   , t2.ProsrDay
+from
+(
+select         t.summaRasprBegWith106
+             , sum(case when KatSopr.dsopr <= #date(01,08,2018) then SpNakl.KolFact * SpNakl.price + case when KatSopr.VhodNal <> 1 then SpNakl.SumNDS else 0 end else 0 end) as sumNakl
+             , t.summaRasprBeg
+             , t.orgname
+             , t.nsopr
+             , t.dSopr
+             , t.cNakl
+             , t.cOrg
+             , t.NaklOprDate
+             , t.PlatPlanDate
+             , t.ProsrDaywith106
+             , t.ProsrDay
+from    katsopr
+left join (
+select
+               Sum(case when KatSopr.vidsopr = 106
+                    then (SpNakl.KolFact * SpNakl.price + case when KatSopr.VhodNal <> 1 then SpNakl.SumNDS else 0 end )
+                    else case when coalesce(SoprH.DatOb,0) < #date(01,08,2018) then Coalesce(RasprSum.Summa,0) else 0
+                       end end
+                  ) as summaRasprBegWith106
+             , sum(case when coalesce(SoprH.DatOb,0) < #date(01,08,2018) then Coalesce(RasprSum.Summa,0) else 0 end) as summaRasprBeg
+             , org.name as orgname
+             , katsopr.nsopr as nsopr
+             , katsopr.dsopr as dSopr
+             , KatSopr.Nrec as cNakl
+             , KatSopr.cOrg as cOrg
+             , KatSopr.dOpr as NaklOprDate
+             , coalesce(StD.DOPLMAX,0)  as PlatPlanDate
+             //, case when KatSopr.vidsopr = 106 then -1 else d_todays(#date1) -  d_todays(Coalesce(StD.DOPLMAX,0) ) end  as ProsrDay
+             , max(d_todays(#date(01,08,2018)) -  d_todays(case when KatSopr.vidsopr = 106 then #date(01,08,2018)
+                                                                when Coalesce(StD.DOPLMAX,0) = 0 then (case when coalesce(BASEDOC.KOLDN,0) = 0 then #date(01,01,1950) else d_fromdays(d_todays(BaseDoc.dDoc) + BASEDOC.KOLDN) end)
+                                                                else Coalesce(StD.DOPLMAX,0) end) ) as ProsrDaywith106
+             , max(d_todays(#date(01,08,2018)) -  d_todays(case when Coalesce(StD.DOPLMAX,0) = 0 then #date(01,08,2018) else Coalesce(StD.DOPLMAX,0) end) ) as ProsrDay
+             , max(case when coalesce(BASEDOC.KOLDN,0) = 0 then #date(01,08,2018) - 1 else BaseDoc.dDoc + d_fromdays(BASEDOC.KOLDN) end) as f1
+             //, SoprH.DatOb  as PlatFactDate
+        from KatSopr
+               left join spsopr SpNakl on (SpNakl.cSopr = KatSopr.Nrec)
+               left join SpSopHoz RasprSum on (RasprSum.cSpSopr = SpNakl.nrec)
+               left join SoprHoz SoprH on SoprH.nRec = RasprSum.cSoprHoz
+               left join StepDoc StD on StD.nrec = KatSopr.cStepDoc // STEPDOC.DOPLMAX
+               left join basedoc on BASEDOC.nrec = StD.cBasedoc
+               join katorg org on org.nrec = katsopr.corg
+        where KatSopr.dsopr >= #date(01,01,2013) //and KatSopr.dsopr < #date(01,08,2018)
+          and org.ISARCH = 0
+         and (  KatSopr.tipsopr =2 // оставляем толь сбыт -
+             or KatSopr.vidsopr = 106)
+
+        group by KatSopr.Nrec, KatSopr.cOrg , KatSopr.dOpr, coalesce(StD.DOPLMAX,0)// SoprH.DatOb,
+             , org.name
+             , katsopr.nsopr
+             , katsopr.dsopr
+) t  on  t.cNakl = katsopr.nrec
+ left join spsopr SpNakl on (SpNakl.cSopr = KatSopr.Nrec)
+where          (KatSopr.tipsopr =2 // оставляем только сбыт -
+             or KatSopr.vidsopr = 106)
+group by t.summaRasprBegWith106
+             , t.summaRasprBeg
+             , t.orgname
+             , t.nsopr
+             , t.dSopr
+             , t.cNakl
+             , t.cOrg
+             , t.NaklOprDate
+             , t.PlatPlanDate
+             , t.ProsrDaywith106
+             , t.ProsrDay
+) t2
+group by t2.orgname, t2.cOrg
+) t3
+
+// where round(t2.sumNakl - t2.summaRasprBegWith106,2) <> 0
+ WHERE t3.ORGNAME = '"Агроторг"'
+//to dbf c:\temp\_\testodznakl20180101.dbf
+;

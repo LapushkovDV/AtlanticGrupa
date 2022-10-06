@@ -1,0 +1,36 @@
+ Create table Atl_EMAIL "Для отложенной рассылки по EMAIL"
+  With table_Code = 31644
+  With replace
+  With TableOptions Branched
+  (
+      NREC        : Comp "Номер записи"
+    , CUSER       : ref(x$users) "ссылка на пользователя"
+    , PREPAREDATE : Date "Дата подготовки для отправки"
+    , PREPARETIME : Time "Время подготовки для отправки"
+    , SENDDATE    : Date "Дата подготовки для отправки"
+    , SENDTIME    : Time "Время подготовки для отправки"
+    , EMAIL       : String "Email"
+    , EMAIL_COPY  : String "Email копия"
+    , EMAIL_CC    : String "Email скрытая копия"
+    , SUBJECT     : String "Тема"
+    , ATTACH1     : String "Путь на файл 1"
+    , ATTACH2     : String "Путь на файл 2"
+    , ATTACH3     : String "Путь на файл 3"
+    , ATTACH4     : String "Путь на файл 4"
+    , ATTACH5     : String "Путь на файл 5"
+    , FIO         : String "Фио отправителя"
+    , DESCR       : String "Дескриптор пользователя"
+    , DESGR       : String "Группа Дескрипторов пользователя"
+    , STATUS      : Word "0-prepare,1-to send,2-ok,3-err"
+    , LBODY       : LVar "Текст письма"
+  )
+  With index
+  (
+     Atl_EMAIL_i01 = nRec(Unique, Surrogate, Journal)
+   , Atl_EMAIL_i02 = STATUS
+   , Atl_EMAIL_i03 = STATUS + PREPAREDATE + PREPARETIME
+   , Atl_EMAIL_i04 = STATUS + SENDDATE + SENDTIME
+   , Atl_EMAIL_i05 = PREPAREDATE + PREPARETIME
+   , Atl_EMAIL_i06 = SENDDATE + SENDTIME
+  );
+

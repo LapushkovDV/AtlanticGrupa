@@ -1,0 +1,8 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента
+
+#ifdef ComponentVersion
+#component "F_KATKOD"
+#end
+
+VipInterface KatKod Licensed(Free) Parameters(parIntMode, parTipDk: word; parRetRec, parOrg1, parOrg2, parNotView: comp);

@@ -1,0 +1,29 @@
+#ifdef ComponentVersion
+#component "z_calendar"
+#end
+
+vipinterface Calendar licensed(free) parameters(prrec: comp);
+vipinterface CalendarEdit licensed(free) parameters(prnrec: comp);
+vipinterface GetMonthYear licensed(free) parameters(pTip, pGGmin, pGGmax, pMM1, pGG1, pMM2, pGG2: word);
+vipinterface Grafik licensed(free) parameters(prrec: comp; InterfaceType: word);
+vipinterface GrafikEdit licensed(free) parameters(prrec: comp; InterfaceType: word);
+vipinterface GRAFEXTLEVEL licensed(free) parameters(cMarkert: longint);
+vipinterface GrafikFR  licensed (free);
+vipinterface Make_tree licensed(free);
+vipinterface See_tree licensed(free) parameters(Markert: longint);
+vipinterface OtklClnd licensed(free) parameters(prrec, prretrec: comp);
+vipinterface OtklGraf licensed(free) parameters(prrec, prretrec: comp);
+vipinterface SpCalend licensed(free) parameters(prrec, prretrec: comp);
+vipinterface SpWorkSel licensed(free) parameters(crec, prrec: comp);
+vipinterface ShowGrafikFR licensed (free);
+vipinterface WorkPattern licensed(free) parameters(prrec: comp);
+vipinterface Prazdnik licensed(free) parameters(prrec: comp; i_year, i_month: integer);
+
+vipinterface klrejim licensed(free) parameters(p1: comp);
+vipinterface Klndr licensed(free) parameters(prrejim: word);
+vipinterface klndrmon licensed(free) parameters(OperatingMode: word; ScheduleYear: integer; ScheduleMonth: byte; p2: double);
+vipinterface pickrej licensed(free) parameters(Rejim: word);
+vipinterface ExternalClassification licensed(free) parameters(TableCode: word; Object: comp);
+vipinterface PrintGraphics licensed(free) parameters(Marker: longint; CurYear: integer);
+vipinterface GrRabMon licensed(free) parameters(OperatingMode: word; ScheduleYear: integer; ScheduleMonth: integer);
+vipinterface PickManyRej  licensed (free) parameters(OperatingMode: word; Markers: longint; Flags: word);

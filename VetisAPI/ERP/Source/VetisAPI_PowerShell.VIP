@@ -1,0 +1,369 @@
+#doc
+Vetis API используя POWERSHELL
+#end
+Interface VetisAPI_PowerShell 'API используя POWERSHELL' doaccept, Gray;
+
+Table struct tDiscrepancy
+(
+  guid : string
+, error : string
+)
+with index
+(
+ ind0 = guid
+)
+;
+
+
+Table struct tStockGUIDUUID
+(
+  guid : string
+, uuid : string
+, error : string
+, UNITGUID : string
+)
+with index
+(
+ ind0 = guid
+)
+;
+
+Table Struct tBissnEntity
+(
+   uuid        : string
+ , guid        : string
+ , active      : string
+ , name        : string
+ , Fullname    : string
+ , inn         : string
+ , kpp         : string
+ , ogrn        : string
+ , addressView : string
+)
+with index
+(
+ ind0 = uuid
+)
+;
+table struct tServerBase
+(
+  ServerName : string
+ ,DBName     : string
+)
+with index
+(
+ ind0 = ServerName
+)
+;
+Table struct ttmpSpKau
+(
+   cspKau  : comp
+ , Guid    : string
+ , name    : string
+ , active  : string
+)
+with index
+(
+ ind0 = cspKau
+)
+;
+table struct tCurRQSTAPI
+(
+ nrow : longint
+)
+with index
+ (
+  ind0 = nrow
+ )
+;
+table struct tProductGUID
+(
+ guid : string
+)
+with index
+(
+ ind0 = guid
+)
+;
+var      _VetisDiscrepancy : VetisDiscrepancy ;
+Create view
+ var _Parameter : string;
+     _ListName : string = '';
+     _MylogFile : string;
+     _rqstError : string;
+
+from
+  ATL_VETIS_REQUEST
+, ATL_VETISRQSTSP
+, ATL_VETISPRODITEM
+, ATL_RQSTAPIVALUES
+, KATOTPED
+, KATMC
+, SpKau
+, tBissnEntity
+, ttmpSpKau
+, tServerBase
+, tCurRQSTAPI
+, tProductGUID
+, tStockGUIDUUID
+, tDiscrepancy
+, ATL_RQSTAPIVALUES ATL_RQSTAPIVALUES_DocList
+, ATL_RQSTAPIVALUES ATL_RQSTAPIVALUES_Func
+, ATL_Vetis_DocList
+, ATL_Vetis_DocList ATL_Vetis_DocList2
+, ATL_Vetis_DocSpRefD
+, ATL_Vetis_DocSpRefSt
+, ATL_Vetis_DocSpLevel
+;
+Parameters
+ _Parameter
+ ;
+File PS1Body;
+Function GetNrecATL_VETISRQST(_APPLICATIONID,_REQUESTSTATUS : string): comp; Forward;
+Procedure InsertATL_VETISRQSTSP; Forward;
+Procedure InsertATL_BissnEntity; Forward;
+Procedure InsertATL_VETISPRODITEM; Forward;
+
+Procedure FillInsertTables; forward;
+Procedure fillrecArrayByTypeTable; forward;
+Procedure fillrecArray_GetStockList; forward;
+procedure fillrecArray_GetBusinessEntity; forward;
+procedure fillrecArray_GetProductList; forward;
+procedure fillrecArray_GetUnitList; forward;
+procedure fillrecArray_GetProductType; forward;
+procedure fillrecArray_ResolveDiscrepancy; forward;
+
+Function GetNrecATL_VETISRQST(_APPLICATIONID,_REQUESTSTATUS : string): comp;
+{
+  if getfirst ATL_VETIS_REQUEST where (( _APPLICATIONID ==ATL_VETIS_REQUEST.APPLICATIONID)) <> tsOk
+   {
+    Insert ATL_VETIS_REQUEST set
+     ATL_VETIS_REQUEST.name          := 'mercury-g2b.service'
+     ,ATL_VETIS_REQUEST.REQUESTDATE   := cur_date
+     ,ATL_VETIS_REQUEST.REQUESTTIME   := Cur_time
+     ,ATL_VETIS_REQUEST.APPLICATIONID := _APPLICATIONID
+     ,ATL_VETIS_REQUEST.REQUESTSTATUS := _REQUESTSTATUS
+     ;
+   }
+  result := ATL_VETIS_REQUEST.nrec;
+}
+
+function curdatetimestr: string;
+{
+  result := datetostr(Cur_date,'YYYY-MM-DD') + ' ' + timeToStr(Cur_time,'HH:MM:SS') + ' ';
+}
+
+Procedure MyLog(_str : string);
+{
+  logstrtofile(_MylogFile,curdatetimestr + _str)
+}
+
+#include source\VetisAPI_PowerShell_OpenFileExcelSearchCells.vpp
+
+Function MysqlAddStr(var query_handle: longInt; add_query_str: string): longInt;
+{
+   Result:=sqlAddStr(query_handle, add_query_str);
+//уберем, т.к. подтормажтивает при частых выборках   MyLog(add_query_str);
+} //Function MysqlAddStr(var query_handle: longInt; add_query_str: string): longInt;
+
+Function GetCredentials: string;
+{
+  //Унести все в настройки модуля по обмену
+var _SQLUserName : string ='galaktikatasks';
+var _SQLPassword : string ='61!JuGa#34';
+var _trustedConn : boolean = false;
+
+ if _trustedConn
+  then result := 'Trusted_Connection=True'
+  else result := 'User Id='+_SQLUserName+';Password='+_SQLPassword;
+}
+Function GetConnString: string; // MSSQL ТОлько для него пока, на оракле нет у меня никого
+{
+ result := '';
+   var hstr : longint = 0;
+    delete all tServerBase;
+
+    MysqlAddStr(hstr, 'select ATL_GET_SERVERNAME() as ServerName, ATL_GET_DB_NAME() as DBName');
+
+
+    var objQuery: iQuery;
+      objQuery := queryManager.createQuery(hstr);
+    if objQuery.execute.errorCode != tsOk
+     then {
+           MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+           exit;
+          }
+        else
+        {sqlCopyInto(objQuery, tntServerBase, true);
+        }
+
+ if getfirst tServerBase = tsOK
+  {
+    Result := 'Server='+tServerBase.ServerNAme+';Database='+tServerBase.DBName+';'+GetCredentials+';'
+ }
+}
+
+Function CheckValuesFromAPI(_OleGenerateGUID: string): boolean;
+{
+ result := true;
+   var hstr : longint = 0;
+    delete all tServerBase;
+  StartNewVisual(vtRotateVisual, vfTimer, 'Подсчет количества полученных строк', 1);
+    MysqlAddStr(hstr, 'select distinct    ');
+    MysqlAddStr(hstr, 'nrow               ');
+    MysqlAddStr(hstr, 'from ATL_RQSTAPIVALUES ');
+    MysqlAddStr(hstr, 'where rqst_guid = '''+_OleGenerateGUID+''' ');
+
+    delete all tCurRQSTAPI;
+    var objQuery: iQuery;
+      objQuery := queryManager.createQuery(hstr);
+    if objQuery.execute.errorCode != tsOk
+     then {
+           MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+           exit;
+          }
+        else
+        {sqlCopyInto(objQuery, tntCurRQSTAPI, true);
+        }
+  stopvisual;
+  StartNewVisual(vtIndicatorVisual, vfTimer, 'Разбор полученных данных', recordsintable(tntCurRQSTAPI));
+  _loop tCurRQSTAPI
+   {
+     nextvisual;
+     _loop ATL_RQSTAPIVALUES where ((_OleGenerateGUID == ATL_RQSTAPIVALUES.rqst_guid and tCurRQSTAPI.nrow == ATL_RQSTAPIVALUES.nrow))
+      {
+       var _i: byte;
+       for(_i := 1; _I <= getLimit(_recArray); _i++)
+         {
+          if _recArray[_i].def = ATL_RQSTAPIVALUES.COLUMNNAME
+           {
+//    logstrtofile(_myLogFile,'ATL_RQSTAPIVALUES.rqst_guid='+ATL_RQSTAPIVALUES.rqst_guid);
+            _recArray[_i].value := ATL_RQSTAPIVALUES.VALUE;
+            break;
+           }
+         }
+      }
+    FillInsertTables;
+   }
+  delete  ATL_RQSTAPIVALUES where ((_OleGenerateGUID == ATL_RQSTAPIVALUES.rqst_guid));
+  stopvisual;
+}
+
+procedure MyWriteLN(_s: string);
+{
+  PS1Body.writeLN(Oem2Ansi(rtrim(_s)));
+}
+#declare BodyProcedureGetRqst(parameter,par1)
+  result := false;
+  set _Parameter := '#parameter';
+  _ListName := _Parameter;
+  var aDosCode, aErrorCode: integer;
+  var _psFile  : string = GetStringParameter('Files','OutputFilesDirectory',0)+ '\VetisAPI_'+_Parameter+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.ps1' ;
+  _psFile := replace(_psFile,'\\','\');
+  _MylogFile := GetStringParameter('Files','OutputFilesDirectory',0)+ '\VetisAPI_'+_Parameter+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.log' ;
+  _MylogFile := replace(_MylogFile,'\\','\');
+  var _ReportPath :string = GetStringParameter('Files','OutputFilesDirectory',0);
+  deletefile(_MylogFile);
+  PS1Body.openfile(_psFile,stCreate);
+  var _ExcelFileOut : string = _ReportPath+'\vetis_'+_Parameter+'_'+datetoStr(cur_date,'YYYYMMDD_')+timetostr(cur_time,'HHMMSS')+'.xlsx';
+  _ExcelFileOut := replace(_ExcelFileOut,'\\','\');
+  var _OleGenerateGUID : string = OleGenerateGUID;
+  MyLog('Заполняем файл POWERSHELL');
+  var _emptyValue : string;
+  _emptyValue := '';
+  FillPS1_VetisAPI_#parameter(_ExcelFileOut,_OleGenerateGUID,#par1);
+  PS1Body.Close;
+  MyLog('Запускаем POWERSHELL');
+
+  aDosCode:= ExecProgram('powershell.exe','-executionpolicy RemoteSigned -file "'+_psFile+'"', 'Vetis API. Запрос ' + _Parameter, pfKeepWindow, aErrorCode);
+  MyLog('Закрыли POWERSHELL');
+  if aDosCode <> 0 then {
+     //Message('Программа не запустилась !', mfError);
+     MyLog('Программа не запустилась !');
+     exit;
+  } else   {
+    if aErrorCode <> 0 then
+     {
+     //Message('Ошибка выполнения !', mfError);
+     MyLog('Ошибка выполнения !');
+     exit;
+     }
+   }
+   // Для отладки можно не удалать, но в проакшне надо - там пароль
+//   DeleteFile(_psFile);
+/*
+   if not ExistFile(_ExcelFileOut) then
+    {
+     MyLog('Ошибки при запросе API');
+     exit;
+    }
+*/
+    MyLog('Данные получены. Начинаем их обработку');
+    fillrecArrayByTypeTable;
+// result :=  CheckFileFillValues(_ExcelFileOut) ; в фоне не умеет работать с EXCEL
+   result := CheckValuesFromAPI(_OleGenerateGUID);
+
+    MyLog('Обработка закончена. Завершаем работу');
+
+#end
+
+#include VetisAPI_PowerShell_GetRequestToAPIVetis_GetProductList.Vpp
+#include VetisAPI_PowerShell_GetRequestToAPIVetis_GetStockList.Vpp
+#include VetisAPI_PowerShell_GetRequestToAPIVetis_GetBusinessEntity.Vpp
+#include VetisAPI_PowerShell_GetRequestToAPIVetis_GetUnitList.Vpp
+#include VetisAPI_PowerShell_GetRequestToAPIVetis_GetProductType.Vpp
+#include VetisAPI_PowerShell_GetRequestToAPIVetis_GetSubProductList.Vpp
+#include VetisAPI_PowerShell_GetRequestToAPIVetis_GETSTOCK_UUID_By_GUID.vpp
+#include VetisAPI_PowerShell_GetRequestToAPIVetis_ResolveDiscrepancy.vpp
+#include VetisAPI_PowerShell_GetRequestToAPIVetis_getStockEntryVersionListRequest.Vpp
+#include VetisAPI_PowerShell_GetRequestToAPIVetis_getDocumentList.Vpp
+
+Procedure fillrecArrayByTypeTable;
+{
+  case _Parameter of
+   'GetStockList'        : fillrecArray_GetStockList
+   'GetBusinessEntity'   : fillrecArray_GetBusinessEntity
+   'GetProductList'      : fillrecArray_GetProductList
+   'GetUnitList'         : fillrecArray_GetUnitList
+   'GetProductType'      : fillrecArray_GetProductType
+   'GetSubProductList'   : fillrecArray_GetSubProductList
+   'GetStockUUIDbyGUID'  : fillrecArray_GetStockUUIDbyGUID
+   'ResolveDiscrepancy'  : fillrecArray_ResolveDiscrepancy;
+   'GetDocumentList'     : fillrecArray_GetDocumentList;
+  end;
+}
+
+Procedure FillInsertTables;
+{
+  case _Parameter of
+    'GetStockList'       : InsertATL_VETISRQSTSP;
+    'GetBusinessEntity'  : InsertATL_BissnEntity;
+    'GetProductList'     : InsertATL_VETISPRODITEM;
+    'GetUnitList'        : Insert_UnitList;
+    'GetProductType'     : Insert_ProductType;
+    'GetSubProductList'  : Insert_SubProduct;
+    'GetStockUUIDbyGUID' : Insert_GetStockUUIDbyGUID;
+    'ResolveDiscrepancy' : Insert_ResolveDiscrepancy;
+    'GetDocumentList'    : Insert_GetDocumentList;
+
+  end;
+} // PROCEdURE FillInsertTableeNaklSFO(_log: string);
+
+HandleEvent
+cmInit:
+{
+ _ListName := _Parameter;
+ case _Parameter of
+    'GetStockList'      : GetRequestToAPIVetis_GetStockList
+    'GetProductList'    : GetRequestToAPIVetis_GetProductList
+    'GetUnitList'       : GetRequestToAPIVetis_GetUnitList
+    'GetProductType'    : GetRequestToAPIVetis_GetProductType
+    'GetSubProductList' : GetRequestToAPIVetis_GetSubProductList('')
+    'GetDocumentList'   : GetRequestToAPIVetis_GetDocumentList(DateToStr(add_day(Cur_date,-17),'YYYY-MM-DD')+'/'+ DateToStr(Cur_date,'YYYY-MM-DD'))
+    else {
+      mylog('Значения параметра "' + _Parameter+'" нет у данного интерфейса')
+    }
+  end;
+}
+end;
+End. // Interface

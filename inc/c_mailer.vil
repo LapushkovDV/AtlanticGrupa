@@ -1,0 +1,18 @@
+// Галактика 8.00   2004г.
+// Описание экспортируемых интерфейсов компонента C_MAILER
+
+#ifdef ComponentVersion
+#component "C_MAILER"
+#end
+
+VipInterface ChooseModule licensed (FREE) Parameters(cChooseModule : comp);
+VipInterface ChooseSupService licensed(FREE) Parameters(cChooseService : comp);
+VipInterface SendMailToTechPodr licensed (FREE);
+VipInterface SystemInformationTab licensed (FREE);
+VipInterface MAILERTUNE licensed (FREE);
+
+#include IUserInformationTab.vih
+#include IGalMailer_Mailer.vih
+#include IGalMailer_MailMessage.vih
+#include IGalMailer_RecipientList.vih
+#include IGalMailer_FileDescList.vih

@@ -1,0 +1,20 @@
+// 8.0
+// Экспортируемые интерфейсы компоненты F_Txo
+
+#ifdef ComponentVersion
+#component "F_Txo"
+#end
+
+#include HozOpFlt.vpp
+
+#include GetHozOper.vih
+
+VipInterface GetHozOB         Licensed (Free) Parameters (myPlansNo : comp; myHozDoc : word; myNRecPick : comp);
+VipInterface GetHozOT         Licensed (Free) Parameters (myPlansNo : comp; myHozDoc, mySysNum : word; myNRecPick : comp);
+VipInterface GetMacros        Licensed (Free) Parameters (myTiDk, mySysOper : word; myPlanSch : comp; myMacros : string);
+VipInterface HozOperFlt       Licensed (Free) Parameters (Filter : THozOperFilter);
+VipInterface PickTableAttrNam Licensed (Free) Parameters (mrkTabs : LongInt; lCode : comp);
+VipInterface ProvMake         Licensed (B_HozOp) Parameters (parTiDk, parSysOper, parVidOper : word);
+VipInterface TXOFlt           Licensed (Free) Parameters (wTabbedDisable : word; lClusterDisabledField1, lClusterDisabledField2 : longint; TiDk, SysOper : word; strFilters : string);
+VipInterface TxoKatImpKau     Licensed (Free);
+VipInterface TxoBindTest      Licensed (Free);

@@ -1,0 +1,45 @@
+// Накладные на внутр. перемещение
+object 'L_SKLAD::SOPINMOV' : InterfaceWindow {
+
+  // Редактирование накладной на внутр. перемещение
+  object 'EDITSOPR' : InterfaceWindow {
+
+    // спецификация
+    object BRSPECIF1 : Browser {
+
+        object 'Field: KATMC.BARKOD2' : Column {
+          Original = False;
+          Visible = True;
+          Hidden = False;
+          Protect = True;
+          StatusCtx = 0;
+          Title = 'SAP Код';
+          FieldName = 'Field: KATMC.BARKOD2';
+          Index = 5;
+          DefaultWidth = 14;
+          ButtonType = 0;
+        } // 'Field: KATMC.BARKOD2' : Column
+
+    } // BRSPECIF1 : Browser
+
+  } // EDITSOPR : InterfaceWindow
+
+  object BRSELECTNAKL : Browser {
+
+    object 'Field: KATNAZNA.NAME' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Назначение';
+      FieldName = 'Field: KATNAZNA.NAME';
+      Index = 8;
+      DefaultWidth = 20;
+      ButtonType = 0;
+    } // 'Field: KATNAZNA.NAME' : Column
+
+  } // BRSELECTNAKL : Browser
+
+} // L_SKLAD::SOPINMOV : InterfaceWindow
+//-----------------------------------------------------------------------------

@@ -1,0 +1,40 @@
+// ╔═════════════════════════════════════════════════════════════════════╗
+// ║              Проект Галактика   (с) 1995, TOP SOFT Ltd.             ║
+// ║      Версия :    3.40                                               ║
+// ║      Разработал: Александр Крахотко                                 ║
+// ║      Назначение: Процедуры установки симафора для LIFO FIFO         ║
+// ║      Параметры:                                                     ║
+// ║      Изменения:                                                     ║
+// ╚═════════════════════════════════════════════════════════════════════╝
+function  SetTempTable ( const name: string ): word;
+  {
+  if (GetFirst ras_ord = tsOk)
+    {
+    if (Message(''#3'Пользователь "'+upcase(ras_ord.s_user)+'"'#13#3+
+                    'производит сейчас '+ras_ord.s_name+','#13#3+
+                    'которое начал '+string(ras_ord.s_date)+' в '+
+                        timeToStr(ras_ord.s_time,'HH:MM:SS')+''#13#3+
+                    'В это время для корректной работы Вам не рекомендуется '+
+                    'производить '+name+'.'#13#3+
+                    'ПРЕРВАТЬ ?', YesNo)=No)
+      SetTempTable := delete all ras_ord;
+    else
+      {
+      SetTempTable := cmCancel;
+      exit;
+      }
+    }
+  ras_ord.s_name := name;
+  ras_ord.s_user := UserName;
+  ras_ord.s_date := cur_Date;
+  set ras_ord.s_time := cur_Time;
+  SetTempTable := Insert current ras_ord;
+  }
+procedure DeleteTempTable;
+  {
+  if (delete all ras_ord <> tsOk)
+    Message(''#3'Не удалилась таблица семафора в методе LIFO/FIFO '#13#3+
+            'при следующем формировании либо удалении расходных ордеров '+
+            'Вы получите предупреждающее сообщение',warning+okbutton);
+  }
+

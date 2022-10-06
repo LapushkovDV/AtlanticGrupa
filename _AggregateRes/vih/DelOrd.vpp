@@ -1,0 +1,80 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Логистика
+// Удаление складских ордеров привязанных к ТЕКУЩЕЙ наладной в интерфейсе накладных
+//******************************************************************************
+// внимание! при удалении производится модификация SoprHoz
+// на эту таблицу должен быть наложен bounds
+
+#ifNdef _DELORD_VPP
+#define _DELORD_VPP
+
+//********************************************************************************
+#include LF_dooc.vpp
+#include MyFindPodr.vpp
+#include CheckTXO.vpp
+#ifNdef SOPRVAR_VPP
+var make_prih, make_rash: boolean; //в makemove.vpp и delOrd.vpp для внт.перемещ.
+#end
+
+//********************************************************************************
+// проверка удаления ордера
+Function CanDelOrd(mesPrmt: boolean): boolean;
+var
+  wMode: word;
+{
+#ifdef _s2o_
+  wMode := 1;
+#else
+  wMode := 0;
+#end
+
+  CanDelOrd := oMakeOrder.CanDelOrdEx(KatSopr.NRec, mesPrmt, True, wMode);
+}
+
+
+//********************************************************************************
+// Удаление ордера
+Function DeleteOrders(MesPrmt: boolean): boolean;
+var
+  wMode  : word; // пакетный или обычный режим
+  wParam : word; // дополнительный параметр
+{
+#ifdef _s2o_
+  wMode := 1;
+
+  if (wDPrice <> 0)
+    wMode := 2;
+#else
+  wMode := 0;
+#end
+
+  wParam := 0;
+
+#ifdef smetakoladd
+  wParam := wParam Or 1;
+#end
+#ifdef _USE_SERIAL_
+  wParam := wParam Or 2;
+#end
+#ifdef g_l_pr_vpp
+  wParam := wParam Or 4;
+#end
+#ifdef _BoxNeedAuto
+  if (bBoxNeedAuto)
+    wParam := wParam Or 8;
+#end
+#ifdef _prihod_
+  if (ProtParty = 1)
+    wParam := wParam Or 16;
+#end
+#ifdef __PAKET_VIP__
+  wParam := wParam Or 32;
+#end
+  DeleteOrders := oMakeOrder.DeleteOrders (KatSopr.NRec, MesPrmt, make_prih, make_rash, wMode, wParam);
+
+  ReReadrecord(#KatSopr);
+}
+#end //_DELORD_VPP
+
+//******************************************************************************

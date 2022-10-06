@@ -1,0 +1,13 @@
+
+#ifdef ComponentVersion
+#component "C_Corpo"
+#end
+
+VipInterface iCorpoDO_SellToBuy licensed (FREE) Parameters (markerBaseDoc : longint);
+VipInterface Corpo_Avizo        licensed (FREE) Parameters (plMark : longint);
+VipInterface Filial_Avizo       licensed (FREE);
+VipInterface InverSopr          licensed (FREE);
+VipInterface OrgFilial          licensed (FREE);
+
+VipInterface Corpo_Orders       licensed (FREE) Parameters (markerSpOrder : longint);
+VipInterface Corpo_Reserv       licensed (FREE);

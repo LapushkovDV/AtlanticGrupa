@@ -1,0 +1,67 @@
+Procedure FillPS1_CrptAPI_GetKituStatus(_OleGenerateGUID: string; _cis : string); {
+
+MyLog(sGetTune('USERTUNE.CRPT_PRJ.CryptoCrtf'));
+MyLog(GetTokenPath);
+MyWriteLN('[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12');
+MyWriteLN('$tokenPath = '''+GetTokenPath+''';                                                           ');
+MyWriteLN('$conStrinGal  = '''+GetConnString+''' ');
+MyWriteLN('$circuitserviceID= "CRPT_GetDocumentStatus"                                                                  ');
+MyWriteLN('$docOid = "'+_cis+'" ;                                                                                   ');
+MyWriteLN('Function Invoke-DatabaseQuery {                                                                              ');
+MyWriteLN('        [CmdletBinding()]                                                                                    ');
+MyWriteLN('        param (                                                                                              ');
+MyWriteLN('                [string]$connectionString,                                                                   ');
+MyWriteLN('                [string]$query,                                                                              ');
+MyWriteLN('                [switch]$isSQLServer                                                                         ');
+MyWriteLN('        )                                                                                                    ');
+MyWriteLN('        if ($isSQLServer) {                                                                                  ');
+MyWriteLN('                Write-Verbose ''in SQL Server mode''                                                         ');
+MyWriteLN('                $connection = New-Object -TypeName System.Data.SqlClient.SqlConnection                       ');
+MyWriteLN('        } else {                                                                                             ');
+MyWriteLN('                Write-Verbose ''in OleDB mode''                                                              ');
+MyWriteLN('                $connection = New-Object -TypeName System.Data.OleDb.OleDbConnection                         ');
+MyWriteLN('        }                                                                                                    ');
+MyWriteLN('        $connection.ConnectionString = $connectionString                                                     ');
+MyWriteLN('        $command = $connection.CreateCommand()                                                               ');
+MyWriteLN('        $command.CommandText = $query                                                                        ');
+MyWriteLN('        $connection.Open()                                                                                   ');
+MyWriteLN('        $command.ExecuteNonQuery()                                                                           ');
+MyWriteLN('        $connection.close()                                                                                  ');
+MyWriteLN('}                                                                                                            ');
+MyWriteLN('Function GetResponse() {                                                                                     ');
+MyWriteLN('    try {                                                                                                    ');
+MyWriteLN('        $token = Get-Content -Path $tokenPath                                                                ');
+MyWriteLN('        $headers = @{Authorization = "Bearer " + $token}                                                     ');
+MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/doc/$docOid/body?pg=water" -Headers $headers -ContentType "application/json;charset=UTF-8" -Method Get ');
+MyWriteLN('                                                                                                              ');
+MyWriteLN('        If ( $response.StatusCode -eq 200) {                                                                  ');
+MyWriteLN('          $responseObj = ConvertFrom-Json $response.Content;                                                  ');
+MyWriteLN('          Write-Host "Статус документа" $responseObj.number "=" $responseObj.status -Fore Green               ');
+MyWriteLN('                                                                                                              ');
+MyWriteLN('          $sqlQuery = ''update t$CRPT_Docs set f$docDateTime = ''''''+$responseObj.docDate+'''''',            ');
+MyWriteLN('                                               f$status      = ''''''+$responseObj.downloadStatus+'''''',     ');
+MyWriteLN('                                               f$statusDescr = ''''''+$responseObj.downloadDesc+'''''',       ');
+MyWriteLN('                                               f$sender      = ''''''+$responseObj.senderName+''''''          ');
+MyWriteLN('                                         where f$nrec        = dbo.toComp('')''                        ');
+MyWriteLN('                                                                                                              ');
+MyWriteLN('          $res = Invoke-DatabaseQuery -connectionString $conStrinGal -query $sqlQuery -isSQLServer            ');
+MyWriteLN('        }                                                                                                     ');
+MyWriteLN('                                                                                                              ');
+MyWriteLN('    } catch {                                                                                                 ');
+MyWriteLN('        if ($response.errorCode -eq 401) {                                                                    ');
+MyWriteLN('                                                                                                              ');
+MyWriteLN('        }                                                                                                     ');
+MyWriteLN('        Write-Host $_ -Fore Yellow                                                                            ');
+MyWriteLN('    }                                                                                                         ');
+MyWriteLN('}                                                                                                             ');
+MyWriteLN('GetResponse;                                                                                                  ');
+
+
+
+}
+
+
+Function GetRequestToAPIGetKituStatus(_cis: string) : boolean;
+{
+  #BodyProcedureGetRqst(GetKituStatus, _cis);
+}

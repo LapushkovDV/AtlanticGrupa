@@ -1,0 +1,240 @@
+#ifdef ComponentVersion
+#component "L_Rozn"
+#end
+
+!#include PrFltPrm.vih
+!#include rozprnbc.vih
+!#include rzCpyDoc.vih
+
+VipInterface ActInv
+  licensed
+  (
+  #include ActInv.lih
+  )
+  Parameters
+  (
+    TypeSopr :word;
+    pNrec :comp
+  );
+
+VipInterface ActInvent
+  licensed
+  (
+  #include ActInvent.lih
+  )
+  Parameters
+  (
+    TypeSopr :word;
+    pNrec :comp;
+    TypePodr :word
+  );
+
+VipInterface ArhKUTMC
+  licensed (rozn)
+  Parameters
+  (
+    pNrec :comp
+  );
+
+VipInterface CheckRez      licensed (FREE) Parameters (kindofjob :word; P_cPodr, P_cMol :comp);
+VipInterface CompInvent    licensed (FREE) Parameters (cInv :comp);
+VipInterface CrPaketRzDoc  licensed (FREE) Parameters (_wTypeDoc: word);
+VipInterface DelOrdRz      licensed (FREE) Parameters (_crzDoc :comp; _bShowMsg :boolean; _bResult :boolean);
+VipInterface FiltGr        licensed (FREE) Parameters (cGroup_, csG_ :comp);
+VipInterface FiltRz        licensed (FREE) Parameters (DateOn_ :date; cPodr_, cMOL_, cGroup_, cOrg_ : comp; sDtOn_ : Date; csP_, csM_, csG_, csO_ :comp);
+VipInterface GetCredCard   licensed (FREE) parameters (cCard :comp);
+VipInterface GetPrihMC     licensed (FREE) Parameters (TypeMC, FPodr, FMOL, FOrg :comp; Input_Return :word);
+VipInterface GetRashMC     licensed (FREE) Parameters (FPodr, FMOL, pNRec :comp);
+VipInterface GetRzMC       licensed (FREE) Parameters (DateDoc :date; csP, csM, csO :comp; ZeroOst :boolean);
+VipInterface GetRzMC_2     licensed (FREE) Parameters (DateDoc :date; csP, csM, csO :comp; ZeroOst :boolean);
+VipInterface GetRZOSN      licensed (FREE) Parameters (p1 :comp);
+VipInterface GetSomeCredCard licensed (FREE);
+VipInterface GetSotrudDBF    licensed (FREE) Parameters (nTab, FIO :string);
+VipInterface GetTarrir     licensed (FREE) Parameters (nRecPodr :comp);
+VipInterface IerRepKut     licensed (FREE) parameters (ReportType :word);
+VipInterface IerRepSetUp   licensed (FREE);
+VipInterface imGapRep      licensed (FREE);
+VipInterface ItogNDSRz     licensed (FREE);
+VipInterface itorg3        licensed (FREE);
+VipInterface COUNTSALROZN  licensed (FREE);
+vipinterface GroupsMCfix   licensed (free) Parameters (UserToAllowAccess :comp);
+vipinterface DepartmentGroupsMC licensed (FREE) parameters(Options: word; Marks: longint);
+
+VipInterface ItogRozn
+  licensed
+  (
+  #include ItogRozn.lih
+  )
+  Parameters
+  (
+    pNrec, SetPodr, SetMol, SetCred, SetVal :comp;
+    Regim :double
+  );
+
+VipInterface KatKoffEU licensed (FREE) Parameters (forKatMC :COMP
+#ifdef GAL7_1
+  ; pRezim : Word
+#end
+);
+VipInterface KatRzOSN licensed (FREE) Parameters (p1 :comp);
+
+VipInterface KutMC
+  licensed
+  (
+  #include KutMC.lih
+  )
+  Parameters
+  (
+    pNrec :comp; wTypePrihPrm :word; coSoprPrm :comp
+  );
+
+VipInterface KutOper  licensed (FREE);
+
+VipInterface KutReturn
+  licensed
+  (
+  #include KutReturn.lih
+  )
+  Parameters
+  (
+    pNrec :comp
+  );
+
+VipInterface KutReturnOrg
+  licensed
+  (
+  #include KutReturnOrg.lih
+  )
+  Parameters
+  (
+    pNrec :comp
+  );
+
+VipInterface KutReturnPodr
+  licensed
+  (
+  #include KutReturnPodr.lih
+  )
+  Parameters
+  (
+    pNrec :comp
+  );
+
+VipInterface KutSopr licensed (FREE) Parameters (TypeSopr :word; pNrec :comp);
+
+VipInterface KutSoprMove
+  licensed
+  (
+  #include KutSoprMove.lih
+  )
+  Parameters
+  (
+    pNrec :comp
+  );
+
+VipInterface KutSpis
+  licensed
+  (
+  #include KutSpis.lih
+  )
+  Parameters
+  (
+    pNrec :comp; AutoRunMode :word;
+    TypeOfLeft :string
+  );
+
+VipInterface ListInvent   licensed (FREE) Parameters (FPodr, FMol :comp; dDate :date; GetNastr :boolean);
+VipInterface MakeAktSpis  licensed (FREE) Parameters (nTable :string; pNrec :comp; prAZS :boolean);
+VipInterface Print_TN2_RZ licensed (FREE) Parameters (param_sopr :comp; PrReestr :boolean);
+VipInterface Print_Zakaz  licensed (FREE) Parameters (_begdate,  _enddate :date;  DayFore,  period, _sort :word; _Filter :longint; formDO :word; eps :double; discr, met, Algoritm :word; Sezon :double; _cPost :comp);
+VipInterface PrnRzTTN     licensed (FREE) Parameters (pNRec: comp; MarkerNZ: longint);
+VipInterface Prot_Zakaz   licensed (FREE);
+
+VipInterface ReestrRT
+  licensed (rozn)
+  Parameters
+  (
+    TypeSopr :word;
+    pNrec :comp
+  );
+
+VipInterface RozMCReports
+  licensed (rozn)
+  Parameters
+  (
+    TypeReport :word
+  );
+
+VipInterface RozReports
+  licensed (rozn)
+  Parameters
+  (
+    TypeReport :word
+  );
+
+VipInterface RozReportsFR licensed (FREE) Parameters (TypeReport :word);
+
+VipInterface RtRepBS
+  licensed (rozn)
+  Parameters
+  (
+    zp :word
+  );
+
+
+VipInterface rzNakSel
+  licensed
+  (
+  #include rzNakSel.lih
+  )
+  Parameters
+  (
+    pNrec :comp
+  );
+
+VipInterface rzTovRep
+  licensed (rozn);
+
+VipInterface rzMakeOrd     licensed (FREE) Parameters (_crzDoc: comp; _wResult: word);
+VipInterface selectedPrih  licensed (FREE) Parameters (cMC_ :comp; wdate :date);
+VipInterface SelectPrnMC   licensed (FREE) Parameters (v_picked_1, v_picked_2 :word; FlAdd :boolean);
+VipInterface SelectRptType licensed (FREE) Parameters (_wTypeRpt: word);
+VipInterface selPrih   licensed (FREE) Parameters (cMC_ :comp; date_ :date; cPodr_, cMOL_, cOrg_, csPodr_, csMOL_ :comp; ZeroRemain, SellProtect :boolean);
+VipInterface SelRzMC   licensed (FREE) Parameters (csP_, csM_, csO_ :comp; ZeroRemain :boolean);
+VipInterface SmenAZS   licensed (FREE);
+VipInterface SpPropusk licensed (FREE);
+VipInterface rzTovPril licensed (FREE);
+
+VipInterface PrnRzPVP
+  licensed
+  (
+    FREE
+  )
+  Parameters
+  (
+    pNrec  : comp;
+    tipvoz : word
+  );
+
+VipInterface VSchetR
+  licensed
+  (
+  #include VSchetR.lih
+  )
+  Parameters
+  (
+    BaseNrec :comp
+  );
+
+VipInterface Zakaz licensed (FREE);
+
+VipInterface RepBeznalRezerves
+  licensed
+  (
+  #include RepBeznalRezerves.lih
+  );
+
+DIALOG ForInvOpAkt_rtf
+(
+KolStr_r : word
+);

@@ -1,0 +1,367 @@
+#Сначала надо импортировать модуль 1 раз для работы с EXCEL
+# Если есть инет, то запускаем оболочку от имени админа и запускаем
+# [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls12
+# Install-Module -Name ImportExcel
+# Set-Executionpolicy -Scope CurrentUser -ExecutionPolicy ByPass
+# Import-Module ImportExcel
+#
+# если нет на машине инета, то идем https://www.powershellgallery.com/packages/ImportExcel/7.1.0 и качаем вручную все
+#
+#name="test"
+#Set-Executionpolicy -Scope CurrentUser -ExecutionPolicy ByPass
+#Import-Module ImportExcel
+
+Get-ChildItem -Path $PSScriptRoot -Include @("*.ps1","*.log", "*.xls*") -Recurse | Where-Object -Property CreationTime -lt (Get-Date).AddDays(-8) | Remove-Item -Force -ErrorAction SilentlyContinue
+$circuitserviceID="mercury-g2b.service"
+$circuitendpointUrl="https://api2.vetrf.ru:8002/platform/services/2.0/ApplicationManagementService"
+$circuitlogin="atlanticgrupa-180401"
+$circuitpassword="Gi95LgXm4"
+$circuitapiKey="NTI5OTE1ZDUtNGY2MC00YzZmLTkxNjktYmNkY2ViZTg2Y2YzZmRiYTdhZWYtMjE4YS0xMWUyLWE2OWItYjQ5OWJhYmFlN2Vh"
+$circuitissureId="fdba7aef-218a-11e2-a69b-b499babae7ea"
+$circuitsysLogin="topolov_ns_190626"
+$circuitenterpriseGuid="a251c4dd-3b79-4088-9787-51c77bc7ab71"
+$circuitbusinessEntityGuid ="fdba7aef-218a-11e2-a69b-b499babae7ea"
+
+$circuitCountTry           = 150
+$circuitPause              = 2
+
+$ReportPath = "D:\_\ATL\VetisAPI\ERP\dsk\out\vetis_GetStockList_20200517_152105.xlsx"
+$fileLog =    "D:\_\ATL\VetisAPI\ERP\dsk\out\VetisAPI_GetStockList_20200517_152105.log"
+
+[String]$GlobError
+$GlobError = ""
+$RQST_GUID = "3B1AB31A-38EF-40CE-9F3A-24F9292A02F1"
+$conStrinGal  = 'Server=STEND-ERPDB\ERP;Database=ERPDB_STEND;Trusted_Connection=True;'
+function Invoke-DatabaseQuery {
+        [CmdletBinding()]
+        param (
+                [string]$connectionString,
+                [string]$query,
+                [switch]$isSQLServer
+        )
+        if ($isSQLServer) {
+                Write-Verbose 'in SQL Server mode'
+                $connection = New-Object -TypeName System.Data.SqlClient.SqlConnection
+        } else {
+                Write-Verbose 'in OleDB mode'
+                $connection = New-Object -TypeName System.Data.OleDb.OleDbConnection
+        }
+        $connection.ConnectionString = $connectionString
+        $command = $connection.CreateCommand()
+        $command.CommandText = $query
+        $connection.Open()
+        $command.ExecuteNonQuery()
+        $connection.close()
+}
+Function GetDataFromWeb([xml]$fnXML, [string]$URL)
+{
+
+$headers = @{}
+$headers.add("SOAPAction","GetResponse")
+$headers.add("Accept","text/xml")
+
+$credentials = New-Object System.Management.Automation.PSCredential -ArgumentList @($circuitlogin,(ConvertTo-SecureString -String $circuitpassword -AsPlainText -Force))
+   try
+    {
+     Invoke-WebRequest -URI $URL -Headers $headers -Method Post -Body $fnXML -ContentType 'text/xml;charset="utf-8"' -Credential $credentials -UseBasicParsing
+    }
+    catch
+    {
+      $GlobError = $error[0]
+      $null
+    }
+}
+Function GetResponse()
+{
+ $template = @'
+<soapenv:Envelope
+                    xmlns:dt="http://api.vetrf.ru/schema/cdm/dictionary/v2"
+                    xmlns:bs="http://api.vetrf.ru/schema/cdm/base"
+                    xmlns:merc="http://api.vetrf.ru/schema/cdm/mercury/g2b/applications/v2"
+                    xmlns:apldef="http://api.vetrf.ru/schema/cdm/application/ws-definitions"
+                    xmlns:apl="http://api.vetrf.ru/schema/cdm/application"
+                    xmlns:vd="http://api.vetrf.ru/schema/cdm/mercury/vet-document/v2"
+                    xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
+                <soapenv:Header/>
+                <soapenv:Body>
+                    <apldef:submitApplicationRequest>
+                      <apldef:apiKey>{0}</apldef:apiKey>
+                        <apl:application>
+                            <apl:serviceId>{1}</apl:serviceId>
+                            <apl:issuerId>{2}</apl:issuerId>
+                            <apl:issueDate>2019-12-12T09:00:00+03:00</apl:issueDate>
+                            <apl:data>
+                                <merc:getStockEntryListRequest>
+                                    <merc:localTransactionId>a10f03</merc:localTransactionId>
+                                    <merc:initiator>
+                                        <vd:login>{3}</vd:login>
+                                        </merc:initiator>
+                                        <dt:enterpriseGuid>{4}</dt:enterpriseGuid>
+                                        <merc:searchPattern>
+                                    <vd:blankFilter>NOT_BLANK</vd:blankFilter>
+                                    </merc:searchPattern>
+                                </merc:getStockEntryListRequest>
+                            </apl:data>
+                        </apl:application>
+                    </apldef:submitApplicationRequest>
+                </soapenv:Body>
+</soapenv:Envelope>
+'@
+
+#            webRequest.Credentials = credentials;
+
+$fnc_RqstBody = $template -f $circuitapiKey, $circuitserviceID, $circuitissureId, $circuitsysLogin, $circuitenterpriseGuid
+
+
+[xml] $XmlPrepare = $fnc_RqstBody
+
+$response = GetDataFromWeb -fnXML $XmlPrepare -URL $circuitendpointUrl
+
+    If ( ($response.StatusCode -eq 200) -and ($response -ne $null))
+    {
+     [xml] $XmlResponse = $response.content
+     #write-host $response.content
+     $XmlResponse.GetElementsByTagName('applicationId').Item(0).FirstChild.data
+    }
+    else
+    {
+     $null
+    }
+}
+
+Function RecieveApplRqst([string]$requestAplId)
+{
+$template=@'
+<SOAP-ENV:Envelope
+                    xmlns:dt="http://api.vetrf.ru/schema/cdm/dictionary/v2"
+                    xmlns:bs="http://api.vetrf.ru/schema/cdm/base"
+                    xmlns:merc="http://api.vetrf.ru/schema/cdm/mercury/g2b/applications/v2"
+                    xmlns:apldef="http://api.vetrf.ru/schema/cdm/application/ws-definitions"
+                    xmlns:apl="http://api.vetrf.ru/schema/cdm/application"
+                    xmlns:vd="http://api.vetrf.ru/schema/cdm/mercury/vet-document/v2"
+                    xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+                    xmlns:ws="http://api.vetrf.ru/schema/cdm/application/ws-definitions">
+                <SOAP-ENV:Header/>
+                <SOAP-ENV:Body>
+                    <ws:receiveApplicationResultRequest>
+                        <ws:apiKey>{0}</ws:apiKey>
+                        <ws:issuerId>{1}</ws:issuerId>
+                        <ws:applicationId>{2}</ws:applicationId>
+                    </ws:receiveApplicationResultRequest>
+                </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>
+'@
+#            webRequest.Credentials = credentials;
+
+$fnc_RqstBody = $template -f $circuitapiKey, $circuitissureId, $requestAplId
+  $isContinue = $true
+  $CountTRy = 0
+[xml] $XmlPrepare = $fnc_RqstBody
+[xml] $result = $null
+
+
+  while ($isContinue -eq $true)
+  {
+    Wait-Event -Timeout $circuitPause
+   $CountTRy = $CountTRy + 1
+   $response = GetDataFromWeb -fnXML $XmlPrepare -URL $circuitendpointUrl
+   [string] $currentStatus = ""
+    If ( ($response.StatusCode -eq 200) -and ($response -ne $null))
+    {
+     [xml] $XmlResponse = $response.content
+     $currentStatus = $XmlResponse.GetElementsByTagName('status').Item(0).FirstChild.data
+     if ($currentStatus -eq 'COMPLETED')
+      {
+       $isContinue = $false
+       $result = $XmlResponse
+       # write-host $response.content
+      }
+     if ($currentStatus -eq "")
+     {
+      $isContinue = $false
+      $result  = $null
+     }
+    }
+    else
+    {
+     $isContinue = $false
+     $result  = $null
+    }
+    #write-host "try number $CountTRy of $circuitCountTry | Curent state: $currentStatus"
+    write-host "Запрос стока. Прослушивание ответа API. Запрос $CountTRy из $circuitCountTry. Получен ответ: $currentStatus"  -ForegroundColor Green
+Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Запрос стока. Прослушивание ответа API. Запрос $CountTRy из $circuitCountTry. Получен ответ: $currentStatus") -Encoding Oem
+    if ($circuitCountTry -lt $CountTRy )
+     {
+      $isContinue = $false
+     }
+  }
+ $result
+}
+[xml]$stockEntryElementList = $null
+ write-host "Запрос стока. Отправка запроса"  -ForegroundColor Green
+    Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Запрос стока. Отправка запроса") -Encoding Oem
+$requestAplId = GetResponse
+if ($GlobError -eq '')
+{
+ write-host "Запрос стока. Прослушивание ответа API"  -ForegroundColor Green
+    Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Запрос стока. Прослушивание ответа API") -Encoding Oem
+ $stockEntryElementList = RecieveApplRqst($requestAplId)
+
+}
+else
+{
+ $GlobError
+}
+
+if ($stockEntryElementList -ne $null)
+{
+[System.Collections.ArrayList] $FinalReport = @();
+    #$stockEntryElementList.save("C:\Users\lapus\OneDrive\Desktop\_WORK\stockEntryElementList.xml")
+
+    #$stockEntryElementList.GetElementsByTagName('application')
+    #$stockEntryElementList.GetElementsByTagName('result')
+   write-host "Запрос стока. Разбор XML ответа"  -ForegroundColor Green
+    Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Запрос стока. Разбор XML ответа") -Encoding Oem
+
+#    $ns = new-object Xml.XmlNamespaceManager $stockEntryElementList.NameTable
+#    $ns.AddNamespace("soap", $stockEntryElementList.DocumentElement.NamespaceURI)
+#    $ns.AddNamespace("vd", $stockEntryElementList.DocumentElement.NamespaceURI)
+#    $ns.AddNamespace("ns1", $stockEntryElementList.DocumentElement.NamespaceURI)
+#    $ns.AddNamespace("dt", $stockEntryElementList.DocumentElement.NamespaceURI)
+#    $ns.AddNamespace("bs", $stockEntryElementList.DocumentElement.NamespaceURI)
+#    $stockEntryElementList.SelectNodes("//soap:Envelope/soap:Body", $ns)
+#    $stockEntryElementList.SelectNodes("//soap:Envelope/soap:Body/ns1:getStockEntryListResponse", $ns)
+
+
+    # пошлда спецификация
+    foreach($stockEntry in $stockEntryElementList.Envelope.Body.receiveApplicationResultResponse.application.result.getStockEntryListResponse.stockEntryList.stockEntry)
+    {
+    $item = New-Object PSObject
+    # для вставки в основную таблицу
+    $item | Add-Member -type NoteProperty -Name "APPLICATIONID" -Value $stockEntryElementList.Envelope.Body.receiveApplicationResultResponse.application.applicationId.ToString() #APPLICATIONID
+    $item | Add-Member -type NoteProperty -Name "REQUESTSTATUS" -Value $stockEntryElementList.Envelope.Body.receiveApplicationResultResponse.application.status.ToString()        #REQUESTSTATUS
+
+    #$stockEntry
+    #$stockEntry.batch
+    #$stockEntry.batch.product
+
+    $item | Add-Member -type NoteProperty -Name "GUID записи складского журнала" -value $stockEntry.Guid                    #
+    $item | Add-Member -type NoteProperty -Name "Номер записи складского журнала" -value $stockEntry.EntryNumber             # Номер записи складского журнала
+    $item | Add-Member -type NoteProperty -Name "Наименование продукции" -value $stockEntry.Batch.ProductItem.Name  # Наименование продукции
+    $item | Add-Member -type NoteProperty -Name "Объём в КГ" -value $stockEntry.Batch.Volume            # Объём в КГ
+    $item | Add-Member -type NoteProperty -Name "Статус версии записи журнала" -value $stockEntry.Status                  # Статус версии записи журнала
+    $item | Add-Member -type NoteProperty -Name "Дата создания записи журнала" -value $stockEntry.CreateDate              # Дата создания записи журнала
+    $item | Add-Member -type NoteProperty -Name "Дата изменения записи журнала" -value $stockEntry.UpdateDate              # Дата изменения записи журнала
+
+    $item | Add-Member -type NoteProperty -Name "Тип продукции" -value $stockEntry.Batch.ProductType          #Тип продукции
+    $item | Add-Member -type NoteProperty -Name "GUID продукции" -value $stockEntry.Batch.Product.Guid         # GUID продукции
+    $item | Add-Member -type NoteProperty -Name "GUID вида продукции" -value $stockEntry.Batch.SubProduct.Guid      # GUID вида продукции
+    $item | Add-Member -type NoteProperty -Name "GTIN" -value $stockEntry.Batch.ProductItem.GlobalID      # GTIN
+    $item | Add-Member -type NoteProperty -Name "BatchNumber" -value $stockEntry.Batch.BatchID             # BatchNumber
+    $item | Add-Member -type NoteProperty -Name "Страна происхождения партии GUID" -value $stockEntry.batch.origin.country.guid
+    $item | Add-Member -type NoteProperty -Name "Контрагент-производитель GUID" -value $stockEntry.batch.origin.producer.enterprise.guid
+    $item | Add-Member -type NoteProperty -Name "Контрагент-производитель роль" -value $stockEntry.batch.origin.producer.role
+    $item | Add-Member -type NoteProperty -Name "Является ли груз некачественным" -value $stockEntry.batch.lowGradeCargo.ToString()
+    $DataProizv = Get-Date -Year $stockEntry.Batch.DateOfProduction.FirstDate.year -Month $stockEntry.Batch.DateOfProduction.FirstDate.month -Day $stockEntry.Batch.DateOfProduction.FirstDate.day -Hour 0 -Minute 0 -Second 0
+
+    $item | Add-Member -type NoteProperty -Name "Дата производства" -value $($DataProizv.tostring("dd.MM.yyyy")) # Дата производства
+#    $item | Add-Member -type NoteProperty -Name ' -value $stockEntry.Batch.DateOfProduction.FirstDate.month
+#    $item | Add-Member -type NoteProperty -Name ' -value $stockEntry.Batch.DateOfProduction.FirstDate.day
+    $SrokGodn = Get-Date -Year $stockEntry.Batch.ExpiryDate.FirstDate.year -month $stockEntry.Batch.ExpiryDate.FirstDate.month -Day $stockEntry.Batch.ExpiryDate.FirstDate.day -Hour 0 -Minute 0 -Second 0
+    $item | Add-Member -type NoteProperty -Name "Срок годности" -value $($SrokGodn.tostring("dd.MM.yyyy"))              # "Срок годности"
+#    $item | Add-Member -type NoteProperty -Name ' -value $stockEntry.Batch.ExpiryDate.FirstDate.month
+#    $item | Add-Member -type NoteProperty -Name ' -value $stockEntry.Batch.ExpiryDate.FirstDate.day
+    #$stockEntry.Batch.Perishable
+    if ($stockEntry.Batch.Perishable -eq $true ) #"true" ? "Скоропортящаяся" : "Не скоропортящаяся";
+    {
+    $item | Add-Member -type NoteProperty -Name "Скоропорт" -value   "Скоропортящаяся"
+    }
+    else
+    {
+    $item | Add-Member -type NoteProperty -Name "Скоропорт" -value  "Не скоропортящаяся"
+    }
+
+     foreach ($Package in  $stockEntry.Batch.PackageList.Package)
+     {
+        Switch ($Package.level) {
+        2 {
+          $item | Add-Member -type NoteProperty -Name "Количество штук" -value $Package.Quantity # "Количество штук"
+          $item | Add-Member -type NoteProperty -Name "Уровень упаковки(2)" -value $Package.Level    # "Уровень упаковки(2)"
+          $item | Add-Member -type NoteProperty -Name "Идентификатор упаковки" -value $Package.PackingType.GlobalID # "Идентификатор упаковки"
+           foreach ($ProductMarks in $Package.ProductMarks)
+           {
+             #$ProductMarks
+             if ($ProductMarks.Class -eq "EAN13")
+              {
+               $item | Add-Member -type NoteProperty -Name "EAN13" -value $ProductMarks.'#text' #"EAN13"] = pm.Text
+              }
+           }
+         }
+        4 {
+
+          $item | Add-Member -type NoteProperty -Name "Количество коробок" -value $Package.Quantity # "Количество коробок"
+          $item | Add-Member -type NoteProperty -Name "Уровень упаковки(4)" -value $Package.Level    # "Уровень упаковки(4)"
+          $item | Add-Member -type NoteProperty -Name "Идентификатор упаковки по классификатору ЕК 013 - 2010(ред.1)" -value $Package.PackingType.GlobalID # "Идентификатор упаковки по классификатору ЕК 013 - 2010(ред.1)"
+           foreach ($ProductMarks in $Package.ProductMarks)
+           {
+             #$ProductMarks
+             if ($ProductMarks.Class -eq "EAN13")
+              {
+               $item | Add-Member -type NoteProperty -Name "EAN13(4)" -value $ProductMarks.'#text' #"EAN13(4)"
+              }
+             if ($ProductMarks.Class -eq "EAN128")
+              {
+               $item | Add-Member -type NoteProperty -Name "EAN128(4)" -value $ProductMarks.'#text' #"EAN128(4)"
+              }
+           }
+         }
+        Default {
+               $item | Add-Member -type NoteProperty -Name "Количество штук" -value " " # "Количество штук"
+               $item | Add-Member -type NoteProperty -Name "Уровень упаковки(2)" -value " "    # "Уровень упаковки(2)"
+               $item | Add-Member -type NoteProperty -Name "Идентификатор упаковки" -value " " # "Идентификатор упаковки"
+               $item | Add-Member -type NoteProperty -Name "EAN13" -value " " #"EAN13"] = pm.Text
+               $item | Add-Member -type NoteProperty -Name "Количество коробок" -value " " # "Количество коробок"
+               $item | Add-Member -type NoteProperty -Name "Уровень упаковки(4)" -value " "    # "Уровень упаковки(4)"
+               $item | Add-Member -type NoteProperty -Name "Идентификатор упаковки по классификатору ЕК 013 - 2010(ред.1)" -value " " # "Идентификатор упаковки по классификатору ЕК 013 - 2010(ред.1)"
+               $item | Add-Member -type NoteProperty -Name "EAN13(4)" -value " " #"EAN13(4)"
+               $item | Add-Member -type NoteProperty -Name "EAN128(4)" -value " " #"EAN128(4)"
+                }
+      }
+      }
+    write-host $stockEntry.Batch.ProductItem.Name -ForegroundColor Cyan
+    Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " "+ $stockEntry.Batch.ProductItem.Name) -Encoding Oem
+    $FinalReport +=,$item
+  }
+
+ write-host "Запрос стока. Выгрузка в EXCEL" -ForegroundColor Green
+ $ReportPath = $ReportPath
+ #$FinalReport | Export-Excel -Path $ReportPath -AutoSize -WorksheetName "GetStockList"
+
+ [int]$npp = 1
+ write-host "Запрос стока. Запись в буферную таблицу" -ForegroundColor Green
+ foreach($item in $FinalReport)
+  {
+   if([math]::Truncate($npp/7) -eq $npp/7)
+    {
+     write-host "Запись в буферную таблицу" $npp.tostring() " из " $FinalReport.Count.toString()  -ForegroundColor Cyan
+     Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Запись в буферную таблицу" +$npp.tostring() +" из " +$FinalReport.Count.toString()) -Encoding Oem
+    }
+   foreach( $property in $item.psobject.properties.name )
+    {
+      if ($item.$property -eq $null)
+        {
+         $itemproperty = ""
+        }
+        else
+         {
+          $itemproperty = $item.$property
+         }
+      $sqlQuery = 'Insert t$ATL_RQSTAPIVALUES (f$RQST_GUID, f$RSQT_PROVIDER, f$NROW, f$COLUMNNAME, f$VALUE)
+                   values ('''+$RQST_GUID+''','''+$circuitserviceID+''','+$npp.tostring()+','''+$property.Replace("'","''")+''','''+$itemproperty.Replace("'","''")+''')'
+
+      $res = Invoke-DatabaseQuery -connectionString $conStrinGal -query $sqlQuery -isSQLServer
+    }
+    $npp = $npp + 1
+  }
+ Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Запись в буферную таблицу" +$($npp-1).tostring() +" из " +$FinalReport.Count.toString()) -Encoding Oem
+}

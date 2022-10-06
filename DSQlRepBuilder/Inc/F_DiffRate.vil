@@ -1,0 +1,12 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_DiffRate
+
+#ifdef ComponentVersion
+#component "F_DiffRate"
+#end
+
+VipInterface CalcVal  Licensed (B_Finans) Parameters (myMode : word; BegDate, EndDate : date; myMakeProv : word; cFilVal : comp; myTiDkUser : word);
+VipInterface DeltaVal Licensed (B_Finans);
+VipInterface GetDelta Licensed (B_Finans) Parameters (DMParam : word; myPlansNo, cValut : comp; mySchet : tSchet3; PickOrMarker : word);
+VipInterface Valut    Licensed (B_Finans) Parameters (DMParam : word; cGetRec : comp);
+

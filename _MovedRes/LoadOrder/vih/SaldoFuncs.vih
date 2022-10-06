@@ -1,0 +1,46 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 8.10 - Целевой учет запасов
+// Функции для целевого учета
+//------------------------------------------------------------------------------
+
+#ifNdef __SaldoFuncs_vih__
+#define __SaldoFuncs_vih__
+
+#component "L_SaldoMTR"
+
+#doc
+Расчет сальдовых остатков
+#end
+
+ObjInterface OSaldoFuncs;
+
+#doc
+Расчет сальдовых остатков
+#end
+Function Store_run_new(datecalc :date;   // дата рассчета
+                         bSkl      // складские остатки SP=0
+                       , bUPL      // УПЛ  остатки SP=1
+                       , bRem      // ремонтные  остатки SP=2
+                       , bUks      // УКС  остатки SP=3
+                         : boolean;
+                         coMc      // фильтр по МЦ
+                       , coPodr    // фильтр по складу
+                       , coMol     // фильтр по МОЛ
+                       , coParty   // фильтр по партии
+                         : comp;
+                         bNeedMTR  // выгружать остатки по МТР
+                         : boolean;
+                         cTune     // фильтр по ЦУ
+                       , cObj      // фильтр по объекту
+                         : comp;
+                         bNGrPodr  // группировать по складам
+                       , bNGrMOL   // группировать по МОЛ
+                       , bNGrParty
+                         : boolean ) : boolean;
+end;
+
+//******************************************************************************
+VipInterface SaldoFuncs implements OSaldoFuncs licensed (FREE);
+
+#end // #define __SaldoFuncs_vih__

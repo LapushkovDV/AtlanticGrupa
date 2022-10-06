@@ -1,0 +1,53 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 7.12 - Общие функции
+// Объект с функциями модификации текущих остатков
+//******************************************************************************
+
+// для использования необходимо
+// 1) описать переменную fTekRun при помощи #include tekrun.var
+// 2) запускать методы объектного интерфейса через переменную: fTekRun.ModifyDoRes(...
+
+#ifNdef __TekRun_VIH__
+#define __TekRun_VIH__
+
+//******************************************************************************
+
+#ifdef ComponentVersion
+#component "L_SKLAD"
+#end
+
+//******************************************************************************
+
+ObjInterface ObjTekRunV1;
+
+//******************************************************************************
+
+Function GetMinQuantity: double;
+Function GetSumDoRes(cSpStep: comp): double;
+Function ModifyTekMC(c_MC: comp; KK: double; RR: double): boolean;
+Function ModifySklOst(c_MC: comp; c_Podr: comp; KK: double; RR: double): boolean;
+Function ModifySklOstAlways(c_MC: comp; c_Podr: comp; KK: double; RR: double): boolean;
+Function ModifyTekSaldo(c_MC, c_Podr, c_MOL, c_Party: comp; KK, RR: double): boolean;
+Function ModifyAllTek(c_MC, c_Podr, c_MOL, c_Party: comp; KK, RR: double): boolean;
+Function ModifyDoRes(c_SpStep, c_Podr, c_MOL, c_Party: comp; RR: double): boolean;
+Function DeleteDoRes(c_SpStep: comp): boolean;
+
+//******************************************************************************
+
+end;
+
+//******************************************************************************
+//******************************************************************************
+
+VipInterface TekRunV1 implements ObjTekRunV1
+#ifdef ATL51
+  licensed (FREE)
+#end
+;
+
+//******************************************************************************
+
+#end
+
+//******************************************************************************

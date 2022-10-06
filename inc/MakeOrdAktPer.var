@@ -1,0 +1,9 @@
+#ifndef _MakeOrdAktPer_VAR_
+#define _MakeOrdAktPer_VAR_
+
+#ifndef _MakeOrdAktPer_VIH_
+#error Необходимо подключить MakeOrdAktPer.vih!
+#endif
+
+var oMakeOrdAktPer: MakeOrdAktPer;
+#endif

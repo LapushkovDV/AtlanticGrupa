@@ -1,0 +1,541 @@
+#component 'F_XLSRep'
+#include xlReport.Vih   // процедуры работы с отчетами excel
+INTERFACE Droga_SalesReport 'Отчет по продажам для Словении' EscClose;
+SHOW AT (20,1,65,18);
+Const
+ DefaultShablonPath   = '%StartPath%DrogaResources\XLT\Droga_SalesReport.xlt';
+end;
+
+TABLE STRUCT tSalesReport
+(
+ IsGroup   :boolean,
+ Nrec      :comp,
+ KGroupMC  :string,
+ Barkod    :string,
+ SAPCode   :string,
+ Name      :string,
+ RealSum   :double,
+ RealKG    :double,
+ PlanSum   :double,
+ PlanKG    :double,
+ PYRealSum :double,
+ PYRealKG  :double
+)
+WITH INDEX
+(
+ tSalesReport01 = IsGroup + Nrec,
+ tSalesReport02 = KGroupMC + Barkod
+);
+
+TABLE STRUCT tSalesPlan
+(
+ SAPCode   :string,
+ Name      :string,
+ PlanSum   :double,
+ PlanKG    :double
+)
+WITH INDEX
+(
+ tSalesPlan01 = SAPCode
+);
+
+CREATE VIEW
+VAR d1,d2  :date;
+    YearParam,MonthParam1,MonthParam2:integer;
+    sXLTFileName, sXLSFileName, PlanFileName :string;
+    KursUE :double;
+    GroupFilter : string;
+AS SELECT *
+FROM groupmc,katmc, spsopr, spsopr PYSpsopr, katsopr, katsopr PYkatsopr,
+     tSalesReport, attrnam, attrval, pick
+WHERE
+((
+    word(201)     == spsopr.vidsopr
+and d1           <<= spsopr.dsopr
+and d2           >>= spsopr.dsopr
+and spsopr.csopr  == katsopr.nrec
+and spsopr.cmcusl == katmc.nrec
+and katmc.cgroupmc == groupmc.nrec
+and word(201)     == PYSpsopr.vidsopr
+and katmc.nrec    == PYSpsopr.cmcusl
+and Date(Day(d1),Month(d1),Year(d1)-1) <<= PYSpsopr.dsopr
+and Date(Last_Day(Date(1,Month(d2),Year(d2)-1)),Month(d2),Year(d2)-1) >>= PYSpsopr.dsopr         //Last_Day здесь - на случай високосного года
+and PYSpsopr.csopr == PYkatsopr.nrec
+
+and word(1411)    == attrnam.wtable
+and 'Код SAPа'    == attrnam.name
+and word(1411)    == attrval.wtable
+and katmc.nrec    == attrval.crec
+and attrnam.nrec  == attrval.cattrnam
+
+and word(2)       == pick.wlist
+
+and tSalesReport.SAPCode == tSalesPlan.SAPCode
+));
+
+FILE MyFile;
+
+VAR
+ OneRec     : record as table tSalesReport;
+ OneRecPlan :record as table tSalesPlan;
+ NalInPrice, PYNalInPrice : boolean;
+ TotalRealSum, TotalRealKG, TotalPYRealSum, TotalPYRealKG, TotalPlanSum, TotalPlanKG, DoubleTmp : double;
+ pXL : XLSRepBuilder;  // объект формирования excel отчетов
+
+Screen scr1;
+ NoTableNavigation
+ fields
+  YearParam   : NoProtect, SpinButton[1,2008,2200];
+  MonthParam1 : NoProtect, SpinButton[1,1,12];
+  MonthParam2 : NoProtect, SpinButton[1,1,12];
+  KursUE      : [10, '\4p6`666`667.8888'], NoProtect;
+  GroupFilter : Protect, PickButton;
+  PlanFileName: NoProtect, PickButton;
+  sXLTFileName: NoProtect, PickButton;
+
+   Buttons
+   cmOK, Default, ,,;
+   cmCancel,,,,;
+<< 'Параметры отчета'
+
+  Период      Год:                  .@@@@@
+              Первый месяц:         .@@@@@
+              Последний месяц:      .@@@@@
+
+  Пересчитать в у.е. по курсу:   .@@@@@@@@
+
+  Фильтр по группе МЦ
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  -----------------------------------------------------------------------
+  Путь к файлу с плановыми значениями
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+  Путь к шаблону отчета
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+     <.  Ok   .>               <.Cancel.>
+
+>>
+End;
+
+Function RunRep : boolean;
+{
+  RunRep := False;
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  // CONNECT EXCEL
+  //
+  // создаем отчет на основании существующего шаблона
+  Set sXLSFileName := pXL.CreateReport(sXLTFileName, True);
+  //////////////////////////////////////////////////////////////////////////////
+  // выгрузка таблицы отчета
+  //
+  pXL.CreateTbls(sXLSFileName);
+  pXL.CreateTbl('SalesReportTable');
+  pXL.CreateTblFld('KGroupMC'   );
+  pXL.CreateTblFld('Barkod'   );
+  pXL.CreateTblFld('SAPCode'  );
+  pXL.CreateTblFld('Name'     );
+  pXL.CreateTblFld('RealSum'  );
+  pXL.CreateTblFld('PlanSum'  );
+  pXL.CreateTblFld('PYRealSum');
+  pXL.CreateTblFld('RealKG'   );
+  pXL.CreateTblFld('PlanKG'   );
+  pXL.CreateTblFld('PYRealKG' );
+  // выгрузка полей таблицы
+  _Loop tSalesReport ORDERED BY INDEX tSalesReport02
+  {
+   IF not NextVisual THEN
+	{
+	 pXL.DisconnectExcel;
+	 DELETE ALL tSalesReport;
+	 DELETE ALL tSalesPlan;
+	 Exit;
+   }//Если прервали
+   // очистить буфер записи таблицы
+   pXL.ClearTblBuffer;
+   // заполнение значений полей текущей записи таблицы
+   pXL.SetTblStringFldValue('KGroupMC' ,tSalesReport.KGroupMC   );
+   pXL.SetTblStringFldValue('Barkod'   ,tSalesReport.Barkod   );
+   pXL.SetTblStringFldValue('SapCode'  ,tSalesReport.SapCode  );
+   pXL.SetTblStringFldValue('Name'     ,tSalesReport.Name     );
+   pXL.SetTblNumberFldValue('RealSum'  ,tSalesReport.RealSum/IF(KursUE<>0,KursUE,1)  );
+   pXL.SetTblNumberFldValue('PlanSum'  ,tSalesReport.PlanSum/IF(KursUE<>0,KursUE,1)  );
+   pXL.SetTblNumberFldValue('PYRealSum',tSalesReport.PYRealSum/IF(KursUE<>0,KursUE,1));
+   pXL.SetTblNumberFldValue('RealKG'   ,tSalesReport.RealKG  );
+   pXL.SetTblNumberFldValue('PlanKG'   ,tSalesReport.PlanKG  );
+   pXL.SetTblNumberFldValue('PYRealKG' ,tSalesReport.PYRealKG);
+   // вставка записи в таблицу
+   pXL.InsTblRow;
+  }//Loop
+  DELETE ALL tSalesReport;
+  DELETE ALL tSalesPlan;
+  // все необходимые пост-действия по "публикации" таблицы (DBTbl Destructor)
+  pXL.PublishTbl('SalesReportTable');
+  //
+  // выгрузка таблицы отчета
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  // выгрузка переменных отчета
+  //
+  // инициализация переменных Excel-БД (DBVar Constructor)
+  pXL.CreateVar(sXLSFileName);
+  // выгрузка значений переменных
+  pXL.SetDateVar('DateRep' , Cur_Date);
+  pXL.SetStringVar('RepYear',Year(d1));
+  pXL.SetStringVar('PrevYear',Year(d1)-1);
+  pXL.SetStringVar('Period', IF(MonthParam1=MonthParam2,'',DateToStr(d1,'Month')+' - ')+DateToStr(d2,'Month YYYY г.'));
+  pXL.SetStringVar('Currency',IF(KursUE=0,'RUR','Conv. Units by '+Round(KursUE,4)+' RUR'));
+  pXL.SetNumberVar('TotalRealSum'  ,TotalRealSum/IF(KursUE<>0,KursUE,1)  );
+  pXL.SetNumberVar('TotalRealKG'   ,TotalRealKG   );
+  pXL.SetNumberVar('TotalPYRealSum',TotalPYRealSum/IF(KursUE<>0,KursUE,1));
+  pXL.SetNumberVar('TotalPYRealKG' ,TotalPYRealKG );
+  pXL.SetNumberVar('TotalPlanSum'  ,TotalPlanSum/IF(KursUE<>0,KursUE,1)  );
+  pXL.SetNumberVar('TotalPlanKG'   ,TotalPlanKG   );
+
+  // все необходимые пост-действия по "публикации" переменных (DBVar Destructor)
+  pXL.PublishVar;
+  //
+  // выгрузка переменных отчета
+  //////////////////////////////////////////////////////////////////////////////
+
+  // формирование отчета по заданнному шаблону
+  StartNewVisual(vtRotateVisual, vfTimer, 'Шаг 4 из 4: Обработка данных в Excel', 0);
+  pXL.LoadReport(sXLSFileName);
+  StopVisual('',0);
+  pXL.DisconnectExcel;
+  //
+  // DISCONNECT EXCEL
+  //////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////
+  RunRep := True;
+}//runrep
+
+PROCEDURE ResetVars;
+{
+ OneRec.IsGroup   := False;
+ OneRec.Nrec      := 0;
+ OneRec.KGroupMC  := '';
+ OneRec.Barkod    := '';
+ OneRec.SAPCode   := '';
+ OneRec.Name      := '';
+ OneRec.RealSum   := 0;
+ OneRec.RealKG    := 0;
+ OneRec.PlanSum   := 0;
+ OneRec.PlanKG    := 0;
+ OneRec.PYRealSum := 0;
+ OneRec.PYRealKG  := 0;
+
+ NalInPrice   := true;
+ PYNalInPrice := true;
+}//ResetVars
+
+FUNCTION FilterOK (groupnrec:comp):boolean;
+{
+ FilterOK := FALSE;
+ IF GroupFilter = '' THEN FilterOK := TRUE
+ ELSE
+ {
+  IF GetFirst fastfirstrow pick where ((word(2)==pick.wlist and groupnrec==pick.crec))=tsOK
+  THEN FilterOK := TRUE;
+ }
+}//FilterOK
+
+PROCEDURE ProcessGroups (pGroupKod:string);
+{
+IF pGroupKod <> ''
+{
+ IF GetFirst fastfirstrow groupmc where ((pGroupKod == groupmc.kod)) = tsOK
+ IF FilterOK(groupmc.nrec) THEN
+ {
+  UPDATE tSalesReport WHERE ((true == tSalesReport.IsGroup and groupmc.nrec == tSalesReport.Nrec))
+     SET tSalesReport.RealSum   := tSalesReport.RealSum   + OneRec.RealSum  ,
+         tSalesReport.RealKG    := tSalesReport.RealKG    + OneRec.RealKG   ,
+         tSalesReport.PlanSum   := tSalesReport.PlanSum   + OneRec.PlanSum  ,
+         tSalesReport.PlanKG    := tSalesReport.PlanKG    + OneRec.PlanKG   ,
+         tSalesReport.PYRealSum := tSalesReport.PYRealSum + OneRec.PYRealSum,
+         tSalesReport.PYRealKG  := tSalesReport.PYRealKG  + OneRec.PYRealKG
+  ;//update group
+  IF RowCount = 0
+  {
+   INSERT tSalesReport
+      SET tSalesReport.IsGroup   := true,
+	       tSalesReport.Nrec      := groupmc.nrec    ,
+          tSalesReport.KGroupMC  := groupmc.kod     ,
+          tSalesReport.Barkod    := ''              ,
+          tSalesReport.SAPCode   := 'GROUP'        ,
+          tSalesReport.Name      := PadCh('','-',groupmc.lkod)+groupmc.name,
+	       tSalesReport.RealSum   := OneRec.RealSum  ,
+       	 tSalesReport.RealKG    := OneRec.RealKG   ,
+	       tSalesReport.PlanSum   := OneRec.PlanSum  ,
+       	 tSalesReport.PlanKG    := OneRec.PlanKG   ,
+          tSalesReport.PYRealSum := OneRec.PYRealSum,
+          tSalesReport.PYRealKG  := OneRec.PYRealKG
+   ;//insert group
+  }//если update не удался
+ }//getfirst groupmc
+ ProcessGroups(SubStr(pGroupKod,1,Length(pGroupKod)-1));
+}//pGroupKod <> ''
+}//processgroups
+
+FUNCTION LoadSalesPlan :boolean;
+{
+ VAR NRow : integer;
+ LoadSalesPlan := FALSE;
+ If Not xlIsExcelValid xlCreateExcelWithTemplate(PlanFileName, False);
+ xlSetActiveWorkBookByName('Data');
+ xlSetActiveSheetByName('Data');
+ NRow := 5;
+ DO
+ {
+  IF NOT NextVisual
+  {
+   xlKillExcel;
+   DELETE ALL tSalesPlan;
+   Exit;
+  }
+  NRow := NRow + 1;
+  xlGetCellValue(Nrow,1,OneRecPlan.SAPCode);
+  IF OneRecPlan.SAPCode<>''
+  {
+   xlGetCellValue(Nrow,2,OneRecPlan.Name   );
+   xlGetCellValue(Nrow,2*MonthParam2+1,OneRecPlan.PlanSum);
+   xlGetCellValue(Nrow,2*MonthParam2+2,OneRecPlan.PlanKG );
+   INSERT tSalesPlan
+      SET tSalesPlan.SAPCode := OneRecPlan.SAPCode,
+          tSalesPlan.Name    := OneRecPlan.Name,
+          tSalesPlan.PlanSum := OneRecPlan.PlanSum,
+          tSalesPlan.PlanKG  := OneRecPlan.PlanKG
+   ;//insert
+  }//if sapcode <>0
+ }
+ WHILE OneRecPlan.SAPCode <> '';
+ xlKillExcel;
+ LoadSalesPlan := TRUE;
+}//LoadSalesPlan
+
+FUNCTION InitTableSalesReport : boolean;
+{
+ InitTableSalesReport := False;
+ TotalRealSum   := 0; TotalRealKG    := 0; TotalPYRealSum := 0; TotalPYRealKG  := 0;
+ _LOOP spsopr
+ {
+  IF NOT NextVisual THEN Exit;
+  IF GetFirst fastfirstrow katsopr = tsOK THEN
+  {
+   ResetVars;
+   NalInPrice := (katsopr.vhodnal=1);
+   IF GetFirst fastfirstrow katmc = tsOK
+   {
+	IF FilterOK(katmc.cgroupmc)
+   {
+	 OneRec.Nrec     := katmc.nrec;
+	 OneRec.KGroupMC := katmc.KGroupMC;
+	 OneRec.Barkod   := katmc.barkod;
+    IF GetFirst fastfirstrow attrnam = tsOK
+	    THEN IF GetFirst fastfirstrow attrval = tsOK THEN OneRec.SAPCode  := attrval.vstring;
+    OneRec.Name     := katmc.name;
+    OneRec.RealSum  := spsopr.price*spsopr.kolfact - if(NalInPrice,spsopr.sumnds,0);
+    RunInterface('L_SOPRDOC::GetPosMassVolSopr',spsopr.nrec,OneRec.RealKG,0,0);
+    //IF GetFirst fastfirstrow PYSpsopr = tsOK
+   //Если эту МЦ за прошлый год еще не обрабатывали...
+	IF GetFirst fastfirstrow tSalesReport WHERE ((false==tSalesReport.IsGroup and OneRec.Nrec==tSalesReport.Nrec)) <> tsOK THEN
+   {
+    _LOOP PYSpsopr
+    {
+     IF GetFirst fastfirstrow PYKatsopr = tsOK
+     {
+      PYNalInPrice := (PYKatsopr.vhodnal=1);
+      OneRec.PYRealSum := OneRec.PYRealSum + PYspsopr.price*PYspsopr.kolfact - if(PYNalInPrice,PYSpsopr.sumnds,0);
+      DoubleTmp:=0;
+		RunInterface('L_SOPRDOC::GetPosMassVolSopr',PYspsopr.nrec,DoubleTmp,0,0);
+		OneRec.PYRealKG:=OneRec.PYRealKG + DoubleTmp;
+     }//PYkatsopr
+    }//PYspsopr
+   }//впервые ли наткнулись
+    //Смотрим, встречалась ли уже такая МЦ. Если да, обновляем. Иначе - вставляем.
+    UPDATE tSalesReport WHERE ((false == tSalesReport.IsGroup and OneRec.Nrec==tSalesReport.Nrec))
+       SET tSalesReport.RealSum   := tSalesReport.RealSum   + OneRec.RealSum  ,
+           tSalesReport.RealKG    := tSalesReport.RealKG    + OneRec.RealKG   ,
+           tSalesReport.PYRealSum := tSalesReport.PYRealSum + OneRec.PYRealSum,
+           tSalesReport.PYRealKG  := tSalesReport.PYRealKG  + OneRec.PYRealKG
+    ;//update
+    IF RowCount = 0 THEN
+    {
+     IF GetFirst fastfirstrow tSalesPlan WHERE ((ONERec.SAPCode==tSalesPlan.SAPCode)) = tsOK
+     {
+	   OneRec.PlanSum := tSalesPlan.PlanSum; 		OneRec.PlanKG  := tSalesPlan.PlanKG;
+     }//tSalesPlan
+     INSERT tSalesReport
+        SET tSalesReport.IsGroup   := false           ,
+		      tSalesReport.Nrec      := OneRec.Nrec     ,
+		      tSalesReport.KGroupMC  := OneRec.KGroupMC ,
+		      tSalesReport.Barkod    := OneRec.barkod   ,
+       	   tSalesReport.SAPCode   := OneRec.SAPCode  ,
+       	   tSalesReport.Name      := OneRec.Name     ,
+			   tSalesReport.RealSum   := OneRec.RealSum  ,
+  	         tSalesReport.RealKG    := OneRec.RealKG   ,
+			   tSalesReport.PlanSum   := OneRec.PlanSum  ,
+  	         tSalesReport.PlanKG    := OneRec.PlanKG   ,
+            tSalesReport.PYRealSum := OneRec.PYRealSum,
+            tSalesReport.PYRealKG  := OneRec.PYRealKG
+     ;//insert mc
+    }//insert
+    ProcessGroups(OneRec.KGroupMC);
+    TotalRealSum   := TotalRealSum   + OneRec.RealSum  ;
+    TotalRealKG    := TotalRealKG    + OneRec.RealKG   ;
+    TotalPYRealSum := TotalPYRealSum + OneRec.PYRealSum;
+    TotalPYRealKG  := TotalPYRealKG  + OneRec.PYRealKG ;
+    TotalPlanSum   := TotalPlanSum   + OneRec.PlanSum  ;
+    TotalPlanKG    := TotalPlanKG    + OneRec.PlanKG   ;
+   }}//katmc, pick
+  }//katsopr
+ }//loop spsopr
+ InitTableSalesReport := True;
+}//InitTableSalesReport
+
+FUNCTION CheckFileExistence(sFileName:string):boolean;
+{
+ CheckFileExistence:=TRUE
+ _TRY MyFile.OpenFile (sFileName,stOpen)
+ _EXCEPT
+	  ON ExFileNotFound:
+	  {
+	   CheckFileEXISTENCE := FALSE;
+	   _SkipFinally;
+	  }
+ _FINALLY MyFile.Close;
+}//checkfileexistence
+
+FUNCTION AllParametersOK :boolean;
+{
+ AllParametersOK := TRUE
+ IF YearParam<2007 or YearParam>2200 THEN {AllParametersOK := FALSE; Message('Неверно задан год!'); Exit;}
+ IF MonthParam1<1 or MonthParam1>12  THEN {AllParametersOK := FALSE; Message('Неверно задан первый месяц!');Exit;}
+ IF MonthParam2<1 or MonthParam2>12  THEN {AllParametersOK := FALSE; Message('Неверно задан последний месяц!');Exit;}
+ IF MonthParam1>MonthParam2          THEN {AllParametersOK := FALSE; Message('Первый месяц не может быть позже последнего!');Exit;}
+ IF KursUE<0                         THEN {AllParametersOK := FALSE; Message('Курс у.е. не может быть отрицательным!');Exit;}
+ IF sXLTFileName=''                  THEN {AllParametersOK := FALSE; Message('Не указан путь к шаблону отчета!');Exit;}
+ IF NOT CheckFileExistence(sXLTFileName) THEN {AllParametersOK := FALSE; Message('Не найден шаблон отчета по указанному пути:'+chr(13)+sXLTFileName);Exit;}
+ IF PlanFileName <>'' THEN
+ {
+  IF NOT CheckFileExistence(PlanFileName) THEN {AllParametersOK := FALSE; Message('Не найден файл с плановыми значениями по указанному пути:'+chr(13)+PlanFileName);Exit;}
+ }
+}//AllParametersOK
+
+HANDLEEVENT
+cmInit:
+{
+ D1:=date(1,1,year(Cur_Date)); D2:=Cur_Date;
+ YearParam := Year(d1); MonthParam1:=Month(d1); MonthParam2:= Month(d2);
+ KursUE := 0;
+ GroupFilter := '';
+ PlanFileName := '';
+ sXLTFileName := TranslatePath(DefaultShablonPath);
+ sXlSFileName := '';
+}//cmInit
+
+cmPick:
+{
+CASE CurField OF
+#GroupFilter:
+ {
+  var PickedKol : integer;
+  PickedKol:=0;
+  RunInterface('L_MCU::GETSOMGM');
+  IF GetFirst fastfirstrow pick = tsOK THEN
+  {
+   _Loop pick
+   {
+    PickedKol := PickedKol +1;
+   }//loop pick
+   IF Pickedkol>1 THEN SET GroupFilter := 'Множественный выбор ('+pickedkol+')';
+   IF PickedKol=1 THEN IF GetFirst fastfirstrow groupmc where ((pick.crec==groupmc.nrec))=tsOK THEN SET GroupFilter := groupmc.name;
+  }
+ }//GroupFilter
+#PlanFileName:
+ {
+  SET PlanFileName := GetFileName('*.xls', 'Выберите файл с плановыми значениями');
+ }//planfilename
+#sXLTFileName:
+ {
+  SET sXLTFileName := GetFileName('*.xlt', 'Выберите шаблон отчета');
+ }//sxltfilename
+END;//case
+}//cmPick
+
+cmDelOnProtect:
+{
+ if CurField = #GroupFilter
+ {
+  GroupFilter := '';
+  DELETE Pick WHERE ((word(2)==pick.wlist));
+ }
+}//очистка фильтра по группе
+
+cmOK:
+{
+ IF AllParametersOK THEN
+ {
+  SET d1 := Date(1,MonthParam1,YearParam);
+  d2 := Date(1,MonthParam2,YearParam);
+  SET d2 := Date(Last_Day(d2),MonthParam2,YearParam);
+
+  StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Шаг 1 из 4: Чтение плановых значений', 0);
+  IF LoadSalesPlan THEN {}
+  RestartVisual('Шаг 2 из 4: Расчет фактических значений', 0);
+  IF InitTableSalesReport THEN
+  {
+   RestartVisual('Шаг 3 из 4: Выгрузка в шаблон Excel', 0);
+   IF NOT RunRep THEN Message('Выгрузка данных в шаблон Excel прервана пользователем!');
+  }//Если нормально проинициализировалась временная таблица
+  DELETE ALL tSalesPlan;
+  DELETE ALL tSalesReport;
+  StopVisual('',0);
+//  CloseInterface(cmDefault);
+ }//Если параметры нормально заданы
+}//cmOK
+
+cmCancel:
+{
+ CloseInterface(cmCancel);
+}//cmCancel
+end;//HandleEvent
+end.//interface
+
+//////////////////////////////////////////////
+//
+//  пункт меню в отчетах пользовател
+//
+#component 'F_UserReport'
+#include UserReport.vih
+VipInterface UserReport_Droga Implements IUserReport;
+
+Interface UserReport_Droga;
+
+create view;
+procedure Run;
+begin
+RunInterface('F_XLSRep::Droga_SalesReport')
+end;
+function GetReportName: String;
+begin
+  GetReportName := 'Отчет по продажам для Словении';
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+end;
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := 'SELL';
+    2 : VisibleInModule := 'DOGOVOR';
+  end;
+end;
+!-------------------------------------------------------------------------------
+end.

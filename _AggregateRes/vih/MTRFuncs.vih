@@ -1,0 +1,266 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 8.10 - Целевой учет запасов
+// Функции для целевого учета
+//------------------------------------------------------------------------------
+
+#ifNdef __MTRFuncs_vih__
+#define __MTRFuncs_vih__
+
+#component "L_SaldoMTR"
+
+#include KauArray.inc
+
+Type TSpecMtr = record as Table SpecMtr;
+
+#doc
+Содержит методы для целевого учета в позициях спецификации документов.
+#end
+ObjInterface OMTRFuncs;
+
+  #doc
+  Копирование целевого учета из документа в документ.
+  #end
+  Procedure CopySpecMTR(SrcTab : word; SrcSpec : comp; DstTab : word; DstSpec : comp);
+
+  #doc
+  Удаление целевого учета для позиции спецификации.
+  #end
+  Procedure DelSpecMTR(SrcTab : word; SrcSpec : comp);
+
+  #doc
+  Является ли целевой учет позиции спецификации для УКСа.
+  #end
+  Function MTRIsUKS(SrcTab : word; SrcSpec : comp) : boolean;
+
+  #doc
+  Получить NRec объекта строительства из целевого учета позиции спецификации.
+  #end
+  Function GetObjUKS(SrcTab : word; SrcSpec : comp) : comp;
+
+  #doc
+  Получить NRec статьи затрат в строительстве из целевого учета позиции спецификации.
+  #end
+  Function GetZatrUKS(SrcTab : word; SrcSpec : comp) : comp;
+
+  #doc
+  Получить NRec системной аналитики из целевого учета позиции спецификации по коду КАУ.
+  #end
+  Function GetKau(SrcTab : word; SrcSpec : comp; acKau : word) : comp;
+
+  #doc
+  Получить NRec набора аналитик из целевого учета позиции спецификации.
+  #end
+  Function GetKitKau(SrcTab : word; SrcSpec : comp) : comp;
+
+  #doc
+  Сгенерировать целевой учет в позиции спецификации для УКСа.
+  #end
+  Procedure GenSpecMTRForUKS(SrcTab : word; SrcSpec : comp; acObj : comp; acZatr : comp);
+
+  #doc
+  Сгенерировать целевой учет в позиции спецификации по сохраненному значению набора аналитик в DSK.
+  #end
+  Procedure InsSpecMTR(SrcTab : word; SrcSpec : comp);
+    deprecated 'Вместо InsSpecMTR следует использовать InsSpecMTR_Kit, InsSpecMTR_Kau или SetSpecMTR_Obj';
+
+  #doc
+  Сохранить значения набора аналитик в DSK по позиции для дальнейшей генерации.
+  #end
+  Procedure SaveKitKau(SrcTab : word; SrcSpec : comp);
+    deprecated 'Вместо SaveKitKau и InsSpecMTR следует использовать InsSpecMTR_Kit, InsSpecMTR_Kau или SetSpecMTR_Obj';
+
+  #doc
+  Сохранить значения набора аналитик в DSK по набору аналитик для дальнейшей генерации.
+  #end
+  Procedure SaveKitKauForKit(acKit: comp);
+    deprecated 'Вместо SaveKitKauForKit и InsSpecMTR следует использовать InsSpecMTR_Kit, InsSpecMTR_Kau или SetSpecMTR_Obj';
+
+  #doc
+  Получить наименование объекта строительства из целевого учета позиции спецификации для УКСа.
+  #end
+  Function GetObjUKSName(SrcTab : word; SrcSpec : comp) : string;
+
+  #doc
+  Получить наименование статьи затрат в строительстве из целевого учета позиции спецификации для УКСа.
+  #end
+  Function GetZatrUKSName(SrcTab : word; SrcSpec : comp) : string;
+
+  #doc
+  Установить разрез по локальным сметам, если он есть
+  #end
+  Function SetObjSmeta(SrcTab : word; SrcSpec, cSmeta : comp) : boolean;
+
+  #doc
+  Максимальное количество для списания в документе по ЦУ
+  #end
+  Function GetMaxColSpisSpSopr(SrcSpec: comp; dFOrd: date; var kforspis: double): boolean;
+
+  #doc
+  Вставка/модификация записи по буферу
+  #end
+  Procedure InsUpdRec(buf: TSpecMtr);
+
+  #doc
+  Удаление записи по буферу
+  #end
+  Procedure DeleteRec(buf: TSpecMtr);
+
+  #doc
+  Сгенерировать целевой учет в позиции спецификации.
+  #end
+  Procedure GenAnySpecMTR(KauData: TMTRKauArray);
+
+  #doc
+  Имеется ли привязка целевого учета по указанной позиции спецификации.
+  #end
+  Function IsSpecMTRPresent( SrcTab : word; SrcSpec : comp ): boolean;
+
+  #doc
+  Сгенерировать целевой учет в позиции спецификации по указанному разрезу ЦУ
+  #end
+  Procedure InsSpecMTR_Kit( awSrcTab: word; acSrcSpec, acKitKau: comp );
+
+  #doc
+  Сгенерировать целевой учет в позиции спецификации по указанным значениям аналитик ЦУ
+  #end
+  Procedure InsSpecMTR_Kau( awSrcTab: word; acSrcSpec, acSaldTune, acObj,
+                            acKau1, acKau2, acKau3, acKau4, acKau5, acKau6, acKau7, acKau8, acKau9: comp );
+
+  #doc
+  Связать позицию спецификации с заданным значением аналитики первого уровня
+  #end
+  Procedure SetSpecMTR_Obj( awSrcTab: word; acSrcSpec, acKitKau, acSaldTune, acObj: comp );
+
+  #doc
+  <brief>Заполнение полей переданного буфера для SpecMtr значениями по умолчанию.</brief>
+  #end
+  // Внимание!
+  // При использовании функции, пожалуйста, проверьте наличие нужной таблицы и вашего типа документа в
+  // методах GetSaldTuneByTable, GetSaldTuneBySpSopr, GetSaldTuneBySpStep текущего интерфейса (см. выше по коду)
+  Function SpecMtrBufSetDefault(
+    var _bufSpecMtr: TSpecMtr; // #docl Возвращаемый параметр - буфер записи таблицы SpecMtr.
+    _wTable:         word;     // #docl Код таблицы спецификации документа ( например coSpSopr ).
+    _cTable:         comp;     // #docl nRec указанной таблицы спецификации, к которой осуществляется привязка.
+
+    #doc
+    <b>Необязательный параметр.</b> Позволяет указать объект ЦУ, отличный от такового по умолчанию.
+    Если не указан - берет значение по настройке CelUchForModul в зависимости от типа документа.
+    #end
+    _cSaldTune:      comp = 0;
+
+    #doc
+    <b>Необязательный параметр.</b> Объект строительства. Имеет смысл только ОЦУ для УКС.
+    Если не указывать - берет значение по умолчанию для объекта ЦУ "Управление капстроем".
+    #end
+    _cObjBuild:      comp = 0;
+
+    #doc
+    <b>Необязательный параметр.</b> Статья затрат. Имеет смысл только в ОЦУ для УКС.
+    Если не указвать - берет значение по умолчанию, а если не задано - статью затрат "прочие затраты".
+    #end
+    _cZatr:          comp = 0
+  ): boolean; // #docl Возвращат TRUE в случае успешного заполнения полей.
+
+  #doc
+  Привязка целевого учета к позиции спецификации документа.</brief>
+  <p>С помощью данной функции можно также привязать ОЦУ для УКС, при необходимости указав объект строительства, статью затрат.<br>
+  Рекомендуется использовать вместо LinkMtr2Spec.SetVal, LinkMtr2Spec.SetValU.
+  #end
+  // Внимание!
+  // При использовании функции, пожалуйста, проверьте наличие нужной таблицы и вашего типа документа в
+  // методах GetSaldTuneByTable, GetSaldTuneBySpSopr, GetSaldTuneBySpStep текущего интерфейса (см. выше по коду)
+  Function LinkMtrToSpec(
+    _wTable: word; // #docl Код таблицы спецификации документа (например coSpSopr).
+    _cTable: comp; // #docl nRec указанной таблицы спецификации, к которой осуществляется привязка.
+
+    #doc
+    <b>Необязательный параметр.</b> Позволяет указать объект ЦУ, отличный от такового по умолчанию.
+    Если не указан - берет значение по настройке CelUchForModul в зависимости от типа документа.
+    #end
+    _cSaldTune: comp = 0;
+
+    #doc
+    <b>Необязательный параметр.</b> Объект строительства. Имеет смысл только ОЦУ для УКС.
+    Если не указывать - берет значение по умолчанию для объекта ЦУ "Управление капстроем".
+    #end
+    _cObjBuild: comp = 0;
+
+    #doc
+    <b>Необязательный параметр.</b> Статья затрат. Имеет смысл только в ОЦУ для УКС.
+    Если не указвать - берет значение по умолчанию, а если не задано - статью затрат "прочие затраты".
+    #end
+    _cZatr: comp = 0
+  ): comp; // #docl nRec записи в SpecMtr в случае успеха или 0 при неудаче.
+
+  #doc
+  Позволяет получить системный код аналитики и ссылку на значение
+  для указанной позиции спецификации документа и номеру аналитики.
+  #end
+  function GetSpecifAnalytics(
+    _specifTable: word; // #docl Код таблицы спецификации документа (например coSpSopr)
+    _specifRec: comp;   // #docl nRec позиции спецификации документа (например, SpSopr.nRec)
+    _placeKau: word;    // #docl Порядковый номер аналитики (значение от 1 до 10)
+    var _wKau: word;    // #docl Возвращаемое значение. Системный код искомой аналитики позиции спецификации док-та
+    var _cKau: comp     // #docl Возвращаемое значение. Ссылка на значение искомой аналитики.
+  ): boolean; // #docl Возвращает True в случае успеха и False при неудаче.
+
+  #doc
+  <brief>Проверка значения аналитики первого уровня.</brief>
+  Функция проверяет, обязательно ли наличие значения у аналитики 1-го уровня, и если обязательно
+  - проверяет, заданно ли значение параметра.
+  Обязательность наличия значения у первой аналитики определяется по ее настройке
+  в настройках объектов целевого учета.
+  #end
+  function IsKau1CheckPassed(
+    _cKau1: comp; // #docl ссылка на аналитику 1-го уровня (SpecMTR.cObj)
+    _cTune: comp  // #docl ссылка на объект целевого учета (SpecMTR.cSaldTune)
+  ): boolean;     // #docl возвращает TRUE, если проверка пройдена.
+
+  #doc
+  <brief>Получить ссылку на объекта строительства из целевого учета позиции спецификации
+  (расширенная версия метода GetObjUks).</brief>
+  Ищет аналитику "объект строительства" и получает ссылку на объект строительства в целевом учете позиции
+  спецификации для любого объекта целевого учета, а не только для ОЦУ "УКС", как в методе GetObjUks.
+  #end
+  Function GetObjUksEx(
+    _wTable: word;       // #docl Код таблицы спецификации документа.
+    _cTable: comp;       // #docl Ссылка на позицию спецификации документа.
+    var _cObjBuild: comp // #docl Ссылка на объект строительства, заданный в аналитике cgKau_ObjBuild, если такая имеется.
+  ): longint;            // #docl Возвращает tsOk, если аналитика "объект строительства" была найдена.
+
+  #doc
+  Возвращает значение настройки "Списание МЦ в разрезе объекта ЦУ" учитывая значение SaldTune.wAttr
+  #end
+  Function CheckTuneSpisMC( wTable: word; //#docl Код таблицы спецификации документа ( напр. coSpSopr )
+                            cTable: comp  //#docl NRec указанной таблицы спецификации, к которой осуществляется привязка
+                          ): word;
+
+  #doc
+  Возвращает наименование настройки "Списание МЦ в разрезе объекта ЦУ" учитывая значение SaldTune.wAttr
+  #end
+  Function CheckTuneNameSpisMC( wTable: word; //#docl Код таблицы спецификации документа ( напр. coSpSopr )
+                                cTable: comp  //#docl NRec указанной таблицы спецификации, к которой осуществляется привязка
+                              ): string;
+
+End;
+
+#doc
+Содержит методы для целевого учета в позициях спецификации документов.
+#end
+ObjInterface OMTRFuncsV2(OMTRFuncs);
+
+  #doc
+  Сгенерировать или удалить привязку объекта целевого учета к позиции спецификации
+  на основании заданного набора аналитик.</brief>
+  При передаче нулевой ссылки на набор аналитик - привязка к ОЦУ удаляется (если она была).
+  #end
+  Procedure AdjustSpecMtrByKit( awSrcTab: word; acSrcSpec, acKitKau: comp );
+End;
+
+//---------------------------------------------------------------
+VipInterface MTRFuncs
+  implements OMTRFuncsV2
+  licensed( free );
+
+#end // #define __MTRFuncs_vih__

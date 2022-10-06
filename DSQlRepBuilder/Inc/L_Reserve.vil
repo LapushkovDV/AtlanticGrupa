@@ -1,0 +1,24 @@
+// Галактика 8.00   2006г.
+// Описание экспортируемых интерфейсов компонента L_Reserver
+
+#ifdef ComponentVersion
+#component "L_Reserve"
+#end
+
+VipInterface RPerenos
+  licensed
+  (
+  #include RPerenos.lih
+  )
+  Parameters
+  (
+    p1, p2, p3, p4 :comp
+  );
+
+VipInterface RpJorn
+  licensed (sklad2,sklad);
+
+VipInterface SeeMCRes licensed (FREE) Parameters (dFor :date; cOneMc :comp);
+VipInterface SnReserv licensed (FREE) Parameters (d1 :date);
+VipInterface SnDOReserv licensed (FREE);
+VipInterface SnResWOprompts licensed (FREE);

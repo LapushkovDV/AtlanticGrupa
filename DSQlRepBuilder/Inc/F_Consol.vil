@@ -1,0 +1,15 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_Consol
+
+#ifdef ComponentVersion
+#component "F_Consol"
+#end
+
+VipInterface CurRep      Licensed (B_Konsol) Parameters (wInitMode : word; myc : comp);
+VipInterface C_AllVal    Licensed (B_Konsol) ;
+VipInterface GetFilialNo Licensed (B_Konsol) Parameters (myc : comp; myl : longint);
+VipInterface GetGrKod    Licensed (B_Konsol) Parameters (myTecTab : word; myGetKod : comp);
+VipInterface KauGroup    Licensed (B_Konsol) Parameters (okPick : boolean; myTecTab : word; myGetKod : comp);
+VipInterface ReplTab     Licensed (B_Konsol) ;
+VipInterface SynchVal    Licensed (B_Konsol) Parameters (cVal : comp);
+

@@ -1,0 +1,45 @@
+//********************************************************************************
+//                                                        (c) корпорация Галактика
+// Галактика 8.10 - настройки
+// Создание/модификация настроек в компонентах
+//********************************************************************************
+
+#include CreateTune.vih
+
+//------------------------------------------------------------------------------
+Handler with replace Gal_DateModifyTune_20211002 on ExtensionPoint
+  epDateModifyTune (TS : ObjStartCreateTune)
+Action
+{
+  TS.SetLastDateModTune(01,07,2020);
+  Result := true;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+Handler with replace Gal_CreateTuneComponent_PAYTERM on extensionPoint
+  epCreateTuneComponent (TR: ObjCreateTuneEx)
+  // Внимание, приоритеты вызова обработчиков см. в CreateTune.vih
+Action
+{
+  Result := true;
+  //----------------------------------------------------------------------------
+  // Обязательно установить  имя компонента
+  TR.SetComponent('ATLANTIC');
+  //----------------------------------------------------------------------------
+
+  TR.AddPart(   ttSysUserTune
+             , 'USERTUNE'
+             , 'Tune'
+             , 'Настройки пользовательских доработок'
+             , 0);
+
+     TR.AddPart (ttSysUserTune,'USERTUNE.EMAILING','USERTUNE','EMAIL рассылка',0);
+        TR.AddTune (ttSysTune,'USERTUNE.EMAILING.PAYMENTTERM_DAYASSEARCHNAKL','USERTUNE.EMAILING','Рассылка по срокам оплаты. За сколько дней просматривать',ftWord,'60','',60);
+        TR.AddTune (ttSysTune,'USERTUNE.EMAILING.PAYMENTTERM_DAYSBEFORE','USERTUNE.EMAILING','Рассылка по срокам оплаты. За сколько дней выполнять рассылку',ftWORD,'5','',5);
+        TR.AddTune (ttSysTune,'USERTUNE.EMAILING.PAYMENTTERM_EMAILCOPY','USERTUNE.EMAILING','Рассылка по срокам оплаты. Адрес-копия при рассылке',ftString,'','',0);
+        TR.AddTune (ttSysTune,'USERTUNE.EMAILING.PAYMENTTERM_DEBUG','USERTUNE.EMAILING','Рассылка по срокам оплаты. DEBUG (рассылка пойдет только по настройке)',ftLIST,'1','',0);
+          TR.AddList(0,'Нет') ;
+          TR.AddList(1,'Да') ;
+
+}

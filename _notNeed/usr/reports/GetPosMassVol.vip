@@ -1,0 +1,128 @@
+#component 'L_BASEDOC'
+interface GetPosMassVolDO 'Информация по позиции спецификации ДО';
+create view
+var
+  SpStepNrec, recGrMC: comp;
+  MassNetto,MassTara,MassBrutto,VolMC,VolTara,VolBrutto: double;
+  KodGrMC,NameGrMC: string;
+  
+from
+  SpStep,
+  KatMC,
+  KatMC KatTara,
+  SpOtpEd,
+  KatOtpEd
+WHERE
+((
+    SpStepNrec      == spstep.nrec
+and spstep.cmcusl   == katmc.nrec
+and spstep.cotped   == katotped.nrec
+and katotped.nrec   == spotped.cotped
+and spotped.cmctara == kattara.nrec
+and katmc.CGROUPMC  == GROUPMC.nrec
+))
+;
+
+parameters SpStepNrec,MassNetto,MassBrutto,VolBrutto,KodGrMC,NameGrMC,recGrMC;
+
+handleevent
+
+cmInit:
+{
+ massnetto:=0;massbrutto:=0;volbrutto:=0;KodGrMC:='';NameGrMC:='';recGrMC:=0h;
+ IF GetFirst fastfirstrow spstep = tsOK
+ {
+  IF GetFirst fastfirstrow katmc = tsOK
+  {
+   MassNetto  := katmc.massa;
+   MassTara   := katmc.mtara;
+   VolMC      := katmc.volume;
+   if GetFirst fastfirstrow groupmc = tsOK
+    {
+     KodGrMC:=groupmc.kod;NameGrMC:=groupmc.name;recGrMC:=groupmc.nrec;
+    }
+  }//katmc
+  IF GetFirst fastfirstrow katotped = tsOK
+  {
+   MassNetto := MassNetto * katotped.koef;
+   MassTara  := MassTara  * katotped.koef;
+   VolMC     := VolMC     * katotped.koef;
+   _LOOP spotped
+   {
+    IF GetFirst fastfirstrow kattara = tsOK
+	 {
+	  MassTara := MassTara + (kattara.massa+kattara.mtara)*spotped.koef;
+	  VolTara  := VolTara  + kattara.volume*spotped.koef;
+	 }//kattara
+   }//loop spotped
+  }//katotped
+  MassNetto  := MassNetto * spstep.kol;
+  MassTara   := MassTara * spstep.kol;
+  MassBrutto := MassNetto + MassTara;
+  VolBrutto  := if(VolTara>VolMC,VolTara,VolMC)*spstep.kol;
+ }//spstep
+ CloseInterface(cmDefault);
+}
+end;
+end.
+
+#component 'L_SOPRDOC'
+interface GetPosMassVolSopr 'Информация по позиции спецификации накладной';
+create view
+var
+  SpSoprNrec: comp;
+  MassNetto,MassTara,MassBrutto,VolMC,VolTara,VolBrutto: double;
+from
+  SpSopr,
+  KatMC,
+  KatMC KatTara,
+  SpOtpEd,
+  KatOtpEd
+WHERE
+((
+    SpSoprNrec      == SpSopr.nrec
+and SpSopr.cmcusl   == katmc.nrec
+and SpSopr.cotped   == katotped.nrec
+and katotped.nrec   == spotped.cotped
+and spotped.cmctara == kattara.nrec
+))
+;
+
+parameters SpSoprNrec,MassNetto,MassBrutto,VolBrutto;
+
+handleevent
+
+cmInit:
+{
+ massnetto:=0;massbrutto:=0;volbrutto:=0;
+ IF GetFirst fastfirstrow SpSopr = tsOK
+ {
+  IF GetFirst fastfirstrow katmc = tsOK
+  {
+   MassNetto  := katmc.massa;
+   MassTara   := katmc.mtara;
+   VolMC      := katmc.volume;
+  }//katmc
+  IF GetFirst fastfirstrow katotped = tsOK
+  {
+   MassNetto := MassNetto * katotped.koef;
+   MassTara  := MassTara  * katotped.koef;
+   VolMC     := VolMC     * katotped.koef;
+   _LOOP spotped
+   {
+    IF GetFirst fastfirstrow kattara = tsOK
+	 {
+	  MassTara := MassTara + (kattara.massa+kattara.mtara)*spotped.koef;
+	  VolTara  := VolTara  + kattara.volume*spotped.koef;
+	 }//kattara
+   }//loop spotped
+  }//katotped
+  MassNetto  := MassNetto * SpSopr.kolfact;
+  MassTara   := MassTara * SpSopr.kolfact;
+  MassBrutto := MassNetto + MassTara;
+  VolBrutto  := if(VolTara>VolMC,VolTara,VolMC)*SpSopr.kolfact;
+ }//SpSopr
+ CloseInterface(cmDefault);
+}
+end;
+end.//GetPosMassVolSpsopr

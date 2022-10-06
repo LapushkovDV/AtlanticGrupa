@@ -1,0 +1,9 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_KatDoc
+
+#ifdef ComponentVersion
+#component "F_KatDoc"
+#end
+
+VipInterface CheckKatDoc Licensed(Free) Parameters(wIntMode : word);
+VipInterface KatDoc      Licensed(Free) Parameters(wIntMode, wOpMode, wGetDoc : word);

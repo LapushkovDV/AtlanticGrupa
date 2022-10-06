@@ -1,0 +1,20 @@
+Create table ATL_Vetis_DocSpLevel "Уровни упаковки к ЭВСД"
+with table_Code = 31632
+with replace
+with tableoptions Branched
+(
+   NREC               : comp       "Идентификатор",
+   cATL_Vetis_DocList : ref(ATL_Vetis_DocList) "nrec документа",
+   Level              : string "Уровень упаковки",
+   PACKINGTYPEID      : string "Идентификатор упаковки",
+   Quantity           : double "Количество",
+   EAN13              : string "EAN13",
+   EAN128             : string "EAN128",
+   SSCC               : string "SSCC"
+)
+with index
+(
+    i_NREC = NREC(Unique, Surrogate, Journal)
+   ,i_Rqst = cATL_Vetis_DocList + Level
+)
+;

@@ -1,0 +1,89 @@
+Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
+    _empty := '';
+    _OleGenerateGUID := ''; // Заглушки пока не исп
+    MyLog(sGetTune('USERTUNE.CRPT_PRJ.CryptoCrtf'));
+    MyLog(GetTokenPath);
+
+    MyWriteLN('[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12');
+    MyWriteLN('$scriptPath = $MyInvocation.MyCommand.Path | Split-Path -Parent                                                                                           ');
+    MyWriteLN('$crtf = "'+sGetTune('USERTUNE.CRPT_PRJ.CryptoCrtf')+'";                                                                                                     ');
+    MyWriteLN('$dataPath = $scriptPath + ''\doc.txt'';                                                                                                                   ');
+    MyWriteLN('$signedDocPath = $scriptPath + ''\signed_doc.txt'';                                                                                                       ');
+    MyWriteLN('$tokenPath = '''+GetTokenPath+''';                                                                                    ');
+    MyWriteLN('Function tokenValid () {                                                                                                                                  ');
+    MyWriteLN('    $result = $true                                                                                                                                       ');
+    MyWriteLN('    try {                                                                                                                                                 ');
+    MyWriteLN('        $token = Get-Content -Path $tokenPath -ErrorAction SilentlyContinue                                                                               ');
+    MyWriteLN('        $headers = @{ Authorization = "Bearer " + $token}                                                                                                 ');
+    MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/product/search?limit=100&offset=0&page=0&" -Headers $headers | ConvertFrom-Json  ');
+    MyWriteLN('                                                                                                                                                          ');
+    MyWriteLN('    }                                                                                                                                                     ');
+    MyWriteLN('    catch {                                                                                                                                               ');
+    MyWriteLN('        $result = $false                                                                                                                                  ');
+    MyWriteLN('       if ($response.errorCode -eq 401) {                                                                                                                 ');
+    MyWriteLN('                                                                                                                                                          ');
+    MyWriteLN('       }                                                                                                                                                  ');
+    MyWriteLN('       Write-Host $_ -Fore Yellow                                                                                                                         ');
+    MyWriteLN('    }                                                                                                                                                     ');
+    MyWriteLN('    return $result                                                                                                                                        ');
+    MyWriteLN('}                                                                                                                                                         ');
+    MyWriteLN('Function requestNewToken () {                                                                                                                             ');
+    MyWriteLN('    try {                                                                                                                                                 ');
+    MyWriteLN('        GetToken;                                                                                                                                         ');
+    MyWriteLN('    }                                                                                                                                                     ');
+    MyWriteLN('    catch {                                                                                                                                               ');
+    MyWriteLN('        Write-Host $_ -Fore Yellow                                                                                                                        ');
+    MyWriteLN('    }                                                                                                                                                     ');
+    MyWriteLN('}                                                                                                                                                         ');
+    MyWriteLN('Function GetToken() {                                                                                                                                     ');
+    MyWriteLN('    try {                                                                                                                                                 ');
+    MyWriteLN('                                                                                                                                                          ');
+    MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/auth/cert/key" | ConvertFrom-Json                                                ');
+    MyWriteLN('                                                                                                                                                          ');
+    MyWriteLN('        $uuid = $response.uuid                                                                                                                            ');
+    MyWriteLN('        $data = $response.data                                                                                                                            ');
+    MyWriteLN('                                                                                                                                                          ');
+    MyWriteLN('        New-Item $dataPath -Force                                                                                                                         ');
+    MyWriteLN('        Set-Content -Path $dataPath -Value $data -Force -NoNewline                                                                                        ');
+    MyWriteLN('                                                                                                                                                          ');
+    MyWriteLN('        csptest -sfsign -sign -in $dataPath -out $signedDocPath -MY $crtf -base64 -add                                                                    ');
+    MyWriteLN('        [string]$signedDoc = (Get-Content -Path $signedDocPath).Replace("`n`r","")                                                                        ');
+    MyWriteLN('                                                                                                                                                          ');
+    MyWriteLN('        $Body = @{                                                                                                                                        ');
+    MyWriteLN('            data = $signedDoc;                                                                                                                            ');
+    MyWriteLN('            uuid = $uuid;                                                                                                                                 ');
+    MyWriteLN('        } | ConvertTo-Json                                                                                                                                ');
+    MyWriteLN('                                                                                                                                                          ');
+    MyWriteLN('        $responseGetToken = Invoke-RestMethod -Uri https://ismp.crpt.ru/api/v3/auth/cert/ -ContentType "application/json;charset=UTF-8" -Method Post -Body $Body  ');
+    MyWriteLN('        Set-Content -Path $tokenPath -Value $responseGetToken.token -Force                                                                                 ');
+    MyWriteLN('                                                                                                                                                           ');
+    MyWriteLN('                                                                                                                                                           ');
+    MyWriteLN('        Remove-Item $dataPath -Force                                                                                                                       ');
+    MyWriteLN('        Remove-Item $signedDocPath -Force                                                                                                                  ');
+    MyWriteLN('        #Remove-Item $tokenPath -Force                                                                                                                     ');
+    MyWriteLN('    }                                                                                                                                                      ');
+    MyWriteLN('                                                                                                                                                           ');
+    MyWriteLN('    catch {                                                                                                                                                ');
+    MyWriteLN('        Write-Host $_ -Fore Green                                                                                                                          ');
+    MyWriteLN('   }                                                                                                                                                       ');
+    MyWriteLN('}                                                                                                                                                          ');
+    MyWriteLN('                                                                                                                                                           ');
+    MyWriteLN('if (tokenValid) {                                                                                                                                          ');
+    MyWriteLN('    "Token is valid"                                                                                                                                       ');
+    MyWriteLN('} else {                                                                                                                                                   ');
+    MyWriteLN('    "Token is not valid. Request new Token..."                                                                                                             ');
+    MyWriteLN('    requestNewToken                                                                                                                                        ');
+    MyWriteLN('    if (tokenValid) {                                                                                                                                      ');
+    MyWriteLN('        "Now Token is valid"                                                                                                                               ');
+    MyWriteLN('    }                                                                                                                                                      ');
+    MyWriteLN('    else {                                                                                                                                                 ');
+    MyWriteLN('        "Can''t request new Token"                                                                                                                         ');
+    MyWriteLN('    }                                                                                                                                                      ');
+    MyWriteLN('}                                                                                                                                                          ');
+}
+
+
+Function GetRequestToAPIGetToken : boolean;
+{
+  #BodyProcedureGetRqst(GetToken,_emptyValue)
+}

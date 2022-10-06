@@ -1,0 +1,15 @@
+.var
+ curKAU, Osn: string;
+ Podp_dol_01, Podp_fio_01: string;
+ Podp_dol_02, Podp_fio_02: string;
+ Podp_dol_03, Podp_fio_03: string;
+ Podp_dol_04, Podp_fio_04: string;
+ Podp_dol_05, Podp_fio_05: string;
+ Podp_dol_06, Podp_fio_06: string;
+ Podp_dol_07, Podp_fio_07: string;
+ Podp_dol_08, Podp_fio_08: string;
+ Podp_dol_09, Podp_fio_09: string;
+ Podp_dol_10, Podp_fio_10: string;
+ Podp_dol_11, Podp_fio_11: string;
+ Podp_dol_12, Podp_fio_12: string;
+.endvar

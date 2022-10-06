@@ -1,0 +1,18 @@
+#ifndef _included_CRPT_API_PowerShellvih_
+#define _included_CRPT_API_PowerShellvih_
+
+#component "ATLANTIC"
+objInterface objCRPT_API_PowerShell;
+  Function GetRequestToAPIInfoList(_cis: string) : boolean;
+  Function GetRequestToAPIGetToken : boolean;
+  Function GetRequestToAPIisExistCis(_Cis: string) : string;
+end;
+
+vipInterface CRPT_API_PowerShell implements objCRPT_API_PowerShell
+  licensed(free)
+  Parameters (_Parameter : string; _Cis : string);
+
+
+var iCRPT_API_PowerShell : CRPT_API_PowerShell;
+
+#end

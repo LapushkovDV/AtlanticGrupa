@@ -1,0 +1,7 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_FpHashAn
+
+#ifdef ComponentVersion
+#component "F_FpHashAn"
+#end
+

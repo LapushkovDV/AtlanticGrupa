@@ -1,0 +1,44 @@
+/*                                            `
+ ╔═══════════════════════════════════════════════════════════════════════════╗
+ ║                       (c) 2003 корпорация ГАЛАКТИКА                       ║
+ ║ Проект        : ГАЛАКТИКА                                                 ║
+ ║ Система       : Оперативный контур                                        ║
+ ║ Версия        : 5.84                                                      ║
+ ║ Назначение    : Ф-ия формирования прих. ордера по операции выбытия ОС     ║
+ ║ Ответственный : Двинский Сергей Леонидович                                ║
+ ╚═══════════════════════════════════════════════════════════════════════════╝
+*/
+
+#ifndef __Make_Ord_vih__
+#define __Make_Ord_vih__
+
+#ifdef ComponentVersion
+#component "L_Sklad"
+#end
+
+#doc
+Функция формирования приходного ордера по операции выбытия ОС
+#end
+
+ObjInterface IObjMakeSkladOrder;
+#doc
+Функция формирования приходного ордера по операции выбытия ОС
+#end
+ function DoMakeOrder(_TipOrd : word; _showmessage : boolean) : comp;
+#doc
+Получение названия ордера
+#end
+ function GetOrderName(_nRec : comp; _extended : boolean) : string;
+#doc
+Проверка возможности удаления
+#end
+ function CanDeleteOrder(_nRec : comp; _showmessage : boolean) : boolean;
+#doc
+Удаление приходного ордера
+#end
+ function DeleteOrder(_nRec : comp; _showmessage : boolean) : boolean;
+end;
+
+VipInterface MakeSkladOrder implements IObjMakeSkladOrder licensed (FREE);
+
+#end // __Make_Ord_vih__

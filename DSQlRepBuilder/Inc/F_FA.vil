@@ -1,0 +1,35 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_FA
+
+#ifdef ComponentVersion
+#component "F_FA"
+#end
+
+VipInterface Convers           Licensed (B_FA);
+VipInterface Diagram           Licensed (B_FA);
+VipInterface FAImport          Licensed (B_FA) Parameters (MyFAImport : comp);
+VipInterface GetIndName        Licensed (B_FA) Parameters (MyNRec : comp);
+VipInterface GetKatPName       Licensed (B_FA) Parameters (MaySelectFormula : boolean; MyNRec : comp; GroupSelect : boolean; MyStd : comp; GroupsOnly : boolean);
+VipInterface GetOtMasks        Licensed (B_FA) Parameters (MyNRec : comp; MyMaskSwitch : word);
+VipInterface GrCO              Licensed (B_FA) Parameters (MyGr : comp);
+VipInterface GrIndex           Licensed (B_FA) Parameters (MyGr : comp);
+VipInterface iFaXlsImport      Licensed (B_FA);
+VipInterface IndValue          Licensed (B_FA);
+VipInterface KatStd            Licensed (B_FA) Parameters (MyStd : comp);
+VipInterface KorValue          Licensed (B_FA) Parameters (MyValue : comp);
+VipInterface Legend            Licensed (B_FA) Parameters (MyLegend : comp);
+VipInterface MaskSet           Licensed (B_FA) Parameters (MyMaskSet : comp);
+VipInterface MaskTuneIn        Licensed (B_FA) Parameters (MyNumArea : word; MyOtData, MyOtMasks : comp; MDealCol : word; NameWin, WidthColumn : string);
+VipInterface MaskTuneOut       Licensed (B_FA) Parameters (MyNumArea : word; MyOtMasks : comp; MDealCol : word; NameWin, WidthColumn : string);
+VipInterface OtchetQuickSelect Licensed (B_FA) Parameters (MyOtSwitch : word; SelectOtchets : comp; ShowGroupsOnly : boolean);
+VipInterface Otchets           Licensed (B_FA) Parameters (MyOtSwitch : word; SelectOtchets : comp; ShowGroupsOnly : boolean; InitAction : word);
+VipInterface OtchetSelect      Licensed (B_FA) Parameters (MyOtSwitch : word; SelectOtchets : Comp);
+VipInterface OtMasksIn         Licensed (B_FA) Parameters (MyNRec : comp);
+VipInterface OtMasksOut        Licensed (B_FA) Parameters (MyNRec : comp);
+VipInterface ParamRasch        Licensed (B_FA) Parameters (cOtMasks : comp);
+VipInterface PustoGr           Licensed (B_FA) Parameters (MyNumArea, MDealCol : word; NameWin, WidthColumn : string; MyOtData : comp);
+VipInterface PValue            Licensed (B_FA) Parameters (MyNRec : comp);
+VipInterface RazborResult      Licensed (B_FA) Parameters (TypeOfGetting : word);
+VipInterface RulesOtMasks      Licensed (B_FA) Parameters (MyMaskset : comp; MDealCol : word; formula : string);
+VipInterface School            Licensed (B_FA) Parameters (MySchool : comp);
+

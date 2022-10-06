@@ -1,0 +1,459 @@
+object 'L_BASEDOC::VSCHET' : InterfaceWindow {
+
+  //Список ДО на продажу
+  object BRVSCHET : Browser {
+
+    object 'c_BRVSCHET_BASEDOC.NODOC_Номер' : Column {
+      Title = 'Номер'^M+
+              'ДО';
+    } // c_BRVSCHET_BASEDOC.NODOC_Номер : Column
+    object MercuryField : Column {
+          Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Статус заказа'^M+
+              'WMS';
+      HelpLine = 'Статус заказа WMS';
+      FieldName = 'MercuryField';
+      Index = 5;
+      DefaultWidth = 15;
+//        FontBackColor = 'if(isValidAll(tnATL_MERCURY_HEAD),if(ATL_MERCURY_HEAD.ISOK, 7, 10),0)';
+       FontBackColor = 'MercuryFieldColor';
+      ButtonType = 0;
+      }
+
+    object PickingReportField : Column {
+          Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Статус '^M+
+              'PickingReport';
+      HelpLine = 'Статус PickingReport';
+      FieldName = 'PickingReportField';
+      Index = 5;
+      DefaultWidth = 15;
+//        FontBackColor = 'if(isValidAll(tnATL_MERCURY_HEAD),if(ATL_MERCURY_HEAD.ISOK, 7, 10),0)';
+       FontBackColor = 'PickingReportFieldColor';
+      ButtonType = 0;
+      }
+
+    object 'ExtAttr: BASEDOC,281474976710710280#1' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Примечение';
+      HelpLine = 'Примечание логистики';
+      FieldName = 'ExtAttr: BASEDOC,281474976710710280';
+      Index = 7;
+      DefaultWidth = 26;
+      ButtonType = 0;
+    } // ExtAttr: BASEDOC,281474976710710280#1 : Column
+
+    object 'KATSOPR.NSOPR' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Номер'^M+
+              'накладной';
+      HelpLine = 'Номер'^M+
+                 'накладной';
+      FieldName = 'KATSOPR.NSOPR';
+      Index = 7;
+      DefaultWidth = 11;
+      ButtonType = 0;
+      MaxLen = 100;
+    } // KATSOPR.NSOPR : Column
+  object 'KATSOPR.DSOPR' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Дата'^M+
+              'накладной';
+      HelpLine = 'Дата накладной';
+      FieldName = 'KATSOPR.DSOPR';
+      Index = 7;
+      DefaultWidth = 12;
+      ButtonType = 256;
+      MaxLen = 10;
+    } // KATSOPR.DOPR : Column
+    object 'Field: STEPDOC.DOTGR' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Доставить'^M+
+              'до';
+      HelpLine = 'Доставить'^M+
+                 'до';
+      FieldName = 'Field: STEPDOC.DOTGR';
+      Index = 8;
+      DefaultWidth = 11;
+      ButtonType = 0;
+      MaxLen = 100;
+    } //Field: STEPDOC.DOTGR : Column
+
+    object 'c_BRVSCHET_KATORG.NAME_Контрагент' : Column {
+      Title = ^C'Плательщик';
+      Index = 8;
+    } // c_BRVSCHET_KATORG.NAME_Контрагент : Column
+
+    object 'TOORG.NAME' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = True;
+      StatusCtx = 0;
+      Title = 'Грузополучатель';
+      HelpLine = 'Грузополучатель';
+      FieldName = 'TOORG.NAME';
+      Index = 9;
+      DefaultWidth = 26;
+      ButtonType = 0;
+    } // TOORG.NAME : Column
+
+    object 'MaravtName' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Маршрут';
+      HelpLine = 'Маршрут';
+      FieldName = 'MaravtName';
+      Index = 10;
+      DefaultWidth = 26;
+      ButtonType = 0;
+    } // GetNameMaravt(ttndoc1.cMarAvt) : Column
+
+    object 'STEPDOC.NKONT' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'EDI: Order';
+      HelpLine = 'EDI: Order';
+      FieldName = 'STEPDOC.NKONT';
+      Index = 11;
+      DefaultWidth = 12;
+    } // STEPDOC.NKONT : Column
+
+    object 'STEPDOC.KONTPRI' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'EDI: RecAdv';
+      HelpLine = 'EDI: RecAdv';
+      FieldName = 'STEPDOC.KONTPRI';
+      Index = 12;
+      DefaultWidth = 10;
+      ButtonType = 0;
+      MaxLen = 80;
+    } // STEPDOC.KONTPRI : Column
+
+    object 'string(basedoc.nrec)' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Номер'^M+
+              'для Склада';
+      HelpLine = 'Номер'^M+
+                 'для Склада';
+      FieldName = 'string(basedoc.nrec)';
+      Index = 15;
+      DefaultWidth = 12;
+      ButtonType = 0;
+    } // string(basedoc.nrec) : Column
+
+    object 'KATSOPR.DOPR' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Дата'^M+
+              'cписания';
+      HelpLine = 'Дата Списания';
+      FieldName = 'KATSOPR.DOPR';
+      Index = 20;
+      DefaultWidth = 7;
+      ButtonType = 256;
+      MaxLen = 10;
+    } // KATSOPR.DOPR : Column
+
+  } //BRVSCHET : Browser
+
+
+  //Окно редактирования ДО на продажу
+  object WVSCHET : InterfaceWindow {
+
+
+    //заголовок ДО на продажу
+    object SCVSCHET : Screen {
+
+      //object 'b_SCVSCHET_Налоги' : Button {
+      //  Title = 'Расчет скидок';
+      //  HelpLine = 'Расчет скидок по документу';
+      //} // b_SCVSCHET_Налоги : Button
+ // Информация: объект "'ExtAttr: KATORG,281474976710733622'" типа PanelInputLine не найден в базовой конфигурации!
+
+
+
+
+      object 'ExtAttr: BASEDOC,281474976710656081' : PanelInputLine {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        StatusCtx = 150;
+        HelpLine = 'Канал сбыта';
+        FieldName = 'ExtAttr: BASEDOC,281474976710656081,5,8512,10022,1,Канал сбыта';
+        DefaultValue = '';
+        Origin_X = 555;
+        Origin_Y = 241;
+        Size_X = 136;
+        Size_Y = 14;
+        ButtonType = 16;
+      } // ExtAttr: BASEDOC,281474976710656081 : PanelInputLine
+
+      object 'LbExtAttr: BASEDOC,281474976710656081' : Label {
+        Original = False;
+        Title = 'Канал сбыта';
+        Visible = True;
+        Hidden = False;
+        Origin_X = 477;
+        Origin_Y = 243;
+        Size_X = 70;
+        Size_Y = 14;
+      } // LbExtAttr: BASEDOC,281474976710656081 : Label
+
+      object 'ExtAttr: BASEDOC,281474976710710280' : PanelInputLine {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = False;
+        StatusCtx = 150;
+        HelpLine = 'Примечание логистики';
+        FieldName = 'ExtAttr: BASEDOC,281474976710710280';
+        DefaultValue = '';
+        Origin_X = 163;
+        Origin_Y = 303;
+        Size_X = 346;
+        Size_Y = 14;
+        //ButtonType = 0;
+      } // ExtAttr: BASEDOC,281474976710710280 : PanelInputLine
+
+      object 'LbExtAttr: BASEDOC,281474976710710280' : Label {
+        Original = False;
+        Title = 'Примечание логистики';
+        Visible = True;
+        Hidden = False;
+        Origin_X = 13;
+        Origin_Y = 303;
+        Size_X = 133;
+        Size_Y = 14;
+      } // LbExtAttr: BASEDOC,281474976710710280 : Label
+
+       object fWarning : PanelInputLine {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        Skip = True;
+        HelpLine = '';
+        FieldName = 'fWarning';
+        DefaultValue = '';
+        Origin_X = 909;
+        Origin_Y = 50;
+        Size_X = 354;
+        Size_Y = 14;
+        TextAlign = 0;
+        ButtonType = 0;
+        DefaultPickButton = False;
+
+        FontBackColor = 'if(fWarning <> '''',12,0)';
+
+      } // fWarning : PanelInputLine
+       object fWarning2 : PanelInputLine {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        Skip = True;
+        HelpLine = '';
+        FieldName = 'fWarning2';
+        DefaultValue = '';
+        Origin_X = 909;
+        Origin_Y = 119;
+        Size_X = 354;
+        Size_Y = 14;
+        TextAlign = 0;
+        ButtonType = 0;
+        DefaultPickButton = False;
+
+        FontBackColor = 'if(fWarning2 <> '''',12,0)';
+
+      } // fWarning : PanelInputLine
+       object OrgAddInfo : PanelInputLine {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        Skip = True;
+        StatusCtx = 150;
+        HelpLine = 'Доп. информация';
+        FieldName = 'OrgAddInfo'; //,0,0,0,0,Доп. информация';
+        DefaultValue = '';
+        Origin_X = 908;
+        Origin_Y = 90;
+        Size_X = 631;
+        Size_Y = 14;
+      } // ExtAttr: KATORG,281474976710733622 : PanelInputLine
+    } // SCVSCHET : Screen
+
+
+    //спецификация ДО на продажу
+    object BRSPSCHET : Browser {
+      object 'c_BRSPSCHET_NOMENKL_Ном.номер' : Column {
+          Visible = False;
+        }
+      object 'c_BRSPSCHET_PLJOBNAME_План_работ' : Column {
+          Visible = False;
+        }
+
+      object 'Field: KATMC.BARKOD2' : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        StatusCtx = 0;
+        Title = 'SAP Код';
+        FieldName = 'Field: KATMC.BARKOD2';
+        Index = 5;
+        DefaultWidth = 14;
+        ButtonType = 0;
+         FontBackColor = 'if(NeedColorSpec = 1,12,0)'; // NeedColorSpec
+      } // 'Field: KATMC.BARKOD2' : Column
+
+      object KolBEGIN : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        StatusCtx = 0;
+        Title = 'Кол-во'^M+
+                'в заказе';
+        FieldName = 'KolBEGIN';
+        Index = 7;
+        DefaultWidth = 14;
+        ButtonType = 0;
+      } // KolBEGIN : Column
+      object 'KolUpakovok' : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        StatusCtx = 0;
+        Title = 'Кол-во'^M+
+                'упаковок';
+        FieldName = 'KolUpakovok';
+        Index = 8;
+        DefaultWidth = 14;
+        ButtonType = 0;
+        FontBackColor = 'if(KolUpakovok <> round(KolUpakovok,0),10,0)' ;
+      } // 'Field: KATMC.BARKOD2' : Column
+
+        object SL_REASON : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        StatusCtx = 0;
+        Title = 'Причина'^M+
+                'недопоставки';
+        FieldName = 'SL_REASON';
+        Index = 18;
+        DefaultWidth = 14;
+        ButtonType = 0;
+        DefaultPickButton = true;
+        FontColor     = 13;
+        FontBackColor = SL_BackColor;
+      } // 'Field: KATMC.BARKOD2' : Column
+
+      object 'NameSkidka0' : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        StatusCtx = 0;
+        Title = 'Основная'^M+
+                '(авт) скидка';
+        FieldName = 'NameSkidka0';
+        Index = 19;
+        DefaultWidth = 14;
+        ButtonType = 0;
+      } // GetNameSkidka(spstep.nrec,0) : Column
+
+      object 'NameSkidka1' : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        StatusCtx = 0;
+        Title = 'Дополнит.'^M+
+                '(руч) скидка';
+        FieldName = 'NameSkidka1';
+        Index = 20;
+        DefaultWidth = 12;
+        ButtonType = 0;
+      } // GetNameSkidka(spstep.nrec,1) : Column
+
+      object 'spstep.summa' : Column {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        StatusCtx = 0;
+        Title = 'Сумма с'^M+
+                'уч. скидки';
+        HelpLine = '';
+        FieldName = 'spstep.summa';
+        Index = 21;
+        DefaultWidth = 11;
+        ButtonType = 0;
+        PassiveFormat = '\2p[|-]36`666`666`666`666.88';
+        MaxLen = 22;
+      } // spstep.summa : Column
+
+      //закрываем доступ на редактирование цены и суммы
+      object 'c_BRSPSCHET_SPSTEP.PRICE_Цена_за_единицу' : Column {
+        Protect = True;
+      } // c_BRSPSCHET_SPSTEP.PRICE_Цена_за_единицу : Column
+
+      object 'c_BRSPSCHET_SUMMATOV_Стоимость' : Column {
+        Protect = True;
+      } // c_BRSPSCHET_SUMMATOV_Стоимость : Column
+
+    } //BRSPSCHET : Browser
+
+
+  } // WVSCHET : InterfaceWindow
+
+} // L_BASEDOC::VSCHET : InterfaceWindow
+//-----------------------------------------------------------------------------

@@ -1,0 +1,12 @@
+#ifdef ComponentVersion
+#component "Z_STAFFRecruiting"
+#end
+
+vipinterface VacancyList licensed(free);
+vipinterface Candidates licensed(free) parameters (PersNRec: comp);
+vipinterface ImportCandidatToXML licensed (free) parameters(WhatStart: word);
+vipinterface WorkingClaimant licensed (free);
+vipinterface FILTRFORVACANCY licensed(free) parameters (WorkDate: date; OnlyCompetition: word);
+VipInterface PickVacancyOnDate licensed(free) parameters (datecondition:date; cItem: comp; Markers: longint; Flags: word);
+VipInterface PrintCompetionList licensed(free);
+VipInterface InterviewReport licensed(free);

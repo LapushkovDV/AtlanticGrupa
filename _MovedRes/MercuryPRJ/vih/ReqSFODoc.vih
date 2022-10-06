@@ -1,0 +1,140 @@
+//------------------------------------------------------------------------------
+//                                                      (c) корпорация Галактика
+// Галактика 8.10 - Спецодежда
+// Объектный интерфейс для работы с требованиями на выдачу СФО
+//------------------------------------------------------------------------------
+
+#ifndef __REQSFODOC_VIH__
+#define __REQSFODOC_VIH__
+
+#ifdef ComponentVersion
+#component "F_SFO"
+#end
+
+#ifndef _T_Req_Doc_
+#define _T_Req_Doc_
+
+#ifdef ComponentVersionInDict
+  Public
+#end
+Type TReq_Doc = Record As Table ReqSFO;
+#end
+
+#doc
+Объектный интерфейс для работы с требованиями на выдачу СФО.<br>
+#end
+ObjInterface ObjReqSFO;
+
+//------------------------------------------------------------------------------
+
+  #doc
+  Проверить возможность создания требования на выдачу СФО.
+  #end
+  Function CanInsReqDoc(var _Buf : TReq_Doc; flag : word) : boolean;
+
+  #doc
+  Сформировать требование на выдачу СФО.
+  #end
+  Function InsReqDoc(var _Buf : TReq_Doc) : comp;
+
+  #doc
+  Создать спецификации требования на выдачу СФО.
+  #end
+  Function InsSpReqDoc(tReq : comp) : boolean;
+
+//------------------------------------------------------------------------------
+  #doc
+  Добавить требование в реестр.
+  #end
+  Function InsReqToList(tReq, tList : comp) : boolean;
+
+  #doc
+  Удалить требование из реестра.
+  #end
+  Function DelReqFrList(tReq : comp) : boolean;
+
+//------------------------------------------------------------------------------
+
+  #doc
+  Проверить возможность удаления требования на выдачу СФО.
+  #end
+  Function CanDelReqDoc(tReq : comp; flag : word) : boolean;
+
+  #doc
+  Удалить требование на выдачу СФО.
+  #end
+  Function DelReqDoc(tReq : comp) : boolean;
+
+  #doc
+  Проверить наличие связи требования с накладными Склад -> СФО.
+  #end
+  Function IsSklDocByReq(tReq : comp) : boolean;
+
+  #doc
+  Удалить требование на выдачу СФО и накладные Склад -> СФО.
+  #end
+  Function DelReqAndSklDoc(tReq : comp) : boolean;
+
+  #doc
+  Удалить спецификации требования на выдачу СФО.
+  #end
+  Function DelSpReqDoc(tReq : comp) : boolean;
+
+  #doc
+  Удалить выдачи одежды по спецификации требования.
+  #end
+  Function DelDocBySpReq(tSpReq : comp) : boolean;
+
+  #doc
+  Удалить выдачи фурнитуры по спецификации требования.
+  #end
+  Function DelDocByFSpReq(tFSpReq : comp) : boolean;
+
+//------------------------------------------------------------------------------
+
+  #doc
+  Изменить номер требования на выдачу СФО.
+  #end
+  Function UpdNomReqDoc(tReq : comp; rNum : string) : boolean;
+
+  #doc
+  Изменить номер документа в выдачах одежды по требованию.
+  #end
+  Function UpdNomDocByReq(tReq : comp; rNum : string) : boolean;
+
+//------------------------------------------------------------------------------
+
+  #doc
+  Проверить возможность изменения даты требования.
+  #end
+  Function CanUpdDateReqDoc(tReq : comp; rDate : date; flag : word) : boolean;
+
+//------------------------------------------------------------------------------
+
+  #doc
+  Функция проверяет, выдана ли вся затребованная фурнитура.
+  #end
+  Function IsMaterialBySpReq(tSpReq : comp) : string;
+
+//------------------------------------------------------------------------------
+
+  #doc
+  Очистить разноску требования на выдачу СФО.
+  #end
+  Function AbortSels(tReq : comp) : boolean;
+
+end;
+
+ObjInterface ObjReqSFO01;
+  #doc
+  Очистить разноску спецификаций требования на выдачу СФО.
+  #end
+  Function AbortSelsByReq(tReq : comp) : boolean;
+
+//------------------------------------------------------------------------------
+
+end;
+
+VipInterface ReqSFODoc implements ObjReqSFO, ObjReqSFO01 licensed (FREE);
+
+#end // __REQSFODOC_VIH__

@@ -1,0 +1,446 @@
+#include source\email\ATL_EmailRun.Vih
+
+#include Query.vih
+#component "ATLANTIC"
+
+Interface Mailing_PaymentTerm
+table struct tOrg
+(
+   ORGNAME      : string
+ , ORGEMAIL  : string
+)
+with index
+(
+ind0 = ORGNAME + ORGEMAIL
+)
+;
+table struct tSendEmail
+(
+    KSNSOPR      : string
+  , KSDSOPR      : date
+  , KSDOPR       : date
+  , KSSUMMS      : double
+  , sumopl       : double
+  , EmailManager : string
+  , EmailNotif   : word
+  , MAXDEBTSAGE  : word
+  , ORGNAME      : string
+  , ORGEMAIL     : string
+  , cDogovor     : comp
+  , eMail        : string
+  , eMailCopy    : string
+  , datePayment  : date
+
+)
+with index
+(
+  ind0 = KSNSOPR
+ , ind1 = ORGNAME + ORGEMAIL
+)
+;
+
+create view
+var
+  _MyLog : string;
+  email_num_row : longint = 0;
+ pATL_EmailRun : ATL_EmailRun new;
+as select
+ tSendEmail.KSNSOPR
+from
+    tSendEmail
+  , tOrg
+  , KatOrg MyKatOrg
+  , Dogovor MyDogovor
+  where ((cogettune('MYORG') == mykatorg.nrec))
+;
+Procedure MyLog(_str : string);
+{
+ if _MyLog = '' then _MyLog := GetStringParameter('Files','OutputFilesDirectory',0) + 'Mailing_PaymentTerm_'+datetostr(Cur_date,'YYYY-MM-DD') + '_' + timeToStr(Cur_time,'HH-MM-SS') + '.log';
+ logstrtofile(_MyLog, _str);
+}
+procedure MysqlAddStr(var query_handle: longInt; add_query_str: string);
+{
+   sqlAddStr(query_handle, add_query_str);
+   MyLog(add_query_str);
+} //Function MysqlAddStr(var query_handle: longInt; add_query_str: string): longInt;
+
+Procedure Write_Mess(w:string);
+{
+  email_num_row++;
+  pATL_EmailRun.Write_Text(email_num_row,w);
+} //Procedure Write_Mess(w:string);
+
+
+procedure Filltable;
+{
+ StartNewVisual(vtRotateVisual, vfBreak+vfTimer, 'Выполнение запроса', 1);
+ delete all tOrg;
+ delete all tSendEmail;
+       var hstr : longint = 0;
+
+     MysqlAddStr(hstr, ' select                     ');
+      MysqlAddStr(hstr, '   ks.nsopr as KSNSOPR         ');
+      MysqlAddStr(hstr, ' , ks.dsopr as KSDSOPR         ');
+      MysqlAddStr(hstr, ' , ks.dopr  as KSDOPR          ');
+      MysqlAddStr(hstr, ' , ks.Summa as KSSUMMS         ');
+      MysqlAddStr(hstr, ' , sum(coalesce(RasprSum.summa,0))  as sumopl ');
+      MysqlAddStr(hstr, ' //, spkManager.name           ');
+      MysqlAddStr(hstr, ' , Coalesce(avManagerEmail.vstring,'''') as EmailManager          ');
+      MysqlAddStr(hstr, ' , coalesce(avEmailNotif.vlongint,0) as EmailNotification       ');
+//      MysqlAddStr(hstr, ' , Coalesce(AppDog.MAXDEBTSAGE,DOG.MAXDEBTSAGE) as  MAXDEBTSAGE ');
+      MysqlAddStr(hstr, ' , case when Coalesce(plDog.dayPlat,AppDog.MAXDEBTSAGE,DOG.MAXDEBTSAGE,0) = 0 ');
+      MysqlAddStr(hstr, '             then 7                                             ');
+      MysqlAddStr(hstr, '             else Coalesce(plDog.dayPlat,AppDog.MAXDEBTSAGE,DOG.MAXDEBTSAGE,0)');
+      MysqlAddStr(hstr, '             end as  MAXDEBTSAGE                                ');
+
+      MysqlAddStr(hstr, ' , org.tiporg + '' '' + org.name  as ORGNAME                                         ');
+      MysqlAddStr(hstr, ' , org.email as ORGEMAIL                                        ');
+      MysqlAddStr(hstr, ' , Dog.nrec as cDogovor');
+      MysqlAddStr(hstr, ' , '''' as  eMail       ');
+      MysqlAddStr(hstr, ' , '''' as eMailCopy    ');
+      MysqlAddStr(hstr, ' , #date(0,0,0) as datePayment  ');
+
+      MysqlAddStr(hstr, ' from katsopr ks                                                ');
+
+      MysqlAddStr(hstr, ' join spsopr SpNakl on spNakl.cSopr = ks.nrec                    ');
+      MysqlAddStr(hstr, ' left join SpSopHoz RasprSum on (RasprSum.cSpSopr = SpNakl.nrec) ');
+
+      MysqlAddStr(hstr, ' join katorg org on org.nrec = ks.corg                          ');
+      MysqlAddStr(hstr, ' join attrnam anEmailNotif on anEmailNotif.name = ''EmailNotification'' and anEmailNotif.wtable  = 1418 ');
+      MysqlAddStr(hstr, ' left join attrval avEmailNotif on avEmailNotif.cAttrnam = anEmailNotif.nrec and avEmailNotif.wtable = anEmailNotif.wtable and avEmailNotif.crec = org.nrec ');
+      MysqlAddStr(hstr, ' join stepdoc std on std.nrec = ks.cstepdoc                                                                                                                 ');
+      MysqlAddStr(hstr, ' join basedoc bd on bd.nrec = std.cbasedoc                                                                                                                  ');
+      MysqlAddStr(hstr, ' join attrnam anChannel on anChannel.name = ''Канал сбыта'' and anChannel.wtable = 1102                                                                       ');
+      MysqlAddStr(hstr, ' join Attrval avChannel on avChannel.cAttrnam = anChannel.nrec and avChannel.wtable = anChannel.wtable and avChannel.crec = bd.nrec                         ');
+      MysqlAddStr(hstr, ' join spKau spkChannel on spkChannel.nrec = avChannel.vComp                                                                                                 ');
+      MysqlAddStr(hstr, ' join Dogovor Dog on DOG.nrec = KS.cDogovor                                                                                                                 ');
+      MysqlAddStr(hstr, ' left join Dogovor AppDog on AppDog.nrec = KS.cAppDogovor                                                                                                   ');
+      MysqlAddStr(hstr, ' left join planDog plDog on plDog.cDogovor = Coalesce(AppDog.nrec,Dog.nrec) and plDog.vidplat = 2                                                           ');
+    //  MysqlAddStr(hstr, ' outer apply (select top 1 bf.nrec from BASEFIN bf where bf.CBASEDOC = bd.nrec ) BF                                                                      ');
+      MysqlAddStr(hstr, ' join attrnam anManager on anManager.name = ''Менеджер'' and anManager.wtable = 1418                                                                          ');
+      MysqlAddStr(hstr, ' left join Attrval avManager on avManager.cAttrnam = anManager.nrec and avManager.wtable = anManager.wtable and avManager.crec = Org.nrec                   ');
+      MysqlAddStr(hstr, ' left join SpKau spkManager on spkManager.nrec = avManager.vComp                                                                                            ');
+      MysqlAddStr(hstr, ' join attrnam anManagerEmail on anManagerEmail.name = ''EMAIL'' and anManagerEmail.wtable = 8512                                                              ');
+      MysqlAddStr(hstr, ' left join Attrval avManagerEmail on avManagerEmail.cAttrnam = anManagerEmail.nrec and avManagerEmail.wtable = anManagerEmail.wtable and avManagerEmail.crec = spkManager.nrec ');
+      MysqlAddStr(hstr, '                                          ');
+      MysqlAddStr(hstr, ' where                                    ');
+      MysqlAddStr(hstr, ' ks.vidsopr = 201                         ');
+      MysqlAddStr(hstr, ' and ks.cadoc = #comp(0)                  ');
+      MysqlAddStr(hstr, ' and ks.dopr >= #date('+datetostr(add_day(cur_date,(-1)*wgettune('USERTUNE.EMAILING.PAYMENTTERM_DAYASSEARCHNAKL')),'DD,MM,YYYY')+')         ');
+      MysqlAddStr(hstr, ' and spkChannel.name = ''Дистрибьютор''     ');
+//      MysqlAddStr(hstr, ' and sumopl.nrec is null                  '); // отсутствие распределения
+  //    MysqlAddStr(hstr, ' and bf.nrec is null ');                      // отсутствие просто Платежа
+
+     MysqlAddStr(hstr, '  group by    ks.nsopr , ks.dsopr  , ks.dopr   , ks.Summa , Coalesce(avManagerEmail.vstring,'''')  ');
+     MysqlAddStr(hstr, '     , coalesce(avEmailNotif.vlongint,0)  , case when Coalesce(plDog.dayPlat,AppDog.MAXDEBTSAGE,DOG.MAXDEBTSAGE,0) = 0 ');
+     MysqlAddStr(hstr, '            then 7  ');
+     MysqlAddStr(hstr, '            else Coalesce(plDog.dayPlat,AppDog.MAXDEBTSAGE,DOG.MAXDEBTSAGE,0) ');
+     MysqlAddStr(hstr, '            end , org.tiporg + '' '' + org.name   , org.email  , Dog.nrec ');
+     MysqlAddStr(hstr, ' having round( abs(ks.Summa - sum(coalesce(RasprSum.summa,0))),0) > 10 ');   // сравниваем сумму накладной и распределения в рублях... вот тут вопрос валюты
+
+
+/* тут смотрим просто на наличие платежа к ДО и пропускаем сразу
+      MysqlAddStr(hstr, ' select                     ');
+      MysqlAddStr(hstr, '   ks.nsopr as KSNSOPR         ');
+      MysqlAddStr(hstr, ' , ks.dsopr as KSDSOPR         ');
+      MysqlAddStr(hstr, ' , ks.dopr  as KSDOPR          ');
+      MysqlAddStr(hstr, ' , ks.Summa as KSSUMMS         ');
+      MysqlAddStr(hstr, ' //, spkManager.name           ');
+      MysqlAddStr(hstr, ' , Coalesce(avManagerEmail.vstring,'''') as EmailManager          ');
+      MysqlAddStr(hstr, ' , coalesce(avEmailNotif.vlongint,0) as EmailNotification       ');
+//      MysqlAddStr(hstr, ' , Coalesce(AppDog.MAXDEBTSAGE,DOG.MAXDEBTSAGE) as  MAXDEBTSAGE ');
+      MysqlAddStr(hstr, ' , case when Coalesce(plDog.dayPlat,AppDog.MAXDEBTSAGE,DOG.MAXDEBTSAGE,0) = 0 ');
+      MysqlAddStr(hstr, '             then 7                                             ');
+      MysqlAddStr(hstr, '             else Coalesce(plDog.dayPlat,AppDog.MAXDEBTSAGE,DOG.MAXDEBTSAGE,0)');
+      MysqlAddStr(hstr, '             end as  MAXDEBTSAGE                                ');
+
+      MysqlAddStr(hstr, ' , org.tiporg + '' '' + org.name  as ORGNAME                                         ');
+      MysqlAddStr(hstr, ' , org.email as ORGEMAIL                                        ');
+      MysqlAddStr(hstr, ' , Dog.nrec as cDogovor');
+      MysqlAddStr(hstr, ' , '''' as  eMail       ');
+      MysqlAddStr(hstr, ' , '''' as eMailCopy    ');
+      MysqlAddStr(hstr, ' , #date(0,0,0) as datePayment  ');
+
+      MysqlAddStr(hstr, ' from katsopr ks                                                ');
+      MysqlAddStr(hstr, ' join katorg org on org.nrec = ks.corg                          ');
+      MysqlAddStr(hstr, ' join attrnam anEmailNotif on anEmailNotif.name = ''EmailNotification'' and anEmailNotif.wtable  = 1418 ');
+      MysqlAddStr(hstr, ' left join attrval avEmailNotif on avEmailNotif.cAttrnam = anEmailNotif.nrec and avEmailNotif.wtable = anEmailNotif.wtable and avEmailNotif.crec = org.nrec ');
+      MysqlAddStr(hstr, ' join stepdoc std on std.nrec = ks.cstepdoc                                                                                                                 ');
+      MysqlAddStr(hstr, ' join basedoc bd on bd.nrec = std.cbasedoc                                                                                                                  ');
+      MysqlAddStr(hstr, ' join attrnam anChannel on anChannel.name = ''Канал сбыта'' and anChannel.wtable = 1102                                                                       ');
+      MysqlAddStr(hstr, ' join Attrval avChannel on avChannel.cAttrnam = anChannel.nrec and avChannel.wtable = anChannel.wtable and avChannel.crec = bd.nrec                         ');
+      MysqlAddStr(hstr, ' join spKau spkChannel on spkChannel.nrec = avChannel.vComp                                                                                                 ');
+      MysqlAddStr(hstr, ' join Dogovor Dog on DOG.nrec = KS.cDogovor                                                                                                                 ');
+      MysqlAddStr(hstr, ' left join Dogovor AppDog on AppDog.nrec = KS.cAppDogovor                                                                                                   ');
+      MysqlAddStr(hstr, ' left join planDog plDog on plDog.cDogovor = Coalesce(AppDog.nrec,Dog.nrec) and plDog.vidplat = 2                                                           ');
+      MysqlAddStr(hstr, ' outer apply (select RasprSum.nrec  // смотрим распределение по позициям накладных, сумму не смотрим, просто наличие                                        ');
+      MysqlAddStr(hstr, '               from spsopr SpNakl                                                                                                                           ');
+      MysqlAddStr(hstr, '               join SpSopHoz RasprSum on (RasprSum.cSpSopr = SpNakl.nrec)                                                                                   ');
+      MysqlAddStr(hstr, '              where spNakl.cSopr = ks.nrec                                                                                                                  ');
+      MysqlAddStr(hstr, '            ) SumOpl                                                                                                                                        ');
+      MysqlAddStr(hstr, ' outer apply (select top 1 bf.nrec from BASEFIN bf where bf.CBASEDOC = bd.nrec ) BF                                                                      ');
+      MysqlAddStr(hstr, ' join attrnam anManager on anManager.name = ''Менеджер'' and anManager.wtable = 1418                                                                          ');
+      MysqlAddStr(hstr, ' left join Attrval avManager on avManager.cAttrnam = anManager.nrec and avManager.wtable = anManager.wtable and avManager.crec = Org.nrec                   ');
+      MysqlAddStr(hstr, ' left join SpKau spkManager on spkManager.nrec = avManager.vComp                                                                                            ');
+      MysqlAddStr(hstr, ' join attrnam anManagerEmail on anManagerEmail.name = ''EMAIL'' and anManagerEmail.wtable = 8512                                                              ');
+      MysqlAddStr(hstr, ' left join Attrval avManagerEmail on avManagerEmail.cAttrnam = anManagerEmail.nrec and avManagerEmail.wtable = anManagerEmail.wtable and avManagerEmail.crec = spkManager.nrec ');
+      MysqlAddStr(hstr, '                                          ');
+      MysqlAddStr(hstr, ' where                                    ');
+      MysqlAddStr(hstr, ' ks.vidsopr = 201                         ');
+      MysqlAddStr(hstr, ' and ks.cadoc = #comp(0)                  ');
+      MysqlAddStr(hstr, ' and ks.dopr >= #date('+datetostr(add_day(cur_date,(-1)*wgettune('USERTUNE.EMAILING.PAYMENTTERM_DAYASSEARCHNAKL')),'DD,MM,YYYY')+')         ');
+      MysqlAddStr(hstr, ' and spkChannel.name = ''Дистрибьютор''     ');
+//      MysqlAddStr(hstr, ' and sumopl.nrec is null                  '); // отсутствие распределения
+      MysqlAddStr(hstr, ' and bf.nrec is null ');                      // отсутствие просто Платежа
+      MysqlAddStr(hstr, ' order by ks.dopr                         ');
+*/
+ var objQuery: iQuery;
+          objQuery := queryManager.createQuery(hstr);
+        if objQuery.execute.errorCode != tsOk
+         then {
+               StopVisual('',0);
+               MyLog('Ошибка выполнения запроса '+ objQuery.errorCode);
+               exit;
+              }
+        else
+        {
+          sqlCopyInto(objQuery, tntSendEmail, false);
+        }
+
+ StopVisual('',0);
+}
+Procedure MyPrintEmailTable2columns(_StrColumn1, _strColumn2: string);
+{
+      Write_Mess('<TR>');
+      Write_Mess('<TD ALIGN="Left">');
+      Write_Mess(_StrColumn1);
+      Write_Mess('</TD>');
+      Write_Mess('<TD ALIGN="Left">');
+      Write_Mess(_strColumn2);
+      Write_Mess('</TD>');
+      Write_Mess('</TR>');
+
+}
+Function getWorkDay(_date : date) : string;
+{
+  if day(_date) = last_day(_date) {
+   result := datetostr(_date, 'DD/MM/YYYY');
+   exit;
+  }
+  do {
+   _date := add_day(_date,1);
+  } while Day_Of_Week(_date) > 6
+ result := datetostr(_date, 'DD/MM/YYYY');
+}
+procedure makeMailing;
+{
+ if getfirst MyKatOrg <> tsOK then
+  { mylog(' не удалось найти собственную организацию, указанную в настройке MYORG');
+    exit;
+  }
+ var _emailCopyTune : string = sgettune('USERTUNE.EMAILING.PAYMENTTERM_EMAILCOPY');
+ var _daysBefore : word = wgettune('USERTUNE.EMAILING.PAYMENTTERM_DAYSBEFORE');
+ var _debug : word = wgettune('USERTUNE.EMAILING.PAYMENTTERM_DEBUG');
+ MyLog('_emailCopyTune = '  + _emailCopyTune);
+ MyLog('_daysBefore = ' + _daysBefore);
+   _loop tSendEmail
+    {
+        MyLog('====================================================');
+      if _debug = 1
+      {
+         MyLog('tSendEmail.KSNSOPR      = ' +  tSendEmail.KSNSOPR );
+         MyLog('tSendEmail.KSDSOPR      = ' +  tSendEmail.KSDSOPR );
+         MyLog('tSendEmail.KSDOPR       = ' +  tSendEmail.KSDOPR  );
+         MyLog('tSendEmail.KSSUMMS      = ' +  tSendEmail.KSSUMMS );
+         MyLog('tSendEmail.sumopl       = ' +  tSendEmail.sumopl );
+         MyLog('tSendEmail.EmailManager = ' +  tSendEmail.EmailManager );
+         MyLog('tSendEmail.EmailNotif   = ' +  tSendEmail.EmailNotif   );
+         MyLog('tSendEmail.MAXDEBTSAGE  = ' +  tSendEmail.MAXDEBTSAGE  );
+         MyLog('tSendEmail.ORGNAME      = ' +  tSendEmail.ORGNAME      );
+         MyLog('tSendEmail.ORGEMAIL     = ' +  tSendEmail.ORGEMAIL     );
+         MyLog('tSendEmail.cDogovor  = ' +  tSendEmail.cDogovor  );
+      }
+     var _datePayment : date = add_day(tSendEmail.KSDOPR, tSendEmail.MAXDEBTSAGE);
+     var _dateEMAILING : date = add_day(Cur_date, _daysBefore );
+     MyLog('KSNSOPR = '+tSendEmail.KSNSOPR);
+     MyLog('_datePayment  = '+ _datePayment );
+     MyLog('_dateEMAILING = '+ _dateEMAILING);
+
+     if _datePayment > _dateEMAILING //3.	Если до оплаты более 5 дней, ДО исключается из обработки
+        {
+       MyLog('Continue');
+       continue;
+      }
+
+     var _Email : string = tSendEmail.ORGEMAIL;
+
+     Var _eMailCopy : string = tSendEmail.EmailManager;
+
+     if _Email = ''
+      then  {
+         _Email := _eMailCopy;
+         _eMailCopy := _emailCopyTune;
+        }
+      else {
+        _eMailCopy := _eMailCopy + ';' +_emailCopyTune;
+      }
+
+
+// Если до оплаты 5 дней и менее, но просрочки нет, проверяем значение внешнего атрибута EmailNotification  у контрагента
+// Если false или не установлено, письмо направляется только на адрес ludmila.mironova@atlanticgrupa.com
+// Если true, то отправляем письмо адресату, в копию - адрес менеджера.
+      if _datePayment > cur_date // то ,что меньше или равно _dateEMAILING проверено выше
+        {
+          if EmailNotif = 0 then //Если false или не установлено, письмо направляется только на адрес ludmila.mironova@atlanticgrupa.com
+           {
+             _Email := _eMailCopy;
+             _eMailCopy := _emailCopyTune;
+           }
+        }
+
+   if _Email = ''
+      {
+        _Email     := _emailCopyTune;
+        _eMailCopy := '';
+      }
+
+      if _debug = 1 {
+        _Email     := _emailCopyTune;
+        _eMailCopy := '';
+      }
+     MyLog('_Email = '  + _Email);
+     MyLog('_eMailCopy = ' + _eMailCopy);
+      if _Email  = ''
+       {
+           MyLog('Continue');
+           continue;
+       }
+
+      if getfirst tOrg where ((tSendEmail.ORGNAME  == tOrg.ORGNAME
+                           and tSendEmail.ORGEMAIL == tOrg.ORGEMAIL)) <> tsOK {
+
+            insert tOrg set
+               tOrg.ORGNAME  := tSendEmail.ORGNAME
+             , tOrg.ORGEMAIL := tSendEmail.ORGEMAIL
+            ;
+           }
+      update current tSendEmail set
+         tSendEmail.eMail       := _eMail
+       , tSendEmail.eMailCopy   := _eMailCopy
+       , tSendEmail.datePayment := _datePayment
+      ;
+   }
+   // тут разрыв сделать дл группировки просроченным в одно письмо
+#declare LoppHeadMail
+        email_num_row:=0;
+
+     Write_Mess('<TABLE BORDER="0" WIDTH="100%">');
+          Write_Mess('<TR>');
+
+          Write_Mess('<TD ALIGN="Center" WIDTH="50%">');
+          Write_Mess('<B>');
+          Write_Mess('');
+          Write_Mess('</B>');
+          Write_Mess('</TD>');
+
+          Write_Mess('<TD ALIGN="Center" WIDTH="50%">');
+          Write_Mess('<B>');
+          Write_Mess('');
+          Write_Mess('</B>');
+          Write_Mess('</TD>');
+
+
+          Write_Mess('</TR>');
+
+      MyPrintEmailTable2columns('ООО "Атлантик Брендс"','Руководителю  '+tSendEmail.ORGNAME);
+      MyPrintEmailTable2columns('105094, Россия, Москва г, ул. Золотая д. 11, офис 4Б10','Главному бухгалтеру ' +tSendEmail.ORGNAME);
+      MyPrintEmailTable2columns('+7 (495) 249-03-99','');
+      MyPrintEmailTable2columns(MyKatOrg.Email,'');
+      MyPrintEmailTable2columns('', 'От ООО "Атлантик Брендс"');
+      MyPrintEmailTable2columns(datetostr(cur_date,'DD.MM.YYYY'), 'Тема: Уведомительное письмо');
+       Write_Mess('</TABLE>');
+      Write_Mess('<BR>');
+        Write_Mess('  ');
+
+#end
+#declare Loopbottommail
+      Write_Mess('  ');
+      Write_Mess('С уважением,');
+      Write_Mess('ООО "Атлантик Брендс"');
+      Write_Mess('<BR>');
+      pATL_EmailRun.EmailSend(
+                                 tSendEmail.Email // _email_addr :string ;
+                                ,'Уведомительное письмо'
+                                ,'' //_email_attach1 :string ;
+                                ,'' //_email_attach2 :string ;
+                                ,'' //_email_attach3 :string ;
+                                ,'' //_email_attach4 :string ;
+                                ,''
+                                ,tSendEmail.eMailCopy //_email_addr_copy :string='';
+                                ,'' //_email_addr_from :string=''
+                             );
+
+#end
+  _LOOP tOrg
+   {
+  _loop  tSendEmail where (( tOrg.ORGNAME  == tSendEmail.ORGNAME
+                         and tOrg.ORGEMAIL == tSendEmail.ORGEMAIL
+                          ))
+                         and tSendEmail.datePayment <> 0 // их пропустили выше, по ним не надо рассылать
+                         and Cur_date < tSendEmail.datePayment
+     {
+       #LoppHeadMail
+
+        Write_Mess('Уважаемые партнеры,');
+        Write_Mess('  ');
+        Write_Mess('ООО "Атлантик Брендс" благодарит Вас за сотрудничество и напоминает, что ' + datetostr(tSendEmail.datePayment, 'DD.MM.YYYY') + ' (крайний срок оплаты) наступает срок оплаты по накладной #'+tSendEmail.KSNSOPR+' от '+datetostr(tSendEmail.KSDSOPR,'DD.MM.YYYY'));
+        Write_Mess('Сумма оплаты ' + (tSendEmail.KSSUMMS - tSendEmail.sumopl)+ ' руб с НДС. Пожалуйста, не забудьте включить эту сумму в график платежей.');
+
+        #Loopbottommail
+    }
+
+
+    if (getfirst tSendEmail where (( tOrg.ORGNAME  == tSendEmail.ORGNAME
+                                and tOrg.ORGEMAIL == tSendEmail.ORGEMAIL
+                                 ))
+                         and tSendEmail.datePayment <> 0 // их пропустили выше, по ним не надо рассылать
+                         and Cur_date > tSendEmail.datePayment     // просрочка
+       ) =tsOK
+      {
+            #LoppHeadMail
+            Write_Mess('  ');
+            Write_Mess('Уважаемые партнеры,');
+            Write_Mess('  ');
+            Write_Mess('ООО "Атлантик Брендс" благодарит Вас за сотрудничество и напоминает,');
+            Write_Mess('что по состоянию на '+datetostr(cur_date, 'DD.MM.YYYY')+' за '+tSendEmail.ORGNAME+' имеется просроченная задолженность по следующим договорам:');
+
+          _loop  tSendEmail where (( tOrg.ORGNAME  == tSendEmail.ORGNAME
+                             and tOrg.ORGEMAIL == tSendEmail.ORGEMAIL
+                              ))
+                             and tSendEmail.datePayment <> 0 // их пропустили выше, по ним не надо рассылать
+                             and Cur_date > tSendEmail.datePayment     // просрочка
+          {
+            var _DogNoDocExt : string = '';
+            var _DogDDoc : date = 0;
+            if getfirst MyDogovor where ((tSendEmail.cDogovor == myDogovor.nrec)) = tsOK
+             {
+               _DogNoDocExt := MyDogovor.NoDoc_Ext;
+               _DogDDoc     := MyDogovor.dDoc;
+             }
+            Write_Mess('Договор №'+_DogNoDocExt+'от '+datetostr(_DogDDoc, 'DD.MM.YYYY')+' накладная #'+tSendEmail.KSNSOPR+' от '+datetostr(tSendEmail.KSDSOPR,'DD.MM.YYYY') +' на сумму ' + (tSendEmail.KSSUMMS - tSendEmail.sumopl) + ' руб с НДС. - ' +
+                               + if((calcdaysbetweendates( tSendEmail.datePayment,cur_date,false)-1) >0,'на '+(calcdaysbetweendates( tSendEmail.datePayment,cur_date,false)-1)+' дней ','') );
+          }
+         Write_Mess('Отгрузки в ваш адрес заблокированы. Для разблокировки необходимо погасить просроченную задолженность до ' +getWorkDay(Cur_date));
+        #Loopbottommail
+      }
+  }
+}
+
+handleevent
+cminit:
+{
+ Filltable;
+ makeMailing;
+}
+end;
+end.

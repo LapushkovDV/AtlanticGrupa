@@ -1,0 +1,10 @@
+// 8.0
+// Экпортируемые интерфейсы компоненты F_DistPl
+
+#ifdef ComponentVersion
+#component "F_DistPl"
+#end
+
+VipInterface iStvPlat licensed (free);
+! Для F_PlPor
+Menu TypesDirect;
