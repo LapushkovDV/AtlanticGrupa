@@ -1,0 +1,141 @@
+interface KatDocPrint;
+
+const
+  cgTiDk_LastUsers = 50000;
+  cmPrintDoc = 3440;
+end;
+
+create view viewKatDoc
+  var cParent : comp
+
+  as select * from KatDoc
+
+  bounds ShowTree = 0 == KatDoc.SysNum
+  and cParent == KatDoc.cNode
+  ordered by KatDoc.TiDkGal
+
+  bounds ShowList = 0 == KatDoc.SysNum
+  and 0 << KatDoc.TiDkGal
+  and cgTiDk_LastUsers >>= KatDoc.TiDkGal
+;
+
+function GetIsDoc : boolean;
+{
+  result := ( KatDoc.TiDkGal <= cgTiDk_LastUsers );
+}
+
+function GetTiDkText : string;
+{
+  if( GetIsDoc )
+    result := string(KatDoc.TiDkGal)
+  else
+    result := '';
+}
+
+screen DocScreen;
+show at (,,,2);
+buttons cmPrintDoc;
+<<
+ <.печать.>
+>>
+end
+
+tree DocTree;
+show at (,3,,);
+table KatDoc;
+fields
+  KatDoc.Name  'Хозяйственный документ': [60], protect;
+  GetTiDkText  'Код': [10], protect;
+end;
+
+tableevent table KatDoc
+  cmTreeTop:
+    cParent := 0;
+
+  cmTreeUp:
+    cParent := KatDoc.cNode;
+
+  cmTreeDown:
+    cParent := KatDoc.Nrec;
+
+  cmTreeNodeType:
+    if( GetIsDoc )
+      TreeSetNodeType(DocTree, ntfText, '');
+end;
+
+var IsFirstRec : boolean;
+
+DataStream DocDataStream
+  (
+    [User] UserName;   // элемент "нулевого уровня"
+
+    table KatDoc       // элемент уровня table
+    (
+      KatDoc.Name;
+      KatDoc.TiDkGal;
+    );
+
+    dataset KatDocTree // элемент уровня dataset
+    (
+      [Name]     KatDoc.Name;
+      [TiDkGal]  KatDoc.TiDkGal;
+      [TiDkText] GetTiDkText;
+      [Level]    TreeLevel(DocTree);
+    );
+  )
+
+  handleevent table KatDoc       // handleevent уровня table.
+  cmPreProcess:
+    PushBounds(tbShowList);
+
+  cmOnProcess:
+    if (not NextVisual)
+      BreakProcess;
+  end;
+
+  handleevent dataset KatDocTree // handleevent уровня dataset.
+  cmPreProcess:
+  {
+    PushBounds(tbShowTree);
+    IsFirstRec := true;
+  }
+
+  cmOnProcess:
+  {
+    if( not NextVisual )
+      BreakProcess;
+
+    if( IsFirstRec )
+    {
+      IsFirstRec := false;
+
+      if( TreeGetFirstEx(DocTree) )
+        ContinueDataset;
+    }
+    else
+    {
+      if( TreeGetNextEx(DocTree) )
+        ContinueDataset;
+    }
+  }
+  end;
+
+
+  handleevent // handleevent уровня datastream
+  cmPreProcess:
+    StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Формируется отчет', 0);
+
+  cmPostProcess:
+    StopVisual('', 0);
+  end;
+end;
+
+handleevent  // handleevent интерфейса
+cmInit:
+  PushBounds(tbShowTree);
+
+cmPrintDoc :
+  RunFReport(DocDataStream, '', false);
+
+end;
+end.

@@ -243,11 +243,12 @@ procedure MyWriteLN(_s: string);
 
 #end
 
-#include CRPT_API_PowerShell_IdentifyToolsInfo.Vpp
-#include CRPT_API_PowerShell_GetToken.Vpp
-#include CRPT_API_PowerShell_GetKituStatus.Vpp
-#include CRPT_API_PowerShell_KituInfo.Vpp
-#include CRPT_API_PowerShell_isExistCis.Vpp
+#include source\CRPT_API_PowerShell_IdentifyToolsInfo.Vpp
+#include source\CRPT_API_PowerShell_GetToken.Vpp
+#include source\CRPT_API_PowerShell_GetKituStatus.Vpp
+#include source\CRPT_API_PowerShell_KituInfo.Vpp
+#include source\CRPT_API_PowerShell_isExistCis.Vpp
+#include source\CRPT_API_PowerShell_GetHistoryCIS.Vpp
 
 Procedure fillrecArrayByTypeTable;
 {
@@ -275,6 +276,7 @@ cmInit:
     'GetToken'      : GetRequestToAPIGetToken
     'GetKituStatus' : GetRequestToAPIGetKituStatus(_Cis)
     'GetKituInfo'   : GetRequestToAPIGetKituInfo(_Cis)
+    'GetHistoryCIS' : GetRequestToAPIGetHistoryCIS(_Cis)
  else {
     mylog('Значения параметра "' + _Parameter+'" нет у данного интерфейса')
  }

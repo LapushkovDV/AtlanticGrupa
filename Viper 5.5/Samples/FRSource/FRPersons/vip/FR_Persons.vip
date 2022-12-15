@@ -1,0 +1,211 @@
+Interface FRPersons 'Сотрудники компании' (,,sci1Esc), Gray;
+Show (,, 101, 30);
+
+table struct tmpPersons
+(
+  Nrec: comp,
+  FIO: string,  // ФИО
+  TabNmb: longint, // Табельный номер
+  Department: comp, // ссылка на головное подразделение
+  AppDate: date,    // дата приема на работу
+  sDepCode: string,  // код подразделения
+  sDepartment: string,  // подразделение строкой
+  sPost: string,  // должность
+  sCategory: string   // категория
+)
+with index
+(
+  indexByNrec = Nrec,
+  indexByDept = Department + FIO
+);
+
+create view
+  var
+    bOnProcess, FRSuccess: Boolean;
+    CurNRec: comp;
+    ReportName: String;
+    FReport: #TPtr;
+    Reports: LongInt;
+  from
+    tmpPersons,
+    tmpPersons SynPersons,
+    Persons,
+    Appendix Photo
+  where
+  ((
+         tmpPersons.NRec == Persons.Nrec
+     and 1               == Photo.ObjBlock
+     and tmpPersons.NRec == Photo.Person
+     and 200             == Photo.ObjType
+  ));
+
+  DataStream FRPersons
+  (
+    dataset tmpPersons
+    (
+      [FIO] tmpPersons.FIO;
+      [TabelNumber] tmpPersons.TabNmb;
+      [AppDate] tmpPersons.AppDate;
+      [DepCode] tmpPersons.sDepCode;
+      [Departament] tmpPersons.sDepartment;
+      [Post] tmpPersons.sPost;
+      [Category] tmpPersons.sCategory;
+    );
+
+    // табличный источник данных - фотографии
+    Table Photo
+    (
+      [prefix] GetMemoPrefix(tnPhoto);
+      [data]   Photo.Contents;
+    );
+  )
+
+   HandleEvent dataset tmpPersons
+      cmPreProcess:
+      {
+        bOnProcess := True;
+      }
+
+      cmOnProcess:
+      {
+        if (not NextVisual)
+          BreakProcess;
+
+        if bOnProcess
+        {
+          if (GetFirst SynPersons Where ((CurNRec == SynPersons.NRec)) = tsOk)
+          {
+//              set CurNRec := SynPersons.Nrec;
+            ContinueDataSet;
+            bOnProcess := False;
+          }
+        }
+      }
+    end;
+
+  HandleEvent //DataStream
+    cmPreProcess :
+    {
+      StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Выполняется формирование отчета...', 0);
+    }
+
+    cmPostProcess :
+    {
+      StopVisual('',0);
+    }
+  end; //DataStream
+end;
+
+embedded FREmbedded OLE;
+show at (51,1,100,23);
+end;
+
+Screen sBut;
+show (1,24,,);
+Buttons
+   cmFRSave;
+<<
+   <. Excel .>
+>>
+end;
+
+browse brReportTable (,, sci178Esc);
+show (1,1,50,23);
+table tmpPersons;
+  fields
+    tmpPersons.FIO 'ФИО сотрудника'('ФИО сотрудника'):[30], protect;
+    tmpPersons.sDepartment 'Подразделение'('Подразделение',,):[30], protect;
+end;
+
+TableEvent table tmpPersons;
+cmPositionChanged:
+{
+  CurNRec := tmpPersons.Nrec;
+  FRPrepareReport(FReport, True);
+}
+end;
+
+Procedure FillTmpPersons;
+{
+  //  кроме "Уволенных"
+  insert visual into tmpPersons
+    select
+      Persons.NRec,
+      Persons.FIO,
+      Persons.TabNmb,
+      Persons.Department,
+      Persons.AppDate,
+      Catalogs2.Code,
+      Catalogs2.Name,
+      Catalogs.Name,
+      KlKatego.NaiKat
+    From
+      Persons, Appointments, Catalogs
+      , Catalogs Catalogs2, KlKatego
+      , Vacancy
+    where
+      (('С' /== Persons.IsEmployee
+        and date(0, 0, 0) /== Persons.DisDate // работающие
+        and Persons.AppointCur == Appointments.nRec
+        and Appointments.Post == Catalogs.nRec
+        and Persons.Department == Catalogs2.nRec
+        and Appointments.EmpCategory == KlKatego.Nrec
+        and Persons.nRec == Vacancy.Person
+        ))
+
+} // procedure FillTmpPersons
+
+HandleEvent
+
+cmInit:
+{
+  var
+    sReports: array [0..0] of String;
+
+  FRSuccess := False;
+
+  FillTmpPersons;
+
+  FReport := FRCreate(FRPersons);
+
+  if FReport <> 0
+  {
+    FRGetReportNames(FReport, sReports);
+    ReportName := sReports[0];
+
+    if FROpenReport(FReport, ReportName)
+    {
+      if FRSetParameters(FReport, frEmbeddedID, FREmbedded)
+      {
+        FRSuccess := True;
+        getfirst tmpPersons;
+        PutHotCommand(cmValue1);
+      }
+      else
+        Message('Не удалось встроить отчет.');
+    }
+    else
+      Message('Не удалось загрузить шаблон отчета.');
+  }
+  else
+    Message('Не удалось создать экземпляр FastReport.');
+}
+
+cmValue1:
+{
+  FRShowReport(FReport);
+}
+
+cmFRSave:
+{
+  if FRSetParameters(FReport, frExportBiff, 'OpenAfterExport=True')
+    FRExportReport(FReport, frExportBiff, '');
+}
+
+cmDone:
+{
+  FRDestroy(FReport);
+}
+
+end;
+end.

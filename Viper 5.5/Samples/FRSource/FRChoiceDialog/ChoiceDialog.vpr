@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005015000">
+	<ProjectManager>
+		<ProjectName>SaveFRTest</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="D:\Gal\EXE\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>D:\Atl\55_23\exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Gen
+					$[AtlPath]\Source\*
+					..\..\vip_source*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+				</ResourceList>
+				<OutputResource>$[GalExe]\user$[ExtRes]</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseName>..\..\..\..\Gal\DataBase\data_los</DatabaseName>
+					<FullLoginName>True</FullLoginName>
+					<HwKeyDirectory>\\BY01-HWKEY01\HWDIR</HwKeyDirectory>
+					<LicFileName>\\by01-hwkey03.oit.local\license\support\V9\license.btr</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="Vip\FRChoiceDialog.vip" PosX="86" PosY="120" OpenEditor="True"/>
+			<File Name="FRChoiceReport.prj" PosX="57" PosY="15" OpenEditor="True" Active="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="FRChoiceReport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFile FileName="Vip\FRChoiceDialog.vip"/>
+				</ProjectItems>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<MarkerList>
+			<Marker FileName="Vip\FRChoiceDialog.vip" Caption="Нумерованная закладка 1" Line="160" NumIndex="1" MarkerType="mtNumBookmark" Comment="frcExportReport:"/>
+		</MarkerList>
+		<CompileMessengerList>
+			<CompileMessenger Name="D:\Atl\FR_Revolution2\vip_source\FRChoiceDialog\FRChoiceReport.prj" DateTimeStart="42335,5983247454" DateTimeCompile="8,5879655671306E-6" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\Atl\FR_Revolution2\vip_source\FRChoiceDialog\Fr3\FRAPI_TEST!!FRChoiceDialog FRAPI_SaveReport_DS Список МЦ по группам Суммы.fr3" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRChoiceDialog\Fr3\FRAPI_TEST!!FRChoiceDialog FRAPI_SaveReport_DS Список МЦ по группам Суммы.fr3"/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\Atl\FR_Revolution2\vip_source\FRChoiceDialog\Fr3\FRAPI_TEST!!FRChoiceDialog FRAPI_SaveReport_DS Список МЦ по группам.fr3" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRChoiceDialog\Fr3\FRAPI_TEST!!FRChoiceDialog FRAPI_SaveReport_DS Список МЦ по группам.fr3"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="27.11.2015 14:21:36"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+	</ProjectManager>
+</Viper>

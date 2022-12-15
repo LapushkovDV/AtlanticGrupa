@@ -1,0 +1,36 @@
+// Таблица для импорта Orders
+table struct tEcOrder (   
+  OrderNumber : string[35],
+  OrderDate   : date,
+  ExpDate     : date,         // ExpectedDeliveryDate
+  sOrg        : string[151],  // Invoicee or Buyer  ILN [13]
+  sGrPol      : string[151],  // buyer              ILN [13]
+  dPoint      : string[13] ,  // DeliveryPoint      ILN [13]
+  NPP         : word,
+  EAN         : string[14],
+  BItemCode   : string[40],   // BuyerItemCode
+  ItemDescr   : string[80],   // ItemDescription
+  kol         : double ,      // OrderedQuantity
+  Price       : double        // OrderedUnitNetPrice
+);
+// Таблица для иморта - обработки RecAdv
+table struct tEcReceived (
+  EAN         : string[14],
+  BItemCode   : string[40],   // BuyerItemCode
+  KolRec      : Double,       // AcceptedQuantity
+  cMc         : comp,         // SpSopr.cMcUsl
+  KolDes      : Double        // SpSopr.KolFact отгружено по накладной 
+) 
+with index (
+   tEcReceived01 = EAN
+ , tEcReceived02 = BItemCode
+ , tEcReceived03 = cMc
+);
+//таблица буфер документов для экспорта DesAdv
+table struct tDoc (
+  nRec: comp,
+  wType: word
+)
+with index (
+  i01=nRec+ wType(unique)
+);

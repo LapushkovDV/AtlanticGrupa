@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005015000">
+	<ProjectManager>
+		<ProjectName>SaveFRTest</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="D:\Gal\EXE\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>D:\Atl\55_22_clr\exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Gen
+					$[AtlPath]\Source\*
+					..\..\vip_source*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+				</ResourceList>
+				<OutputResource>$[GalExe]\user$[ExtRes]</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseName>..\..\..\..\Gal\DataBase\data_los</DatabaseName>
+					<FullLoginName>True</FullLoginName>
+					<HwKeyDirectory>\\BY01-HWKEY01\HWDIR</HwKeyDirectory>
+					<LicFileName>\\by01-hwkey03.oit.local\license\support\V9\license.btr</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="Vip\FR_SendMail.vip" PosX="22" PosY="170" OpenEditor="True"/>
+			<File Name="..\FRPrintReport\Vip\FR_Test.vip" PosX="59" PosY="135" OpenEditor="True"/>
+			<File Name="..\Inc\FRRecordDefinition.vpp" PosX="105" PosY="25" OpenEditor="True" Active="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="FRSendMailReport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFile FileName="Vip\FR_SendMail.vip"/>
+				</ProjectItems>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="D:\Atl\FR_Revolution2\vip_source\FRSendMail\FRSendMailReport.prj" DateTimeStart="42209,4788387847" DateTimeCompile="2,69560187007301E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\Atl\FR_Revolution2\vip_source\FRSendMail\Fr3\FRAPI_TEST!!FRSendMailSample FRAPI_BindReport_DS Список МЦ по группам Суммы.fr3" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRSendMail\Fr3\FRAPI_TEST!!FRSendMailSample FRAPI_BindReport_DS Список МЦ по группам Суммы.fr3"/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\Atl\FR_Revolution2\vip_source\FRSendMail\Fr3\FRAPI_TEST!!FRSendMailSample FRAPI_BindReport_DS Список МЦ по группам.fr3" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRSendMail\Fr3\FRAPI_TEST!!FRSendMailSample FRAPI_BindReport_DS Список МЦ по группам.fr3"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="24.07.2015 11:29:34"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+	</ProjectManager>
+</Viper>

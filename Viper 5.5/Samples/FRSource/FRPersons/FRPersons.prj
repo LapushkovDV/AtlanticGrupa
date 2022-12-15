@@ -1,0 +1,8 @@
+#include PreDefs.inc
+#include FRRecordDefinition.vih
+#include galnet.ccm    //константы событий
+end;
+
+#Component 'FRSample'
+
+#make "vip\*.vip"

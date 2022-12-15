@@ -217,7 +217,7 @@ procedure SendMailErrorCodes(_cATL_PickingRep_HEAD : comp);
   if getfirst katsopr_Chk where ((ATL_PickingRep_HEAD_chk.cSopr == katsopr_Chk.nrec)) <> tsok then exit;
   if(getfirst ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead))
                               and ATL_PickingRep_Spec_chk.wStatus = 2
-    ) <> tsOK then exit
+    ) <> tsOK then exit;
 
   _loop ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead))
                                          and ATL_PickingRep_Spec_chk.wStatus = 2

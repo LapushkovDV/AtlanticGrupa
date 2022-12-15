@@ -1,0 +1,1294 @@
+// ----------------------------------------------------------
+// Atlantic Grupa - Aleksey Samusenko
+// Галактика 9.1 - Импорт заказов и подтверждений о приеме товара
+// (c) 2015, 2016 корпорация Галактика
+// ----------------------------------------------------------
+const
+  coKauChanel     = 10022 ;
+end;
+vipinterface ecod_import licensed(free);
+interface ecod_import;
+var
+   file_mask : string;
+   auto_param: word;
+
+    ecod_path
+  , log_path
+  , arch_path
+  , file_path
+  , file_name
+  , tmp
+  , UltimateCustomerILN
+  , buyerILN
+  , _CodeByBuyer
+  , deliverILN
+  , code_attr: string;
+    doc_exists
+  , spec_exists
+  , file_proceed: boolean;
+    extAttr: iExtAttr;
+    oNalogFun: nalogFun;
+    sum: array [1..4] of double;
+    order_num
+  , recadv_num
+  , sopr_num: string;
+    order_dat
+  , recadv_dat
+  , sopr_dat
+  , Ship_dat: date;
+    cAtrMC: comp;
+    vhod_nal: word;
+    counter: longint;
+    pMarker: iMarker(marker) new;
+    katOrgNrec: comp;
+
+table struct local buyer_list (
+  iln: string,
+  org: comp,
+  fld: string,
+  qty: longint
+)
+with index (
+  i00 = iln (unique),
+  i01 = fld
+);
+
+create view
+VAR
+ _cAgreement : comp;
+as select katsopr.nrec from
+   buyer_list
+ , basedoc
+ , spstep
+ , stepdoc
+ , katorg
+ , katbank
+ , katmc
+ , katotped
+ , katotped uch_ed
+ , katorg deliverer
+ , dogovor
+ , dogovor agreement
+ , dogovor Agreement1
+ , spdocs
+ , spkau
+ , soprhoz
+ , spdocnal
+ , line_tbl
+ , katnotes
+ , basedoc base_num
+ , katsopr
+ , spsopr
+ , katsopr corr_doc
+ , spsopr corr_pos
+ , ttndoc
+ , docinfo
+ , statlog
+ , pmarker
+where ((
+//40 == lastnumd.lndtype and
+      basedoc.nrec == stepdoc.cbasedoc and
+      stepdoc.nrec == spstep.cstepdoc and
+             10022 == spkau.kodgrkau and
+         // 2020 'Ретэйл' == spkau.name and //а надо брать из договора!!!
+          'Дистрибьютор' == spkau.name and
+    buyer_list.org == katorg.nrec and
+       katorg.nrec == katbank.corg and
+                 0 == dogovor.cdogovor and
+       katorg.nrec == dogovor.corg and
+         (cur_date >= dogovor.dbeg
+          and (  cur_date <= dogovor.dend
+              or dogovor.dend = date(0,0,0)
+              )
+           and dogovor.STATUS = 1 // 20180830 оставляем только исполняемые
+         ) and
+ /*     dogovor.nrec == agreement.cdogovor and
+         (      cur_date >= agreement.dbeg
+           and (  cur_date <= agreement.dend
+               or agreement.dend = date(0,0,0)
+               )
+           and agreement.STATUS = 1 //20180830 оставляем только исполняемые
+         )
+*/
+   _cAgreement == agreement.nrec
+and
+//dogovor.cpricels == klprice.nrec and
+//dogovor.cpricels == prices.cklprice and
+//katmc.nrec == prices.cthing and
+               401 == spdocs.tidk and
+    agreement.nrec == spdocs.cdoc and
+         ( spdocs.cmcusl = katmc.nrec ) and
+      katsopr.nrec == spsopr.csopr and
+                 1 == uch_ed.prmc and
+        katmc.nrec == uch_ed.cmcusl
+             and 1 == uch_ed.koef //Учетная eд.uзм
+))
+//bounds _spdocs2mc = spdocs.cmcusl == katmc.nrec and spdocs.cotped == katotped.nrec
+bounds _spsopr2mc = spsopr.cmcusl == katmc.nrec
+                and spsopr.cotped == katotped.nrec
+;
+parameters file_mask, auto_param;
+//
+file fDir;
+file fSrc;
+file fLog;
+//
+exception ExNoTune;
+exception ExNoData;
+//
+window param_win 'select a buyer for import documents' (,hcNoCtx,sci13Esc) alwaysreturn;
+show at (,,95,10);
+browse br01;
+show (,,,5);
+table buyer_list;
+recMarker = pMarker {buyer_list.iln};
+fields
+  {font = {color = if(buyer_list.qty = 0, colorsysgray, if(getfirst katorg <> tsOk, colorsysred, 0));
+           italic=buyer_list.qty = 0}};
+  buyer_list.iln 'ILN' HeaderAlign = centered: [15], protect;
+  katorg.name 'buyer name' HeaderAlign = centered: [50], protect;
+  buyer_list.qty 'doc qty' HeaderAlign = centered: [10, '666`666`666'], protect;
+end; //br
+screen scr01;
+show (,6);
+notablenavigation;
+fields
+  ecod_path: skip;
+buttons
+  cmOk,,closeowner;
+  cmCancel;
+<<
+  `Папка обмена с ECOD Comarch:`.@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+                                                  <.    Загрузить   .>  <.     Отмена     .>
+>>
+end; //scr
+end; //win
+//
+#include common_func.vpp
+// ------------------------------------------------------------
+// Make Corr Doc
+procedure setAgreement(_cDogovor: comp);
+{
+  _cAgreement := 0h;
+  var _AnDeliveryPoint : string  = 'DeliveryPoint';
+  var _likedeliverILN : string = '%' + deliverILN + '%';
+  if deliverILN <> ''
+  {
+    _try
+    {
+     sql
+         select top 1
+         coalesce(us.nrec, #comp(0)) as cAgreement
+         from dogovor us
+           join attrnam an on an.name = :(_AnDeliveryPoint)
+                        and an.wtable = 1707
+           join attrval av on av.wtable = an.wtable
+                            and av.crec = us.nrec
+                        and av.cattrnam = an.nrec
+         where
+          us.cDogovor = :(_cDogovor)
+          and us.status = 1
+          and av.vstring like :(_likedeliverILN)
+      into (_cAgreement)
+      ;
+    }
+    _except else {}
+  }
+  if _cAgreement = 0h
+  {
+    _likedeliverILN := 'default' ;
+     _try
+    {
+     sql
+         select top 1
+         coalesce(us.nrec, #comp(0)) as cAgreement
+         from dogovor us
+           join attrnam an on an.name = :(_AnDeliveryPoint)
+                        and an.wtable = 1707
+           join attrval av on av.wtable = an.wtable
+                            and av.crec = us.nrec
+                        and av.cattrnam = an.nrec
+         where
+          us.cDogovor = :(_cDogovor)
+          and us.status = 1
+          and upper(av.vstring) = upper(:(_likedeliverILN))
+      into (_cAgreement)
+      ;
+    }
+    _except else {}
+  }
+  if _cAgreement = 0h
+  if(getfirst fastfirstrow agreement1 where ((_cDogovor == agreement1.cdogovor and
+         (      cur_date >= agreement1.dbeg
+           and (  cur_date <= agreement1.dend
+               or agreement1.dend = date(0,0,0)
+               )
+           and agreement1.STATUS = 1 //20180830 оставляем только исполняемые
+         )))) = tsOK
+         {
+           _cAgreement := agreement1.nrec;
+         }
+  set _cAgreement := _cAgreement ;
+}
+function make_pos(_qty: double; _dat: date): boolean;
+var _spdocnal: type$spdocnal;
+{
+  result := false;
+  if getfirst katnotes where ((100 == viddoc and 1 == status)) <> tsOk {}
+  if not doc_exists {
+    sum[1] := sum[2] := sum[3] := sum[4] := 0;
+    doc_exists := (insert corr_doc set
+      name = katsopr.name,
+      descr = sGetTune('User.Descr'),
+      desgr = if(instr('ORDERS',upcase(file_mask))=1,'SFER','ECOD'),
+      corg = katsopr.corg,
+      corgbase = katsopr.corgbase,
+      corgplat = katsopr.corgplat,
+      //summa = ,
+      cval = katsopr.cval,
+      //sumval = ,
+      vhodnal = katsopr.vhodnal,
+      dprice = katsopr.dprice,
+      cdogovor = katsopr.cdogovor,
+      cappdogovor = katsopr.cappdogovor,
+      cstepdoc = katsopr.cstepdoc,
+      chozoper = katsopr.chozoper,
+      tipsopr = katsopr.tipsopr,
+      dsopr = _dat,
+      yearsopr = year(_dat),
+      nsopr = katsopr.nsopr+ '_1',
+      vidsopr = katsopr.vidsopr,
+      cpodrfrom = katsopr.cpodrfrom,
+      cpodrto = katsopr.cpodrto,
+      cgruzfrom = katsopr.cgruzfrom,
+      cgruzto = katsopr.cgruzto,
+      cvalut = katsopr.cvalut,
+      //snalogs = ,
+      //svnalogs = ,
+      wadoc = 23,
+      cadoc = katsopr.nrec,
+      taravoz = katsopr.taravoz,
+      status = katnotes.status,
+      cnote = katnotes.nrec //comp(3h) - поставить статус из БД
+    ) = tsOk;
+    if doc_exists {
+      insert docinfo set
+        cdoc = corr_doc.nrec,
+        doctype = 1109;
+        insert ttndoc set
+          cdoc = corr_doc.nrec,
+          wtable = 1109;
+          extAttr.sSetAttr(1150, ttndoc.nrec, 'НАИМЕНОВАНИЕ АВТОПРЕДПРИЯТИЯ', '"СТС Логистикс Транспорт"');
+          extAttr.doSetAttr(1150, ttndoc.nrec, 'КОЛИЧЕСТВО ЕЗДОК', 1);
+    }
+  }
+  if doc_exists
+    result := (insert corr_pos set
+      npp = spsopr.npp,
+      prmc = spsopr.prmc,
+      cmcusl = spsopr.cmcusl,
+      cotped = spsopr.cotped, //uch_ed.nrec,
+      cparty = spsopr.cparty,
+      cval = spsopr.cval,
+      cpricelist = spsopr.cpricelist,
+      kol = _qty, //spsopr.kol* katotped.koef,
+      kolopl = _qty,
+      price = spsopr.price,
+      vprice = spsopr.vprice,
+      cgrnal = spsopr.cgrnal,
+      netto = spsopr.netto,
+      mtara = spsopr.mtara,
+      csopr = corr_doc.nrec,
+      dsopr = corr_doc.dsopr,
+      vidsopr = corr_doc.vidsopr,
+      kolfact = _qty,
+      rprice = spsopr.rprice,
+      rvprice = spsopr.rvprice,
+      wadocsp = 23,
+      cadocsp = spsopr.nrec,
+      pricen = spsopr.pricen,
+      lastdate = spsopr.lastdate,
+      lasttime = spsopr.lasttime,
+      pricen = spsopr.pricen
+    ) = tsOk;
+  if result {
+    if getfirst spdocnal where ((spsopr.nrec == cspdoc and corr_doc.vidsopr == tipdoc)) = tsOk {
+      _spdocnal := type$spdocnal(spdocnal.buffer);
+      insert spdocnal set
+      cspdoc = corr_pos.nrec,
+      cdoc = corr_doc.nrec,
+      tipdoc = corr_doc.vidsopr,
+      cgrnal = corr_pos.cgrnal,
+      cnalog = _spdocnal.cnalog,
+      nalog = _spdocnal.nalog,
+      sumnal = round(_qty* corr_pos.price* _spdocnal.nalog/ (100+ if(corr_doc.vhodnal = 1, _spdocnal.nalog, 0)), 2),
+      cval = _spdocnal.cval,
+      sumval = round(spdocnal.sumnal/ _spdocnal.valcurse, 4),
+      summa = spdocnal.sumnal,
+      corg = corr_doc.corg,
+      valcurse = _spdocnal.valcurse,
+      croscurse = _spdocnal.croscurse,
+      iscustom = _spdocnal.iscustom;
+    }
+    update current corr_pos set sumnds = spdocnal.sumnal, sumvnds = spdocnal.sumval;
+    sum[1] += _qty* corr_pos.price;
+    sum[2] += _qty* corr_pos.price/ _spdocnal.valcurse;
+    sum[3] += spdocnal.sumnal;
+    sum[4] += spdocnal.sumval; 
+  }
+}
+// ------------------------------------------------------------
+Function GetKauName(_kodKau : word; _cKau : comp): string;
+{
+ result := if(getanykau(1,_kodKau,_cKau),GivenAnName(1),'') ;
+} // Function GetKauNpp(_npp: byte): string;
+
+function insDoc: boolean;
+{
+  // Костылищеее для Х5:Перекресток, заменяю плательщика, но договор и т.д. перекрестка
+  // Агроторг, Сладкая жизнь НН, Копейка
+  katOrgNrec := katorg.nrec;
+  writeMessageLog('buyerILN: '+ buyerILN +'; Nrec Buyer: '+ getNrecByParam(1418, buyerILN) );
+  if (buyerILN = '4606038001260')
+    katOrgNrec := getNrecByParam(1418, buyerILN);
+  if (buyerILN = '4606038000454')
+    katOrgNrec := getNrecByParam(1418, buyerILN);
+  if (buyerILN = '4606038030413')
+    katOrgNrec := getNrecByParam(1418, buyerILN);
+  if (buyerILN = '4606038000867') // Агроаспект
+    katOrgNrec := getNrecByParam(1418, buyerILN);
+
+   setAgreement(Dogovor.nrec);
+  if getfirst katnotes where ((40 == viddoc and 1 == status)) <> tsOk {}
+  result := (insert basedoc set
+    cdogovor = 0, //???
+    direct = 1, //продажа
+    viddoc = 201,
+    ddoc = cur_date, //order_date,
+    nodoc = getNextNum,
+    dform = cur_date,
+    yeardoc = year(basedoc.ddoc),
+    descr = sGetTune('User.Descr'),
+    desGr = if(instr('ORDERS',upcase(file_mask))=1,'SFER','ECOD'),
+    kolDn = 60,
+    dEnd = add_day(basedoc.ddoc, basedoc.kolDn),
+    vhSkid = 1,
+    vhodNal = vhod_nal,
+    name = 'договор № '+ dogovor.nodoc+ datetostr(dogovor.ddoc, ' от DD.MM.YYYY')+ ', заказ № ' + order_num+ datetostr(order_dat, ' от DD.MM.YYYY') + ' '+ deliverer.name,
+    corg = katOrgNrec, //katorg.nrec,
+    cdogovor = dogovor.nrec,
+    cappdogovor = agreement.nrec,
+    cbank = katbank.nrec, //dogovor.cbankplat,
+    cmybank = coGetTune('MYBANK'),
+    cgrotpr = dogovor.cgrotp,
+    cgrpol = deliverer.nrec,
+    status = katnotes.status,
+    cnote = katnotes.nrec,//comp(40003089DD24DC9Ah) - оформляемый
+    taraVoz = 2, //20180722 по письму Кондаковой Т. поменял на невозвратную тару
+    prior = 99,
+    cVal = 0,
+    tipMoney = 1,    
+    cparty = if(coGetTune('EI.Ecod.Warehouse') > 0, coGetTune('EI.Ecod.Warehouse'), 0), //comp(03E80000000001F9h) - склад отгрузки
+    cotvpodr = 0
+  ) = tsOk;
+
+
+  extAttr.SSetAttr(1102,basedoc.nrec,'CodeByBuyer',_CodeByBuyer);
+
+  extAttr.SSetAttr(1102,basedoc.nrec,'UltimateCustomer_ILN',UltimateCustomerILN);
+
+  extAttr.dSetAttr(1102,basedoc.nrec,'ExpectedDeliveryDate',sopr_dat);
+
+
+
+    if result {
+       var _cChanel : comp = 0h;
+       _cChanel := extAttr.cogetattr(coDogovor,basedoc.cAppDOGOVOR,'Канал сбыта');
+       if _cChanel = 0h then _cChanel := extAttr.cogetattr(coDogovor,basedoc.cDOGOVOR,'Канал сбыта');
+       if _cChanel = 0h then  {
+               if (getfirst spkau = tsOk) extAttr.coSetAttr(coBaseDoc, basedoc.nrec, 'Канал сбыта', spkau.nrec, spkau.name);
+              }
+              else
+              {
+                extAttr.coSetAttr(coBaseDoc, basedoc.nrec, 'Канал сбыта', _cChanel, GetKauName(coKauChanel, _cChanel));
+              }
+
+
+    insert stepdoc set
+      stepdoc.cbasedoc = basedoc.nrec,
+      stepdoc.name = basedoc.name,
+      stepdoc.nStep = '1',
+      stepdoc.dStart = basedoc.dDoc,
+      stepdoc.dEnd = basedoc.dEnd,
+      stepdoc.dOtgr = sopr_dat,
+      stepdoc.dZabor = Ship_dat, //stepdoc.dZabor = sopr_dat,
+      stepdoc.status = basedoc.status,
+      stepdoc.cVal = baseDoc.cVal,
+      stepdoc.nkont = order_num,
+      stepdoc.dizvmax = order_dat;
+  }
+}
+// ------------------------------------------------------------
+procedure calcTax;
+var sPos: double;
+{
+ /*
+  sPos := spstep.summa+ oCalcFuns.valnac_getpricepos(spstep.nrec, coSpStep);
+  sPos := oDOfuns.GetBaseNalog(BaseDoc.Buffer, SpStep.Buffer, if (SpStep.PrMC = 1, KatMC.kGroupMC, ''));
+  sPos := oDOfuns.DoRoundP(BaseDoc.cVal, BaseDoc.VidDoc, sPos);
+*/
+  sPos := spstep.price* spstep.kol;
+  if (basedoc.vhodnal = 1) { // налоги входят
+    if oNalogFun.countBasePrice_(basedoc.nrec, spstep.nrec, basedoc.viddoc+ 1000,
+      spstep.cgrnal, basedoc.corg, spstep.kol, spstep.cotped, basedoc.ddoc, //basedoc.dvalcurse
+      basedoc.cval, 0, 0, sPos, basedoc.cpayment)
+      update current spstep set
+        nds = sPos- oNalogFun.getBaseValPrice_,
+        //price = spstep.summa/ spstep.kol,
+        koldop = sPos,
+        summa = sPos;
+  }
+  else {
+    if oNalogFun.countNalogPrice_(basedoc.nrec, spstep.nrec, basedoc.viddoc+ 1000,
+      spstep.cgrnal, basedoc.corg, spstep.kol, spstep.cotped, basedoc.ddoc, //basedoc.dvalcurse
+      basedoc.cval, 0, 0, sPos, basedoc.cpayment)
+      update current spstep set
+        nds = oNalogFun.getNalogValPrice_- sPos,
+        //price = spstep.summa/ spstep.kol,
+        koldop = sPos,
+        summa = sPos;
+  }
+  //if akcisnalog(spstep.cpricelist, basedoc.viddoc+ 1000, spstep.nrec) set spstep.nds = quickNDS;
+}
+// ------------------------------------------------------------
+function insPos: boolean;
+{
+  result := false;
+  if not doc_exists {
+    sum[1] := sum[2] := sum[3] := sum[4] := 0;
+    doc_exists := insDoc;
+  }
+  if doc_exists
+  result := (insert spstep set
+               spstep.npp = line_tbl.LineNumber
+              ,spstep.cstepdoc = stepdoc.nrec
+              ,spstep.ddoc = basedoc.ddoc
+              ,spstep.cOtpEd = uch_ed.nrec
+              ,spstep.cMcUsl = katmc.nrec
+              ,spstep.cVal = basedoc.cVal
+              ,spstep.kol = line_tbl.OrderedQuantity
+              ,spstep.kolSkl = spstep.kol
+              ,spstep.prMc = 1
+              ,spstep.price = if(spec_exists, spdocs.price, if(basedoc.vhodnal = 1, line_tbl.OrderedUnitGrosPrice, line_tbl.OrderedUnitNetPrice))
+              //summa = if(spec_exists, spstep.price* spstep.kol, if(basedoc.vhodnal = 1, line_tbl.GrossAmount, line_tbl.NetAmount)),
+              ,spstep.sumVal = 0
+              ,spstep.prSkid = 1
+              ,spstep.cGrNal = katmc.cgrnal
+            //nds = if(spec_exists, round(if(basedoc.vhodnal = 1, spstep.summa* line_tbl.TaxRate/ (100+ line_tbl.TaxRate), spstep.summa* line_tbl.TaxRate/ 100), 2)
+            //                    , line_tbl.GrossAmount- line_tbl.NetAmount),
+              ,spstep.manualTax = 0
+              ,spstep.cpricelist = if(spec_exists, spdocs.cpricels, 0)
+           ) = tsOk;
+  if result {
+    // Lapushkov_dv добавляем атрибут по количеству в заказе
+       var ExtAttr : IExtAttr;
+       ExtAttr.doSetAttr(coSpStep,SpStep.nrec,'SL. Начальное количество в заказе', SpStep.KOLSKL);
+
+
+/*
+    insert spdocnal set
+      cspdoc = spstep.nrec,
+      cdoc = basedoc.nrec,
+      tipdoc = 1201,
+      cgrnal = spstep.cgrnal,
+      cnalog = 2,
+      nalog = line_tbl.TaxRate,//spdocnal.nalog,
+      sumnal = spstep.nds,
+      cval = 0,//spdocnal.cval,
+      valcurse = 1,
+      sumval = round(spstep.nds/ spdocnal.valcurse, 4),
+      summa = spstep.nds,
+      corg = basedoc.corg,
+      croscurse = 1,
+      iscustom = 4;
+*/
+    calcTax;
+    sum[1] += spstep.summa;
+    sum[2] += spstep.summa; //??
+    sum[3] += spstep.nds; //spdocnal.sumnal
+    sum[4] += spstep.nds; //spdocnal.sumval
+  }
+}
+// ------------------------------------------------------------
+function updDoc: boolean;
+{
+  result := (update current baseDoc set
+    summa = sum[1],
+    total = sum[2]+ if(basedoc.vhodnal = 2, sum[3], 0),
+    totalNDE = basedoc.total,
+    nds = sum[3]
+  ) = tsOk;
+
+  if result {
+    update current stepdoc set
+      summa = if(baseDoc.cVal = 0, baseDoc.total, 0),
+      sumVal = if(baseDoc.cVal > 0, baseDoc.total, 0);
+    insert soprHoz set
+      descr = baseDoc.descr,
+      desGr = baseDoc.desGr,
+      cDogovor = baseDoc.cDogovor,
+      cOrg = baseDoc.cOrg,
+      cStepDoc = stepDoc.nRec,
+      datOb = baseDoc.dDoc,
+      cSoprDoc = baseDoc.nRec,
+      tipDoc = if(basedoc.viddoc = 201, 51, 41),
+      tidkGal = soprHoz.tipDoc,
+      noDoc = baseDoc.noDoc,
+      kodValut = baseDoc.cVal,
+      direct = baseDoc.direct,
+      //vhSumHoz = '+',
+      summa = if(baseDoc.cVal > 0, baseDoc.totalNDE, baseDoc.total),
+      sumValut = if(baseDoc.cVal > 0, baseDoc.total, 0);
+  }
+}
+// ------------------------------------------------------------
+// Load Document From XML
+function GetKoeffForUpakovkaByGLNandCOdeMC(_GLN, _CodeMCByPost : string) : double; cacheable;
+{
+var   _Result :double= 0;
+    var _attr_OrgGLN : string = 'GLN магазина' ;
+    var _attrCodeMC  : string = 'атрибут Код МЦ' ;
+    var _UpakName    : string = 'УПАКОВКА' ;
+   _try
+    {
+     sql
+        select
+         Koe.Koef
+        from katmc mc
+          join katotped koe on koe.cmcusl = mc.nrec
+                           and koe.prmc = 1
+          join attrnam anOrgGLN on anOrgGLN.wtable = 1418
+                               and anOrgGLN.name = :(_attr_OrgGLN)
+          join attrval avOrgGLN on avOrgGLN.wtable = anOrgGLN.wtable    //  тут по GLN получаем саму организацию
+                               and avOrgGLN.cattrnam = anOrgGLN.nrec
+                               and avOrgGLN.vString = :(_GLN)
+          join Attrnam anOrgCodeMC on anOrgCodeMC.wtable = anOrgGLN.wtable
+                                  and anOrgCodeMC.name = :(_attrCodeMC)
+          join attrval avOrgCodeMC on avOrgCodeMC.wtable = anOrgCodeMC.wtable // у нее получаем название атрибута МЦ, в котором будет хранится код поставщика
+                                  and avOrgCodeMC.cattrnam = anOrgCodeMC.nrec
+                                  and avOrgCodeMC.cRec = avOrgGLN.crec
+          join attrnam anMCCode on anMcCode.wtable  = 1411
+                               and anMcCode.name = avOrgCodeMC.vstring
+          join attrval avMCCode on avMcCode.wtable = anMcCode.wtable   // собственно по названию этого атрибута находим значение и выходим на МЦ
+                               and avmcCode.cattrnam = anMcCode.nrec
+                               and avMcCode.vstring = :(_CodeMCByPost)
+        where mc.nrec = avMcCode.cRec
+        and upper(koe.name) =  :(_UpakName)
+      into (_Result)
+      ;
+    }
+    _except else {}
+ result := _Result;
+}
+
+function load_xml(_file: string): boolean;
+var
+  xmlDoc, hDoc, hPartDoc, hAttrDoc, hValueDoc, hLine,
+  nodeList, nodeListLen, childNode, partDoc, partDocLen, attrDoc, attrDocLen, valueDoc, valueDocLen, i, j, k: longint;
+  line_rec: record as table line_tbl;
+{
+  result := false;
+  order_num := recadv_num := sopr_num := '';
+  order_dat := recadv_dat := sopr_dat := Ship_dat := date(0,0,0);
+  xmlDoc := XMLDOMDoc_New;
+  delete all line_tbl;
+  if XMLDOMDoc_load(xmlDoc, _file) {
+    #declare oXML_GetNode(parentNode, nodeName,  nodeHandle)   //получить NodeHandle по имени узла
+      #NodeHandle := 0; 
+      nodeList := XMLDOMDoc_GetElementsByTagName(#parentNode, #nodeName);
+      if (nodeList <> 0) {
+        //nodeListLen := XMLDOMNodeList_Get_Length(nodeList);
+        //if (nodeListLen = 1) // в файле не один документ
+        #NodeHandle := XMLDOMNodeList_Get_Item(nodeList , 0);
+        XMLDOMNode_Release(nodeList);
+        nodeList := 0;
+      }
+      else {
+        writeMessageLog(' <!> ERROR: node ' + #nodeName+ ' not founded');
+      }
+    #end
+    #oXML_GetNode(xmlDoc, if(pos('recadv', locase(file_mask)) > 0, 'Document-ReceivingAdvice', 'Document-Order'), hDoc);
+    if (hDoc <> 0) { // handle node 'Document-Order' or 'Document-ReceivingAdvice'
+      result := true;
+      #declare Loop_oXML_chNodes(parentNode, childList, childListLen, counter, childNode)   //цикл по дочерним узлам
+        #childList := XMLDOMNode_Get_ChildNodes(#parentNode);
+        if (#childList <> 0) {
+          #childListLen := XMLDOMNodeList_Get_Length(#childList);
+          for (#counter := 0; #counter < #childListLen; #counter++) {
+            #childNode := XMLDOMNodeList_Get_Item(#childList, #counter);
+      #end  
+      #declare EndLoop_oXML_chNodes(childList, childNode)   //цикл по дочерним узлам
+            releaseDump(#childNode); 
+          }
+          releaseDump(#childList);
+        }
+      #end
+      #Loop_oXML_chNodes(hDoc, partDoc, partDocLen, i, hPartDoc) //цикл по дочерним узлам Частей документа
+        case XMLDOMNode_get_NodeName(hPartDoc) of
+          'Order-Header', 'ReceivingAdvice-Header': {
+            #Loop_oXML_chNodes(hPartDoc, attrDoc, attrDocLen, j, hAttrDoc) //цикл по дочерним узлам Document Header
+              case XMLDOMNode_get_NodeName(hAttrDoc) of
+                'OrderNumber': order_num := GetTextValue(hAttrDoc);
+                'OrderDate': order_dat := strToDate(GetTextValue(hAttrDoc), 'YYYY-MM-DD');
+                'ReceivingAdviceNumber': recadv_num := GetTextValue(hAttrDoc);
+                'ReceivingAdviceDate': recadv_dat := strToDate(GetTextValue(hAttrDoc), 'YYYY-MM-DD');
+                'ExpectedDeliveryDate': sopr_dat := strToDate(GetTextValue(hAttrDoc), 'YYYY-MM-DD');
+                'ShipmentDate' : Ship_dat := strToDate(GetTextValue(hAttrDoc), 'YYYY-MM-DD');
+                'DocumentFunctionCode': {
+                //tmp := GetTextValue(hAttrDoc);
+                //if (tmp <> 'O' and str <> 'P') writeMessageLog(' <!> ERROR: DocumentFunctionCode: ' + str);
+                }
+              end; //case htNode
+            #EndLoop_oXML_chNodes(attrDoc, hAttrDoc)
+            if (order_num <> '') {
+              writeMessageLog(' --> extracted order #'+ order_num+ datetostr(order_dat, ' date: DD.MM.YYYY'));
+            }
+            else
+            if  (recadv_num <> '')
+              writeMessageLog(' --> extracted recadv #'+ recadv_num+ datetostr(recadv_dat, ' date: DD.MM.YYYY'));
+          } //Document Header
+          'ReceivingAdvice-Reference': {
+            #Loop_oXML_chNodes(hPartDoc, attrDoc, attrDocLen, j, hAttrDoc)   //цикл по дочерним узлам ReceivingAdvice-Reference
+              case XMLDOMNode_get_NodeName(hAttrDoc) of
+                'Order': {
+                  #Loop_oXML_chNodes(hAttrDoc, valueDoc, valueDocLen, k, hValueDoc)   //цикл по дочерним узлам Order
+                    case XMLDOMNode_get_NodeName(hValueDoc) of
+                      'BuyerOrderNumber': order_num := GetTextValue(hValueDoc);
+                      'BuyerOrderDate': order_dat := strToDate(GetTextValue(hValueDoc), 'YYYY-MM-DD');
+                    end; //case hValueDoc
+                  #EndLoop_oXML_chNodes(valueDoc, hValueDoc) 
+                }
+                'DeliveryNote': {
+                  #Loop_oXML_chNodes(hAttrDoc, valueDoc, valueDocLen, k, hValueDoc)   //цикл по дочерним узлам DeliveryNote
+                    case XMLDOMNode_get_NodeName(hValueDoc) of
+                      'DeliveryNoteNumber': sopr_num := GetTextValue(hValueDoc);
+                      'DeliveryNoteDate': sopr_dat := strToDate(GetTextValue(hValueDoc), 'YYYY-MM-DD');
+                    end; //case hValueDoc
+                  #EndLoop_oXML_chNodes(valueDoc, hValueDoc) 
+                }
+              end; //case hAttrDoc
+            #EndLoop_oXML_chNodes(attrDoc, hAttrDoc) 
+          } //ReceivingAdvice-Reference
+          'Order-Parties', 'ReceivingAdvice-Parties': {
+            #Loop_oXML_chNodes(hPartDoc, attrDoc, attrDocLen, j, hAttrDoc)   //цикл по дочерним узлам
+              case XMLDOMNode_get_NodeName(hAttrDoc) of
+                'Buyer': {
+                  childNode := FindFirstChild(hAttrDoc);
+                  buyerILN := trim(GetTextValue(childNode));
+                  XMLDOMNode_Release(childNode);
+                  childNode := 0;
+                }
+                'Seller': {
+                  #Loop_oXML_chNodes(hAttrDoc, valueDoc, valueDocLen, k, hValueDoc)   //цикл по дочерним узлам DeliveryNote
+                    case XMLDOMNode_get_NodeName(hValueDoc) of
+                      //'ILN': {}; вдруг потом понадобится
+                      'CodeByBuyer': _CodeByBuyer := GetTextValue(hValueDoc);
+                    end; //case hValueDoc
+                  #EndLoop_oXML_chNodes(valueDoc, hValueDoc)
+                }
+                'DeliveryPoint': {
+                  childNode := FindFirstChild(hAttrDoc);
+                  deliverILN := trim(GetTextValue(childNode));
+                  XMLDOMNode_Release(childNode);
+                  childNode := 0;
+                }
+                'UltimateCustomer': { //если есть и не покупатель, затираем грузополучателя
+                  childNode := FindFirstChild(hAttrDoc);
+                  tmp := trim(GetTextValue(childNode));
+                  UltimateCustomerILN := tmp;
+                  // GLN 4606068999995 - Lenta
+                  if (buyerILN = '4606068999995')
+                      tmp := deliverILN;
+                  if (buyerILN <> tmp)
+                    deliverILN := tmp;
+                  XMLDOMNode_Release(childNode);
+                  childNode := 0;
+                }
+                'Invoicee': { //если есть, затираем покупателя
+                  childNode := FindFirstChild(hAttrDoc);
+                  buyerILN := trim(GetTextValue(childNode));
+                  XMLDOMNode_Release(childNode);
+                  childNode := 0;
+                }
+              end; //case hAttrDoc
+            //Eugene Semenov 29.11.2017 КОСТЫЛЬ ДЛЯ МЕТРО.
+              if (buyerILN = '4607070198888' )
+                buyerILN := '4607070199991';
+            // -------------
+            #EndLoop_oXML_chNodes(attrDoc, hAttrDoc)
+          } //'ReceivingAdvice-Parties'
+          'Order-Lines', 'ReceivingAdvice-Lines': {
+            #Loop_oXML_chNodes(hPartDoc, attrDoc, attrDocLen, j, hAttrDoc) //цикл по дочерним узлам Order-Lines
+              hLine := FindFirstChild(hAttrDoc); // Line-Item
+              set line_rec.LineNumber = 0;
+              set line_rec.EAN = '';
+              set line_rec.BuyerItemCode = '';
+              set line_rec.SupplierItemCode = '';
+              set line_rec.ItemDescription = '';
+              set line_rec.OrderedQuantity = 0;
+              set line_rec.OrderedUnitNetPrice = 0;
+              set line_rec.OrderedUnitGrosPrice = 0;
+              set line_rec.NetAmount = 0;
+              set line_rec.DeliveredQuantity = 0;
+              set line_rec.AcceptedQuantity = 0;
+              set line_rec.DamagedQuantity = 0;
+              set line_rec.GrossAmount = 0;
+              set line_rec.TaxRate = 0;
+              set line_rec.UnitOfMeasure = '';
+              set line_rec.OrderedUnitPacksize = 0;
+              set line_rec.ItemType = '';
+              set line_rec.NumberOfPackages = 0;
+              set line_rec.UnitPacksize = 0;
+
+                #Loop_oXML_chNodes(hLine, valueDoc, valueDocLen, k, hValueDoc) //цикл по дочерним узлам hLine
+                  case XMLDOMNode_get_NodeName(hValueDoc) of
+                    'LineNumber': set line_rec.LineNumber = word(getTextValue(hValueDoc));
+                    'EAN': set line_rec.EAN = getTextValue(hValueDoc);
+                    'BuyerItemCode': set line_rec.BuyerItemCode = ltrim(getTextValue(hValueDoc), '0');
+                    'SupplierItemCode': {
+                      // 4607099139992 - ТС ОКЕЙ
+                      if (buyerILN <> '4607099139992' )
+                        set line_rec.SupplierItemCode = trim(ltrim(getTextValue(hValueDoc), '0'));
+                      }
+                    'ItemDescription': set line_rec.ItemDescription = getTextValue(hValueDoc);
+                    'OrderedQuantity': set line_rec.OrderedQuantity = double(getTextValue(hValueDoc));
+                    'OrderedUnitNetPrice': set line_rec.OrderedUnitNetPrice = double(getTextValue(hValueDoc));
+                    'OrderedUnitGrossPrice': set line_rec.OrderedUnitGrosPrice = double(getTextValue(hValueDoc));
+                    'NetAmount': set line_rec.NetAmount = double(getTextValue(hValueDoc));
+                    'DeliveredQuantity': set line_rec.DeliveredQuantity = double(getTextValue(hValueDoc));
+                    'AcceptedQuantity': set line_rec.AcceptedQuantity = double(getTextValue(hValueDoc));
+                    'DamagedQuantity': set line_rec.DamagedQuantity = double(getTextValue(hValueDoc));
+                    'GrossAmount': set line_rec.GrossAmount = double(getTextValue(hValueDoc));
+                    'TaxRate': set line_rec.TaxRate = double(getTextValue(hValueDoc));
+                    'UnitOfMeasure': set line_rec.UnitOfMeasure = getTextValue(hValueDoc);
+                    'OrderedUnitPacksize': set line_rec.OrderedUnitPacksize = double(getTextValue(hValueDoc));
+                    'ItemType': set line_rec.ItemType = getTextValue(hValueDoc);
+                    'NumberOfPackages': set line_rec.NumberOfPackages = double(getTextValue(hValueDoc));
+                    'UnitPacksize': set line_rec.UnitPacksize = double(getTextValue(hValueDoc));
+                  end; //case htNode
+                #EndLoop_oXML_chNodes(valueDoc, hValueDoc) 
+                XMLDOMNode_Release(hLine);
+                //Eugene Semenov 28.11.2017
+                // METRO
+                if (buyerILN = '4607070199991'){
+                  if (line_rec.ItemType = 'CU' and line_rec.UnitOfMeasure = 'PCE' and line_rec.OrderedUnitPacksize > 0){
+                    set line_rec.OrderedQuantity = line_rec.OrderedQuantity * line_rec.OrderedUnitPacksize;
+                    set line_rec.OrderedUnitNetPrice = round(line_rec.OrderedUnitNetPrice / line_rec.OrderedUnitPacksize, 4);
+                  }
+                  //RecAdv - Хотя МЕТРО указывает шт., но передает коробки. КОСТЫЛЬ надо переделать и вставить при сравнении с накладной.
+                  if (line_rec.AcceptedQuantity > 0){
+                    //20201129 Lapushkov_dv убираем костыль: определяем по коду МЦ из нее берем упаковку и из нее коэффициент для пересчета
+                    var _koef : double = GetKoeffForUpakovkaByGLNandCOdeMC(buyerILN, line_rec.BuyerItemCode);
+                    _koef  := if (_koef = 0, 12, _koef); // на первые попытки оставим 12 в случае, если почему то не нашли
+                     set line_rec.AcceptedQuantity = line_rec.AcceptedQuantity * _koef; //12;
+                  }
+                }
+                //writeMessageLog(' --- DEBUG (1): '+ string(line_rec.AcceptedQuantity));
+                // GiperGlobus
+                if (buyerILN = '4690202000005'){
+                  if (line_rec.NumberOfPackages > 0 and line_rec.OrderedUnitPacksize > 0){
+                    set line_rec.OrderedQuantity = line_rec.OrderedQuantity * line_rec.OrderedUnitPacksize;
+                    set line_rec.OrderedUnitNetPrice = round(line_rec.OrderedUnitNetPrice / line_rec.OrderedUnitPacksize, 4);
+                  }
+                }
+                //Lenta
+                if (buyerILN = '4606068999995'){
+                  if (line_rec.ItemType = 'CU' and line_rec.OrderedUnitPacksize > 0){
+                    set line_rec.OrderedQuantity = line_rec.OrderedQuantity * line_rec.OrderedUnitPacksize;
+                  }
+                  if (line_rec.AcceptedQuantity > 0 and line_rec.UnitPacksize >0){
+                     set line_rec.AcceptedQuantity = line_rec.AcceptedQuantity * line_rec.UnitPacksize;
+                  }
+                }
+
+                //----
+                hLine := 0;
+                if line_rec.BuyerItemCode <> '' {
+                  if line_rec.TaxRate = 0 and line_rec.NetAmount > 0
+                    set line_rec.TaxRate = round((line_rec.GrossAmount- line_rec.NetAmount)* 100/ line_rec.NetAmount);
+                  if pos('recadv', locase(file_mask)) > 0 //если recadv - сгруппируем позиции по BuyerItemCode и EAN
+                  //modifyTableRecord(line_rec);
+                    and (getfirst line_tbl where ((line_rec.BuyerItemCode==BuyerItemCode and line_rec.EAN==EAN)) = tsOk) {
+                    update current line_tbl set
+                      OrderedQuantity = line_tbl.OrderedQuantity+ line_rec.OrderedQuantity,
+                      NetAmount = line_tbl.NetAmount+ line_rec.NetAmount,
+                      DeliveredQuantity = line_tbl.DeliveredQuantity+ line_rec.DeliveredQuantity,
+                      AcceptedQuantity = line_tbl.AcceptedQuantity+ line_rec.AcceptedQuantity,
+                      DamagedQuantity = line_tbl.DamagedQuantity+ line_rec.DamagedQuantity,
+                      GrossAmount = line_tbl.GrossAmount+ line_rec.GrossAmount;
+                  }
+                  else {
+                    clearbuffer(#line_tbl);
+                    line_tbl.buffer := line_rec;
+                    insert current line_tbl;
+                  }
+                  //SetTableBuffer(line_rec)
+                  /*insert line_tbl set
+                      LineNumber = line_rec.LineNumber,
+                      EAN = line_rec.EAN,
+                      BuyerItemCode = line_rec.BuyerItemCode,
+                      SupplierItemCode = line_rec.SupplierItemCode,
+                      ItemDescription = line_rec.ItemDescription,
+                      OrderedQuantity = line_rec.OrderedQuantity,
+                      OrderedUnitNetPrice = line_rec.OrderedUnitNetPrice,
+                      OrderedUnitGrosPrice = line_rec.OrderedUnitGrosPrice,
+                      NetAmount = line_rec.NetAmount,
+                      DeliveredQuantity = line_rec.DeliveredQuantity,
+                      AcceptedQuantity = line_rec.AcceptedQuantity,
+                      DamagedQuantity = line_rec.DamagedQuantity,
+                      GrossAmount = line_rec.GrossAmount,
+                      TaxRate = line_rec.TaxRate;*/
+                }
+                else
+                  writeMessageLog(' <!> ERROR: buyer item code is absent at pos #'+ line_tbl.LineNumber+ '. pos skipped');
+              #EndLoop_oXML_chNodes(attrDoc, hAttrDoc) 
+            } //ReceivingAdvice-Lines
+        end; //case hPartDoc
+      #EndLoop_oXML_chNodes(partDoc, hPartDoc)
+      XMLDOMNode_Release(hDoc);
+      hDoc := 0;
+    } //hDoc <> 0
+  } //XMLDOMDoc_Load
+  XMLDOMDoc_Done(xmlDoc);
+  xmlDoc := 0;
+}
+// ------------------------------------------------------------
+// Process Order
+function proc_order: boolean;
+var delta: double;
+{
+  result := false;
+#ifndef DEBUG_MODE
+  if (getfirst basedoc where ((getNrecByParam(1102, order_num) == nrec)) = tsOk) {
+    writeMessageLog(' <!> WARNING: basedoc #'+ string(basedoc.nrec,0,0)+ ' already exists (order #'+ order_num+ '  ДО номер '  + basedoc.NoDoc);
+    exit;
+  }
+#end
+  if getlast katbank <> tsOk
+    writeMessageLog(' <!> WARNING: bank property not found for buyer ILN #'+ buyerILN);
+  vhod_nal := 1; //налоги входят
+  if getfirst dogovor = tsOk {
+    vhod_nal := dogovor.vhodnal;
+  }
+  else
+    writeMessageLog(' <!> WARNING: dogovor not found for buyer ILN #'+ buyerILN);
+   setAgreement(Dogovor.nrec);
+  if getlast agreement = tsOk { // попробуем найти допник promo
+    vhod_nal := agreement.vhodnal;
+  }
+  else
+    writeMessageLog(' <!> WARNING: extra agreement not found for buyer ILN #'+ buyerILN);
+  if (getfirst deliverer where ((getNrecByParam(1418, deliverILN) == nrec)) != tsOk) {
+    writeMessageLog(' <!> WARNING: delivery point not found ILN #'+ deliverILN);
+    if (getfirst deliverer where ((dogovor.cgrpol == nrec)) != tsOk) {}
+  }
+  cAtrMC := getAtrMC(katorg.nrec);
+  if (cAtrMC = 0) {
+    writeMessageLog(' <!> ERROR: buyer have not attribute ''атрибут Код МЦ''');
+    exit;
+  }
+  else {
+    _loop line_tbl ordered by line_tbl.LineNumber
+      if (getfirst katmc where ((getNrecByParam(1411, line_tbl.BuyerItemCode) == nrec)) = tsOk) {
+        spec_exists := (getfirst spdocs = tsOk);
+        if not spec_exists {
+          writeMessageLog(' <!> WARNING: pos # '+ line_tbl.LineNumber+ ' dogovor spec not found');
+        }
+        else {
+          delta := abs(spdocs.price- if(vhod_nal = 1, line_tbl.OrderedUnitGrosPrice, line_tbl.OrderedUnitNetPrice));
+          if delta > allowed_price_delta
+            writeMessageLog(' <!> WARNING: pos # '+ line_tbl.LineNumber+ ' price delta '+ string(delta)+ ' (more then '+ string(allowed_price_delta)+ ')');
+        }
+        if insPos {
+          writeMessageLog(' --> pos # '+ line_tbl.LineNumber+ ' added!');
+        }
+        else
+          writeMessageLog(' <!> ERROR: pos #'+ line_tbl.LineNumber+ ' not added');
+      }
+      else
+        writeMessageLog(' <!> ERROR: pos #'+ line_tbl.LineNumber+ ' not added (buyerItemCode #'+ line_tbl.BuyerItemCode+ ' not found)');
+    if doc_exists {
+      result := updDoc;
+      writeMessageLog(' --> doc # '+ order_num+ ' added!');
+    }
+  }
+}
+// ------------------------------------------------------------
+// Process RecAdv
+function proc_recadv: boolean;
+var qty: double;
+{
+  result := false;
+  if trim(sopr_num) <> ''
+  {
+  if (getfirst katsopr where ((201==vidsopr and sopr_dat==dsopr and sopr_num==nsopr)) != tsOk) {
+    if (getfirst katsopr where ((201==vidsopr and year(sopr_dat)==yearsopr and sopr_num==nsopr)) != tsOk) {
+      writeMessageLog(' <!> WARNING: couldn''t find katsopr (DesAdv #'+ sopr_num+ datetostr(sopr_dat, ' date: DD.MM.YYYY') + '). Try to find by DesAdv #'+sopr_num+'.');
+		//Семенов: номер документа ДО=накладная с 2017г. уникальный.
+	    if (getfirst katsopr where ((201==vidsopr and sopr_num==nsopr)) != tsOk) {
+        writeMessageLog(' <!> ERROR: couldn''t find any katsopr with DesAdv #'+ sopr_num);
+		    exit;
+	    }
+    }
+    else
+    {
+      writeMessageLog(' <!> WARNING: use katsopr with odd date (DesAdv #'+ sopr_num+ datetostr(sopr_dat, ' date: DD.MM.YYYY)'));
+    }
+  }
+  }
+  else //Пытаемся искать по номеру контракта и дате счета
+  {
+   // order_num
+    //order_dat
+    var _cSopr : comp;
+    _cSopr := 0h;
+     _try
+     {
+      sql
+        select top 1
+            KatSopr.nrec
+        from KatSopr
+        Join KatOrg on KatOrg.nrec = katSopr.cOrg
+        join StepDoc on KatSopr.cstepDoc = StepDoc.Nrec
+        join BaseDoc on BaseDoc.Nrec = StepDoc.cBaseDoc
+        where
+         BaseDoc.dDoc = :(order_dat) // #date(22,02,2018)
+         and  STEPDOC.NKONT =  :(order_num)//'4516814111'
+         and  KatSopr.vidsopr =201
+         into (_cSopr)
+     }
+     _except
+      else {}
+
+      if _cSopr <> 0h
+      {
+       if (getfirst katsopr where ((_cSopr == KAtsopr.Nrec)) = tsOk) {}
+      }
+      else
+      {
+        writeMessageLog(' <!> ERROR: couldn''t find any order or delivery ( DesAdv #'+ sopr_num + ' BuyeOrderDate= ' + order_dat + ' BuyerOrderNumber=' +order_num + ')');
+		    exit;
+
+      }
+  }
+
+  if (getfirst stepdoc where ((katsopr.cstepdoc==nrec)) != tsOk) {
+  //if stepdoc.dizvfact = date(0,0,0) { //еще не обрабатывали
+    writeMessageLog(' <!> ERROR: couldn''t find basedoc for DesAdv #'+ sopr_num+ datetostr(sopr_dat, ' date: DD.MM.YYYY'));
+    exit;
+  }
+  else
+  if getfirst corr_doc where ((katsopr.nrec == cadoc and 23 == wadoc)) = tsOk {
+    writeMessageLog(' --> treated corr doc #'+ corr_doc.nsopr+ datetostr(corr_doc.dsopr, ' date: DD.MM.YYYY'));
+    exit;
+  }
+  else
+  if (katsopr.cnote = coGetTune('EI.Ecod.RecAdvStatus')) {
+    writeMessageLog(' --> treated katsopr #'+ sopr_num+ datetostr(sopr_dat, ' date: DD.MM.YYYY'));
+    exit;
+  }
+  else
+ // переделаем на плательщика if buyerILN != trim(extAttr.sGetAttrID(coKatOrg, katsopr.corg, coGetTune('EI.Ecod.AttrGLN')))
+  if buyerILN != trim(extAttr.sGetAttrID(coKatOrg, katsopr.CORGPLAT, coGetTune('EI.Ecod.AttrGLN'))){
+    writeMessageLog(' <!> ERROR: katsopr.nsopr = '+katsopr.nsopr+' buyer not equal for DesAdv #'+ sopr_num+ datetostr(sopr_dat, ' date: DD.MM.YYYY') + ' buyerILN ' + buyerILN +' <> '+ trim(extAttr.sGetAttrID(coKatOrg, katsopr.corg, coGetTune('EI.Ecod.AttrGLN'))));
+    exit;
+  }
+  writeMessageLog(' --> use katsopr #'+ sopr_num+ datetostr(katsopr.dsopr, ' date: DD.MM.YYYY'));
+  //Семенов сказал формировать на текущую дату
+  recadv_dat := cur_date;
+  code_attr := extAttr.sGetAttrID(coKatOrg, katsopr.corg, coGetTune('EI.Ecod.AttrMc')); //имя атрибута код МЦ текущего контрагента
+  if code_attr = ''
+    writeMessageLog(' <!> WARNING: couldn''t find buyer item code name attribute for buyerILN #'+ buyerILN);
+  doc_exists := false;
+  _loop spsopr {
+    qty := 0;
+    tmp := trim(extAttr.sGetAttr(coKatMC, spsopr.cmcusl, code_attr));
+
+    //Giperglobus - 4690202000005
+    if (buyerILN = '4690202000005')
+      tmp := '';
+      //writeMessageLog(' --- DEBUG(2): '+ string(buyerILN)+ ' | '+ string(BuyerItemCode)+ ' | '+ string(line_tbl.AcceptedQuantity));
+
+    if (tmp <> '') { // если задан атрибут Код МЦ покупателя - ищем по нему
+      if getfirst line_tbl where ((tmp == BuyerItemCode)) = tsOk
+        qty := line_tbl.AcceptedQuantity;
+    }
+    else { // иначе ищем по баркоду
+      writeMessageLog(' <!> WARNING: couldn''t find buyer item code at pos #'+ string(spsopr.npp));
+      if getfirst line_tbl where ((uch_ed.bkod == EAN)) = tsOk
+        qty := line_tbl.AcceptedQuantity;
+    }
+    //writeMessageLog(' --- DEBUG: '+ string(qty)+ ' | '+ string(spsopr.kolfact)+ ' | '+ string(katotped.koef));
+    if round(spsopr.kolfact* katotped.koef) <> qty
+      writeMessageLog(' <!> ATTENTION: confirmation contains not odd qty at pos #'+ string(spsopr.npp) + ' spsopr.kolfact = '+spsopr.kolfact+' katotped.koef = '+katotped.koef+'  qty = ' + qty);
+    if round(spsopr.kolfact* katotped.koef) > qty {
+      make_pos(round(qty/ katotped.koef)- spsopr.kolfact, recadv_dat);
+      if (qty > 0) update current line_tbl set AcceptedQuantity = 0;
+    }
+    else
+    if (qty > 0)
+      update current line_tbl set AcceptedQuantity := qty- round(spsopr.kolfact* katotped.koef);
+  } //loop spsopr
+  if doc_exists {
+    update current corr_doc
+       set
+          summa    := sum[1] + if(corr_doc.vhodNal = 2,sum[3],0) //20180604 добавляем учет входимости налогов
+        , sumval   := sum[2]
+        , snalogs  := sum[3]
+        , svnalogs := sum[4]
+       ;
+    insert soprhoz set
+      cdogovor = corr_doc.cdogovor,
+      cappdogovor = corr_doc.cappdogovor,
+      cstepdoc = corr_doc.cstepdoc,
+      datob = corr_doc.dsopr,
+      csoprdoc = corr_doc.nrec,
+      tipdoc = corr_doc.vidsopr,
+      tidkgal = corr_doc.vidsopr,
+      nodoc = corr_doc.nsopr,
+      descr = corr_doc.descr,
+      summa = corr_doc.summa,
+      direct = 2,
+      vhsumhoz = '+',
+      corg = corr_doc.corg;
+    writeMessageLog(' --> created corr doc #'+ corr_doc.nsopr+ datetostr(corr_doc.dsopr, ' date: DD.MM.YYYY'));
+  }
+  else
+    writeMessageLog(' --> doc confirmed!');
+  result := (update current stepdoc set
+    nkont = order_num,
+    dizvmax = order_dat,
+    kontpri = recadv_num,
+    dizvfact = recadv_dat) = tsOk;
+  if result
+  if getfirst katnotes where ((coGetTune('EI.Ecod.RecAdvStatus')==nrec)) = tsOk {
+    insert statlog set
+      doctype = katsopr.vidsopr,
+      cdoc = katsopr.nrec,
+      coldnote = katsopr.cnote,
+      cnewnote = katnotes.nrec,
+      oldstatus = katsopr.status,
+      newstatus = katnotes.status,
+      doper = cur_date,
+      timeoper = cur_time,
+      descr = sGetTune('User.Descr'),
+      comment = 'Получено подтверждение из ECOD';
+    update current katsopr set status = katnotes.status, cnote = katnotes.nrec;
+  }
+}
+// ------------------------------------------------------------
+// Fill Buyer List
+procedure proc_buyer(list_file: string);
+var i: word;
+{
+  delete all buyer_list;
+  if list_file = '' exit;
+  if existFile(ecod_path+ list_file) { //try discover file
+    _try {
+      fSrc.openFile(ecod_path+ list_file, stOpenRead);
+      while not fSrc.eof() do {
+        fSrc.readLn(buyerILN);
+        if (buyerILN <> '')
+          if (insert buyer_list set iln = buyerILN) <> tsOk {}
+      }
+    }
+    _finally {
+      fSrc.close;
+    }
+  }
+  else { //use as comma separated string
+    i := 1;
+    buyerILN := parseword(list_file, i++, ';');
+    while (buyerILN <> '') {
+      if (insert buyer_list set iln = buyerILN) <> tsOk {}
+      buyerILN := parseword(list_file, i++, ';');
+    }
+  }
+}
+// ------------------------------------------------------------
+// Count Files In Folder
+function count_files(_path: string): longint;
+var _str: string;
+{
+  result := 0;
+  if (execProgram(translatePath('%COMSPEC%'), '/c dir '+ _path+ ' /b /l | find /c /i "xml" > '
+      + translatePath('%USERPROFILE%')+ '\temp\count.txt', '', pfSilent, 0) = 0) {
+ /*
+  if not existfile(ecod_path+ 'file_qty.cmd') { //try discover file
+    writeMessageLog(' <!> WARNING: couldn''t find ''file_qty.cmd'' for count files in folder');
+  }
+  else
+  if (execprogram(translatePath('%COMSPEC%'), '/c '+ ecod_path+ 'file_qty.cmd'
+    + ' "'+ _path+ '" '+ translatePath('%USERPROFILE%')+ '\temp\count.txt', '', pfSilent, 0) = 0) {
+*/
+    _try {
+      fSrc.openfile(translatePath('%USERPROFILE%')+ '\temp\count.txt', stOpenRead);
+      fSrc.seek(0);
+      fSrc.readln(_str);
+      result := longint(trim(_str));
+    }
+    _finally {
+      fSrc.close;
+    }
+  }
+  else
+    writeMessageLog(' <!> ERROR: during obtaining the number of files in folder');
+}
+// ------------------------------------------------------------
+handleevent
+cmInit: {
+  if UserName = 'dmitry.lapushkov'
+   {
+   message('file_mask = '+file_mask  +
+     ''#13'' + 'auto_param = '+ auto_param)
+   }
+  _try {
+    ecod_path := sGetTune('EI.Ecod.Folder');
+    log_path := ecod_path+ 'log\';
+    if not existFile(log_path) createDirectory(log_path);
+    log_path += datetostr(cur_date, 'YYYYMMDD_')+ timetostr(cur_time, 'HHMMSS_')+ 'import.log';
+    openMessageLog(log_path, mfLog2Stream+ mfLog2Screen+ mfDownScreenDiv3+ mfBatch+ mfAppend);
+    messageLogEnableBatch;
+    if ecod_path = '' _raise exNoTune;
+    if (file_mask = '')
+      file_mask := 'recadv_*';//'order_*'
+    if pos('recadv', locase(file_mask)) > 0
+      pushbounds(tb_spsopr2mc);
+    writeMessageLog('work in folder '''+ ecod_path+ '''...');
+    //определяем список покупателей
+    if not existFile(translatePath('%USERPROFILE%')+ '\temp\') createDirectory(translatePath('%USERPROFILE%')+ '\temp\');
+    if (execProgram(translatePath('%COMSPEC%'), '/c dir '+ ecod_path+ '* /b /a:d /l > '
+      + translatePath('%USERPROFILE%')+ '\temp\buyer.txt', '', pfSilent, 0) = 0) {
+      startNewVisual(vtRotateVisual, vfTimer+vfBreak+vfConfirm, ''#3'Reading ECOD exchange folder '''+ ecod_path+ '''...', 0);
+      proc_buyer(sGetTune('EI.Ecod.BuyerList'));
+      _try {
+        fDir.openFile(translatePath('%USERPROFILE%')+ '\temp\buyer.txt', stOpenRead);
+        fDir.seek(0);
+        while not fDir.eof() do {
+          fDir.readLn(tmp);
+          buyerILN := trim(tmp);
+          if not chkEcodGLN(buyerILN) continue;
+          if sGetTune('EI.Ecod.BuyerList') <> '' {
+          //if pos(buyerILN+ ';', sGetTune('EI.Ecod.BuyerList')) = 0 {
+            if getfirst buyer_list where ((buyerILN == iln)) != tsOk {
+              writeMessageLog('folder '''+ buyerILN+ ''' excluded due buyer list!');
+              writeMessageLog('─────────────────────────────────────────────────────────────');
+              continue;
+            }
+          }
+          file_path := ecod_path+ buyerILN+ '\in\';
+          tmp := getfoldername(file_path, file_mask);
+          if (tmp = '') continue;
+          file_path += tmp+ '\';
+          counter := count_files(file_path+ file_mask+ '.xml');
+        //if counter = 0 continue;
+          if getfirst buyer_list where ((buyerILN == iln)) != tsOk
+            insert buyer_list set iln = buyerILN;
+          update current buyer_list set qty = counter, fld = file_path;
+          if (getfirst katorg where ((getNrecByParam(1418, buyerILN) == nrec)) = tsOk) {
+            update current buyer_list set org=katorg.nrec;
+          }
+          else
+            writeMessageLog(' <!> ERROR: buyer not found ILN #'+ buyerILN);
+        } //while fDir
+      }
+      _finally {
+        stopvisual('', 0);
+        fDir.close;
+        delete buyer_list where (('' == fld));
+      }
+      if getfirst buyer_list <> tsOk {
+        _raise exNoData;
+      }
+      else
+      if (auto_param = 1) {
+        _loop buyer_list
+          if (buyer_list.qty > 0) pMarker.mark;
+      }
+      else
+      if runwindowmodal(param_win) = cmCancel {
+        _raise exUserBreak;
+      }
+      //else {
+        if iMarker(pMarker).count = 0 iMarker(pMarker).mark;
+        startNewVisual(vtRotateVisual, vfTimer+vfBreak+vfConfirm, ''#3'Reading files for buyer '''+ katorg.name+ ''' ['+ buyer_list.iln+ ']', 0);
+        pushpos(#buyer_list);
+        subbounds(tbrmbuyer_list1);
+        addbounds(tbrmbuyer_list2);
+        _loop pMarker {
+          if not nextvisual break;
+          setvisualtitle(''#3'Reading files for buyer '''+ katorg.name+ ''' ['+ buyer_list.iln+ ']');
+          if getfirst buyer_list where ((pmarker.pnrec == iln)) = tsOk {
+            file_name := getFirstFile(buyer_list.fld, file_mask+ '.xml'); //ищем первый файл по маске
+            if (file_name <> strDataIsEmpty) {
+              arch_path := buyer_list.fld+ 'received\';
+              if not existFile(arch_path) createDirectory(arch_path);
+              writeMessageLog('─────────────────────────────────────────────────────────────');
+              writeMessageLog('load docs for '''+ katorg.name+ ''' ['+ buyer_list.iln+ ']');
+              do {
+                if not nextVisual() break;
+                writeMessageLog('processing file '''+ file_name+'''...');
+                doc_exists := false;
+                if load_xml(file_name) {
+                  if pos('recadv', locase(file_mask)) > 0 {
+                    file_proceed := proc_recadv;
+                  }
+                  else
+                    file_proceed := proc_order;
+                  if file_proceed {
+                    counter++;
+#ifdef DEBUG_MODE
+                    if counter > 3 break;
+#else
+                    copyMoveFile(file_name, replace(file_name, buyer_list.fld, arch_path), true, ecmfClientFrom+ ecmfClientTo);
+                    writeMessageLog(' --> file moved to archive folder');
+#end
+                  }
+                }
+                file_name := getNextFile; //ищем следующий входящий файл
+              } while (file_name <> strDataIsEmpty);
+            }
+          }
+        } // loop buyer_list
+        subBounds(tbrmbuyer_list2);
+        addBounds(tbrmbuyer_list1);
+        poppos(#buyer_list);
+        stopvisual('', 0);
+        iMarker(pmarker).unselectall;
+    //}
+    } //if exec cmd dir
+    else
+      writeMessageLog(' <!> ERROR: during obtaining buyers list');
+  }
+  _except
+  on exNoTune: {
+    writeMessageLog(' <!> ERROR: couldn''t find tune ''ECOD exchange folder''!');
+  }
+  on exNoData: {
+    writeMessageLog(' <!> WARNING: nothing to load!');
+  }
+  on exUserBreak: {
+    writeMessageLog('interrupted by user!');
+  }
+  _finally {
+    writeMessageLog('─────────────────────────────────────────────────────────────');
+    closeMessageLog;
+    messageLogDisableBatch;
+    processText(log_path, vfRunModal+ vfMacroSize, 'Протокол импорта данных из ECOD'); //vfToErase
+    abort;
+    exit;
+  }
+}
+end;
+end.

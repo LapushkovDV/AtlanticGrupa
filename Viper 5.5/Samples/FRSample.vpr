@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>FRSample</ProjectName>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Gal\EXE"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Atl\EXE\</AtlDir>
+				<ClearResource>True</ClearResource>
+				<CompressResource>False</CompressResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Gen
+					$[AtlPath]\Source\*
+					$[ProjectPath]\FRSource\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+				</ResourceList>
+				<OutputResource>$[GalExe]\user$[ExtRes]</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+			<VipMessages>
+				<SaveOldMessage>True</SaveOldMessage>
+			</VipMessages>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseName>C:\Database</DatabaseName>
+					<FullLoginName>True</FullLoginName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<CheckAtlVer>5005016000</CheckAtlVer>
+		<DebugOptions StopOnStartup="False"/>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectItems>
+			<ProjectCompileFile FileName="FRSource\FRBaseSample\FRBaseSample.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Source">
+						<ProjectItems>
+							<ProjectFile FileName="FRSource\FRBaseSample\vip\FRBaseSample.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="FRSource\FRBindPreview\FRBindReport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Source">
+						<ProjectItems>
+							<ProjectFile FileName="FRSource\FRBindPreview\Vip\FR_Bind.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="FRSource\FRBindPreview2\FRBindReport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Source">
+						<ProjectItems>
+							<ProjectFile FileName="FRSource\FRBindPreview2\Vip\FR_Bind.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="FRSource\FRChoiceDialog\FRChoiceReport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Source">
+						<ProjectItems>
+							<ProjectFile FileName="FRSource\FRChoiceDialog\Vip\FRChoiceDialog.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="FRSource\FRGetVaribale\FRGetVariable.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Source">
+						<ProjectItems>
+							<ProjectFile FileName="FRSource\FRGetVaribale\Vip\FR_GetVariable.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="FRSource\FRPersons\FRPersons.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Source">
+						<ProjectItems>
+							<ProjectFile FileName="FRSource\FRPersons\Vip\FR_Persons.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="FRSource\FRPreview\FRPreviewReport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Source">
+						<ProjectItems>
+							<ProjectFile FileName="FRSource\FRPreview\Vip\FR_Preview.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="FRSource\FRPrintReport\FRPrintReport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Source">
+						<ProjectItems>
+							<ProjectFile FileName="FRSource\FRPrintReport\Vip\FR_Test.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="FRSource\FRSaveReport\FRSaveReport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Source">
+						<ProjectItems>
+							<ProjectFile FileName="FRSource\FRSaveReport\Vip\FR_SaveReport.vip"/>
+							<ProjectFile FileName="FRSource\FRSaveReport\Vip\PDFParam.vip"/>
+							<ProjectFile FileName="FRSource\FRSaveReport\Vip\WordParam.vip"/>
+							<ProjectFile FileName="FRSource\FRSaveReport\Vip\BiffParam.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="FRSource\FRSendMail\FRSendMailReport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Source">
+						<ProjectItems>
+							<ProjectFile FileName="FRSource\FRSendMail\Vip\FR_SendMail.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+			<ProjectCompileFile FileName="FRSource\FRStrongTest\FRSrongTest.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFolder Name="Source">
+						<ProjectItems>
+							<ProjectFile FileName="FRSource\FRStrongTest\Vip\FRStrongTest.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectCompileFile>
+		</ProjectItems>
+	</ProjectManager>
+</Viper>

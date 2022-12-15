@@ -1,0 +1,17 @@
+#component "C_EXPIMP"
+
+#include ExpImpScript.vih
+
+objInterface ObjiexpImpScript_droga;
+
+ Procedure ClearAlltDoc;
+ Function GetfirstieHeadOnDesadv : boolean; // 281474976710656005
+ Function GetfirstieHeadOnInvoice : boolean; // 281474976710656063
+ Procedure InserttDoc(_nrec : comp; _type : word) ;
+ function doc2xml(_type: word; _tmplog : string = ''): boolean;
+
+end;
+#component "DROGA"
+vipInterface ExpImpScript_Droga implements ObjExpImpScript,ObjiexpImpScript_droga licensed(free);
+
+var _ExpImpScript_Droga : ExpImpScript_Droga;

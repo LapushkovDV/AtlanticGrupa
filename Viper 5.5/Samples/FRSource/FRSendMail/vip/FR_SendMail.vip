@@ -1,0 +1,185 @@
+#include marker.vih
+
+Table Struct Employers
+(
+  NRec : word     //Номер записи
+, FIO : string
+, Mail: string
+)
+with index
+(
+  tmpTable01  =  NRec //(Unique, Surrogate, Journal)
+);
+
+Interface FRSendMailSample 'FRAPI SendMail Report' (,,sci1Esc), Gray;
+Show (,, 60, 13);
+
+var
+  pMarker: IMarker(marker) new;
+
+create view
+  var
+    iGr : word;
+    FReport: #TPtr;
+    Reports: LongInt;
+
+    marker: LongInt;
+  from
+    KatMC, KatED, Employers,
+    GroupMC
+  where
+  ((
+        GroupMC.nrec == KatMC.cGroupMC
+    and KatMC.cEd    == KatEd.Nrec
+    and KatMC.Nrec   == KatOtpEd.cMcUsl
+    and 1            == KatOtpEd.prmc
+
+    and KatMc.Nrec   == SklOst.cmc
+    and SklOst.cPodr == KatPodr.Nrec
+  ));
+
+  DataStream FRAPI_BindReport_DS
+  (
+    [Date_Rep]  Cur_Date;
+    [User_Name] UserName;
+
+    Table GroupMC
+    (
+      [NppGr] iGr++;
+      [Group_Name] GroupMC.Name;
+      [Group_Code] GroupMC.Kod;
+    );
+
+    Table KatMC
+    (
+      [MC_name]  KatMC.Name;
+      [MC_Code]  KatMC.Barkod;
+      [MC_EdIzm] KatEd.Name;
+    );
+
+     Table SklOst
+    (
+      [Podr_Name] KatPodr.Name;
+      [KolMC]     SklOst.Kol;
+     );
+  )
+
+    HandleEvent
+      cmPreProcess :
+      {
+        StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Выполняется формирование отчета...', 0);
+      }
+
+      cmPostProcess :
+      {
+        StopVisual('',0);
+      }
+    end; //DataStream
+
+    HandleEvent table GroupMC
+      cmPreProcess:
+      {
+        iGr := 1;
+      }
+
+      cmOnProcess:
+      {
+        if (Not NextVisual()) BreakProcess;
+      }
+    end;
+  end;
+
+Screen sBut;
+show (1,8,,);
+fields
+  Reports: Protect;
+Buttons
+  cmSendMailFR;
+<<
+  Отчет:
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  <. Выслать выбранным .>
+>>
+end;
+
+browse brReportTable (,, sci178Esc);
+show at (1,1,,7);
+table Employers;
+  recMarker = pMarker{Employers.NRec};
+  fields
+    Employers.FIO 'ФИО сотрудника'('ФИО сотрудника'):[30], protect;
+    Employers.Mail 'E-mail'('E-mail',,):[30], protect;
+end;
+
+HandleEvent
+
+cmInit:
+{
+  Marker := InitMarker('', 4, 10, 5);
+  pMarker.Caption := (' Отмечено %d');
+
+  insert current Employers set Employers.NRec := 1,
+                               Employers.FIO := 'Иванов Иван Иванович',
+                               Employers.Mail := 'Ivan.Ivanov@mail.ru';
+
+  insert current Employers set Employers.NRec := 2,
+                               Employers.FIO := 'Сидоров Сидор Сидорович',
+                               Employers.Mail := 'Sidor.Sidorov@mail.ru';
+
+  insert current Employers set Employers.NRec := 3,
+                               Employers.FIO := 'Петров Петр Петрович',
+                               Employers.Mail := 'Petr.Petrov@mail.ru';
+
+  insert current Employers set Employers.NRec := 4,
+                               Employers.FIO := 'Яковлев Яков Яковлевич',
+                               Employers.Mail := 'Yakov.Yakovlev@mail.ru';
+
+  insert current Employers set Employers.NRec := 5,
+                               Employers.FIO := 'Пашкевич Павел Павлович',
+                               Employers.Mail := 'Pavel.Pashkevich@mail.ru';
+
+  var
+    sReports: array [0..0] of String;
+
+  FReport := FrCreate(FRAPI_BindReport_DS);
+  FRGetReportNames(FReport, sReports);
+
+  SetEnumList(sBut, #Reports, sReports);
+
+  getfirst Employers;
+}
+
+cmSendMailFR:
+{
+  var i, mID: LongInt;
+  var MailString: String = '';
+
+  pMarker.ExportTo(marker);
+
+  for (i := 0; i < GetMarkerCount(marker); i++)
+    if GetMarker(marker, i, mID) and (getfirst Employers where ((mID == Employers.NRec)) = tsOk)
+      MailString := MailString + ', ' + Employers.Mail;
+
+  MailString := SubStr(MailString, 3, Length(MailString) - 1);
+
+  var MailParams: frxSendMailParam;
+  ClearAdvRecord(MailParams);
+  MailParams.MailTo := MailString;
+  MailParams.Subject := GetEnumString(sBut, #Reports);
+  MailParams.Body := 'Hello, мир!';
+  MailParams.ShowDialog := True;
+
+  if FROpenReport(FReport, GetEnumString(sBut, #Reports))
+    if FRSetParameters(FReport, frMailParams, MailParams)
+      FRSendReportMail(FReport, frExportBIFF);
+}
+
+cmDone:
+{
+  FRDestroy(FReport);
+  DoneMarker(Marker, '');
+}
+
+end;
+end.

@@ -1,0 +1,68 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика 8.10 - настройки
+// Обработка настроек с вызовом интерфейсов
+//******************************************************************************
+
+#include tuneSpec.vih
+
+vipinterface intrTune_C_ECOD implements objIntrTuneComponent licensed(free);
+
+// Обработчик точки расширения epPostTuneComponent
+// Должен вернуть FALSE если обработка проводилась. TRUE - если не проводилась.
+handler with replace C_ECOD_IntrTune on extensionPoint epIntrTuneComponent (TR: objTuneIntr; TVal: TTuneVal; Inter: string) [83]
+action
+{
+   var ifc: intrTune_C_ECOD;
+   result := not ifc.TuneIntrComponent(TR, tVal, inter);
+}
+//------------------------------------------------------------------------------
+interface intrTune_C_ECOD;
+create view from attrnam, katnotes;
+public function tuneIntrComponent(TR: objTuneIntr; tVal: tTuneVal; inter: string): boolean;
+{
+  case upcase(inter) of
+  'GETEXTATTRCOMP_KATORG': {
+      var cRec: comp;
+      cRec := tVal.compVal;
+      if (runInterface('C_EXTCLASS::PickAttrNamType', cRec, coKatOrg, cgAttrType_Str) = cmDefault)
+        if (GetFirst FastFirstRow attrNam where (( cRec == nRec )) = tsOk) {
+          tVal.strVal  := attrNam.Name;
+          tVal.compVal := attrNam.nRec;
+          result := true;
+        }
+    }
+  /*
+  'GETSKLAD': {
+    if (runInterface('L_COMMON::GetSklad', tVal.compVal) <> cmCancel) {
+      result := true;
+      if (getFirst katPodr where ((tVal.compVal == nrec)) = tsOk)
+        tVal.strVal := katpodr.name;
+    }
+  }
+  */
+  'GETECODFOLDER': {
+    var extOutputPath: string;
+    extOutputPath := sGetTuneEx(TR.GetTuneCode(TVal.cTune), tVal.obj, tVal.cUser);
+    if (extOutputPath = '')
+      extOutputPath := translatePath('%StartPath%');
+    extOutputPath := getDirName('Папка обмена с ECOD', extOutputPath);
+    if(extOutputPath <> '') {
+      extOutputPath := extOutputPath+'\';
+      tVal.StrVal := extOutputPath;
+      result := true;
+    }
+  }
+  'GETSOPRSTATUS': {
+      if (runinterface('L_DOGOVOR::getsomkatnotes', word(201), word(0), word(0), false, tVal.compVal) <> cmCancel) {
+        result := true;
+        if (getFirst katnotes where ((tVal.compVal == nrec)) = tsOk)
+          tVal.strVal := katnotes.name;
+        }
+  }
+  else result := false;
+  end;  // case
+
+  if result TR.updateTuneVal(tVal);
+} //tuneIntrComponent
+end.

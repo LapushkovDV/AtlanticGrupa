@@ -1,0 +1,244 @@
+//******************************************************************************
+// Atlantic Grupa - Samusenko                           (c) корпорация Галактика
+// Галактика 8.10 - обмен бизнес-документами Экспорт
+// STS - Basedoc - Документы-основания
+// предобработка документов от STS Logistics
+//******************************************************************************
+  //fDst.openFile(sFileName, stCreate);
+  sFileImp := getFirstFile(ieHead.messageDir, sFileMask); //ищем первый файл подтверждения от СТС по маске
+  if (sFileImp <> strDataIsEmpty) {
+    //создаем временный файл для формирования файла загрузки
+    sFileTmp := CreateTmpFileName;//translatePath('%USERPROFILE%')+ '\temp\doc_in.dbf';
+    if (sFileTmp = '') {
+      message(''#3'Ошибка при создании файла '+ sFileTmp+ ''#13#3'(HandleOut = 0)');
+      exit;
+    }
+    dbf_handle := dbfOpen(sFileTmp, stCreate); //открываем handle dbf
+    if (dbf_handle = 0) {
+      message(''#3'Ошибка при открытии файла '+ sFileTmp+ ''#13#3'(HandleOut = 0)');
+      exit;
+    }
+    //создаем структуру dbf
+    dbfAddField(dbf_handle, 'descr', dbChar, 20, 0);
+    dbfAddField(dbf_handle, 'desgr', dbChar, 4, 0);
+    dbfAddField(dbf_handle, 'status', dbChar, 80, 0);
+    dbfAddField(dbf_handle, 'ndoc', dbChar, 40, 0);
+    dbfAddField(dbf_handle, 'ddoc', dbDate, 8,0);
+    dbfAddField(dbf_handle, 'ndog', dbChar, 40, 0);
+    dbfAddField(dbf_handle, 'ddog', dbDate, 8,0);
+    dbfAddField(dbf_handle, 'napp', dbChar, 40, 0);
+    dbfAddField(dbf_handle, 'dapp', dbDate, 8,0);
+    dbfAddField(dbf_handle, 'val', dbChar, 30, 0);
+    dbfAddField(dbf_handle, 'money', dbNum, 2, 0);
+    dbfAddField(dbf_handle, 'vhnal', dbNum, 2, 0);
+    dbfAddField(dbf_handle, 'vhskid', dbNum, 2, 0);
+    dbfAddField(dbf_handle, 'channel', dbChar, 80, 0); //канал сбыта
+    dbfAddField(dbf_handle, 'remark', dbChar, 80, 0); //примечание в ДО
+    dbfAddField(dbf_handle, 'cust_inn', dbChar, 20, 0); //контрагент
+    dbfAddField(dbf_handle, 'cust_nam', dbChar, 150, 0);
+    dbfAddField(dbf_handle, 'cust_bik', dbChar, 20, 0);
+    dbfAddField(dbf_handle, 'cust_acc', dbChar, 40, 0);
+    dbfAddField(dbf_handle, 'send_inn', dbChar, 20, 0); //отправитель
+    dbfAddField(dbf_handle, 'send_nam', dbChar, 150, 0);
+    dbfAddField(dbf_handle, 'dest_inn', dbChar, 20, 0); //получатель
+    dbfAddField(dbf_handle, 'dest_nam', dbChar, 150, 0);
+    dbfAddField(dbf_handle, 'own_bik', dbChar, 20, 0); //собственный
+    dbfAddField(dbf_handle, 'own_acc', dbChar, 40, 0);
+
+    dbfAddField(dbf_handle, 'pos_type', dbNum, 2, 0);
+    dbfAddField(dbf_handle, 'pos_num', dbNum, 8, 0);
+    dbfAddField(dbf_handle, 'code', dbChar, 30, 0);
+    dbfAddField(dbf_handle, 'name', dbChar, 80, 0);
+    dbfAddField(dbf_handle, 'qty', dbNum , 15, 5);
+    dbfAddField(dbf_handle, 'unit', dbChar, 80, 0);
+    dbfAddField(dbf_handle, 'price', dbNum , 15, 5);
+    dbfAddField(dbf_handle, 'party', dbChar , 80, 0);
+    //цикл по входящим файлам
+    startNewVisual(vtRotateVisual, vfTimer+vfBreak+vfConfirm, ''#3'Обработка входящих данных '''+ sFileMask+ '''...', 0);
+    //в tDoc будем писать nrec'и обработанных документов, чтоб потом перенести их в ДО на предоплату
+    delete all tDoc;
+    hdr := '';
+    do {
+      if not nextVisual() break;
+      wasErrorImp := false;
+      _try {
+        writeLog('Обработка файла: '+ sFileImp, 1);
+        fSrc.openFile(sFileImp, stOpenRead);
+        fSrc.seek(0);
+        while not fSrc.eof() do { //обрабатываем строки входящего файла
+          fSrc.readLn(str);
+          str += ';';
+          if pos('H;', str) = 1 { //заголовок документа
+            hdr := '';
+            code := comp(parseWord(str, 4, ';')); //код заказа (basedoc.nrec)
+            //if (code = 0) code := comp(parseWord(str, 14, ';'));
+            //num := parseWord(str, 14, ';');
+            //if (num = '') num := parseWord(str, 9, ';');
+            //if (getfirst basedoc where ((iehead.subtipdoc==viddoc and num==nodoc)) <> tsOk) {
+            wasErrorImp := (getfirst basedoc where ((code==nrec)) <> tsOk);
+            if wasErrorImp {
+              writeLog('Документ с кодом '+ string(code,0,0)+ ' не найден в Системе. Файл пропущен!', 1);
+              continue;
+            }
+            writeLog('Обработка подтверждения документа № '+ basedoc.nodoc+ datetostr(basedoc.ddoc, ' от DD.MM.YYYY ')+ '...', 1);
+            if (insert tDoc set nRec = basedoc.nrec) <> tsOk {}
+
+            if (iehead.subtipdoc != basedoc.viddoc) { //повторная загрузка
+              writeLog('Обнаружена повторная загрузка!', 1);
+              code := extAttr.coGetAttr(coBasedoc, basedoc.nrec, 'STS Logistic Confirmation');
+              if (code > 0)
+                if (update basedoc where ((code==nrec)) set status = 3, cnote = comp(400026F585B1FB6Ch) ) = tsOk {
+                  writeLog('Статус документа предыдущей загрузки изменен на ''Закрытый''', 1);
+                }
+            }
+            wasErrorImp := (getfirst katorg where ((basedoc.corg==nrec)) <> tsOk);
+            if wasErrorImp {
+              writeLog('Не найден контрагент '+ string(basedoc.corg, 0, 0)+ '. Файл пропущен!', 1);
+              continue;
+            }
+            hdr := 'H';
+            //заполняем информацию в dbf
+            dbfClearBuffer(dbf_handle);
+            dbfPutFieldValue(dbf_handle, 'descr', basedoc.descr);
+            dbfPutFieldValue(dbf_handle, 'desgr', 'IMP');
+            dbfPutFieldValue(dbf_handle, 'status', 'Оформляемый');
+            dbfPutFieldValue(dbf_handle, 'ndoc', basedoc.nodoc);
+            dbfPutFieldValue(dbf_handle, 'ddoc', parseWord(str, 5, ';'));
+            if (getfirst dogovor where ((basedoc.cdogovor==nrec)) = tsOk) {
+              dbfPutFieldValue(dbf_handle, 'ndog', dogovor.nodoc);
+              dbfPutFieldValue(dbf_handle, 'ddog', datetostr(dogovor.ddoc, ieHead.dFormat));
+            }
+            if (getfirst dogovor where ((basedoc.cappdogovor==nrec)) = tsOk) {
+              dbfPutFieldValue(dbf_handle, 'napp', dogovor.nodoc);
+              dbfPutFieldValue(dbf_handle, 'dapp', datetostr(dogovor.ddoc, ieHead.dFormat));
+            }
+            dbfPutFieldValue(dbf_handle, 'money', basedoc.tipmoney);
+            dbfPutFieldValue(dbf_handle, 'vhnal', basedoc.vhodnal);
+            dbfPutFieldValue(dbf_handle, 'vhskid', basedoc.vhskid);
+            if (getfirst klval where ((basedoc.cval==nrec)) = tsOk)
+              dbfPutFieldValue(dbf_handle, 'val', klval.dollar);
+            dbfPutFieldValue(dbf_handle, 'cust_inn', katorg.unn);
+            dbfPutFieldValue(dbf_handle, 'cust_nam', katorg.name);
+            if (getfirst katbank where ((basedoc.cbank==nrec)) = tsOk) {
+              dbfPutFieldValue(dbf_handle, 'cust_bik', katbank.mfo1);
+              dbfPutFieldValue(dbf_handle, 'cust_acc', katbank.schet1);
+            }
+            dbfPutFieldValue(dbf_handle, 'channel', extAttr.coGetAttr(coBasedoc, basedoc.nrec, 'Канал Сбыта'));
+            dbfPutFieldValue(dbf_handle, 'remark', basedoc.name);
+            if (getfirst katorg where ((basedoc.cgrotpr==nrec)) = tsOk) {
+              dbfPutFieldValue(dbf_handle, 'send_inn', katorg.unn);
+              dbfPutFieldValue(dbf_handle, 'send_nam', katorg.name);
+            }
+            if (getfirst katorg where ((basedoc.cgrpol==nrec)) = tsOk) {
+              dbfPutFieldValue(dbf_handle, 'dest_inn', katorg.unn);
+              dbfPutFieldValue(dbf_handle, 'dest_nam', katorg.name);
+            }
+            if (getfirst katbank where ((basedoc.cmybank==nrec)) = tsOk) {
+              dbfPutFieldValue(dbf_handle, 'own_bik', katbank.mfo1);
+              dbfPutFieldValue(dbf_handle, 'own_acc', katbank.schet1);
+            }
+            npp := 0;
+            if (getfirst stepdoc where ((basedoc.nrec==stepdoc.cbasedoc)) <> tsOk) {}
+          }
+          else
+          if hdr <> '' { //спецификация документа
+            tmp := parseWord(str, 4, ';'); //код товара
+            if (getfirst katmc where ((tmp==barkod2)) <> tsOk) {
+              writeLog(' Не найден товар с кодом '+ tmp+ '. Строка пропущена!', 1);
+              continue;
+            }
+            prc := 0;
+            qty := double(parseWord(str, 5, ';'));
+            code := comp(parseWord(str, 3, ';')); //код строки
+			tmp := parseWord(str, 6, ';'); //отпускная единица из файла
+      if (getfirst spstep where ((code==nrec)) = tsOk) {
+        npp := spstep.npp;
+        if (spstep.cmcusl = katmc.nrec) {
+          prc := spstep.price;
+          unit := katmc.ced;
+          ship := 0;
+				  if (getfirst katotped where ((spstep.cotped == nrec)) = tsOk)
+            ship := katotped.ckated;
+				  tmp := unit2iso(extAttr.sGetAttr(coKated, if(ship > 0, ship, unit), 'Код')); //отпускная единица из документа
+          if tmp <> parseWord(str, 6, ';') //отпускные единицы не совпадают
+            qty /= katotped.koef;
+          if (spstep.kol <> qty) {
+            writeLog(' pos #'+ string(npp)+ ' указано количество: '+ string(spstep.kol)+ '. В загружаемом файле: '+ string(qty)+ '!', 1);
+          }
+        }
+        else {
+          writeLog(' pos #'+ string(npp)+ ' привязан товар '+ string(katmc.barkod2,0,0)+ '. Цена не установлена!', 1);
+        }
+      }
+      else {
+        writeLog(' pos not found: '+ string(code,0,0)+ '. Цена не установлена!', 1);
+        npp++;
+      }
+            dbfPutFieldValue(dbf_handle, 'ndoc', basedoc.nodoc);
+            dbfPutFieldValue(dbf_handle, 'type', spsopr.prmc);
+            dbfPutFieldValue(dbf_handle, 'pos_num', npp);
+            dbfPutFieldValue(dbf_handle, 'code', katmc.barkod);
+            dbfPutFieldValue(dbf_handle, 'name', katmc.name);
+            dbfPutFieldValue(dbf_handle, 'qty', qty);
+            dbfPutFieldValue(dbf_handle, 'price', string(prc));
+            dbfPutFieldValue(dbf_handle, 'unit', iso2unit(tmp));
+            if getfirst katparty where ((spstep.cparty == nrec)) = tsOk
+              dbfPutFieldValue(dbf_handle, 'party', katparty.name);
+            //fDst.writeLn(hdr+ tmp);
+            dbfInsertRecord(dbf_handle);
+            if word(parseWord(str, 9, ';')) = 2 {
+              dbfPutFieldValue(dbf_handle, 'ndoc', basedoc.nodoc+'/БРАК');
+              dbfPutFieldValue(dbf_handle, 'pos_type', spsopr.prmc);
+              dbfPutFieldValue(dbf_handle, 'pos_num', npp);
+              dbfPutFieldValue(dbf_handle, 'code', katmc.barkod);
+              dbfPutFieldValue(dbf_handle, 'name', katmc.name);
+              dbfPutFieldValue(dbf_handle, 'qty', qty);
+              dbfPutFieldValue(dbf_handle, 'price', string(prc));
+              dbfPutFieldValue(dbf_handle, 'unit', iso2unit(parseWord(str, 6, ';')));
+              if getfirst katparty where ((spstep.cparty == nrec)) = tsOk
+                dbfPutFieldValue(dbf_handle, 'party', katparty.name);
+              dbfInsertRecord(dbf_handle);
+            }
+          }
+        } // while not eof
+      }
+      _except
+        on ExFile: {
+          wasErrorImp := true;
+          writeLog(' --- ERROR: ошибка работы с файлом выгрузки '''+ sFileImp+ '''', 1);
+        }
+      _finally {
+        fSrc.close;
+      }
+      if not wasErrorImp {
+        //перемещаем обработанный файл от СТС в архивную папку
+        if copyMoveFile(sFileImp, replace(sFileImp, ieHead.messageDir, sPathArch), true, ecmfClientFrom+ ecmfClientTo) {
+          logErr := 'Файл перемещен в папку Arch';
+        }
+        else {
+          logErr := 'Ошибка перемещения файла в Arch!';
+        }
+        writeLog(logErr, 1);
+        logErr := 'Файл: '+ sFileImp+ ' обработан';
+      }
+      else
+        logErr := 'Файл: '+ sFileImp+ ' не обработан';
+      writeLog(logErr, 1);
+      sFileImp := getNextFile; //ищем следующий входящий файл от СТС
+    } while (sFileImp <> strDataIsEmpty);
+    stopVisual('', 0);
+    dbfClose(dbf_handle);
+    //перемещаем сформированный временный файл в папку обмена для импорта в Галактику
+    if not copyMoveFile(sFileTmp, sFileName, true, ecmfClientFrom+ ecmfClientTo)
+      message(''#3'Ошибка перемещения DBF в папку обмена!');
+    //переносим документы в папку ДО на предоплату
+	if (message('Перенести исходные документы в папку ''ДО на предоплату''', YesNo) = cmYes)
+    _loop tDoc
+      if (getfirst basedoc where ((tDoc.nRec==nrec)) = tsOk) {
+        if (basedoc.viddoc = iehead.subtipdoc)
+          if (update current basedoc set viddoc = iehead.subtipdoc+ 10, specyes = 1, procopl = 100) = tsOk {
+            writeLog('Документ № '+ basedoc.nodoc+ datetostr(basedoc.ddoc, ' от DD.MM.YYYY')+ ' перенесен в папку ''ДО на предоплату''', 1);
+          }
+      }
+  }
+  else message('Нет файлов для импорта', information);

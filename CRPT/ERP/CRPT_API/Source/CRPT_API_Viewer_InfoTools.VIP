@@ -9,7 +9,8 @@ Interface CRPT_API_Viewer_InfoTools  'Просмотр списка КИ CRPT_API'  Gray;
 var
 //  _cis: string = '76887639829082323333';
   cRootNode
- ,_cNode : string = '';
+ ,_cNode
+ , _cis : string = '';
 
   pMarker: IMarker(marker) new;
 
@@ -59,6 +60,29 @@ function getStrPackType(_packType : string) : string; {
   result := _result;
 }
 
+Window winGetHistoryCIS 'Получить историю движения КИ';
+Screen scrGetHistoryCIS;
+  fields
+   _cis : NoProtect;
+  buttons
+    cmGetHistoryCIS ,,,'Получить историю по КИ',,;
+<<'Получить историю движения КИ'
+
+  .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+   <. Получить Историю движения КИ.>
+>>
+end;
+WindowEvent winGetHistoryCIS;
+cminit: {
+  _cis:= '';
+}
+ cmGetHistoryCIS: {
+    RunInterface('ATLANTIC::CRPT_API_PowerShell', 'GetToken', '');
+    RunInterface('ATLANTIC::CRPT_API_PowerShell', 'GetHistoryCIS', _cis);
+ }
+end;
+end;
 
 Screen scrCRPT_InfoList;
 show at (,,,5);
@@ -67,11 +91,12 @@ show at (,,,5);
   buttons
     cmGetInformation ,,,'Запрос списка КИ',,;
     cmGetRefreshRow  ,,,'Обновить текущую строку',,;
+    cmRunWinHistoryCIS ,,,'Получить историю по КИ',,;
     cmCreateImportDoc  ,,,'Создать документ импорта из помеченных записей',,;
    // cmGetToken ,,,'Получить Токен',,;
 <<
 
-  <.   Запрос списка КИ   .>  <. Обновить текущую строку .>
+  <.   Запрос списка КИ   .>  <. Обновить текущую строку .>  <. История движения КИ.>
 
   <.   Создать документ импорта из помеченных записей    .>
 
@@ -117,7 +142,9 @@ HandleEvent
   cmCreateImportDoc:{
     RunInterface('ATLANTIC::CRPT_API_ImportDocList', pMarker);
   }
-
+  cmRunWinHistoryCIS: {
+    runwindowModal(winGetHistoryCIS);
+  }
 end;
 
 Browse brCRPT_InfoList (,,sci1Esc);

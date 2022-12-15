@@ -1,0 +1,84 @@
+#ifndef _ISetData_
+#define _ISetData_
+
+#Component ""
+
+objInterface IGetHandle;
+// #docl Данный интерфейс отвечает за создание хендла для экземпляра бизнес-объекта. </brief>
+  procedure CreateHandle // #docl Создает хендл для экземпляра бизнес-объекта. </brief> Хэндл приходит в процедуру CreateHandle частично заполненным. Подставляются имя и компонент объекта и имя конструктора Init.
+                       ;
+end;
+
+objInterface ISetData;
+// #docl Для модификации данных объекта публикуемый vip-интерфейс должен реализовать данный интерфейс. </brief>
+  property  modification    // #docl Свойство необходимо для того, чтобы в функции DoSetData отличить необходимость навигации от модификации данных. </brief> Этим свойством полностью управляет прикладник.
+                            : boolean;
+  function  doSetData       // #docl Модифицирует данные, являющиеся объектом. </brief> Прикладной разработчик в методе DoSetData определит, нужно ли вызвать DoInsert или DoUpdate, либо сделать с данными что-то еще.
+                            (owner  // #docl ссылка на владельца текущего подобъекта. </brief> <br> Cсылка на уровень выше.
+                                    : ObjRef; sdFlags   // #docl Флаги. </brief>
+                                                        : longint) : longint; // #docl Результат работы </brief> <br> Возможные значения: tsConflict, [DoInsert], [DoUpdate], tsInvalidPositioning, 0.
+  procedure openTransaction // #docl Начать транзакцию. </brief> Процедура вызывается в начале записи данных основного объекта.
+                          ;
+  procedure closeTransaction (rCode // #docl Закончить транзакцию. </brief> Процедура CloseTransaction вызывается в конце записи данных основного объекта. Режим закрытия транзакции (abort или commit) прикладной программист выбирает сам.
+                                    : longint);
+end;
+
+// дефолтная реализация web-сервиса для табличных врапперов
+#declare IGETHANDLE_IMPL
+  procedure IGetHandle.createHandle;
+  {
+    SetIfcHandleConstructorName( 'Init' );
+  }
+#end
+
+#declare ISETDATA_IMPL(ifcname,tblName,nrec)
+  var l_modification : boolean;
+  var prev_date : date;  // в этих переменных сохраняем         
+  var prev_time : time;  // значения для последующего сравнения 
+  var prev_user : comp;  // в doSetData                         
+
+  property #ifcname.atl_lastdate : date read #tblName.atl_lastDate 
+                                        write prev_date := result;
+  property #ifcname.atl_lasttime : time read #tblName.atl_lastTime
+                                        write prev_time := result;
+  property #ifcname.atl_lastuser : comp read #tblName.atl_lastUser
+                                        write prev_user := result;
+
+  property #ifcname.modification : boolean absolute l_modification;
+
+  procedure #ifcname.openTransaction;
+  {
+   BeginTransaction(0);
+   modification := true;
+  }
+
+  procedure #ifcname.closeTransaction (rCode : longint);
+  {
+   if( rCode = tsOk ) EndTransaction
+     else AbortTransaction;
+   modification := false;
+  }
+
+  function #ifcname.doSetData (owner : ObjRef; sdFlags : longint) : longint;
+  {
+   if( modification )
+     {
+      // Это наша внутренняя договореннсть, если nrec = 0, то insert, иначе update
+      if( #nrec = 0 ) result := doInsert; // вызываем стандарный insert
+        else if( prev_date = #tblName.atl_lastDate and // так проверяем
+                 prev_time = #tblName.atl_lastTime and // пассивные блокировки
+                 prev_user = #tblName.atl_lastUser )
+               if(( sdFlags and sdNoPosition ) <> 0 ) result := doUpdate; // вызываем стандарный update
+                 else result := tsInvalidPositioning; // уже удалили
+             else result := tsConflict; // уже изменили
+     }
+   else
+     {
+      result := 0;
+      if(( sdFlags and sdNoPosition ) = 0 ) #nrec := 0; 
+      if(( sdFlags and sdEmptyData ) <> 0 ) #nrec := 0; 
+     }
+  }
+#end
+
+#endif

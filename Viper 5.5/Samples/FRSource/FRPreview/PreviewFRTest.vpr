@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005015000">
+	<ProjectManager>
+		<ProjectName>SaveFRTest</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="D:\Gal\EXE\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>D:\Atl\55_22_clr\exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Gen
+					$[AtlPath]\Source\*
+					..\..\vip_source*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+				</ResourceList>
+				<OutputResource>$[GalExe]\user$[ExtRes]</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseName>..\..\..\..\Gal\DataBase\data_los</DatabaseName>
+					<FullLoginName>True</FullLoginName>
+					<HwKeyDirectory>\\BY01-HWKEY01\HWDIR</HwKeyDirectory>
+					<LicFileName>\\by01-hwkey03.oit.local\license\support\V9\license.btr</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="FRPreviewReport.prj" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Vip\FR_Preview.vip" PosX="7" PosY="121" OpenEditor="True" Active="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="FRPreviewReport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFile FileName="Vip\FR_Preview.vip"/>
+				</ProjectItems>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="D:\Atl\FR_Revolution2\vip_source\FRPreview\FRPreviewReport.prj" DateTimeStart="42216,5888870255" DateTimeCompile="3,65856467396952E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtError" MessageText="Нет такой функции, поля или метода : FRDOSHOWREPORT" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRPreview\vip\FR_Preview.vip" SourceLine="121" SourceColumn="19"/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\Atl\FR_Revolution2\vip_source\FRPreview\Fr3\FRAPI_TEST!!FRPreviewSample FRAPI_SaveReport_DS Список МЦ по группам Суммы.fr3" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRPreview\Fr3\FRAPI_TEST!!FRPreviewSample FRAPI_SaveReport_DS Список МЦ по группам Суммы.fr3"/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\Atl\FR_Revolution2\vip_source\FRPreview\Fr3\FRAPI_TEST!!FRPreviewSample FRAPI_SaveReport_DS Список МЦ по группам.fr3" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRPreview\Fr3\FRAPI_TEST!!FRPreviewSample FRAPI_SaveReport_DS Список МЦ по группам.fr3"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="31.07.2015 14:08:03"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+	</ProjectManager>
+</Viper>

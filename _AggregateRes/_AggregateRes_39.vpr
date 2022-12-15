@@ -267,14 +267,10 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="1" PosY="203" OpenEditor="True" Active="True"/>
-			<File Name="Source\Mailing_PaymentTerm.vip" PosX="1" PosY="248" OpenEditor="True"/>
-			<File Name="alter\Alter_PrnTovnForFastRep.vip" PosX="39" PosY="99" OpenEditor="True"/>
-			<File Name="alter\alter_l_basedoc_vschet.vip" PosX="56" PosY="15" OpenEditor="True"/>
-			<File Name="alter\alter_DolgOpl.vip" PosX="107" PosY="17" OpenEditor="True"/>
-			<File Name="alter\alter_SoprDoc.vip" PosX="61" PosY="37" OpenEditor="True"/>
-			<File Name="cnf\L_SOPRDOC_SOPRDOC.cnf" PosX="73" PosY="95" OpenEditor="True"/>
-			<File Name="..\..\..\FRM\SRC\CompSrc\C\C_Common\vip\WorkArchive\EanBarCode.vih" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="36" PosY="80" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="16" PosY="33" OpenEditor="True" Active="True"/>
+			<File Name="Source\LOADORDER\LoadOrder_CRPT.vip" PosX="65" PosY="133" OpenEditor="True"/>
+			<File Name="Source\MERCURYPRJ\PickingReport_Import.vip" PosX="1" PosY="214" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -289,7 +285,7 @@
 		<MarkerList>
 			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
 			<Marker FileName="alter\alter_l_basedoc_vschetB.vip" Caption="Нумерованная закладка 1" Line="22" NumIndex="1" MarkerType="mtNumBookmark" Comment="DO_ZAKLYUCHENIE : ;"/>
-			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="163" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="162" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\ReportSumDeclarationToDO.vip" Caption="Нумерованная закладка 1" Line="113" NumIndex="1" MarkerType="mtNumBookmark" Comment="xlStWriteToMatrix(nrow, 1, 'Отчет о предполагаемый'); column++;"/>
 			<Marker FileName="Source\Report_Org_VetisGUIDS.vip" Caption="Нумерованная закладка 1" Line="70" NumIndex="1" MarkerType="mtNumBookmark" Comment="exit"/>
 			<Marker FileName="Source\sale_func.vpp" Caption="Нумерованная закладка 1" Line="86" NumIndex="1" MarkerType="mtNumBookmark" Comment="if bDetail {"/>
@@ -305,13 +301,14 @@
 			<Marker FileName="Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="230" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" Caption="Нумерованная закладка 1" Line="163" NumIndex="1" MarkerType="mtNumBookmark" Comment="PkRLog_Ins.State    := 0 ; // &quot;0draft,1readyToSend,2send,3NotNeedToSen&quot;"/>
 			<Marker FileName="Source\MercuryPRJ\PickingReport_View.vip" Caption="Нумерованная закладка 1" Line="335" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 1" Line="185" NumIndex="1" MarkerType="mtNumBookmark"/>
 		</MarkerList>
 		<BreakPointList>
 			<BreakPoint FileName="alter_vschet.prj" Line="78"/>
 			<BreakPoint FileName="Source\EMAIL\ATL_EmailRun.Vip" Line="12"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_AggregateRes\_AggregateRes.prj" DateTimeStart="44720,4526556944" DateTimeCompile="0,000341990737069864" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_AggregateRes\_AggregateRes.prj" DateTimeStart="44873,6789888889" DateTimeCompile="0,000397685187635943" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3057,22 +3054,22 @@
 					</CompileMessage>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\GALAKTIKA\RES\SRC\_AGGREGATERES\SOURCE\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" SourceLine="7" SourceColumn="1">
 						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\_AggregateRes\_AggregateRes.prj" Line="86" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\res\src\_AggregateRes\_AggregateRes.prj" Line="85" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\_AGGREGATERES\SOURCE\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" SourceLine="273" SourceColumn="27">
 						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\_AggregateRes\_AggregateRes.prj" Line="86" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\res\src\_AggregateRes\_AggregateRes.prj" Line="85" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;PICKINGREPORT_COPYBETWEENDOCS.getMercuryField&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(1), не был использован" SourceFileName="C:\GALAKTIKA\RES\SRC\_AGGREGATERES\SOURCE\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" SourceLine="306" SourceColumn="5">
 						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\_AggregateRes\_AggregateRes.prj" Line="86" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\res\src\_AggregateRes\_AggregateRes.prj" Line="85" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;PICKINGREPORT_COPYBETWEENDOCS.getMercuryFieldColor&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(32), не был использован" SourceFileName="C:\GALAKTIKA\RES\SRC\_AGGREGATERES\SOURCE\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" SourceLine="306" SourceColumn="5">
 						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\_AggregateRes\_AggregateRes.prj" Line="86" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\res\src\_AggregateRes\_AggregateRes.prj" Line="85" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\EMAIL\ATL_EmailRun.Vip" SourceLine="82" SourceColumn="1"/>
@@ -3083,7 +3080,8 @@
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;GONEWMON.Start_GoNewMon&quot;, объявленный в C:\Galaktika\res\src\_AggregateRes\ALTER\Alter_GoNewMon.vip(10), не был использован" SourceFileName="C:\Galaktika\res\src\_AggregateRes\ALTER\Alter_GoNewMon.vip" SourceLine="58" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;SOPINMOV.getMercuryField&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(1), не был использован" SourceFileName="C:\Galaktika\res\src\_AggregateRes\ALTER\alter_L_SKLAD_SOPINMOV.vip" SourceLine="28" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;SOPINMOV.getMercuryFieldColor&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(32), не был использован" SourceFileName="C:\Galaktika\res\src\_AggregateRes\ALTER\alter_L_SKLAD_SOPINMOV.vip" SourceLine="28" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;IDIADOCEXPORTDOC.Check_TmpSpSopr&quot;, объявленный в C:\Galaktika\res\src\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip(32), не был использован" SourceFileName="C:\Galaktika\res\src\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="146" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - getTypeUchet входящий параметр: _cOrg:Comp не используется." SourceFileName="C:\Galaktika\res\src\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="58" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;IDIADOCEXPORTDOC.Check_TmpSpSopr&quot;, объявленный в C:\Galaktika\res\src\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip(66), не был использован" SourceFileName="C:\Galaktika\res\src\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="235" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;IDIADOCSEND.ShowProt&quot;, объявленный в C:\Galaktika\res\src\_AggregateRes\ALTER\ALTER_iDiadocSend.vip(46), не был использован" SourceFileName="C:\Galaktika\res\src\_AggregateRes\ALTER\ALTER_iDiadocSend.vip" SourceLine="120" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;DOLGOPL.isDolg&quot;, объявленный в C:\Galaktika\res\src\_AggregateRes\ALTER\alter_DolgOpl.vip(8), не был использован" SourceFileName="C:\Galaktika\res\src\_AggregateRes\ALTER\alter_DolgOpl.vip" SourceLine="74" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;DOLGOPL.PrintKatSopr&quot;, объявленный в C:\Galaktika\res\src\_AggregateRes\ALTER\alter_DolgOpl.vip(16), не был использован" SourceFileName="C:\Galaktika\res\src\_AggregateRes\ALTER\alter_DolgOpl.vip" SourceLine="74" SourceColumn="5"/>
@@ -3108,12 +3106,13 @@
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="48" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - InsertATL_PickingRep_Spec входящий параметр: _Prod_date:Date не используется." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="385" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="418" SourceColumn="29"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="419" SourceColumn="28"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="420" SourceColumn="34"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) m_LOADORDER_CRPT_ObjLoadOrder_CRPT_InsertSpec локальная переменная _cSoprHoz:Comp, объявленная в C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip(405), не используется." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="424" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_LOADORDER_CRPT_ObjLoadOrder_CRPT_InsertSpec входящий параметр: _EAN:String не используется." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="424" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="150" SourceColumn="62"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - InsertATL_PickingRep_Spec входящий параметр: _Prod_date:Date не используется." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="397" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="430" SourceColumn="29"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="431" SourceColumn="28"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="432" SourceColumn="34"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) m_LOADORDER_CRPT_ObjLoadOrder_CRPT_InsertSpec локальная переменная _cSoprHoz:Comp, объявленная в C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip(417), не используется." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="436" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_LOADORDER_CRPT_ObjLoadOrder_CRPT_InsertSpec входящий параметр: _EAN:String не используется." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="436" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\LOADORDER\LoadOrder_tune.vip" SourceLine="80" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\Marshruts.vip" SourceLine="20" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\Marshruts.vip" SourceLine="252" SourceColumn="1"/>
@@ -3128,7 +3127,6 @@
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="14" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) GetMCBySapCode локальная переменная _empty:Boolean, объявленная в C:\Galaktika\res\src\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip(68), не используется." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="68" SourceColumn="47"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) getKatSoprByDocNumber локальная переменная _empty:Boolean, объявленная в C:\Galaktika\res\src\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip(85), не используется." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="85" SourceColumn="47"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="222" SourceColumn="3"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="5" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Кнопка &quot;Добавить ручные данные&quot; будет в одну строку высотой !" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="280" SourceColumn="3"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="300" SourceColumn="1"/>
@@ -3256,9 +3254,21 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\_AGGREGATERES\FRM\price_SapCode.slk" SourceLine="65" SourceColumn="29"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Модификатор GetFirst выполняется для всей логической таблицы." SourceFileName="C:\GALAKTIKA\RES\SRC\_AGGREGATERES\FRM\price_SapCode.slk" SourceLine="92" SourceColumn="31"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\_AGGREGATERES\FRM\price_SapCode.slk" SourceLine="92" SourceColumn="29"/>
-					<CompileMessage MessageType="mtError" MessageText="Нет такой функции, поля или метода : EAN13TOEANGNIVCTTF" SourceFileName="C:\GALAKTIKA\RES\SRC\_AGGREGATERES\FRM\PRBDOC_1010_RTF_PRBDOC.rtf" SourceLine="17" SourceColumn="21"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="21" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Локальная переменная pickedKol:Integer, объявленная в C:\Galaktika\res\src\_AggregateRes\SOURCE\sale_sale.vip(861), не используется." SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="929" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Переменная iSumVozvr:Double интерфейса DROGA::SALESREPORT, объявленная в C:\Galaktika\res\src\_AggregateRes\SOURCE\sale_sale.vip(138), не была использована" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="986" SourceColumn="5"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Таблица &quot;ATTRPRICE&quot;, включенная в логическую таблицу &quot;V01&quot; интерфейса &quot;SALESREPORT&quot;, не была явно использована" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="986" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\sale_check.vip" SourceLine="38" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\sale_user.vip" SourceLine="7" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_AggregateRes\SOURCE\sale_user.vip" SourceLine="46" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не совпадает тип" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="08.06.2022 10:52:19"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="08.11.2022 16:18:19"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

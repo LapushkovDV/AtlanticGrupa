@@ -1,0 +1,52 @@
+Procedure FillPS1_CrptAPI_GetHistoryCIS(_OleGenerateGUID, _CIS : string); {
+    _OleGenerateGUID := ''; // Заглушки пока не исп
+    MyLog(sGetTune('USERTUNE.CRPT_PRJ.CryptoCrtf'));
+    MyLog(GetTokenPath);
+
+    MyWriteLN('[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12');
+    MyWriteLN('$scriptPath = $MyInvocation.MyCommand.Path | Split-Path -Parent                     ');
+    MyWriteLN('$tokenPath = '''+GetTokenPath+''';                                                  ');
+    MyWriteLN('$CIS  = ''' + _CIS + ''' ');
+    MyWriteLN('$token = Get-Content -Path $tokenPath -ErrorAction SilentlyContinue                                                                               ');
+    MyWriteLN('$headers = @{ Authorization = "Bearer " + $token                                       ');
+    MyWriteLN('            #Host = "markirovka.crpt.ru"                                            ');
+    MyWriteLN('             ContentType ="application / json"                                      ');
+    MyWriteLN(' }                                                                                  ');
+    MyWriteLN('write-host $headers.Authorization ');
+//    MyWriteLN('start-sleep 10 ');
+    MyWriteLN(' $response = $null                                                                  ');
+    MyWriteLN(' try                                                                                ');
+    MyWriteLN(' {                                                                                  ');
+    MyWriteLN('  $response = Invoke-WebRequest  -Uri "https://markirovka.crpt.ru/api/v3/true-api/cises/history?cis=$CIS" -Method post -Headers $headers -ContentType "application/json"');
+    MyWriteLN('                                                                                                                           ');
+    MyWriteLN('  $responseObject = ConvertFrom-Json $response.Content                                                                     ');
+    MyWriteLN(' }                                                                                                                         ');
+    MyWriteLN(' catch {                                                                                                                   ');
+    MyWriteLN(' $errorMessage = $_.Exception.Message                                                                                      ');
+    MyWriteLN(' if (Get-Member -InputObject $_.Exception -Name "Response") {                                                              ');
+    MyWriteLN('     try {                                                                                                                 ');
+    MyWriteLN('         $result = $_.Exception.Response.GetResponseStream()                                                               ');
+    MyWriteLN('         $reader = New-Object System.IO.StreamReader($result)                                                              ');
+    MyWriteLN('         $reader.BaseStream.Position = 0                                                                                   ');
+    MyWriteLN('         $reader.DiscardBufferedData()                                                                                     ');
+    MyWriteLN('         $responseBody = $reader.ReadToEnd();                                                                              ');
+    MyWriteLN('     } catch {                                                                                                             ');
+    MyWriteLN('  #       Throw "An error occurred while calling REST method at: $url. Error: $errorMessage. Cannot get more information." ');
+    MyWriteLN('         $responseObject = $errorMessage                                                                                   ');
+    MyWriteLN('     }                                                                                                                     ');
+    MyWriteLN(' }                                                                                                                         ');
+    MyWriteLN(' #Throw "An error occurred while calling REST method at: $url. Error: $errorMessage. Response body: $responseBody"         ');
+    MyWriteLN(' $responseObject = $responseBody                                                                                           ');
+    MyWriteLN('                                                                                                                           ');
+    MyWriteLN('}                                                                                                                          ');
+    MyWriteLN('$filename = "$scriptPath\"+ $(Get-Date -format "yyyMMdd-HHmmss") + ".xlsx"                                                 ');
+    MyWriteLN('$responseObject | Export-Excel $filename -AutoSize                                                                         ');
+    MyWriteLN('& $filename                                                                                                                ');
+//    MyWriteLN('start-sleep 10                                                                                                                                                          ');
+}
+
+
+Function GetRequestToAPIGetHistoryCIS(_CIS: string) : boolean;
+{
+  #BodyProcedureGetRqst(GetHistoryCIS, _CIS )
+}

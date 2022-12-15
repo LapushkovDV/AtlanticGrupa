@@ -1,0 +1,77 @@
+//******************************************************************************
+// Droga - Samusenko                                    (c) корпорация Галактика
+// Галактика 8.10 - обмен бизнес-документами  Экспорт
+// STS - Katorg - Каталог организаций
+// постобработка katorg для STS Logistics
+//******************************************************************************  
+  _try {
+    writeLog('Обработка файла: '+ sFileName, 1);
+    fSrc.openFile(sFileName, stOpenRead); //открываем исходный файл
+    fSrc.seek(0);
+    tmp := translatePath('%USERPROFILE%')+ '\temp\';
+    fTmc.openFile(tmp+ 'customer_in.csv', stCreate); //создаем файл для выгрузки покупателей
+    fEan.openFile(tmp+ 'suppl_in.csv', stCreate); //создаем файл для выгрузки поставщиков
+    nAll := nTmc := nBar := 0;
+    hdr := tmp := '';
+    var ch: char;
+    qty := 0;
+    while not fSrc.eof() do {
+      fSrc.read(ch); //читаем исходный файл посимвольно, т.к. строка м.б. больше 255 символов
+      if (ch = ';') { //разделитель полей
+        qty++;
+        if (qty = 1) { //первое поле
+	  tmp := 'CUST;ATL';
+	  for (i := 1; i <= length(tmp); i++) fTmc.write(tmp[i]);
+	  tmp := 'SUPPL;ATL';
+	  for (i := 1; i <= length(tmp); i++) fEan.write(tmp[i]);
+        }
+        else
+        if (qty = 3) {
+          tmp := ';;';
+          for (i := 1; i <= length(tmp); i++) fTmc.write(tmp[i]);
+        }
+      }
+      else
+      if (ch = chr(13)) { //если конец строки
+        nAll++; //счетчик строк
+        qty := 0;
+      }
+      //пишем в файлы то что прочитали
+      fTmc.write(ch);
+      if (qty < 7) fEan.write(ch); //последнее поле (код организации) только для покупателей
+    } //while eof
+  }
+  _except
+    on ExFile: {
+      writeLog('Ошибка работы с файлом выгрузки '''+ sFileName+ '''', 1);
+    }
+  _finally {
+    fTmc.close;
+    fEan.close;
+    fSrc.close;
+    writeLog('Обработано строк: '+ string(nAll)+ '. Выгружено записей о поставщиках: '+ string(nAll)+ ', записей о клиентах: '+ string(nAll), 1);
+  }
+  if existFile(sFileName) {
+    writeLog('Файл: '+ sFileName+ ' обработан', 1);
+    //вставим в название файла выгрузки новый номер выгрузки
+    qty := 0;
+    len := 6;
+    if (getfirst lastNumD where ((coKatorg==lndType and ieHead.name==lndSubT)) = tsOk) {
+      qty := word(lastNumD.lndNum);
+      len := length(lastNumD.lndNum);
+      if qty >= longint(lpadch('', '9', len))
+        qty := 0;     
+    }
+    else insert lastNumD set lndType = coKatorg, lndSubT = ieHead.name;
+    qty += 1;
+    update current lastNumD set lndNum = lpadch(string(qty), '0', len);
+    //переместим сформированные файлы выгрузки в папку обмена
+    tmp := translatePath('%USERPROFILE%')+ '\temp\';
+    copyMoveFile(tmp+ 'customer_in.csv', ieHead.messageDir+ 'customer_in'+ lastNumD.lndNum+ '.csv', true,
+      ecmfClientFrom+ecmfClientTo);
+    writeLog('Сформирован файл для загрузки: '+ ieHead.messageDir+ 'customer_in'+ lastNumD.lndNum+ '.csv', 1);
+    copyMoveFile(tmp+ 'suppl_in.csv', ieHead.messageDir+ 'suppl_in'+ lastNumD.lndNum+ '.csv', true,
+      ecmfClientFrom+ecmfClientTo);
+    writeLog('Сформирован файл для загрузки: '+ ieHead.messageDir+ 'suppl_in'+ lastNumD.lndNum+ '.csv', 1);
+    deleteFile(sFileName); //удалим исходный файл
+  }

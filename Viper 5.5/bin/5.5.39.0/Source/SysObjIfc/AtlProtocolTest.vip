@@ -1,0 +1,159 @@
+#include AtlProtocol.vih
+
+interface AtlProtocolTest 'Демонстрация протоколирования' Gray Dialog;
+
+Show at (1,1,60,9);
+
+var APLog: AtlProtocol;
+var stepCount, operCount: longint;
+    pauseTime: double;
+    aSets: word;
+
+const
+  APTEST_NONE        =  0;
+  APTEST_VISUAL      =  1;
+  APTEST_AUTOFLUSH   =  2;
+  APTEST_AUTOCORRECT =  4;
+  APTEST_FILTER      =  8;
+  APTEST_DETAIL      = 16;
+end;
+
+  Table Struct APLogDetail "" (
+     lLogID    : Longint      "",
+     lDetail   : String[254]  ""
+  ) with index (
+     APLogDetail0 = lLogID (Unique)
+  );
+
+  Create view
+    as
+    select *
+    from  APLogDetail;
+
+// ──── П А Н Е Л И ────────────────────────────────
+
+   Screen scTunes;
+      show at (,,,5.5);
+      NoTableNavigation;
+      Fields
+         stepCount: [5, '667'], NoProtect, SpinButton [1, 0, 100];
+         aSets: NoProtect;
+         operCount: [5, '667'], NoProtect, SpinButton [1, 0, 100];
+         pauseTime: [5.1, '\1p667.8'], NoProtect, SpinButton [0.1, 0, 10.0];
+
+<<
+
+`Количество этапов`  .@@@@@   [.] Визуализация`
+`Количество операций`.@@@@@   [.] Параллельный сброс в лог`                                
+`Задержка (секунды)` .@@@@@   [.] Автокоррекция предка`               
+                              [.] Выбор фильтра`               
+                              [.] Детализация`               
+>>
+   end;
+
+   Screen scbPeriod (,,scIFace);
+      show at (,6.5,,);
+      NoTableNavigation;
+      Buttons
+         cmOk, Default,,'Установить выбранные значения';
+<<
+   <.  Запуск  .>
+>>                        
+   end;
+
+
+// ──── Ф У Н К Ц И И ────────────────────────────────
+
+  function  OnLogDefault (lID : LongInt; lMessage : String) : Word;
+  {
+     if GetFirst APLogDetail where ((lID == APLogDetail.lLogID)) = tsOk
+        Result := Message(FormatStr_2('Событие %d: %s' + CHAR_LF + 'Подробнее:', lID, lMessage) + CHAR_LF + APLogDetail.lDetail, mfInformation);
+     else
+        Result := Message(FormatStr_1('Для события %d нет дополнительной информации', lID), mfInformation);
+  }
+
+// ──────────────────────────────────────
+  procedure RunProtocol;
+  {
+     var i, j: Longint;
+
+     APLog.AutoFlush    := (aSets and APTEST_AUTOFLUSH)   <> 0;
+     APLog.AutoCorrect  := (aSets and APTEST_AUTOCORRECT) <> 0;
+     APLog.EnableFilter := (aSets and APTEST_FILTER)      <> 0;
+     APLog.EnableDetail := (aSets and APTEST_DETAIL)      <> 0;
+     APLog.Visible := true;
+
+     if APLog.AutoFlush
+        APLog.LogFile := _NoLoc('TestProtocol.log');
+
+     if (aSets and APTEST_VISUAL) <> 0
+        APLog.LogStartVisual('Протоколирование', stepCount);
+
+     for (i := 1; i <= stepCount; i++)
+     {
+        Delay(longint(pauseTime * 1000));
+        var stepTitle: string = FormatStr_2('Этап %d(%d)', i, stepCount);
+
+        if (aSets and APTEST_VISUAL) <> 0
+           if not APLog.LogNextVisual(stepTitle)
+              break;
+
+        APLog.LogRoot(stepTitle);
+        for (j := 1; j <= operCount; j++)
+        {
+           var oType: byte;
+           case i of
+             0:   oType := APE_INFO;
+             1:   oType := byte(j);
+             else oType := byte(i);
+           end;
+
+           if (oType > APE_INFO) or (oType < APE_ERROR)
+              oType := APE_INFO;
+           var oTypeTitle: string;
+           oTypeTitle := case(oType;
+                              APE_ERROR:       'Ошибка',         
+                              APE_WARNING:     'Предупреждение', 
+                              APE_CAUTION:     'Предостережение',
+                              APE_REMARK:      'Замечание',      
+                              APE_NOTIFICATION:'Оповещение',     
+                              APE_MESSAGE:     'Сообщение',      
+                              APE_INFO:        'Информация';
+                                               'Не определено');
+
+           var aLogID: longint = APLog.LogLine(oType, FormatStr_3('Операция №%d из %d. %s', j, operCount, oTypeTitle));
+
+           APLogDetail.lLogID := aLogID;
+           APLogDetail.lDetail := FormatStr_1('Дополнительная информация для события %d', aLogID);
+           if insert current APLogDetail = tsDuplicateKey {};
+        }
+        APLog.LogLine(APE_INFO, stepTitle + ': процесс завершен');
+        APLog.LogCommit;
+     }
+     if (aSets and APTEST_VISUAL) <> 0
+        APLog.LogStopVisual;
+  };
+
+// ──── О Б Р А Б О Т Ч И К И ────────────────────────────────
+
+  HandleEvent
+    cmInit: {
+               APLog := new (AtlProtocol, InitAsIdentified('AtlProtocolTest'));
+               if APLog <> NullRef
+               {
+                  stepCount := 20;
+                  operCount := 10;
+                  pauseTime := 0.3;
+                  aSets := APTEST_AUTOCORRECT or APTEST_FILTER or APTEST_DETAIL;
+                  BindEvent (OnLogDefault, APLog.OnDefault);
+               }
+               else abort;
+            }
+    cmOk:   RunProtocol;
+    cmDone: {
+               UnBindEvent (OnLogDefault, APLog.OnDefault);
+               APLog := NullRef;
+            }
+  end;
+
+end.

@@ -13,13 +13,27 @@ Function ObjDiadocExportDoc.Export(_cDiaDocsToSend : comp
 procedure Check_TmpSpSopr;
 end;
 create view
+  var email_num_row : longint = 0;
+  pATL_EmailRun : ATL_EmailRun new;
 from katmc katmc_check
 , ATL_PickingRep_SPEC
 , ATL_PickingRep_HEAD
+, katotped katOtpedShtuka
+, kated
 where ((
       spsopr.cmcusl == katMc_check.nrec
       ))
 ;
+Procedure Write_Mess(w:string);
+{
+  if email_num_row = 0 {
+   email_num_row++;
+   pATL_EmailRun.Write_Text(email_num_row, 'Ошибка при обработке позиций накладной ' +katsopr.nSopr + ' от ' + katsopr.dSopr);
+  }
+  email_num_row++;
+  pATL_EmailRun.Write_Text(email_num_row, w);
+} //Procedure Write_Mess(w:string);
+
 Procedure MyLog(_Str: string);
 {
  if instr('DEBUG',_Str) <> 0 then exit;
@@ -29,6 +43,26 @@ Procedure MyLog(_Str: string);
 
 //Function Export(_cDiaDocsToSend : comp   ; _pKatOrgReceipt : comp = 0   ; _pDiaOrgReceipt : comp = 0   ; _sDPPS          : string = ''//ERP-5184 "ДатаПрин" DD.MM.YYYY
 //   ) : boolean;
+function getTypeUchet(_cOrg: comp) : word; cacheable;
+{
+ var _varAttr_EDI_MakeLabelInXML : comp = extAttr.coGetAttr(coKatOrg, katsopr.cOrg , coAttr_EDI_MakeLabelInXML_NEW);
+ var _coAttr_EDI_MakeLabelInXML : word = 0;
+      mylog('_varAttr_EDI_MakeLabelInXML = '+_varAttr_EDI_MakeLabelInXML);
+      case _varAttr_EDI_MakeLabelInXML of
+       03E80000000035CEh : _coAttr_EDI_MakeLabelInXML := 1// Поэкземплярный_учет
+       03E80000000035CDh : _coAttr_EDI_MakeLabelInXML := 2;//Сортовой_учет
+       else _coAttr_EDI_MakeLabelInXML := 0;
+       end;
+   mylog('_coAttr_EDI_MakeLabelInXML = ' + _coAttr_EDI_MakeLabelInXML);
+ result := _coAttr_EDI_MakeLabelInXML;
+}
+function get_cEdShtuka (_name : string): comp; cacheable;
+{
+  result := 0h;
+  if( getfirst kated where upcase(kated.name) = _name) = tsOK
+     then result := kated.nrec;
+}
+
 procedure Check_TmpSpSopr ;
 {
   MyLog('procedure Check_TmpSpSopr');
@@ -42,6 +76,7 @@ procedure Check_TmpSpSopr ;
    if getfirst katsopr = tsOK
    {
   MyLog(' katsopr.nrec ='+katsopr.nrec);
+  if getTypeUchet(katsopr.corg) <> 0 //  т.е. хоть какой то учет (сортовой или поэкземплярный)
    _loop SpSopr
     if getfirst katmc_check = tsOK
     {
@@ -52,20 +87,18 @@ procedure Check_TmpSpSopr ;
        MyLog(' ATL_PickingRep_HEAD.wStatus ='+ATL_PickingRep_HEAD.wStatus );
          if ATL_PickingRep_HEAD.wStatus  = 1  //  'ЧЗ проверен'
          {
-           _loop ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
-                                                         and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
-                                         ))
-           {
-             clearbuffer(tnTmpSerNom);
-           //  TmpSerNom.KM  := '_' ;
-           //  TmpSerNom.KM1 := '_-' ;
-           //  TmpSerNom.KM2 := '_-_' ;
-             if upcase(ATL_PickingRep_SPEC.DataMatrix) = 'FULL'
-                    or ATL_PickingRep_SPEC.DataMatrix = ''
-               then TmpSerNom.KM2 := ATL_PickingRep_SPEC.SSCCManuf
-               else TmpSerNom.KM1 := '![CDATA['+ATL_PickingRep_SPEC.DataMatrix + ']]';
+           if( getfirst ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
+                                                                and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
+                                                  ))
+             ) <> tsOK
+             {
+              Write_Mess(' не найден SapCode "'+_SapCode+'" в позициях PickingReport');
+             }
 
-                 TmpSerNom.Serial := 'serial' ;
+
+
+#declare insertTmpSerNom
+           TmpSerNom.Serial := 'serial' ;
         //        ,TmpSerNom.KM     := 'CODES  '+ string(SpSopr.cSopr)//КИЗ Контрольный идентификационный знак
         //        ,TmpSerNom.KM1    := 'CODES1 '+ string(SpSopr.nrec) //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
         //        ,TmpSerNom.KM2    := 'CODES2 '+ string(SpSopr.cSopr) //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
@@ -87,13 +120,69 @@ procedure Check_TmpSpSopr ;
               MyLog(' ИдентТрансУпак TmpSerNom.KM2    ='+TmpSerNom.KM2    ); //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
               MyLog(' TmpSerNom.wTable ='+TmpSerNom.wTable );
               MyLog(' TmpSerNom.cRec   ='+TmpSerNom.cRec   );
+#end
 
+           if getTypeUchet(katsopr.corg) = 1   // поэкземплярный учет
+           {
+           _loop ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
+                                                         and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
+                                         ))
+             {
+               clearbuffer(tnTmpSerNom);
+
+               if upcase(ATL_PickingRep_SPEC.DataMatrix) = 'FULL'
+                      or ATL_PickingRep_SPEC.DataMatrix = ''
+                 then TmpSerNom.KM2 := ATL_PickingRep_SPEC.SSCCManuf                     //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
+                 else TmpSerNom.KM1 := '<![CDATA['+ATL_PickingRep_SPEC.DataMatrix + ']]>'; //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+                #insertTmpSerNom
+             }
            }
+
+           if getTypeUchet(katsopr.corg) = 2    // сортовой учет
+           if( getfirst ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
+                                                                and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
+                                                  ))
+             ) = tsOK
+             {
+               clearbuffer(tnTmpSerNom);
+               var _cEdShtuka :comp = get_cEdShtuka('ШТУКА');
+                 if (GetFirst KatOtpEd where (( SpSopr.cOtpEd == KatOtpEd.nRec )) = tsOk)
+                 if (getfirst fastfirstrow katOtpedShtuka where ((1 == katOtpedShtuka.PrMc
+                                                and KatOtpEd.cMcUsl == katOtpedShtuka.cMcUsl))
+                                          and katOtpedShtuka.ckated = _cEdShtuka
+                    ) = tsOK
+                     {
+                       mylog('if (getfirst fastfirstrow katOtpedShtuka');
+
+                       var _labelKol : string =  doubletostr(spsopr.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                       var _labelGTIN : string = replace(lpad(katOtpedShtuka.bkod,14),' ','0');
+                       var _number : string = '02'+_labelGTIN+'37'+_labelKol;
+                       mylog('number = ' + _number);
+                       TmpSerNom.KM1 := _number;  //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+                     }
+                #insertTmpSerNom
+             }
          }
          else {
            MyLog(' статус ошибка... пропускаем документ');
          }
       }
+    }
+    if email_num_row <> 0 {
+     var _Email     : string = sgettune('USERTUNE.CRPT.E-MAILS');
+     var _EmailCopy : string = sgettune('USERTUNE.CRPT.copyE-MAILS');
+
+      pATL_EmailRun.EmailSend(
+                                 _Email // _email_addr :string ;
+                                ,'! DIADOC. Ошибка при обработке позиций накладной ' +katsopr.nSopr + ' от ' + katsopr.dSopr
+                                ,'' //_email_attach1 :string ;
+                                ,'' //_email_attach2 :string ;
+                                ,'' //_email_attach3 :string ;
+                                ,'' //_email_attach4 :string ;
+                                ,''
+                                ,_EmailCopy //_email_addr_copy :string='';
+                                ,'' //_email_addr_from :string=''
+                             );
     }
    }
    /*

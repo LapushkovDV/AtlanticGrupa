@@ -1,0 +1,50 @@
+/*
+ ╔═══════════════════════════════════════════════════════════════════════╗
+ ║              СУБД АТЛАНТИС (c) 1994, А/О  "НОВЫЙ АТЛАНТ"              ║
+ ║      Система:                                                         ║
+ ║      Версия :    1.1                                                  ║
+ ║      Назначение: Описание статус контекста для диалога задания        ║
+ ║                  внешних редакторов просмотра мемо полей и мемо       ║
+ ║                  viewer'а.                                            ║
+ ║      Разработал: Акименков А.В.                                       ║
+ ║      Изменения:                                                       ║
+ ╚═══════════════════════════════════════════════════════════════════════╝
+*/
+      (scExtViewersDial..scExtViewersDial)
+      {
+       '~F1~ Справка',cmHelp,kbF1;
+       '~F7~ Новая',cmInsert,kbF7;
+       '~F8~ Удалить',cmDelete,kbF8;
+       '~Esc~ Закрыть',cmClose,kbAltF3;
+       '',cmQuit, kbAltX;
+       '',cmCalculator,kbShiftF2;
+       '',cmMenu,kbF10;
+       '',cmZoom,kbF5;
+       '',cmResize,kbCtrlF5;
+       '',cmNext,kbF6;
+       '',cmPrev,kbShiftF6;
+       '',cmLastHelp,kbAltF1;
+       '',cmEvaluateAndModify,kbCtrlF4;
+      }
+
+      (scMemoView..scMemoView)
+      {
+       '~F1~ Справка'         , cmHelp       ,kbF1;
+       '~F4~ Импорт из файла' , cmMemoImport ,kbF4;
+       '~F5~ Экспорт в файл'  , cmMemoExport ,kbF5;
+       '~Alt+C~ Удаление'     , cmMemoClear  ,kbAltC;
+       '~Alt+P~ Расширение'   , cmPrefix     ,kbAltP;
+       '~Ctrl+O~ Настройки'   , cmMemoHintSetup,    kbCtrlO;
+       ''                     , cmClose      ,kbAltF3;
+       ''                      ,cmLastHelp,kbAltF1;
+//       ''                      ,cmCallIndex,kbShiftF1;
+       ''                      ,cmCalculator,kbShiftF2;
+       ''                      ,cmCalendar, kbAltF4;
+       ''                      ,cmResize,kbCtrlF5;
+       ''                      ,cmZoom,kbF5;
+       ''                      ,cmNext,kbF6;
+       ''                      ,cmEvaluateAndModify,kbCtrlF4;
+       ''                      ,cmFindTopic, kbCtrlF1;
+       ''                      ,cmToggleStretch, kbCtrlI;
+       ''                      ,cmMenu,kbF10;
+      }

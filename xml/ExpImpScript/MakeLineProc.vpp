@@ -1,0 +1,618 @@
+// _coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not _isInvoice) - атрбут коробки в десадве только для десадва, остальные типы документов не должны использоваться
+// XML заполняем спецификацию
+function get_cEdShtuka (_name : string): comp; cacheable;
+{
+  result := 0h;
+  if( getfirst kated where upcase(kated.name) = _name) = tsOK
+     then result := kated.nrec;
+}
+procedure makeLine(doc_type: word; _ATL_MERCURY_Spec_PALLETSSCC : String = '');
+var
+  node, childOne, childTwo, ChildThree: longInt;
+  _EAN, _country, _customsDecl, _pos: string;
+  _EANLenta : string;
+  _koef,  _sum, _price, _tax, _gross, _gross_prc, _qty, _skl, _sumNDS: double;
+  _qtyLenta, _priceLenta, _gross_prcLenta : Double;
+  _npp: word;
+  iCountry: mcOriginCountry; // ГТД и Страна происхождения
+  _NeedGroupPositions: boolean;
+{
+
+//20221126
+ mylog('******');
+ mylog('_needPackageReference = ' + _needPackageReference);
+ mylog('_ATL_MERCURY_Spec_PALLETSSCC = ' + _ATL_MERCURY_Spec_PALLETSSCC);
+ mylog('_nppSPSOPR  = ' + _nppSPSOPR);
+ if   _needPackageReference  // вот тут выделываемся так... надо запустить цикл по ATL_MERCURY_SPEC, а он внизу... решил рекурсивно запустить эту функцию и выводить по одному
+  and _ATL_MERCURY_Spec_PALLETSSCC = ''
+  {
+    if getfirst ATL_MERCURY_SPEC_2 = tsOK
+     {
+        _loop ATL_MERCURY_SPEC_2 {
+           if ATL_MERCURY_SPEC_2.PALLETSSCC <> '' then makeLine(doc_type, ATL_MERCURY_SPEC_2.PALLETSSCC);
+         }
+      exit;
+     }
+  }
+_nppSPSOPR++;
+
+     if (doc_type = 201 or doc_type = 31) and extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedGroupPos) = '1'
+      then _NeedGroupPositions := true
+      else _NeedGroupPositions := false;
+
+  if _NeedGroupPositions then
+   {
+     IF Getfirst SpSoprWasInGroupPos where ((SpSopr.Nrec == SpSoprWasInGroupPos.cSpSopr)) = tsOK
+     {
+       exit;
+     }
+   }
+
+  _EAN := '';
+  _EANLenta := '';
+  _koef := katOtped.koef; // коэф. пересчета в уч.ед.
+  _pos := if(doc_type = 25, spdocs.code, string(spsopr.npp));
+  _EANLenta := katOtped.bKod;
+  if _koef = 1 {
+    _EAN := katOtped.bKod;
+  }
+  else
+  if getFirst fastfirstRow katOtpEdUch = tsOk {
+    _EAN := katOtpedUch.bKod;
+  }
+  else {
+    isCorrect := false;
+    writelog('   pos #'+ _pos+ ' ERROR: не найдена Учетная Единица измерения ' + katmc.name, 1);
+  }
+  _sum := _skl := _qty := _tax := _gross := _sumNDS := _qtyLenta := _priceLenta := 0;
+  _country := _customsDecl := '';
+  if not ChkEcodEAN(_EAN) {
+    isCorrect := false;
+    writelog('  '#3' pos #'+ _pos+ ' ERROR: некорректный EAN#'+ _EAN+ ' '+ katmc.name, 1);
+  }
+  posQty += 1;
+  if (doc_type != 25)
+  {
+
+        _sum       := spsopr.price* spsopr.kolfact- if(katsopr.vhodNal = 1, spsopr.sumNDS, 0); // НДЕ без НДС
+        _gross     := spsopr.price * spsopr.kolfact+ if(katsopr.vhodNal = 1, 0, spsopr.sumNDS);
+        _sumNDS    :=spsopr.sumNDS+ if(spsopr.cadocsp > 0 and schfact.tipuser = 7241, korspec.sumNDS, 0);
+       if (_sum <> 0) _tax := round(100* spsopr.sumNDS/_sum);
+
+
+        _qtyLenta  := spsopr.kolfact;
+
+        _qty       := round(spsopr.kolfact*_koef);
+        _price     := _sum/_qty;
+        _priceLenta     := _sum/_qtyLenta;
+        _gross_prc := _gross/ spsopr.kolfact;
+        _gross_prcLenta := _gross/_qtyLenta;
+
+        if  _ATL_MERCURY_Spec_PALLETSSCC <> ''  { // 20221126  определяем количество по паллете
+            _loop ATL_MERCURY_SPEC {
+               if ATL_MERCURY_Spec.PALLETSSCC = _ATL_MERCURY_Spec_PALLETSSCC
+                then {
+                 _sum     := _sum    * ATL_MERCURY_Spec.CNT/_qtyLenta;
+                 _gross   := _gross  * ATL_MERCURY_Spec.CNT/_qtyLenta;
+                 _sumNDS  := _sumNDS * ATL_MERCURY_Spec.CNT/_qtyLenta;
+                 _qtyLenta := ATL_MERCURY_Spec.CNT;
+                }
+            }
+         }
+
+
+
+     // OrderLineNumber  = _npp
+
+        if getFirst fastfirstrow spstep where ((spsopr.cspstep == SpStep.nrec)) = tsOk
+        {
+           insert SpStepWasInGroupPos set SpStepWasInGroupPos.cSpStep := SpStep.nrec;
+            _npp := spstep.npp;
+            if (spstep.cOtpEd <> spsopr.cOtPed)
+              {
+                _skl := _qty;
+                writelog('   pos #' + _pos+ ' Не совпадает единица измерения ДО и Накладной - проверьте OrderedQuantity для ' + katmc.name, 1);
+              }
+            else
+              {
+                _skl := round(spstep.kolSkl* _koef);
+              }
+        }
+        else
+         {
+            _npp := spsopr.npp;
+            _skl := _qty;
+            if (katsopr.cadoc = 0) //для корректирующих документов нет ДО
+              writelog('   pos #'+ _pos+ ' Нет связи с SpStep - проверьте OrderedQuantity для ' + katmc.name, 1);
+         } //нет SpStep
+
+
+        if _NeedGroupPositions
+         {
+          _loop SpSopr2 where ((spSopr.cSopr == spSopr2.cSopr
+                           and spSopr.cMcUsl == spSopr2.cMcUsl))
+                           and spSopr.nrec <> spSopr2.nrec
+               if getFirst fastfirstrow KatOtpEd where ((spsopr2.cotped == nrec)) = tsOk
+               {
+                  _koef := katOtped.koef; // коэф. пересчета в уч.ед.
+                  _sum       := _sum       + spsopr2.price * spsopr2.kolfact- if(katsopr.vhodNal = 1, spsopr2.sumNDS, 0); // НДЕ без НДС
+                  _gross     := _gross     + spsopr2.price * spsopr2.kolfact+ if(katsopr.vhodNal = 1, 0, spsopr2.sumNDS);
+                 // _gross_prc := _gross_prc + _gross/ spsopr2.kolfact;
+                  _qty       := _qty       + round(spsopr2.kolfact*_koef); //
+                  _qtyLenta  := _qtyLenta + spsopr2.kolfact;
+                  //_price     := _price     + _sum/_qty;
+                  _sumNDS    := _sumNDS    + spsopr2.sumNDS ;
+
+                    if getFirst fastfirstrow spstep where ((spsopr2.cspstep == SpStep.nrec)) = tsOk
+                    if Getfirst SpStepWasInGroupPos where ((SpStep.nrec == SpStepWasInGroupPos.cSpStep)) <> tsOK
+                    {
+                         insert SpStepWasInGroupPos set SpStepWasInGroupPos.cSpStep := SpStep.nrec;
+                          if (spstep.cOtpEd <> spsopr2.cOtPed)
+                            {
+                              _skl := _skl + round(spsopr2.kolfact*_koef);
+                              writelog('   pos #' + _pos+ ' Не совпадает единица измерения ДО и Накладной - проверьте OrderedQuantity для ' + katmc.name, 1);
+                            }
+                          else
+                            {
+                              _skl :=_skl + round(spstep.kolSkl* _koef);
+                            }
+                    }
+                Insert SpSoprWasInGroupPos set SpSoprWasInGroupPos.cSpSopr := SpSopr2.Nrec ;
+               }
+         }
+
+
+
+        totalTax += _sumNDS;
+        totalSum += _sum ;
+        grossSum += _gross;
+        totalQty += if (_coAttr_EdiDesadvBox = 1 and not (_isInvoice), _qtyLenta, _qty);
+
+
+
+        if (getfirst korspec = tsOk)
+        and schfact.tipuser <> 7242   // вот тут как то непонятно,что делать с группируемыми позициями
+        { //только для корр. СФ
+            _sum += korspec.price* korspec.kolfact- if(korsopr.vhodnal = 1, korspec.sumNDS, 0);
+            _gross += korspec.price * korspec.kolfact+ if(korsopr.vhodnal = 1, 0, korspec.sumNDS);
+            if (_gross_prc < 0) _gross_prc := _gross_prc* (-1);
+            _qty += round(korspec.kolfact*_koef);
+            _qtyLenta += korspec.kolfact;
+            //totalTax += korspec.sumNDS;
+        }
+
+        isCorrect := (round(spsopr.kolFact, 2) = round(spsopr.kolFact));
+        if not isCorrect
+          writelog('   pos #'+ _pos+ ' ERROR: не целое количество Kol='+ string(spsopr.kolfact, 15, 2)+ ' '+ katmc.name, 1);
+
+
+        _country := getCountry(iCountry.getCountryName(spsopr.cmcusl, spsopr.cParty));
+        if _country = '' {
+            isCorrect := false;
+            _country := iCountry.getCountryName(spsopr.cmcusl, spsopr.cParty);
+            writelog('  pos #'+ _pos+ ' ERROR: неизвестная страна '+ _country+' -> '+ katmc.name, 1);
+        }
+        _customsDecl  := iCountry.getGTDNumber(spsopr.cParty);
+       // _CustomsDecl :=  trim(extAttr.sGetAttrID(coKatParty, spsopr.cParty, AtrGTD)) ;
+  } //не договор
+  else {
+    _price := if(dogovor.vhodnal = 1, (spdocs.price* spdocs.kol-  spdocs.sumNDS)/ spdocs.kol, spdocs.price);
+    _gross_prc := if(dogovor.vhodnal = 1, spdocs.price, (spdocs.price* spdocs.kol+  spdocs.sumNDS)/ spdocs.kol);
+  }
+ // Line  выводим в XML
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'Line');
+  ChildOne := XMLDOMNode_AppendChild(hPartDoc, node);
+  ReleaseDump(node);
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'Line-Item');
+  ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+  ReleaseDump(node);
+
+  createEcodCell(ChildTwo, 'LineNumber', _nppSPSOPR ); // 20221126 все изза разбиения позиций по серийникам для Ленты spsopr.npp);
+  if (doc_type = 201) {//только для накладных
+    createEcodCell(ChildTwo, 'OrderLineNumber', spsopr.npp);
+  }
+  else
+  if (doc_type = 25) {//только для договоров
+    createEcodCell(ChildTwo, 'LineType', 1);
+  }
+  else
+  if (doc_type = 31) //только для УПД
+    createEcodCell(ChildTwo, 'LineItemInformation', 1);
+  createEcodCell(ChildTwo, 'EAN',if(_coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice)),_EANLEnta ,_EAN));   // KatOtped.bKod
+  createEcodCell(ChildTwo, 'BuyerItemCode', trim(extAttr.sGetAttrID(coKatMC, katMc.nRec, cAtrMc)));
+  createEcodCell(ChildTwo, 'SupplierItemCode', katmc.barkod2);
+  if (doc_type = 201)
+  {//только для накладных
+
+        AmountInPack := trim(extAttr.sGetAttr(coKatMC, katMc.nRec, 'Кол-во в упаковке'));
+
+        mylog('_coAttr_EdiDesadvBox = ' + _coAttr_EdiDesadvBox);
+        mylog('buyerILN  ='+ buyerILN);
+        mylog('_isInvoice='+ _isInvoice);
+        mylog('AmountInPack='+AmountInPack);
+        if ( (  buyerILN = '4606068999995' // DesAdv в упаковках для Ленты.
+             or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice))    // например так метро работает
+             )
+            and AmountInPack <> 0
+            )
+        {
+          createEcodCell(ChildTwo, 'DespatchedQuantity', string(_qty/AmountInPack, 0, 2)); //spsopr.KolFact
+          createEcodCell(ChildTwo, 'OrderedQuantity', string(_skl/AmountInPack, 0, 2));
+          if (_coAttr_EdiDesadvBox = 1 and not(_isInvoice))
+          then createEcodCell(ChildTwo, 'UnitOfMeasure', 'CU')
+          else createEcodCell(ChildTwo, 'UnitOfMeasure', 'CT');
+        }else{
+          createEcodCell(ChildTwo, 'DespatchedQuantity', string(_qty, 0, 3)); //spsopr.KolFact
+          createEcodCell(ChildTwo, 'OrderedQuantity', string(_skl, 0, 3));
+          createEcodCell(ChildTwo, 'UnitOfMeasure', 'PCE');
+        }
+  }
+  createEcodCell(ChildTwo, 'ItemDescription', katmc.name);//'<![CDATA['
+  if (doc_type = 3) or (doc_type = 31) {//только для СФ и УПД
+    createEcodCell(ChildTwo, 'InvoiceQuantity', if(  _coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice))
+                                                   , string(_qtyLenta, 0, 3)
+                                                   , string(_qty, 0, 3)
+                                                  )
+                  ); //spsopr.KolFact
+  }
+  else
+  if (doc_type = 25) // только для договоров
+    createEcodCell(ChildTwo, 'BrandName', 'КОЛИНСКА');
+
+
+    mylog('_coAttr_EDIInvoicLen='+_coAttr_EDIInvoicLen);
+    mylog('_coAttr_EdiDesadvBox='+_coAttr_EdiDesadvBox);
+    mylog('_isInvoice          ='+_isInvoice          );
+
+  if (doc_type != 201) //только НЕ для накладных
+    createEcodCell(ChildTwo,  'UnitOfMeasure', if(_coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice))
+                                                     ,if(_coAttr_EDI_Invoic_Len_UPAKOVKA = '', 'CT',_coAttr_EDI_Invoic_Len_UPAKOVKA)
+                                                     ,'PCE'
+                                                  )
+                  );
+
+  createEcodCell(ChildTwo, if(doc_type = 3 or doc_type = 31, 'Invoice', '')+ 'UnitNetPrice',   if(_coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice)),string(_priceLenta),string(_price))); //spsopr.Price
+if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
+ then createEcodCell(ChildTwo, if(doc_type = 3 or doc_type = 31, 'Invoice', '')+ 'UnitGrossPrice', if(_coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice)), string(_gross_prcLenta),string(_gross_prc)));
+
+   if _coAttr_EDIInvoicLen = 1  and  tDoc.wtype <> 201  //для ленты надо, но не для накладных
+    {
+        createEcodCell(ChildTwo, 'InvoiceMeasurePacksize','PCE');
+        createEcodCell(ChildTwo, 'OrderedUnitPacksize',string(_qty/_qtyLenta, 0, 3));
+    }
+
+  //createEcodCell(ChildTwo, 'InvoiceUnitPriceBasis', '1');
+  if (doc_type = 3) or (doc_type = 31)
+  {//только для СФ
+     if  not  (_coAttr_NeedInvoic = 0
+           and _coAttr_EDIInvoicLen = 1
+              )
+              or true // сказали делать для всех типов вообще  CountryOfOriginCode
+              {
+                createEcodCell(ChildTwo, 'CountryOfOriginCode', _country);
+              }
+      createEcodCell(ChildTwo, 'TaxRate', string(_tax));
+    //createEcodCell(ChildTwo, 'TaxName', 'процент');
+  }
+  if (doc_type != 25)
+  {//только НЕ для договоров
+//        createEcodCell(ChildTwo, 'TaxAmount', string(spsopr.sumNDS+ if(spsopr.cadocsp > 0 and schfact.tipuser = 7241, korspec.sumNDS, 0) ));
+      if _coAttr_EdiDesadvBox <> 1 or (_isInvoice)
+       {
+        createEcodCell(ChildTwo, 'TaxAmount', string(_sumNDS) );
+       }
+
+       createEcodCell(ChildTwo, 'NetAmount', string(_sum));
+
+       if _coAttr_EdiDesadvBox <> 1 or (_isInvoice)
+       {
+        createEcodCell(ChildTwo, 'GrossAmount', string(_gross));
+       }
+
+  }
+  else
+    createEcodCell(ChildTwo, 'TaxRate', string(_tax));
+  if (tDoc.wtype = 201) { //только для накладных
+      createEcodCell(ChildTwo, 'TaxRate', string(_tax));
+
+
+
+/* 20210726
+Логика такая, если  EDI-Desscc=true, то в десадв добавляем
+<TaxRate>20.00</TaxRate>
+  <ExpiryDate>2024-05-14</ExpiryDate>
+  <ProductionDate>2021-05-14</ProductionDate>
+<CountryOfOriginCode>SI</CountryOfOriginCode>
+*/
+     if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedDesscc) = '1'
+     {
+         IF Getfirst ATL_MERCURY_SPEC = tsOK
+         {
+           createEcodCell(ChildTwo, 'ExpiryDate',datetostr(strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD'),'YYYY-MM-DD'));
+           createEcodCell(ChildTwo, 'ProductionDate',datetostr(strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD'),'YYYY-MM-DD'));
+         }
+     }
+      else {
+         if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedDESMER) = '1'
+          {
+            var _ReleaseDatePeriod : string = '';
+            IF Getfirst ATL_MERCURY_SPEC = tsOK
+             {
+    /* 20200627 был период... теперь делаем одну дату
+            if ATL_MERCURY_SPEC.UUID <> ''
+             {
+               _ReleaseDatePeriod := datetostr(strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD'),'YYYY-MM-DD')+'-'+datetostr(strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD'),'YYYY-MM-DD');
+                createEcodCell(ChildTwo, 'ReleaseDatePeriod',_ReleaseDatePeriod);
+                createEcodCell(ChildTwo, 'BestBeforeDatePeriod',_ReleaseDatePeriod)
+             }
+    */
+              if ATL_MERCURY_SPEC.UUID <> ''
+               {
+                createEcodCell(ChildTwo, 'ReleaseDatePeriod',datetostr(strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD'),'YYYY-MM-DD'));
+                createEcodCell(ChildTwo, 'BestBeforeDatePeriod',datetostr(strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD'),'YYYY-MM-DD'))
+               }
+             }
+          }
+       }
+      createEcodCell(ChildTwo, 'CountryOfOriginCode', _country); //GetEcodCountry(_Country)
+  }
+  if (doc_type = 3 or doc_type = 31) and (katsopr.cadoc > 0)   // та же фигня: непонятно что делать с группируемыми позициями
+    and schfact.tipuser =  7241  // 20190303 - только для корректировочныъх
+   {//только для корр. СФ
+          createEcodCell(ChildTwo, 'PreviousInvoiceQuantity', string(round(korspec.kolfact*if(_coAttr_EDIInvoicLen = 1,1,_koef)), 0, 3)); //spsopr.KolFact
+          createEcodCell(ChildTwo, 'PreviousUnitOfMeasure', if(_coAttr_EDIInvoicLen = 1
+                                                               ,if(_coAttr_EDI_Invoic_Len_UPAKOVKA= '', 'CT',_coAttr_EDI_Invoic_Len_UPAKOVKA)
+                                                               ,'PCE'
+                                                              )
+                        );
+          createEcodCell(ChildTwo, 'PreviousInvoiceUnitNetPrice', string(if(_coAttr_EDIInvoicLen = 1,_priceLenta,_price)));
+          createEcodCell(ChildTwo, 'PreviousTaxRate', string(_tax));
+          createEcodCell(ChildTwo, 'PreviousTaxAmount', string(korspec.sumNDS));
+          createEcodCell(ChildTwo, 'PreviousNetAmount', string(korspec.price* korspec.kolfact- if(korsopr.vhodnal = 1, korspec.sumNDS, 0)));
+          createEcodCell(ChildTwo, 'PreviousGrossAmount', string(korspec.price * korspec.kolfact+ if(korsopr.vhodnal = 1, 0, korspec.sumNDS)));
+          if (spsopr.kolfact < 0) {
+            _tax_m += spsopr.sumNDS;
+            _sum_m += spsopr.price* spsopr.kolfact- if(katsopr.vhodNal = 1, spsopr.sumNDS, 0);
+            _gross_m += spsopr.price* spsopr.kolfact+ if(katsopr.vhodNal = 1, 0, spsopr.sumNDS);
+
+            _tax := spsopr.sumNDS;
+            _sum := spsopr.price* spsopr.kolfact- if(katsopr.vhodNal = 1, spsopr.sumNDS, 0);
+            _gross := spsopr.price* spsopr.kolfact+ if(katsopr.vhodNal = 1, 0, spsopr.sumNDS);
+            createEcodCell(ChildTwo, 'TaxAmountDecrease', string(-1* _tax));
+            createEcodCell(ChildTwo, 'NetAmountDecrease', string(-1* _sum));
+            createEcodCell(ChildTwo, 'GrossAmountDecrease', string(-1* _gross));
+          }
+          if (spsopr.kolfact > 0) {
+            _tax_p += spsopr.sumNDS;
+            _sum_p += spsopr.price* spsopr.kolfact- if(katsopr.vhodNal = 1, spsopr.sumNDS, 0);
+            _gross_p += spsopr.price* spsopr.kolfact+ if(katsopr.vhodNal = 1, 0, spsopr.sumNDS);
+
+            _tax := spsopr.sumNDS;
+            _sum := spsopr.price* spsopr.kolfact- if(katsopr.vhodNal = 1, spsopr.sumNDS, 0);
+            _gross := spsopr.price* spsopr.kolfact+ if(katsopr.vhodNal = 1, 0, spsopr.sumNDS);
+            createEcodCell(ChildTwo, 'TaxAmountIncrease', string(_tax));
+            createEcodCell(ChildTwo, 'NetAmountIncrease', string(_sum));
+            createEcodCell(ChildTwo, 'GrossAmountIncrease', string(_gross));
+          }
+  }
+  if (_customsDecl <> '' and _country <> 'RU' and doc_type != 25)
+     if _coAttr_EDIInvoicLen = 0 or tDoc.wtype = 201 // Для Ленты выводим после line. но в DESADV надо тут
+     /*  18/11/2020 Николай сказал, что печатаем теперь только старый вариант т.е. этот
+         not  (_coAttr_NeedInvoic = 0    // для Ленты эта часть печатается в другой секции ниже
+           and _coAttr_EDIInvoicLen = 1
+              )
+              */
+          // or (_coAttr_EDIInvoicLen = 0 and _coAttr_NeedInvoic = 0 and _coAttr_EDIInvoicSSCC = 0) // т.е. не используем функционал
+              {
+                createEcodCell(ChildTwo, 'CustomsDeclarationNumber', _customsDecl);
+              }
+    if (tDoc.wtype = 201)
+      if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedDESMER) = '1'
+      {
+        IF Getfirst ATL_MERCURY_SPEC = tsOK
+        if ATL_MERCURY_SPEC.UUID <> ''
+         {
+           createEcodCell(ChildTwo, 'RelatedDocumentNumber',ATL_MERCURY_SPEC.UUID);
+         }
+      }
+  releaseDump(ChildTwo); // _ Line-Item
+   if (tDoc.wtype = 201)
+     if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedDesscc) = '1'
+      {
+        _loop ATL_MERCURY_SPEC
+         {
+            node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
+            ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+            ReleaseDump(node);
+              createEcodCell(ChildTwo, 'PackageId',if(getfirst tmpTableSSCCP where ((ATL_MERCURY_Spec.PALLETSSCC  == tmpTableSSCCP.PALLETSSCC  )) = tsOK,  tmpTableSSCCP.nppSSCC,''));
+              createEcodCell(ChildTwo, 'Quantity',string(ATL_MERCURY_SPEC.CNT));
+           releaseDump(ChildTwo);
+         }
+      }
+
+     /* Если у контрагента значения внешних атрибутов EDI-Invoic=False и EDI-Invoic-Len=True, посмотреть у Грузополучателя значение внешнего атрибута  EDI-Invoic-SSCC
+        Если EDI-Invoic-SSCC = false или неопределено
+      3.	Для каждой товарной строки между /Line-Item и /Line
+      формируется новый сегмент Line-Declaration
+      В него помещаются под другими именами код страны происхождения и ГТД
+
+      20210204 всетаки надо печатать тут теперь, Лена такая Дента....
+      */
+        if _coAttr_EDIInvoicLen = 1 and  tDoc.wtype <> 201  //для ленты тут, но не для накладных
+         {
+             node     := XMLDOMDoc_CreateElement(xmlDoc, 'Line-Declaration');
+             ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+             node     := XMLDOMDoc_CreateElement(xmlDoc, 'Declaration');
+             ChildThree := XMLDOMNode_AppendChild(ChildTwo, node);
+             ReleaseDump(node);
+//             createEcodCell(ChildThree, 'CustomsCountryOfOrigin'  ,_country);
+             createEcodCell(ChildThree, 'CustomsDeclarationNumber',_customsDecl);
+             releaseDump(ChildThree);
+             releaseDump(ChildTwo);
+         }
+      if
+       _needPackageReference
+       {
+/*  18/11/2020 Николай сказал, что печатаем теперь только старый вариант т.е. этот   не печатаем
+       (_coAttr_NeedInvoic = 0
+       and _coAttr_EDIInvoicLen = 1
+        )
+        {
+
+           if  not _needPackageReference //_coAttr_EDIInvoicSSCC = 0
+           {
+             node     := XMLDOMDoc_CreateElement(xmlDoc, 'Line-Declaration');
+             ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+             node     := XMLDOMDoc_CreateElement(xmlDoc, 'Declaration');
+             ChildThree := XMLDOMNode_AppendChild(ChildTwo, node);
+             ReleaseDump(node);
+             createEcodCell(ChildThree, 'CustomsCountryOfOrigin'  ,_country);
+             createEcodCell(ChildThree, 'CustomsDeclarationNumber',_customsDecl);
+             releaseDump(ChildThree);
+             releaseDump(ChildTwo);
+           }
+           */
+
+             /*
+             Если у грузополучателя EDI-Invoic-SSCC = true:
+              Всё то же самое, но к каждой товарной строке, после Line-Declaration добавляется ссылка на паллету
+              <Package-Reference>
+              <PackageId>1</PackageId> - порядковый номер паллеты
+              <PackageType>09</PackageType> - тип всегда 09
+              <SerialNumber>146100015108011548</SerialNumber> - серийный номер
+              </Package-Reference>
+              */
+
+
+
+              _loop ATL_MERCURY_SPEC
+               {
+                 if _ATL_MERCURY_Spec_PALLETSSCC = '' or ATL_MERCURY_Spec.PALLETSSCC = _ATL_MERCURY_Spec_PALLETSSCC  // если чистый вход или конкретная паллета
+                  {
+                    node       := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
+                    ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+                    ReleaseDump(node);
+#ifndef _NewTypeInvoice_2020_
+                    createEcodCell(ChildTwo, 'PackageId'   , if(getfirst tmpTableSSCCP where ((ATL_MERCURY_Spec.PALLETSSCC  == tmpTableSSCCP.PALLETSSCC  )) = tsOK,  tmpTableSSCCP.nppSSCC,' '));
+#end
+                    createEcodCell(ChildTwo, 'PackageType' , '09');
+                    createEcodCell(ChildTwo, 'SerialNumber', ATL_MERCURY_Spec.PALLETSSCC);
+                    releaseDump(ChildTwo);
+                  }
+               }
+
+
+        }
+
+
+/*
+20220827 честный знак, добавляем коды упаковок паллет
+*/
+     mylog('*-* tDoc.wtype ='+tDoc.wtype);
+     if (doc_type = 201 or doc_type = 31)  //  Дмитрий Путилов сказал, что без условий, только наклкдные и всеа .. нееее.  все-таки нашли условие - не всем контрагентам надо
+      {
+        var _sapCode  : string = katmc.barkod2;
+
+        mylog('_coAttr_EDI_MakeLabelInXML = ' + _coAttr_EDI_MakeLabelInXML);
+      if _coAttr_EDI_MakeLabelInXML = 2  //Сортовой_учет
+       {
+         mylog('Сортовой учет');
+            if( getfirst ATL_PickingRep_Spec where ((ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec.cHead))
+                                           and ATL_PickingRep_Spec.sapCode = _sapCode
+                ) = tsOK  // принципиально проверяем наличие в пикинг репорте, это означает, что позиция маркируется и по ней надо данные передавать
+                {
+                mylog('if( getfirst ATL_PickingRep_Spec');
+
+                  var _cEdShtuka :comp = get_cEdShtuka('ШТУКА');
+                 if (getfirst fastfirstrow katOtpedShtuka where ((1 == katOtpedShtuka.PrMc
+                                                              and KatOtpEd.cMcUsl == katOtpedShtuka.cMcUsl))
+                                                              and katOtpedShtuka.ckated = _cEdShtuka
+                    ) = tsOK
+                     {
+                       mylog('if (getfirst fastfirstrow katOtpedShtuka');
+                       var _labelKol : string =  doubletostr(spsopr.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                       var _labelGTIN : string = replace(lpad(katOtpedShtuka.bkod,14),' ','0');
+
+                       node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
+                       ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+
+                       mylog('number = ' + '02'+_labelGTIN+'37'+_labelKol);
+
+                           node     := XMLDOMDoc_CreateElement(xmlDoc, 'References');
+                           ChildThree := XMLDOMNode_AppendChild(ChildTwo, node);
+                           createEcodCell(ChildThree, 'Type','AW');
+                           createEcodCell(ChildThree, 'Number','02'+_labelGTIN+'37'+_labelKol);
+                           releaseDump(ChildThree);
+                       releaseDump(ChildTwo);
+                     }
+                }
+       }
+      if _coAttr_EDI_MakeLabelInXML = 1 // Поэкземплярный_учет
+       {
+
+     mylog('_sapCode='+_sapCode);
+          if getfirst ATL_PickingRep_HEAD where ((katSopr.nRec == ATL_PickingRep_HEAD.cSopr)) = tsOK
+           {
+           mylog('if getfirst ATL_PickingRep_HEAD where ((katSopr.nRec == ATL_PickingRep_HEAD.cSopr)) = tsOK');
+/*
+ATL_PickingRep_Spec.DATAMATRIX = 'FULL'
+                  <Package-Reference>
+                       <PackageType>{PackageType_value}</PackageType>
+                    	 <PackageNumber>{PackageNumber_value}</PackageNumber>
+                  </Package-Reference>
+*/
+
+             _loop ATL_PickingRep_Spec where ((ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec.cHead))
+                                           and ATL_PickingRep_Spec.sapCode = _sapCode
+                                           and ATL_PickingRep_Spec.SSCCMANUF <> ''
+                                           and ATL_PickingRep_Spec.DATAMATRIX = 'FULL'
+               {
+
+                 mylog('ATL_PickingRep_Spec.DATAMATRIX = FULL ATL_PickingRep_Spec.SSCCMANUF='+ATL_PickingRep_Spec.SSCCMANUF);
+                 node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
+                 ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+                 createEcodCell(ChildTwo, 'PackageType','DC');
+                 createEcodCell(ChildTwo, 'PackageNumber',ATL_PickingRep_Spec.SSCCMANUF);
+                 releaseDump(ChildTwo);
+               }
+
+/*
+ATL_PickingRep_Spec.DATAMATRIX <> 'FULL'
+          <Package-Reference>
+              <References>
+                  <Type>{type_value}</Type>
+                  <Number >{number_value}</Number>
+               </References>
+               <References>
+                  <Type>{type_value_i1}</Type>
+                  <Number >{number_value_i1}</Number>
+               </References>
+            </Package-Reference>
+*/
+              if( getfirst ATL_PickingRep_Spec where ((ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec.cHead))
+                                           and ATL_PickingRep_Spec.sapCode = _sapCode
+                                           and ATL_PickingRep_Spec.DATAMATRIX <> 'FULL'
+                ) = tsOK
+                {
+                 node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
+                 ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+
+                       _loop ATL_PickingRep_Spec where ((ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec.cHead))
+                                                     and ATL_PickingRep_Spec.sapCode = _sapCode
+                                                     and ATL_PickingRep_Spec.DATAMATRIX <> 'FULL'
+                         {
+                       mylog('ATL_PickingRep_Spec.DATAMATRIX <> FULL ATL_PickingRep_Spec.DATAMATRIX='+ATL_PickingRep_Spec.DATAMATRIX);
+                           node     := XMLDOMDoc_CreateElement(xmlDoc, 'References');
+                           ChildThree := XMLDOMNode_AppendChild(ChildTwo, node);
+                           createEcodCell(ChildThree, 'Type','AW');
+                           createEcodCell(ChildThree, 'Number',ATL_PickingRep_Spec.DATAMATRIX);
+                           releaseDump(ChildThree);
+                         }
+                 releaseDump(ChildTwo);
+                }
+
+           }
+      }
+    }
+  releaseDump(ChildOne); // _ Line
+} //MakeLine

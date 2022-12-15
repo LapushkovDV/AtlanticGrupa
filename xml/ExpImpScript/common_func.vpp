@@ -1,0 +1,152 @@
+//следующий номер ДО на продажу
+function getNextNum: string;
+{
+  result := '';
+  if (wGetTune('FN.AvtoNum') = 1) { // инкрементация по БД
+    if (wGetTune('Oper.UniqNoDOsell') = 2) { //уникальная в рамках года
+      if (getlast base_num where ((201 == viddoc and year(cur_date) == yeardoc)) ordered by base_num.nodoc = tsOk)
+        result := nextnumstr(base_num.nodoc);
+    }
+    else
+    if (getlast base_num where ((201 == viddoc)) ordered by base_num.nodoc = tsOk)
+        result := nextnumstr(base_num.nodoc);
+    if (result = '')
+      result := lPadCh('1', '0', if(existTune('Doc.Sell.DO.NoDoc'), wGetTune('Doc.Sell.DO.NoDoc'), 6));
+  }
+  else
+    result := getLastNumD(101);
+}
+//получаем  idAtrMc код МЦ покупателя для организации
+function getAtrMc(crec: comp): comp;
+var str: string;
+{
+  result := 0;
+  str := extAttr.sGetAttr(coKatOrg, crec, sGetTune('EI.Ecod.AttrMc'));
+  if str <> '' result  := extAttr.attrID(coKatMC, str);
+}
+// получить nrec по номеру таблицы и параметру
+// basedoc [1102] - номер заказа
+// katorg [1418] - номер контрагента ILN
+// katmc [1411] - код МЦ покупателя
+sql query sqlGetBasedocByOrder as
+  select stepdoc.cbasedoc from stepdoc
+   join basedoc on basedoc.nrec = stepdoc.cbasedoc
+  where stepdoc.nkont = :parameter
+    and BaseDoc.ddoc = :paramDate
+    and Basedoc.cOrg = :paramOrg
+
+;
+sql query sqlGetKatorgByILN as
+  select attrval.crec from attrval
+  where attrval.cattrnam = :attribute and attrval.vstring = :parameter
+;
+sql query sqlGetKatmcByCode as
+  select attrval.crec from attrval
+  where attrval.cattrnam = :attribute and attrval.vstring = :parameter
+;
+function getNrecByParam(wtable: word; parameter: string): comp;
+var
+  qq: iQuery;
+  rs: iResultSet;
+  rr: iResultRow;
+  executeErrorCode: longint;
+{
+  result := 0;
+  rr := nullRef;
+  rs := nullRef;
+  case wtable of
+  1102: {
+         qq := QueryManager.CreateQuery(sqlGetBasedocByOrder);
+         qq.setParam('paramDate', cur_date);
+         qq.setParam('paramOrg' , katorg.nrec)
+        }
+  1418: {
+    qq := QueryManager.CreateQuery(sqlGetKatorgByILN);
+    qq.setParam('attribute', coGetTune('EI.Ecod.AttrGLN'));
+  }
+  1411: {
+    qq := QueryManager.CreateQuery(sqlGetKatmcByCode);
+    qq.setParam('attribute', cAtrMC);
+  }
+  end;
+  qq.setParam('parameter', parameter);
+  rs := qq.getResultSet;
+  executeErrorCode := qq.errorCode;
+  if executeErrorCode = tsOk {
+    if rs.count > 0 {
+      rs.getfirst;
+      rr := rs.row;
+      result := rr.valAt(1);
+    }
+  }
+  else writeMessageLog(' <!> ERROR: direct SQL execute error!');
+  rr := nullRef;
+  rs := nullRef;
+  qq := nullRef;
+}
+// освобождаем память
+procedure releaseDump(var tempNode: longInt);
+{
+  XMLDOMNode_release(tempNode);
+  tempNode := 0;
+} //function
+// ------------------------------------------------------------
+function getTextValue(parentNode: longint): string;// получаем текстовое значение тега
+var childNodeList, childNode: longint;
+{
+  result := '';
+  childNodeList := XMLDOMNode_get_ChildNodes(parentNode);
+  if (childNodeList <> 0) {
+    childNode := XMLDOMNodeList_Get_Item(childNodeList, 0);  //0-й Item
+
+    result := XMLDOMCDataSection_get_NodeValue(childNode); // string;
+    //trim(Replace(STR, ',', '.'));
+    XMLDOMNode_Release(childNode);
+    childNode := 0;
+  }
+  XMLDOMNode_Release(childNodeList);
+  childNodeList := 0;
+} // function GetTextValue
+// ------------------------------------------------------------
+function findFirstChild(parentNode: longint): longint;
+var childNodeList: longint;
+{
+  result := 0;
+  childNodeList := XMLDOMNode_Get_ChildNodes(parentNode);
+  if (childNodeList <> 0) {
+    result := XMLDOMNodeList_Get_Item(childNodeList, 0);  //0-й Item
+  }
+  XMLDOMNode_Release(childNodeList);
+  childNodeList := 0;
+} //function FindFirstChild
+// ------------------------------------------------------------
+function chkEcodGLN(_num: string): boolean;
+{
+  result := (_num = string(comp(_num)));
+  if result
+    result := (length(_num) < 14 and length(_num) > 0);
+}//Function ChkEcodGLN
+// ------------------------------------------------------------
+function chkEcodEAN(_num: string): boolean;
+{
+  result := (ltrim(_num, '0') = string(comp(_num)));
+  if result
+    result := (length(_num) < 15 and length(_num) > 0);
+}//ChkEcodEAN
+// ------------------------------------------------------------
+function getFolderName(_folder, _mask: string): string; //Get Folder Name by Mask
+var resCode, errCode: integer;
+{
+    result := '';
+    resCode := execProgram(translatePath('%COMSPEC%'), '/c dir '+ _folder+ _mask+ ' /b /a:d /l > '+ translatePath('%USERPROFILE%')+ '\temp\dir.txt', '', pfSilent, errCode);
+    if resCode = 0 and errCode = 0 {
+        _try {
+            fSrc.openFile(translatePath('%USERPROFILE%')+ '\temp\dir.txt', stOpenRead);
+            fSrc.seek(0);
+            fSrc.readLn(result);
+        }
+        _finally {
+            fSrc.close;
+        }
+    }
+}

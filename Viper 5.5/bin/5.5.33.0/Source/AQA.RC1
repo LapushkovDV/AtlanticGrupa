@@ -1,0 +1,348 @@
+! Статус линия интерфейса сегментов
+        (sciAQAEnEsc18..sciAQAEnEsc18)
+        {
+          '~F1~ Помощь',       cmHelp,               kbF1;
+          '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+          '~Enter~ Просмотр',  cmDefault,            kbNoKey;
+          '~Ins~ Пометить ' , cmAqaMarkRec, kbIns;
+          '',      cmDelete, kbF8;
+          '', cmAqaItemMoveUp, kbCtrlUp;
+          '', cmAqaItemMoveDown, kbCtrlDown;
+          '', cmAqaMarkAll, kbGrayPlus;
+          '', cmAqaUnMarkAll, kbGrayMinus;
+          '', cmDownloadScript, kbAltF2;
+          '',cmAQAUpDownloadScript,kbCtrlF2;
+
+#include aqa.rc0
+        }
+! Статус линия интерфейса тестов
+        (sciAQAEnEsc178..sciAQAEnEsc178)
+        {
+          '~F1~ Помощь',       cmHelp,               kbF1;
+          '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+          '~Enter~ Редактирование',  cmDefault,      kbNoKey;
+          '~F7~ Создать',      cmInsert,             kbF7;
+          '~F8~ Удалить',      cmDelete,             kbF8;
+          '~Ins~ Пометить',cmAqaMarkRec, kbIns;
+          '', cmAqaMarkAll, kbGrayPlus;
+          '', cmAqaUnMarkAll, kbGrayMinus;
+          '', cmAQAUpDownloadScript,kbCtrlF2;
+#include aqa.rc0
+        }
+
+        (sciAQAEnEsc1..sciAQAEnEsc1)
+        {
+          '~F1~ Помощь',       cmHelp,               kbF1;
+          '~Enter~ Просмотр',  cmDefault,            kbNoKey;
+#include aqa.rc0
+        }
+
+        (sciAQAOkCancel1..sciAQAOkCancel1)
+        {
+          '~F1~ Помощь',       cmHelp,               kbF1;
+          '~Enter~ Выполнить', cmDefault,            kbNoKey;
+#include aqa.rc0
+        }
+
+        (sciAQACancel1..sciAQACancel1)
+        {
+          '~F1~ Помощь',       cmHelp,               kbF1;
+#include aqa.rc0
+        }
+
+        (sciAQAEsc178..sciAQAEsc178)
+        {
+          '~F1~ Помощь',       cmHelp,               kbF1;
+          '~F7~ Создать',      cmInsert,             kbF7;
+          '~F8~ Удалить',      cmDelete,             kbF8;
+#include aqa.rc0
+        }
+
+        (sciAQAEsc1Select..sciAQAEsc1Select)
+        {
+          '~F1~ Помощь',       cmHelp,               kbF1;
+          '~Пробел~ Переместить', cmUniverseUnderList,    kbSpace;
+          '~Alt+F7~ Добавить все',   cmFilterAddAllFields,   kbAltF7;
+          '~Alt+F8~ Удалить все',    cmFilterDelAllFields,   kbAltF8;
+#include aqa.rc0
+        }
+
+! Статус-строка интерфейса планов (список все сегментов)
+        (sciAQA1EscSpcA7..sciAQA1EscSpcA7)
+	{
+          '~F1~ Помощь',       cmHelp,               kbF1;
+          '~Пробел~ Добавить',   cmUniverseUnderList,  kbSpace;
+    	  '~Alt+F7~ Добавить все',   cmFilterAddAllFields,   kbAltF7;
+#include aqa.rc0
+	}
+
+! Статус-строка интерфейса планов (список сегментов включенных в план)
+        (sciAQA1EscSpcA8..sciAQA1EscSpcA8)
+        {
+          '~F1~ Помощь',       cmHelp,               kbF1;
+          '~Пробел~ Удалить',   cmUniverseUnderList,  kbSpace;
+          '~Alt+F8~ Удалить все',    cmFilterDelAllFields,   kbAltF8;
+          '~[Num +]~ Пометить ' , cmAqaMarkRec, kbGrayPlus;
+          '~Alt+[Num +]~ Пометить все', cmAqaMarkAll, kbAltGrayPlus;
+          '~Alt+[Num -]~ Снять пометки', cmAqaUnMarkAll, kbAltGrayMinus;
+#include aqa.rc0
+	}
+
+! статус линия для окна 'Планы тестирования'
+
+(sciAqaPlans..sciAqaPlans)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~Ins~ Пометка',  cmAqaMarkRec, kbIns;
+  '~Enter~ Просмотр', cmDefault , kbEnter;
+  '~F9~ Запуск', cmAqaRunPlan , kbF9;
+  '~Ctrl+F9~ Отладка', cmAqaDebugPlan, kbCtrlF9;
+  '', cmSetDefault, kbF7;
+  '', cmDeleteRecord, kbF8;
+  '', cmDefault, kbF4;
+  '', cmAqaMarkAll, kbGrayPlus;
+  '', cmAqaUnMarkAll, kbGrayMinus;
+  '', cmAqaInvertMarkAll, kbGrayMul;
+  '', cmAqaPlanMoveUp,kbCtrlUp;
+  '', cmAqaPlanMoveDown,kbCtrlDown;
+#include aqa.rc0
+}
+
+! статус линии для окна 'План тестирования'
+
+(sciAqaPlan..sciAqaPlan)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~Alt+F7~ Пометка',  cmAqaMarkRec, kbAltF7;
+  '~F9~ Запуск', cmAqaRunPlan , kbF9;
+  '~Ctrl+F9~ Отладка', cmAqaDebugPlan, kbCtrlF9;
+  '', cmSetDefault, kbF7;
+  '', cmDeleteRecord, kbF8;
+#include aqa.rc0
+}
+
+! статус линии для поля 'Название плана'
+
+(sciAqaPlanTitle..sciAqaPlanTitle)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~F3~ Выбор' , cmPick, kbF3;
+  '~Alt+F7~ Пометка',  cmAqaMarkRec, kbAltF7;
+  '~F9~ Запуск', cmAqaRunPlan , kbF9;
+  '~Ctrl+F9~ Отладка', cmAqaDebugPlan, kbCtrlF9;
+  '', cmSetDefault, kbF7;
+  '', cmDeleteRecord, kbF8;
+#include aqa.rc0
+}
+
+! статус линия окна выбора планов
+
+(sciAqaPlanChoice..sciAqaPlanChoice)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~Enter~ Выбор', cmDefault , kbEnter;
+#include aqa.rc0
+}
+
+! статус линия панели 'Элементы плана'
+
+(sciAqaPlanItems..sciAqaPlanItems)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~F7~ Добавить',  cmSetDefault, kbF7;
+  '~Ins~ Пометка',  cmAqaMarkRec, kbIns;
+  '~F9~ Запуск', cmAqaRunPlan , kbF9;
+  '~Ctrl+F9~ Отладка', cmAqaDebugPlan, kbCtrlF9;
+  '', cmAQASetJump,kbCtrlG;
+  '', cmDefault, kbF4;
+  '', cmDeleteRecord, kbF8;
+  '', cmAqaMarkAll, kbGrayPlus;
+  '', cmAqaUnMarkAll, kbGrayMinus;
+  '', cmAqaInvertMarkAll, kbGrayMul;
+  '', cmAqaItemMoveUp, kbCtrlUp;
+  '', cmAqaItemMoveDown, kbCtrlDown;
+  '', cmAqaInsertItemTest, kbAltF7;
+  '', cmAqaInsertItemPlanBottom, kbCtrlF7;
+  '', cmAqaInsertItemTestBottom, kbShiftF7;
+  '', cmAqaItemViewScript, kbCtrlS;
+  '', cmAqaSwitchOptions, kbCtrlG;
+  '', cmAQADelJump, kbDel;
+#include aqa.rc0
+}
+
+(sciAqaPlanItemsF3..sciAqaPlanItemsF3)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~F3~ Выбор' , cmPick, kbF3;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~F7~ Добавить',  cmSetDefault, kbF7;
+  '~Ins~ Пометка',  cmAqaMarkRec, kbIns;
+  '~F9~ Запуск', cmAqaRunPlan , kbF9;
+  '~Ctrl+F9~ Отладка', cmAqaDebugPlan, kbCtrlF9;
+  '', cmDefault, kbF4;
+  '', cmDeleteRecord, kbF8;
+  '', cmAqaMarkAll, kbGrayPlus;
+  '', cmAqaUnMarkAll, kbGrayMinus;
+  '', cmAqaInvertMarkAll, kbGrayMul;
+  '', cmAqaItemMoveUp, kbCtrlUp;
+  '', cmAqaItemMoveDown, kbCtrlDown;
+  '', cmAqaInsertItemTest, kbAltF7;
+  '', cmAqaInsertItemPlanBottom, kbCtrlF7;
+  '', cmAqaInsertItemTestBottom, kbShiftF7;
+  '', cmAqaItemViewScript, kbCtrlS;
+  '', cmAqaSwitchOptions, kbCtrlG;
+  '', cmAQADelJump, kbDel;
+#include aqa.rc0
+}
+
+! Статус линия интерфейса 'Выбор плана или элементов для добавления в план'
+
+(sciAqaSelectPlan..sciAqaSelectPlan)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~Enter~ Выбор', cmDefault , kbEnter;
+  '~Ins~ Пометка',  cmAqaMarkRec, kbIns;
+  '~[Num +]~ Пометить все', cmAqaMarkAll, kbGrayPlus;
+  '', cmAqaUnMarkAll, kbGrayMinus;
+  '', cmAqaInvertMarkAll, kbGrayMul;
+#include aqa.rc0
+}
+
+(sciAqaSelectPlan2..sciAqaSelectPlan2)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~Enter~ Выбор', cmDefault , kbEnter;
+  '~Ins~ Пометка',  cmAqaMarkRec, kbIns;
+  '~[Num +]~ Пометить все', cmAqaMarkAll, kbGrayPlus;
+  '', cmAqaUnMarkAll, kbGrayMinus;
+  '', cmAqaInvertMarkAll, kbGrayMul;
+  '', cmAqaItemViewScript, kbCtrlS;
+  '', cmAQAViewOneItem,kbF4;
+#include aqa.rc0
+}
+
+! Статус линия интерфейса 'Выбор теста для добавления в план'
+
+(sciAqaSelectTest..sciAqaSelectTest)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~Enter~ Выбор', cmDefault , kbEnter;
+  '~Ins~ Пометка',  cmAqaMarkRec, kbIns;
+  '~[Num +]~ Пометить все', cmAqaMarkAll, kbGrayPlus;
+  '', cmAqaUnMarkAll, kbGrayMinus;
+  '', cmAqaInvertMarkAll, kbGrayMul;
+#include aqa.rc0
+}
+
+(sciAqaSelectTest2..sciAqaSelectTest2)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~Enter~ Выбор', cmDefault , kbEnter;
+  '~Ins~ Пометка',  cmAqaMarkRec, kbIns;
+  '~[Num +]~ Пометить все', cmAqaMarkAll, kbGrayPlus;
+  '', cmAqaUnMarkAll, kbGrayMinus;
+  '', cmAqaInvertMarkAll, kbGrayMul;
+  '', cmAqaItemViewScript, kbCtrlS;
+#include aqa.rc0
+}
+! Статус линия для интерфейса просмотра элемента плана(сегмент)
+
+(sciAqaViewOneSegment..sciAqaViewOneSegment)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+#include aqa.rc0
+}
+
+(sciAqaViewOneTestItems..sciAqaViewOneTestItems)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~Скрипт~', cmAqaItemViewScript, kbCtrlS;
+  '~Просмотр~', cmDefault, kbF4;
+#include aqa.rc0
+}
+(sciAqaViewOnePlan..sciAqaViewOnePlan)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+#include aqa.rc0
+}
+! Статус линия для интерфейса просмотра элемента плана(план)
+
+(sciAqaViewOnePlanItems..sciAqaViewOnePlanItems)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~F7~ Добавить',  cmSetDefault, kbF7;
+  '~Ins~ Пометка',  cmAqaMarkRec, kbIns;
+  '', cmDefault, kbF4;
+  '', cmDeleteRecord, kbF8;
+  '', cmAqaMarkAll, kbGrayPlus;
+  '', cmAqaUnMarkAll, kbGrayMinus;
+  '', cmAqaInvertMarkAll, kbGrayMul;
+  '', cmAqaItemMoveUp, kbCtrlUp;
+  '', cmAqaItemMoveDown, kbCtrlDown;
+  '', cmAqaInsertItemTest, kbAltF7;
+  '', cmAqaInsertItemPlanBottom, kbCtrlF7;
+  '', cmAqaInsertItemTestBottom, kbShiftF7;
+  '', cmAqaItemViewScript, kbCtrlS;
+  '', cmAqaSwitchOptions, kbCtrlG;
+#include aqa.rc0
+}
+
+(sciAqaViewOnePlanItemsF3..sciAqaViewOnePlanItemsF3)
+{
+  '~F1~ Помощь',cmHelp,kbF1;
+  '~F3~ Выбор' ,  cmPick,   kbF3;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~F7~ Добавить',  cmSetDefault, kbF7;
+  '~Ins~ Пометка',  cmAqaMarkRec, kbIns;
+  '', cmDefault, kbF4;
+  '', cmDeleteRecord, kbF8;
+  '', cmAqaMarkAll, kbGrayPlus;
+  '', cmAqaUnMarkAll, kbGrayMinus;
+  '', cmAqaInvertMarkAll, kbGrayMul;
+  '', cmAqaItemMoveUp, kbCtrlUp;
+  '', cmAqaItemMoveDown, kbCtrlDown;
+  '', cmAqaInsertItemTest, kbAltF7;
+  '', cmAqaInsertItemPlanBottom, kbCtrlF7;
+  '', cmAqaInsertItemTestBottom, kbShiftF7;
+  '', cmAqaItemViewScript, kbCtrlS;
+  '', cmAqaSwitchOptions, kbCtrlG;
+#include aqa.rc0
+}
+
+! Статус линия для окна winAqaSwitchParams 'Условия перехода' в интерфейсе планов
+
+(sciAqaSwitchItemName..sciAqaSwitchItemName)
+{
+  '~F1~ Помощь',  cmHelp,   kbF1;
+  '~F3~ Выбор' ,  cmPick,   kbF3;
+#include aqa.rc0
+}
+
+! Статус линия для установки контрольной точки.
+(sciAqaInterControlPoint..sciAqaInterControlPoint)
+{
+  '~F1~ Помощь',  cmHelp,   kbF1;
+  '~Alt+F10~ Меню',cmHotKeys,kbAltF10;
+  '~Ins~ Пометить' , cmAqaMarkRec, kbIns;
+  '' ,cmAQAAddControlPointField , kbAltL;
+  '' ,cmAQARemControlPointField,kbAltE  ;
+  '' ,cmAQAAddAllCPFields, kbAltJ       ;
+  '' ,cmAQARemAllCPFields,kbAltF        ;
+  '' ,cmAQAAddSuitableFields,kbAltG     ;
+  '' ,cmAQALetsGo,kbAltC;
+  '' ,cmAQAClose,kbAltN;
+
+#include aqa.rc0
+}
+
+

@@ -1,0 +1,6 @@
+#include PreDefs.inc
+#include FRRecordDefinition.vih
+
+#Component 'FRSample'
+
+#make "vip\*.vip"

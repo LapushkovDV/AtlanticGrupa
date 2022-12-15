@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005015000">
+	<ProjectManager>
+		<ProjectName>SaveFRTest</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="D:\Gal\EXE\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>D:\Atl\55_22_clr\exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Gen
+					$[AtlPath]\Source\*
+					..\..\vip_source*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+				</ResourceList>
+				<OutputResource>$[GalExe]\user$[ExtRes]</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseName>..\..\..\..\Gal\DataBase\data_los</DatabaseName>
+					<FullLoginName>True</FullLoginName>
+					<HwKeyDirectory>\\BY01-HWKEY01\HWDIR</HwKeyDirectory>
+					<LicFileName>\\by01-hwkey03.oit.local\license\support\V9\license.btr</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="FRSaveReport.prj" PosX="57" PosY="16" OpenEditor="True"/>
+			<File Name="Vip\FR_Test.vip" PosX="63" PosY="139" OpenEditor="True" Active="True"/>
+			<File Name="Vip\PDFParam.vip" PosX="30" PosY="32" OpenEditor="True"/>
+			<File Name="..\Inc\FRRecordDefinition.vpp" PosX="53" PosY="48" OpenEditor="True"/>
+			<File Name="Vip\WordParam.vip" PosX="54" PosY="74" OpenEditor="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="FRSaveReport.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFile FileName="Vip\FR_Test.vip"/>
+					<ProjectFile FileName="Vip\BiffParam.vip"/>
+					<ProjectFile FileName="Vip\PDFParam.vip"/>
+					<ProjectFile FileName="Vip\WordParam.vip"/>
+				</ProjectItems>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="D:\Atl\FR_Revolution2\vip_source\FRSaveReport\FRSaveReport.prj" DateTimeStart="42202,6142967593" DateTimeCompile="8,79629806149751E-6" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtHint" MessageText="Добавление полей структурного типа в логическую таблицу не рекомендуется" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRSaveReport\vip\BiffParam.vip" SourceLine="14" SourceColumn="42"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Неявное добавление таблицы PARAMS в логическую таблицу VIEWFRTESTSETEXPORTPARAM" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRSaveReport\vip\BiffParam.vip" SourceLine="87" SourceColumn="19"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRSaveReport\vip\FR_Test.vip" SourceLine="137" SourceColumn="23"/>
+					<CompileMessage MessageType="mtHint" MessageText="Добавление полей структурного типа в логическую таблицу не рекомендуется" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRSaveReport\vip\PDFParam.vip" SourceLine="9" SourceColumn="34"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Неявное добавление таблицы PARAMS в логическую таблицу VIEWFRTESTSETEXPORTPARAM" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRSaveReport\vip\PDFParam.vip" SourceLine="57" SourceColumn="19"/>
+					<CompileMessage MessageType="mtHint" MessageText="Добавление полей структурного типа в логическую таблицу не рекомендуется" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRSaveReport\vip\WordParam.vip" SourceLine="9" SourceColumn="34"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Неявное добавление таблицы PARAMS в логическую таблицу VIEWFRTESTSETEXPORTPARAM" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRSaveReport\vip\WordParam.vip" SourceLine="61" SourceColumn="19"/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\Atl\FR_Revolution2\vip_source\FRSaveReport\Fr3\FRAPI_TEST!!FRSAMPLETEST FRAPI_SaveReport_DS Список МЦ по группам Суммы.fr3" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRSaveReport\Fr3\FRAPI_TEST!!FRSAMPLETEST FRAPI_SaveReport_DS Список МЦ по группам Суммы.fr3"/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\Atl\FR_Revolution2\vip_source\FRSaveReport\Fr3\FRAPI_TEST!!FRSAMPLETEST FRAPI_SaveReport_DS Список МЦ по группам.fr3" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRSaveReport\Fr3\FRAPI_TEST!!FRSAMPLETEST FRAPI_SaveReport_DS Список МЦ по группам.fr3"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="17.07.2015 14:44:36"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+	</ProjectManager>
+</Viper>

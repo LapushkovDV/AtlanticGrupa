@@ -1,0 +1,1187 @@
+#include common_func.vpp
+
+//write string to log-file
+procedure writelog(logStr: string; isLine: byte);
+var log_size: longint;
+{
+
+  mylog(logStr);
+  if (isLine != 0) checkXMLForm.write(datetostr(cur_date, 'DD.MM.YYYY ')+ timetostr(cur_time, 'HH:MM:SS ')+ logStr);
+// ------ Журнал -------------
+ _try fLog.openFile(log_path+ 'exchange.log', stOpen);
+ _except on ExFileNotFound: fLog.OpenFile(log_path+ 'exchange.log', stCreate);
+
+  log_size := fLog.getSize;
+  if (isLine = 1) {
+    fLOG.Seek(log_size); //В конец файла
+  }
+  else
+    fLOG.Seek(log_size-2); //В конец файла  без символа перевода строки
+
+  fLog.writeLn(OEM2ANSI(datetostr(cur_date, 'DD.MM.YYYY ')+ timetostr(cur_time, 'HH:MM:SS ')+ logStr));
+  fLog.close;
+}
+// ------------------------------------------------------------
+/* check dbf file
+function isFileDBF(_file: string): boolean;
+var ch: char;
+{
+  result := false;
+  fLog.openFile(_file, stOpenRead);
+
+  fLog.seek(0);
+  fLog.read(ch); // 1-й символ
+  result := (ord(ch) = 3);  // у DBF первый символ chr(03)
+  fLog.close;
+} //function isFileDBF
+*/
+//load dbf-file to memory table tDoc
+Procedure ClearAlltDoc;
+{
+  Delete all tDoc;
+}
+Procedure InserttDoc(_nrec : comp; _type : word) ;
+{
+  insert tDoc set
+    tDoc.nRec  := _Nrec
+   ,tDoc.wType := _Type
+      ;
+}
+
+function dbf2doc(_file: string): boolean;
+var _handle: longint;
+{
+  _handle := dbfOpen(_file, stOpenRead);
+  result := (_handle != 0);
+  if not result {
+    message(''#3'Ошибка при открытии файла '+ _file+ ''#13#3'(HandleOut = 0)', error);
+    exit;
+  }
+  ClearAlltDoc; //чистим временную таблицу
+  if (dbfGetFirst(_handle) = tsOk) do {
+    InserttDoc(comp(dbfGetFieldValue(_handle, 'NREC')),word(dbfGetFieldValue(_handle, 'TYPE')));
+  } while (dbfGetNext(_handle) = tsOk);
+
+  dbfClose(_handle);
+  result := (getfirst tDoc = tsOk);
+}
+
+//Страна происхождения
+function getCountry(_country: string): string;
+{
+  case locase(_country) of
+  ''           : result := 'RU';
+  'германия'   : result := 'DE';
+  'дания'      : result := 'DK';
+  'италия'     : result := 'IT';
+  'нидерланды' : result := 'NL';
+  'словения'   : result := 'SI';
+  'хорватия'   : result := 'HR';
+  'сербия'     : result := 'RS';
+  else result := '';
+  end;
+}
+
+// создание ячейки данных
+procedure createEcodCell(parent: longInt; nodeId, value: string);
+var node, textNode, nodeCell: longint;
+{
+  node     := XMLDOMDoc_CreateElement(xmlDoc, NodeId);
+  nodeCell := XMLDOMNode_AppendChild(Parent, Node);
+  releaseDump(Node);
+  textNode :=  XMLDOMDoc_CreateTextNode(xmlDoc, Value);
+  XMLDOMNode_AppendChild(NodeCell, TextNode);
+
+  releaseDump(textNode);
+  releaseDump(nodeCell);
+} // Procedure createEcodCell
+
+procedure createEcodCell2(parent: longInt; nodeId, nodeId2, value: string); // Двухуровневая ячейка
+var node, childOne: longint;
+{
+  node := XMLDOMDoc_CreateElement(xmlDoc, nodeId);
+  childOne := XMLDOMNode_AppendChild(parent, node);
+  releaseDump(Node);
+  createEcodCell(childOne, nodeId2, value);
+  releaseDump(childOne);
+}// Procedure createEcodCell2
+
+// шапка PriCat
+procedure makePriCatHeader;
+var node, childOne: longint;
+{
+  // корневой элемент
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'Document-ProductCatalogue') ;
+  hDoc := XMLDOMNode_AppendChild(xmlDoc,Node);
+  releaseDump(Node);
+  //Header
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'ProductCatalogue-Header');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+  ReleaseDump(Node);
+  createEcodCell(hPartDoc, 'ProductCatalogueNumber', dogovor.nodoc);
+  createEcodCell(hPartDoc, 'ProductCatalogueDate', datetostr(dogovor.ddoc, ieHead.dFormat));
+  createEcodCell(hPartDoc, 'PeriodStartDate', datetostr(dogovor.dbeg, ieHead.dFormat));
+  createEcodCell(hPartDoc, 'PeriodEndDate', datetostr(dogovor.dend, ieHead.dFormat));
+  createEcodCell(hPartDoc, 'ContractNumber', contract.nodoc);
+  createEcodCell(hPartDoc, 'CatalogueCurrency', 'RUB');
+  releaseDump(hPartDoc); // _ header
+
+  //parties
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'ProductCatalogue-Parties');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+  ReleaseDump(node);
+  if (getFirst fastfirstrow orgImp where ((dogovor.corg == nrec)) = tsOk) { //Buyer
+    node := XMLDOMDoc_CreateElement(xmlDoc, 'Buyer');
+    childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+    ReleaseDump(node);
+
+    createEcodCell(childOne, 'ILN', buyerILN);
+
+    createEcodCell(childOne, 'Name', trim(replace(orgImp.name, '  ', ''))); //'<![CDATA['+
+    releaseDump(childOne);
+  }
+  if (getFirst fastfirstrow orgImp where ((coGetTune('myOrg') == nrec)) = tsOk) {
+    //Seller
+    node := XMLDOMDoc_CreateElement(xmlDoc, 'Seller');
+    childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+    ReleaseDump(node);
+    createEcodCell(childOne, 'ILN', sellerILN);
+
+    createEcodCell(childOne, 'TaxID', orgImp.unn);
+    createEcodCell(childOne, 'Name', trim(orgImp.name));
+    createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
+    releaseDump(childOne); // _ Seller
+  }
+  releaseDump(hPartDoc); // _ Parties
+
+  //Invoice-Lines
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'ProductCatalogue-Lines');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+  releaseDump(Node);
+}
+
+// шапка DesAdv
+procedure makeDesAdvHeader;
+var node, childOne: longint;
+{
+
+     mylog('_coAttr_EdiDesadvBox = ' + _coAttr_EdiDesadvBox);
+
+  // корневой элемент
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'Document-DespatchAdvice') ;
+  hDoc := XMLDOMNode_AppendChild(xmlDoc,Node);
+  releaseDump(Node);
+  //Header
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'DespatchAdvice-Header');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+  ReleaseDump(Node);
+  createEcodCell(hPartDoc, 'DespatchAdviceNumber', katSopr.nSopr);
+  createEcodCell(hPartDoc, 'DespatchAdviceDate', datetostr(katsopr.dsopr, ieHead.dFormat));
+  createEcodCell(hPartDoc, 'EstimatedDeliveryDate', datetostr(stepDoc.dOtgr, ieHead.dFormat));    //or STEPDOC.DOPLMAX
+  createEcodCell(hPartDoc, 'EstimatedDeliveryTime', '12:00');
+  createEcodCell(hPartDoc, 'BuyerOrderNumber', stepdoc.nkont);
+  if longInt(StepDoc.DizvMAX) != 0
+    createEcodCell(hPartDoc, 'BuyerOrderDate', datetostr(stepDoc.dizvMAX, ieHead.dFormat));
+  createEcodCell(hPartDoc, 'DespatchNumber', katsopr.nsopr);
+  createEcodCell(hPartDoc, 'DespatchDate', datetostr(katsopr.dsopr , ieHead.dFormat));
+  createEcodCell(hPartDoc, 'Currency', 'RUB');
+  releaseDump(hPartDoc); // _ header
+
+  //parties
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'DespatchAdvice-Parties');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+  ReleaseDump(Node);
+
+  //Eugene Semenov 29.11.2017 КОСТЫЛЬ ДЛЯ МЕТРО.
+  if (buyerILN = '4607070199991' )
+    buyerILN := '4607070198888';
+  // -------------
+
+  //createEcodCell2(hPartDoc, 'Buyer', 'ILN', buyerILN); //Buyer
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'Buyer');
+  childOne := XMLDOMNode_AppendChild(hPartDoc, node);
+  releaseDump(Node);
+//  createEcodCell(childOne, 'ILN', buyerILN);
+
+    if buyerILN = '4660000949998' and deliveryILN <> '' // требование только у АТАК: <Buyer><ILN>ххх</ILN>  (GLN плательщика) должен иметь значение равное  <DeliveryPoint><ILN>ххх</ILN> (GLN точки доставки)
+    then createEcodCell(childOne, 'ILN', deliveryILN)
+    else createEcodCell(childOne, 'ILN', buyerILN);
+
+  // GLN 4607809429993 = Холидей
+  if (true ) // 20181015 теперь делаем для всех выгрузку TAXID buyerILN = '4607809429993' ){
+  {
+    if (getFirst fastfirstrow orgImp where ((katsopr.corg == nrec)) = tsOk) { //Buyer
+      createEcodCell(childOne, 'TaxID', orgImp.unn);
+    }
+  }
+  releaseDump(childOne);
+
+  //createEcodCell2(hPartDoc, 'Seller', 'ILN', sellerILN); //Seller
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'Seller');
+  childOne := XMLDOMNode_AppendChild(hPartDoc, node);
+  releaseDump(Node);
+  createEcodCell(childOne, 'ILN', sellerILN);
+
+   if _coAttr_EdiDesadvBox = 1
+     {
+      createEcodCell(childOne, 'CodeByBuyer', trim(extAttr.sGetAttr(coKatOrg, KatSopr.cOrg, 'CodeByBuyer')));
+     }
+
+  // GLN 4607809429993 = Холидей
+  if (_coAttr_EdiDesadvBox <> 1) //20210317 - для метро не надо 20181015 теперь делаем для всех выгрузку TAXID  buyerILN = '4607809429993' ){
+   {
+     if (getFirst fastfirstrow orgImp where ((coGetTune('myOrg') == nrec)) = tsOk) { //Seller
+      createEcodCell(childOne, 'TaxID', orgImp.unn);
+    }
+  }
+  releaseDump(childOne);
+
+  createEcodCell2(hPartDoc, 'DeliveryPoint', 'ILN', deliveryILN); //DeliveryPoint
+
+  // 20181015 Добавляем секцию INVOICEE
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'Invoicee');
+  childOne := XMLDOMNode_AppendChild(hPartDoc, node);
+  releaseDump(Node);
+  createEcodCell(childOne, 'ILN', buyerILN);
+  releaseDump(childOne);
+ // 20181015 end Добавляем секцию INVOICEE
+
+
+  releaseDump(hPartDoc); // _ Parties
+     if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedDesscc) = '1'
+      {
+         //DespatchAdvice-Consignment
+          node     := XMLDOMDoc_CreateElement(xmlDoc, 'DespatchAdvice-Consignment');
+          hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+          ReleaseDump(Node) ;
+
+           node := XMLDOMDoc_CreateElement(xmlDoc, 'Packing-Sequence');
+           childOne := XMLDOMNode_AppendChild(hPartDoc, node);
+            releaseDump(Node);
+             createEcodCell(childOne, 'PackageId', '1');
+           releaseDump(childOne);
+           var _npp : word = 1;
+           delete all tmpTableSSCCP;
+          _loop SpSopr
+          _Loop ATL_MERCURY_Spec
+           {
+             if getfirst tmpTableSSCCP where ((ATL_MERCURY_Spec.PALLETSSCC == tmpTableSSCCP.PALLETSSCC  )) <> tsOK
+             {
+                  _npp++;
+                 node := XMLDOMDoc_CreateElement(xmlDoc, 'Packing-Sequence');
+                 childOne := XMLDOMNode_AppendChild(hPartDoc, node);
+                 releaseDump(Node);
+                 createEcodCell(childOne, 'PackageId', string(_npp));
+                 createEcodCell(childOne, 'ParentId','1');
+                 createEcodCell(childOne, 'PackageNumber',string(_npp-1));
+                 createEcodCell(childOne, 'PackageType','09');
+                 createEcodCell(childOne, 'SerialNumber', ATL_MERCURY_Spec.PALLETSSCC);
+                 var _cBaseDoc : comp = 0h;
+                 if getFirst fastfirstRow stepDoc where ((katsopr.cstepdoc==nRec)) = tsOk
+                   if getFirst fastfirstRow baseDoc where ((stepDoc.cbasedoc==nRec)) = tsOk { _cBaseDoc := basedoc.nrec}
+                 createEcodCell(childOne, 'DeliveryPlace',extAttr.SgetAttr(1102,_cBaseDoc,'UltimateCustomer_ILN'));
+                 releaseDump(childOne);
+                 Insert tmpTableSSCCP set
+                      tmpTableSSCCP.PALLETSSCC := ATL_MERCURY_Spec.PALLETSSCC
+                   ,  tmpTableSSCCP.nppSSCC := _npp
+                  ;
+             }
+           }
+
+
+          releaseDump(hPartDoc);
+         //end  DespatchAdvice-Consignment
+      }
+  //DespatchAdvice-Lines
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'DespatchAdvice-Lines');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+  releaseDump(Node);
+}
+
+// шапка Invoice
+procedure makeInvoiceHeader(doc_type: word);
+var node, childOne, childTwo: longInt;
+{
+  // корневой элемент
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'Document-Invoice') ;
+  hDoc := XMLDOMNode_AppendChild(xmlDoc,Node);
+  releaseDump(Node);
+  //Header
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'Invoice-Header');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, node);
+  ReleaseDump(node);
+  set _cKsSrc := GetKsSrc(katSopr.cAdoc);
+  if getfirst KsSrc1 = tsOK and schfact.tipuser <> 7241 // Для Корректировочный счет-фактура выводим все как есть, не подменяя
+   {
+    createEcodCell(hPartDoc, 'InvoiceNumber', KsSrc1.nSopr);
+    createEcodCell(hPartDoc, 'InvoiceDate', datetostr(SfSrc.dfact, ieHead.dFormat));
+   }
+   else
+   {
+    createEcodCell(hPartDoc, 'InvoiceNumber', katSopr.nSopr);
+    createEcodCell(hPartDoc, 'InvoiceDate', datetostr(schfact.dfact, ieHead.dFormat));
+   }
+
+  createEcodCell(hPartDoc, 'InvoiceCurrency', 'RUB');
+  //GLN 4607040000010 = Auchan
+  if ( buyerILN = '4607040000010' ) {
+    if (getFirst fastfirstRow dogovor where ((katsopr.cdogovor==nrec)) = tsOk) { //договор
+      createEcodCell(hPartDoc, 'ContractNumber', dogovor.nodoc);
+      createEcodCell(hPartDoc, 'ContractDate', datetostr(dogovor.ddoc, ieHead.dFormat));
+    }
+    else{
+      writelog('--- WARNING: документ не найден! (DOGOVOR='+ string(katsopr.cdogovor)
+      + '. Section <DOCUMENT> skiped!', 1);
+    }
+  }
+
+
+
+
+
+     mylog('_coAttr_NeedInvoic = ' + _coAttr_NeedInvoic);
+     mylog('_coAttr_EDIInvoicLen = ' + _coAttr_EDIInvoicLen);
+     mylog('_coAttr_EDIInvoicSSCC = ' + _coAttr_EDIInvoicSSCC);
+
+
+     _needCarrier := true;
+        if _coAttr_EDIInvoicSSCC = 1 then
+         {
+          _needUltimateCustomer := true; //добавляем
+         }
+         else
+         {
+          _needUltimateCustomer := false;
+         }
+
+      if _coAttr_NeedInvoic = 0 and _coAttr_EDIInvoicLen = 1
+       {
+         _needCarrier := false;
+         if _coAttr_EDIInvoicSSCC = 1 then
+         {
+          _needConsignor := true; // заполняем
+          _needCarrier := false;    // удаляем
+//          _needUltimateCustomer := true; //добавляем
+          _needPackageReference := true;// добавляем
+         }
+         else
+         {
+          _needConsignor := true; // заполняем
+          _needCarrier := false;    // удаляем
+//          _needUltimateCustomer := false;
+          _needPackageReference := false;
+
+         }
+       }
+
+          mylog('doc_type     = ' + doc_type);
+          mylog('_needCarrier          = '+  _needCarrier           );
+          mylog('_needConsignor        = '+  _needConsignor        );
+          mylog('_needUltimateCustomer = '+  _needUltimateCustomer );
+          mylog('_needPackageReference = '+  _needPackageReference );
+
+  if     _coAttr_EDIInvoicSSCC = 1     // если паллеты нужны, но не заполнены по каким то причинам
+     and getfirst tmpTableSSCCP <> tsOK
+      {
+           var _npp : word = 1;
+           delete all tmpTableSSCCP;
+          _loop SpSopr
+          _Loop ATL_MERCURY_Spec
+           {
+             if getfirst tmpTableSSCCP where ((ATL_MERCURY_Spec.PALLETSSCC == tmpTableSSCCP.PALLETSSCC  )) <> tsOK
+             {
+                  _npp++;
+                 Insert tmpTableSSCCP set
+                      tmpTableSSCCP.PALLETSSCC := ATL_MERCURY_Spec.PALLETSSCC
+                   ,  tmpTableSSCCP.nppSSCC := _npp
+                  ;
+             }
+           }
+      }
+
+  if (katsopr.cadoc > 0) {
+
+   if schfact.tipuser = 7242
+    then
+    {
+     createEcodCell(hPartDoc, 'DocumentFunctionCode', 'R'); //исправление
+    }
+    else
+    {
+     createEcodCell(hPartDoc, 'DocumentFunctionCode', 'CO'); //корректировка
+    }
+  }
+  else
+    createEcodCell(hPartDoc, 'DocumentFunctionCode', 'O');
+  createEcodCell(hPartDoc, 'MessageType', if(doc_type = 31, UPD_type , 'SF'));
+  if (doc_type = 31) {
+    //Documents
+    node := XMLDOMDoc_CreateElement(xmlDoc, 'Documents');
+    childOne := XMLDOMNode_AppendChild(hPartDoc, node);
+    releaseDump(node);
+    createEcodCell(childOne, 'DocumentDescription', 'Продажа товара');
+    node := XMLDOMDoc_CreateElement(xmlDoc, 'Document');
+    childTwo := XMLDOMNode_AppendChild(childOne, node);
+    releaseDump(node);
+    if (getFirst fastfirstRow dogovor where ((katsopr.cdogovor==nrec)) = tsOk) { //договор
+      createEcodCell(childTwo, 'DocumentNumber', dogovor.nodoc);
+      createEcodCell(childTwo, 'DocumentDate', datetostr(dogovor.ddoc, ieHead.dFormat));
+      createEcodCell(childTwo, 'DocumentName', 'Договор');
+    }
+    else
+      writelog('--- WARNING: документ не найден! (DOGOVOR='+ string(katsopr.cdogovor)
+      + '. Section <DOCUMENT> skiped!', 1);
+    releaseDump(childTwo); // _ Document
+    releaseDump(childOne); // _ Documents
+  }
+  //Order
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'Order');
+  childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+  ReleaseDump(node);
+  createEcodCell(childOne, 'BuyerOrderNumber', stepdoc.nkont);
+  if longInt(StepDoc.DizvMAX) != 0 {
+    createEcodCell(childOne, 'BuyerOrderDate', datetostr(stepdoc.dizvMax, ieHead.dFormat));
+  }
+  else
+    createEcodCell(childOne, 'BuyerOrderDate', datetostr(baseDoc.ddoc, ieHead.dFormat));
+  releaseDump(childOne); // _ Order
+  //Reference
+  if (katsopr.cadoc > 0) { //корректировка
+    if (getfirst KsSrc1 != tsOk) {
+      writelog(' --- ERROR: не найдена корректируемая накладная! (KATSOPR='+ string(katsopr.cadoc)+ '!', 1);
+    }
+    else
+    if (getfirst SFSrc != tsOk) {
+      writelog(' --- ERROR: не найдена корректируемая СФ! (SCHFACT='+ string(korsopr.cschfact)+ '!', 1);
+    }
+    else {
+
+        node := XMLDOMDoc_CreateElement(xmlDoc, 'Reference');
+        childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+        ReleaseDump(node);
+        if schfact.tipuser <> 7241 // Для Корректировочный счет-фактура НЕ выводим эту секцию
+        {
+                             createEcodCell(childOne, 'InvoiceReferenceNumber', replace(SCHFACT.NUM,SFSrc.num + '_','') ) ;//>12345</InvoiceReferenceNumber>        М        C4        X(3)        Номер исправления
+                            createEcodCell(childOne, 'InvoiceReferenceDate', datetostr(SchFact.dfact, ieHead.dFormat));//2007-07-24</InvoiceReferenceDate>        М        C4        CCYY-MM-DD        Дата исправления
+        }
+        createEcodCell(childOne, 'OriginalInvoiceNumber', KsSrc1.nsopr); //InvoiceReferenceNumber
+        createEcodCell(childOne, 'OriginalInvoiceDate', datetostr(SFSrc.dfact, ieHead.dFormat)); //InvoiceReferenceDate
+        releaseDump(childOne);
+    }
+  }
+  //Delivery
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'Delivery');
+  childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+  ReleaseDump(node);
+  if (katsopr.cadoc > 0) { //корректировка
+      if ( buyerILN = '4607164999995' ) {
+        createEcodCell(childOne, 'DeliveryDate', datetostr(stepdoc.dotgr, ieHead.dFormat));
+    }
+    createEcodCell(childOne, 'DeliveryNoteNumber', KsSrc1.nsopr);
+    createEcodCell(childOne, 'DeliveryNoteDate', datetostr(KsSrc1.dsopr, ieHead.dFormat));
+    createEcodCell(childOne, 'ReceivingAdviceNumber', stepdoc.kontpri); //???
+    createEcodCell(childOne, 'ReceivingAdviceDate', datetostr(KsSrc1.dsopr, ieHead.dFormat)); //???
+  }
+  else {
+    // 4607164999995 - AO Tander
+    if (doc_type = 31 and buyerILN = '4607164999995' ) {
+      createEcodCell(childOne, 'DeliveryDate', datetostr(stepdoc.dotgr, ieHead.dFormat));
+    }
+    else {
+      if _coAttr_EDI_Invoic_Metro = 1 then {
+        createEcodCell(childOne, 'DeliveryDate', datetostr(stepdoc.dotgr, ieHead.dFormat));
+      }
+    }
+
+    createEcodCell(childOne, 'DeliveryNoteNumber', katsopr.nsopr);
+    createEcodCell(childOne, 'DeliveryNoteDate', datetostr(katsopr.dsopr, ieHead.dFormat));
+    createEcodCell(childOne, 'ReceivingAdviceNumber', stepdoc.kontpri);
+    if longInt(stepdoc.dizvFact) != 0 {
+      createEcodCell(childOne, 'ReceivingAdviceDate', datetostr(stepdoc.dizvFact, ieHead.dFormat));
+    }
+    else
+      createEcodCell(childOne, 'ReceivingAdviceDate', datetostr(katsopr.dsopr, ieHead.dFormat));
+  }
+  releaseDump(childOne); // _ Delivery
+  //Invoice-Parties
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'Invoice-Parties');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+  ReleaseDump(node);
+  //Костыль для АТАК. в заголовке покупатель должен быть грузополучатель...
+  if (doc_type = 31 and buyerILN = '4660000949998'){
+    if (getFirst fastfirstrow orgImp where ((if(katsopr.cgruzto > 0, katsopr.cgruzto, katsopr.corg) == nrec)) = tsOk) {
+      node := XMLDOMDoc_CreateElement(xmlDoc, 'Buyer');
+      childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+      ReleaseDump(node);
+      createEcodCell(childOne, 'ILN', deliveryILN);
+      createEcodCell(childOne, 'TaxID', orgImp.unn);
+      createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
+      createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
+      if (getFirst fastfirstRow addressN != tsOk) { //адрес доставки
+        writelog('--- WARNING: delivery point has no address! Used buyer address', 1);
+        if (getFirst fastfirstrow orgImp where ((katsopr.corg == nrec)) != tsOk) {}
+      }
+      createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
+      createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
+      createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
+      createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
+      createEcodCell(childOne, 'Country', 'RU');
+      releaseDump(childOne); // _ Buyer
+    }
+  }else{
+    if (getFirst fastfirstrow orgImp where ((katsopr.corg == nrec)) = tsOk) { //Buyer
+      node := XMLDOMDoc_CreateElement(xmlDoc, 'Buyer');
+      childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+      ReleaseDump(node);
+      createEcodCell(childOne, 'ILN', buyerILN);
+      createEcodCell(childOne, 'TaxID', orgImp.unn);
+      createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
+      createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(replace(orgImp.name, '  ', ''))); //'<![CDATA['+
+      createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);//'<![CDATA['+
+      createEcodCell(childOne, 'CityName', sterr.sname); //'<![CDATA['+ orgImp.ccity->name
+      createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
+      createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
+      createEcodCell(childOne, 'Country', 'RU');
+      releaseDump(childOne); // _ Delivery
+    }
+  }
+  if (getFirst fastfirstrow orgImp where ((coGetTune('myOrg') == nrec)) = tsOk) {
+    //Seller
+    node := XMLDOMDoc_CreateElement(xmlDoc, 'Seller');
+    childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+    ReleaseDump(node);
+    createEcodCell(childOne, 'ILN', sellerILN);
+    createEcodCell(childOne, 'TaxID', orgImp.unn);
+    createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
+    if (doc_type = 31 and CodeByBuyer <> '' )
+      createEcodCell(childOne, 'CodeByBuyer', CodeByBuyer);
+    createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
+    createEcodCell(childOne, 'ManagingPerson', 'Лалетина Елена');//sGetTune('BOSS')
+    createEcodCell(childOne, 'ManagingPersonFather', 'Викторовна');//'-'
+    if (doc_type = 31)
+      createEcodCell(childOne, 'ContactFunction', 'Менеджер по логистике');//'Генеральный директор'
+    createEcodCell(childOne, 'AccountingContact', sGetTune('MAINBUH'));
+    if (doc_type = 31) {
+      // 4607164999995 - AO Tander
+/*
+      if ( buyerILN = '4607164999995' or buyerILN = '4607040000010' or buyerILN = '4660000949998'
+        or buyerILN = '4606038008351' or buyerILN = '4606038001260' or buyerILN = '4606038030413'
+        or buyerILN = '4606038000454' or buyerILN = '4606038000003')
+        {
+         createEcodCell(childOne, 'InsuranceContact', 6);
+        }else{
+         createEcodCell(childOne, 'InsuranceContact', 0);
+        }
+        20181001
+*/
+     createEcodCell(childOne, 'InsuranceContact', doubletostr(extAttr.doGetAttr(coKatOrg, KatSopr.cOrg, 'ОснПолнУПД'),'6'));
+
+      createEcodCell(childOne, 'SupplierContact', 1);
+      createEcodCell(childOne, 'AuthorityContact', 'Доверенность');//'Устав'
+      createEcodCell(childOne, 'AcceptionContact', 'б/н от 13.07.2016');
+    }
+    createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
+    createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
+    createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
+    createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
+    createEcodCell(childOne, 'Country', 'RU');
+    releaseDump(childOne); // _ Seller
+  }
+  if (getFirst fastfirstrow orgImp where ((if(katsopr.cgruzto > 0, katsopr.cgruzto, katsopr.corg) == nrec)) = tsOk) {
+    //DeliveryPoint
+    node := XMLDOMDoc_CreateElement(xmlDoc, 'DeliveryPoint');
+    childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+    ReleaseDump(node);
+    createEcodCell(childOne, 'ILN', deliveryILN);
+    //if (doc_type = 31) {
+      createEcodCell(childOne, 'TaxID', orgImp.unn);
+      createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
+    //}
+    createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
+    if (getFirst fastfirstRow addressN != tsOk) { //адрес доставки
+      writelog('--- WARNING: delivery point has no address! Used buyer address', 1);
+      if (getFirst fastfirstrow orgImp where ((katsopr.corg == nrec)) != tsOk) {}
+    }
+    createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
+    createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
+    createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
+    createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
+    createEcodCell(childOne, 'Country', 'RU');
+    releaseDump(childOne); // _ DeliveryPoint
+  }
+  //For ATAK
+  if (doc_type = 31 and buyerILN = '4660000949998'){
+    if (getFirst fastfirstrow orgImp where ((katsopr.corg == nrec)) = tsOk) { //Buyer
+      node := XMLDOMDoc_CreateElement(xmlDoc, 'Invoicee');
+      childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+      ReleaseDump(node);
+      createEcodCell(childOne, 'ILN', buyerILN);
+      createEcodCell(childOne, 'TaxID', orgImp.unn);
+      createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
+      createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(replace(orgImp.name, '  ', ''))); //'<![CDATA['+
+      createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);//'<![CDATA['+
+      createEcodCell(childOne, 'CityName', sterr.sname); //'<![CDATA['+ orgImp.ccity->name
+      createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
+      createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
+      createEcodCell(childOne, 'Country', 'RU');
+      releaseDump(childOne); // _ Invoicee
+    }
+  }
+  if (getFirst fastfirstrow orgImp where ((if(katsopr.cgruzfrom > 0, katsopr.cgruzfrom, coGetTune('myOrg')) == nrec)) = tsOk) {
+    //Consignor
+    node := XMLDOMDoc_CreateElement(xmlDoc, 'Consignor');
+    childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+    ReleaseDump(node);
+    createEcodCell(childOne, 'ILN', sellerILN);
+    //if (doc_type = 31) {
+      createEcodCell(childOne, 'TaxID', orgImp.unn);
+      createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
+    //}
+    createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
+
+#ifdef _NewTypeInvoice_2020_
+    if _needConsignor
+    {
+      createEcodCell(childOne, 'ManagingPerson','Лалетина Елена');
+      createEcodCell(childOne, 'ManagingPersonFather','Викторовна');
+    }
+#end
+
+    createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
+    createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
+    createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
+    createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
+    createEcodCell(childOne, 'Country', 'RU');
+    releaseDump(childOne); // _ Consignor
+  }
+
+
+
+    if (doc_type = 31)
+    {
+    // Если у контрагента значения внешних атрибутов EDI-Invoic=False и EDI-Invoic-Len=True, посмотреть у Грузополучателя значение внешнего атрибута  EDI-Invoic-SSCC
+    // Если EDI-Invoic-SSCC = false или неопределено
+    // то 2.	После /Consignor выгружать GLN конечного покупателя из внешнего атрибута ДО
+      if  (
+#ifndef _NewTypeInvoice_2020_
+
+        _needUltimateCustomer
+#else
+       _coAttr_EDIInvoicSSCC = 1
+#end
+       )
+      {
+        /*
+        <UltimateCustomer>
+        <ILN>4606068980733</ILN>
+        </UltimateCustomer>
+
+        */
+          node := XMLDOMDoc_CreateElement(xmlDoc, 'UltimateCustomer');
+          childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+          ReleaseDump(node);
+          createEcodCell(childOne, 'ILN', extAttr.SGetAttr(1102,basedoc.nrec,'UltimateCustomer_ILN'));
+          releaseDump(childOne); //
+      }
+    }
+
+
+  if (doc_type = 31)
+  {
+  if (getFirst fastfirstrow orgImp where ((if(katsopr.cgruzfrom > 0, katsopr.cgruzfrom, coGetTune('myOrg')) == nrec)) = tsOk) {
+    //Carrier
+
+    // Если у контрагента значения внешних атрибутов EDI-Invoic=False и EDI-Invoic-Len=True, посмотреть у Грузополучателя значение внешнего атрибута  EDI-Invoic-SSCC
+    // Если EDI-Invoic-SSCC = false или неопределено
+    // то 1.	Раздел Carrier не формировать
+
+      if
+#ifdef _NewTypeInvoice_2020_
+      _needCarrier  // Если Лента, то 100 не ормировать
+#else
+       true
+#end
+      {
+          node := XMLDOMDoc_CreateElement(xmlDoc, 'Carrier');
+          childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+          ReleaseDump(node);
+          createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
+          createEcodCell(childOne, 'ManagingPerson', 'Лалетина Елена');
+          createEcodCell(childOne, 'ManagingPersonFather', 'Викторовна');
+          createEcodCell(childOne, 'ManagementContact', 1);
+          createEcodCell(childOne, 'ContactFunction', 'Менеджер по логистике');
+          releaseDump(childOne); // _ Carrier
+      }
+  }
+  }
+
+  releaseDump(hPartDoc); // _ Parties
+
+  //Invoice-Lines
+  node := XMLDOMDoc_CreateElement(xmlDoc, 'Invoice-Lines');
+  hPartDoc := XMLDOMNode_AppendChild(hDoc, node);
+  releaseDump(node);
+}
+
+// получение номера заказа из примечания ДО (BuyerOrderNumber)
+function getOrderNo(_rem: string): string;
+var _pos: word;
+{
+  result := '';
+  _pos := pos('заказ №', locase(_rem));
+  if (_pos > 0)
+    result := parseWord(trim(substr(_rem, _pos+ 7, 255)), 1, ' ');
+}
+
+//Проверка корректности полей KatSopr
+procedure chkKatSoprHeader;
+{
+  if (trim(stepdoc.nkont) = '') //Контракт
+    update current stepdoc set nkont = getOrderNo(basedoc.name);
+  if (stepdoc.nkont = '' or day(stepdoc.dizvMax) = 0) {
+      isCorrect := false;
+      writelog(' --- ERROR: не задан номер/ дата заказа (BuyerOrderNumber/ BuyerOrderDate)!', 1);
+  } //BuyerOrder
+  if (tDoc.wtype = 3) and (stepdoc.kontpri = '' or day(stepdoc.dizvFact) = 0) {
+      isCorrect := false;
+      writelog(' --- ERROR: не задан номер/ дата подтверждения приема (ReceivingAdviceNumber/ ReceivingAdviceDate)!', 1);
+  } //Receiving Advice
+
+  //EstimatedDeliveryDate
+  if (day(stepDoc.dOtgr) = 0) { // Дата отгрузить до
+    if (day(stepDoc.doplMAX) = 0)
+      stepDoc.dOtgr := add_Day(baseDoc.dDoc, 3);
+    else stepDoc.dOtgr := stepDoc.doplMAX;
+    writelog('   EstimatedDeliveryDate присвоено: ' + datetostr(stepDoc.dOtgr, 'DD.MM.YYYY'), 1);
+  } //EstimatedDeliveryDate
+
+  if katSopr.cVal > 0 { // Валютная накладная
+    isCorrect := false;
+    writelog(' --- ERROR: Валютный документ!', 1);
+  }
+} //Procedure ChkKatSoprHeader
+
+#include makeLineProc.vpp
+
+function fillGLN(_buyer, _delivery: comp): boolean;
+{
+  result := true;
+  //seller
+  sellerILN := trim(extAttr.sGetAttrID(coKatOrg, coGetTune('MyOrg'), coGetTune('EI.Ecod.AttrGLN'))); //GLN Seller
+  if (sellerILN = '') {
+    result := false;
+    writelog(' --- ERROR: не задан Seller GLN', 1);
+  }
+  else
+  if not chkEcodGLN(sellerILN) {
+    result := false;
+    writelog(' --- ERROR: не корректный Seller GLN #'+ sellerILN, 1);
+  }
+  //buyer
+  buyerILN := trim(extAttr.sGetAttrID(coKatOrg, _buyer, coGetTune('EI.Ecod.AttrGLN'))); //GLN Buyer
+  if (buyerILN = '') {
+    result := false;
+    writelog(' --- ERROR: не задан Buyer GLN', 1);
+  }
+  else
+  if not chkEcodGLN(buyerILN) {
+    result := false;
+    writelog(' --- ERROR: не корректный Buyer GLN #'+ buyerILN, 1);
+  }
+  //deliveryPoint
+  deliveryILN := trim(stepDoc.nSert);
+  if (deliveryILN = '') {
+    deliveryILN := trim(extAttr.sGetAttrID(coKatOrg, _delivery, coGetTune('EI.Ecod.AttrGLN')));
+    if (deliveryILN = '') and (buyerILN <> '') {
+      deliveryILN := buyerILN;
+      writelog('   DeliveryPoint GLN взят по Покупателю Buyer GLN #'+ buyerILN, 1);
+    }
+  }
+
+  if not chkEcodGLN(deliveryILN) {
+    result := false;
+    writelog(' --- ERROR: не корректный DeliveryPoint GLN #'+ deliveryILN, 1);
+  }
+
+  if (TypeOfDoc = 31){
+    // Получить тип УПД для выгрузки
+    UPD_type := trim(extAttr.sGetAttr(coKatOrg, _buyer, 'Тип УПД'));
+    if (UPD_type = '') {
+      UPD_type := 'INVDOP';
+      writelog(' --- INFO: По умолчанию использую INVDOP', 1);
+    }
+
+    //Получить odeByBuyer
+    CodeByBuyer := '';
+    if buyerILN = '4690202000005' // При выгрузке DESADC/INVOIC, если получатель сообщения - Гиперглобус (GLN покупателя 4690202000005), то при формировании сообщения, в качестве CodeByBuyer использовать не значения атрибута из карточки покупателя, а из ДО (новый атрибут)
+      then CodeByBuyer := trim(extAttr.sGetAttr(1102,basedoc.nrec,'CodeByBuyer'));
+    if CodeByBuyer = '' then CodeByBuyer := trim(extAttr.sGetAttr(coKatOrg, _buyer, 'CodeByBuyer'));
+
+  }
+}
+Function GetfirstieHeadOnDesadv : boolean; // 281474976710656005 вбиваем костыль так настройка desadv.. т.к. используем этот объект снаружи и не экспорту, а в своем цикле
+{
+   if (getfirst ieHead where((281474976710656005 == ieHead.nRec)) = tsOk)
+    then result := true;
+     else result := false;
+}
+Function GetfirstieHeadOnInvoice : boolean; // 281474976710656063 вбиваем костыль так настройка invoice .. т.к. используем этот объект снаружи и не экспорту, а в своем цикле
+{
+   if (getfirst ieHead where((281474976710656063 == ieHead.nRec)) = tsOk)
+    then result := true;
+     else result := false;
+}
+// Экспорт в XML
+function doc2xml(_type: word; _tmplog : string = ''): boolean;
+var
+  node, childOne, childTwo: longInt;
+  sFileExp, sFileSend, sPathOrg: string;  //  куда сохраняем XML
+  docQty: word; //счетчик  документов
+  _rec: comp;
+  _kor: boolean; //корректировочный документ
+{
+ if _tmplog <> '' then set _logGlob := _tmplog;
+
+ _isInvoice := false;
+
+  result := true;
+  writelog(iehead.name, 1);
+  docQty := 0;
+  TypeOfDoc := _type;
+  _loop tDoc {
+    docQty++;
+    isCorrect := false;
+    _kor := false;
+    _rec := 0;
+    if (_type = 3) or (_type = 31) {
+      if (getFirst fastfirstRow schfact where ((tDoc.nRec==nRec)) != tsOk) { //СФ
+        result := false;
+        writelog('--- ERROR: документ не найден! (SCHFACT='+ string(tDoc.nRec)+ '!', 1);
+      }
+      else {
+        writelog('  Document' + string(docQty, 2, 0) + ' СФ #'+ schfact.num +' от ' + datetostr(schfact.dfact, 'DD.MM.YYYY'), 1);
+        if (getFirst fastfirstRow katSopr where ((schfact.nrec==cschfact)) = tsOk)
+          _rec := katsopr.nrec;
+        sFileExp := 'invoice_'+ schfact.num+ '.xml'; // Задаем путь для сохранения файла
+        _isInvoice := true;
+      }
+    }
+    else
+    if (_type = 25) {
+      if (getFirst fastfirstRow dogovor where ((tDoc.nRec==nRec)) != tsOk) { //договор
+        result := false;
+        writelog('--- ERROR: документ не найден! (DOGOVOR='+ string(tDoc.nRec)+ '!', 1);
+      }
+      else {
+        writelog('  Document' + string(docQty, 2, 0) + ' Договор #'+ dogovor.nodoc +' от ' + datetostr(dogovor.ddoc, 'DD.MM.YYYY'), 1);
+        isCorrect := fillGln(dogovor.corg, dogovor.corg);
+        sFileExp := 'pricat_'+ dogovor.nodoc+ '.xml'; // Задаем путь для сохранения файла
+      }
+    }
+    else
+    if (getFirst fastfirstRow katsopr where ((tDoc.nRec==nRec)) = tsOk) {
+      writelog('  Document' + string(docQty, 2, 0) + ' Накладная #'+ katSopr.nSopr +' от ' + datetostr(katSopr.dSopr, 'DD.MM.YYYY'), 1);
+      _rec := tDoc.nrec;
+      sFileExp := 'desadv_' + katsopr.nsopr +'.xml'; // Задаем путь для сохранения файла
+    }
+    else {
+      result := false;
+      writelog('--- ERROR: выгрузка документа не настроена (TYPE='+ string(_type)+ '!', 1);
+    }
+
+    if (_type != 25) {
+      if (getFirst fastfirstRow katSopr where ((_rec==nRec)) != tsOk) {
+        result := false;
+        writelog(' --- ERROR: документ не найден! (KATSOPR='+ string(_rec)+ ')!', 1);
+      }
+      else
+      if getFirst fastfirstRow stepDoc where ((katsopr.cstepdoc==nRec)) != tsOk {
+        result := false;
+        writelog(' --- ERROR: документ не найден! (STEPDOC='+ string(katSopr.cstepdoc)+ ')!', 1);
+      }
+      else
+      if getFirst fastfirstRow baseDoc where ((stepDoc.cbasedoc==nRec)) != tsOk {
+        result := false;
+        writelog(' --- ERROR: документ не найден! (BASEDOC.NREC='+ string(stepDoc.cbasedoc)+ ')!', 1);
+      }
+      else isCorrect := fillGln(katsopr.corg, katsopr.cgruzto);
+    } // type != 25
+    if isCorrect {
+      _sum_m := _tax_m := _gross_m := _sum_p := _tax_p := _gross_p := 0;
+      totalQty := posQty := 0;
+      totalSum := totalTax := grossSum := 0;
+      if getfirst katorg where ((katsopr.corg == nrec)) <> tsOk {}
+      sPathOrg := ieHead.messageDir+ buyerILN;
+      if not existFile(sPathOrg) createDirectory(sPathOrg);
+      sPathOrg += '\';
+      if not existFile(sPathOrg+ 'out') createDirectory(sPathOrg+ 'out');
+      //получим имя папки для экспорта
+      case _type of
+      3,31:
+       {
+         sFileMask := 'out\invoice_*';
+        if _type = 31 // Если накладные
+          if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_Sfera_EDI) = '1'  // если контрагент на сфере EDI
+           {
+             if katsopr.cadoc = 0
+             then sFileMask := 'out\INVOIC_SF*'  // original
+             else sFileMask := 'out\INVOIC_CSF*'; // korrektirovka
+           }
+       }
+      25: sFileMask := 'out\pricat_*';
+      201: sFileMask := 'out\desadv_*';
+      end; //case
+      tmp := getFolderName(sPathOrg, sFileMask);
+      tmp := 'out\'+ tmp+ if(tmp != '', '\', '');
+      sFileSend := sPathOrg+ tmp+ sFileExp; //для отправки в ECOD
+      sFileExp := sPathOrg+ sFileExp;
+
+      cAtrMc := getAtrMc(katsopr.corg); // атрибут кода МЦ покупателя
+
+  var _varAttr_EDI_Invoic_Metro, _varAttr_NeedInvoic, _varAttr_EDIInvoicLen, _varAttr_EDIInvoicSSCC, _varAttr_EdiDesadvBox : string = '';
+  var _varAttr_EDI_MakeLabelInXML : comp = 0h;
+
+      _varAttr_NeedInvoic       := extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedInvoic);
+      _varAttr_EDIInvoicLen     := extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_EDIInvoicLen);
+      _varAttr_EDIInvoicSSCC    := extAttr.sGetAttr(coKatOrg, katsopr.cGruzTo , coAttr_EDIInvoicSSCC);
+
+      _coAttr_EDI_Invoic_Len_UPAKOVKA := extAttr.sGetAttr(coKatOrg, katsopr.corg, coAttr_EDI_Invoic_Len_UPAKOVKA);
+
+//      _varAttr_EdiDesadvBox     := extAttr.sGetAttr(coKatOrg, katsopr.cGruzTo , coAttr_EdiDesadvBox);
+      _varAttr_EdiDesadvBox     :=  extAttr.sGetAttr(coKatOrg, katsopr.cOrg , coAttr_EdiDesadvBox);
+      _varAttr_EDI_Invoic_Metro := extAttr.sGetAttr(coKatOrg, katsopr.cOrg , coAttr_EDI_Invoic_Metro);
+
+      _varAttr_EDI_MakeLabelInXML := extAttr.coGetAttr(coKatOrg, katsopr.cOrg , coAttr_EDI_MakeLabelInXML_NEW);
+
+      mylog('_varAttr_EDI_MakeLabelInXML = '+_varAttr_EDI_MakeLabelInXML);
+
+      _coAttr_NeedInvoic       := if(_varAttr_NeedInvoic    = '',0, double(_varAttr_NeedInvoic));
+      _coAttr_EDIInvoicLen     := if(_varAttr_EDIInvoicLen  = '',0, double(_varAttr_EDIInvoicLen));
+      _coAttr_EDIInvoicSSCC    := if(_varAttr_EDIInvoicSSCC = '',0, double(_varAttr_EDIInvoicSSCC));
+      _coAttr_EdiDesadvBox     := if(_varAttr_EdiDesadvBox  = '',0, double(_varAttr_EdiDesadvBox));
+      _coAttr_EDI_Invoic_Metro := if(_varAttr_EDI_Invoic_Metro = '',0, double(_varAttr_EDI_Invoic_Metro));
+
+      case _varAttr_EDI_MakeLabelInXML of
+       03E80000000035CEh : _coAttr_EDI_MakeLabelInXML := 1// Поэкземплярный_учет
+       03E80000000035CDh : _coAttr_EDI_MakeLabelInXML := 2;//Сортовой_учет
+       else _coAttr_EDI_MakeLabelInXML := 0;
+       end;
+      //_coAttr_EDI_MakeLabelInXML := if(_varAttr_EDI_MakeLabelInXML = '',0, double(_varAttr_EDI_MakeLabelInXML));
+
+      mylog('_coAttr_EDI_Invoic_Metro = ' + _coAttr_EDI_Invoic_Metro);
+      mylog('_coAttr_EDI_MakeLabelInXML = ' + _coAttr_EDI_MakeLabelInXML);
+      mylog('_coAttr_EDI_Invoic_Len_UPAKOVKA='+_coAttr_EDI_Invoic_Len_UPAKOVKA);
+
+
+      xmlDoc := XMLDOMDoc_New;
+      if (_type = 25) {
+        makePriCatHeader;
+        _loop spdocs {
+          if getFirst fastfirstrow katmc where ((spdocs.cmcusl == nrec)) != tsOk {
+            isCorrect := false;
+            writelog(' --- ERROR: pos #'+ spdocs.code +' - не задана МЦ (KATMC.NREC='+ string(spdocs.cmcusl)+ ')!', 1);
+          }
+          else
+          if getFirst fastfirstrow katotped where ((spdocs.cotped == nrec)) != tsOk {
+            isCorrect := false;
+            writelog(' --- ERROR: pos #'+ spdocs.code +' - не задана единица измерения (KATOTPED.NREC='+ string(spdocs.cotped)+ ')!', 1);
+          }
+          else makeLine(_type); //заполняем XML - спецификация документа
+        } // spdocs
+      }
+      else {
+        chkKatSoprHeader;  //проверяем все ли поля у заголовка документа
+        if (_type = 3) or (_type = 31) {
+          makeInvoiceHeader(_type);  //заполняем XML - заголовок документа СФ
+          _kor := (katsopr.cadoc > 0) ;//and schfact.tipuser = 7241; //(getfirst korfact = tsOk)
+        }
+        else makeDesAdvHeader;  //заполняем XML - заголовок документа накладная
+
+
+      // Коля сказал пока не включаем это функционал
+
+     // 20201026 Теперь сказал включаем ) _coAttr_NeedInvoic    := _coAttr_EDIInvoicLen  := _coAttr_EDIInvoicSSCC := 0;
+
+
+        _nppSPSOPR := 0;
+        _loop spsopr {
+          if getFirst fastfirstrow katmc where ((spsopr.cMcUsl == nrec)) != tsOk {
+            isCorrect := false;
+            writelog(' --- ERROR: pos #'+ string(spsopr.npp)+ ' - не задана МЦ (KATMC.NREC='+ string(spsopr.cmcusl)+ ')!', 1);
+          }
+          else
+          if getFirst fastfirstrow KatOtpEd where ((spsopr.cotped == nrec)) != tsOk {
+            isCorrect := false;
+            writelog(' --- ERROR: pos #'+ string(spsopr.npp)+ ' - не задана единица измерения (KATOTPED.NREC='+ string(spsopr.cotped)+ ')!', 1);
+          }
+          else makeLine(_type); //заполняем XML - спецификация документа
+        } // spsopr
+      }
+      releaseDump(hPartDoc); // _ DespatchAdvice-Lines
+      if (_type = 3) or (_type = 31) {
+        //Invoice-Summary
+        node := XMLDOMDoc_CreateElement(xmlDoc, 'Invoice-Summary');
+        hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+        releaseDump(node);
+        createEcodCell(hPartDoc, 'TotalLines', string(posQty));
+        if (katsopr.cadoc = 0) or schfact.tipuser =  7242{  // если обычная СФ/УПД - старый механизм
+          createEcodCell(hPartDoc, 'TotalNetAmount', string(totalSum));
+          createEcodCell(hPartDoc, 'TotalTaxAmount', string(totalTax));
+          createEcodCell(hPartDoc, 'TotalGrossAmount', string(grossSum));
+        }else{//если Корр СФ/УПД - сумма по строкам - добавлено 16.10.2017
+          createEcodCell(hPartDoc, 'TotalNetAmount', string(_sum_p));
+          createEcodCell(hPartDoc, 'TotalTaxAmount', string(_tax_p));
+          createEcodCell(hPartDoc, 'TotalGrossAmount', string(_gross_p));
+          //if (_sum_m != 0 ){
+         if  schfact.tipuser =  7241  // 20190303 - только для корректировочныъх
+          {
+            createEcodCell(hPartDoc, 'TotalNetAmountDecrease', string(-1 * _sum_m));
+            createEcodCell(hPartDoc, 'TotalTaxAmountDecrease', string(-1 * _tax_m));
+            createEcodCell(hPartDoc, 'TotalGrossAmountDecrease', string(-1 * _gross_m));
+          }
+          //}
+
+        }
+       /*
+       if (totalSum > 0) {
+          createEcodCell(hPartDoc, 'TotalNetAmount', string(totalSum));
+          //createEcodCell(hPartDoc, 'TotalTaxableBasis', string(totalSum));
+          createEcodCell(hPartDoc, 'TotalTaxAmount', string(totalTax));
+          createEcodCell(hPartDoc, 'TotalGrossAmount', string(grossSum));
+          //createEcodCell(hPartDoc, 'TotalGrossAmount', string(totalSum+totalTax));
+        }
+        else {
+          createEcodCell(hPartDoc, 'TotalNetAmount', '0.00');
+          createEcodCell(hPartDoc, 'TotalTaxAmount', '0.00');
+          createEcodCell(hPartDoc, 'TotalGrossAmount', '0.00');
+          createEcodCell(hPartDoc, 'TotalNetAmountDecrease', string(-1* totalSum));
+          createEcodCell(hPartDoc, 'TotalTaxAmountDecrease', string(-1* totalTax));
+          //не правильно grossSum
+          createEcodCell(hPartDoc, 'TotalGrossAmountDecrease', string(-1* grossSum));
+          //createEcodCell(hPartDoc, 'TotalGrossAmountDecrease', string(-1*(totalSum + totalTax)));
+        }
+        */
+        //createEcodCell(hPartDoc, 'TotalQuantity', string(totalQty));
+        node := XMLDOMDoc_CreateElement(xmlDoc, 'Tax-Summary');
+        childOne := XMLDOMNode_AppendChild(hPartDoc, node);
+        releaseDump(node);
+        if (schfact.sum[7]+ if(_kor, korfact.sum[7], 0) > 0) {
+          node := XMLDOMDoc_CreateElement(xmlDoc, 'Tax-Summary-Line');
+          childTwo := XMLDOMNode_AppendChild(childOne, node);
+          childTwo := XMLDOMNode_AppendChild(childOne, node);
+          releaseDump(node);
+          createEcodCell(ChildTwo, 'TaxRate', string('без НДС'));
+          createEcodCell(ChildTwo, 'TaxName', 'текст');
+          createEcodCell(ChildTwo, 'TaxAmount', string(0));
+          createEcodCell(ChildTwo, 'TaxableBasis', string(schfact.sum[7]+ if(_kor and schfact.tipuser = 7241, korfact.sum[7], 0) ));
+          createEcodCell(ChildTwo, 'TaxableAmount', string(schfact.sum[7]+ if(_kor and schfact.tipuser = 7241, korfact.sum[7], 0) ));
+          createEcodCell(ChildTwo, 'GrossAmount', string(schfact.sum[7]+ if(_kor and schfact.tipuser = 7241, korfact.sum[7], 0) ));
+          releaseDump(childTwo); // _ Tax-Summary-Line
+        }
+        if (schfact.sum[23]+ if(_kor, korfact.sum[23], 0) > 0) {
+          node := XMLDOMDoc_CreateElement(xmlDoc, 'Tax-Summary-Line');
+          childTwo := XMLDOMNode_AppendChild(childOne, node);
+          releaseDump(node);
+          createEcodCell(ChildTwo, 'TaxRate', '0.00');
+          //createEcodCell(ChildTwo, 'TaxName', 'процент');
+          createEcodCell(ChildTwo, 'TaxAmount', '0.00');
+          createEcodCell(ChildTwo, 'TaxableBasis', string(schfact.sum[23]+ if(_kor and schfact.tipuser = 7241, korfact.sum[23], 0) ));
+          createEcodCell(ChildTwo, 'TaxableAmount', string(schfact.sum[23]+ if(_kor and schfact.tipuser = 7241, korfact.sum[23], 0) ));
+          createEcodCell(ChildTwo, 'GrossAmount', string(schfact.sum[9]+ if(_kor and schfact.tipuser = 7241, korfact.sum[9], 0) ));
+          releaseDump(childTwo); // _ Tax-Summary-Line
+        }
+        if (schfact.sum[5]+ if(_kor, korfact.sum[5], 0) > 0)
+        or getfirst fastfirstrow SPSCHF_PercNDS where (( schfact.nrec == SPSCHF_PercNDS.CSCHFACT and 10 == SPSCHF_PercNDS.PERCNDS (noindex))) = tsOK // На случай если корр СФ в которой полностью все возвращают.. то там нет сумм по НДС, а строки нужны
+          {
+          node := XMLDOMDoc_CreateElement(xmlDoc, 'Tax-Summary-Line');
+          childTwo := XMLDOMNode_AppendChild(childOne, node);
+          releaseDump(node);
+          createEcodCell(ChildTwo, 'TaxRate', '10.00');
+          //createEcodCell(ChildTwo, 'TaxName', 'процен');
+          createEcodCell(ChildTwo, 'TaxAmount', string(schfact.sum[5]+ if(_kor and schfact.tipuser = 7241, korfact.sum[5], 0) ));
+          createEcodCell(ChildTwo, 'TaxableBasis', string(schfact.sum[4]+ if(_kor and schfact.tipuser = 7241, korfact.sum[4], 0) ));
+          createEcodCell(ChildTwo, 'TaxableAmount', string(schfact.sum[4]+ if(_kor and schfact.tipuser = 7241, korfact.sum[4], 0) ));
+          createEcodCell(ChildTwo, 'GrossAmount', string(schfact.sum[6]+ if(_kor and schfact.tipuser = 7241, korfact.sum[6], 0) ));
+          releaseDump(childTwo); // _ Tax-Summary-Line
+        }
+        if (schfact.sum[2]+ if(_kor, korfact.sum[2], 0) > 0)
+         or getfirst fastfirstrow SPSCHF_PercNDS where (( schfact.nrec == SPSCHF_PercNDS.CSCHFACT and 18 == SPSCHF_PercNDS.PERCNDS (noindex))) = tsOK // На случай если корр СФ в которой полностью все возвращают.. то там нет сумм по НДС, а строки нужны
+        {
+          node := XMLDOMDoc_CreateElement(xmlDoc, 'Tax-Summary-Line');
+          childTwo := XMLDOMNode_AppendChild(childOne, node);
+          releaseDump(node);
+         if korfact.dfact < date(01,01,2019)
+          then createEcodCell(ChildTwo, 'TaxRate', '18.00')
+          else createEcodCell(ChildTwo, 'TaxRate', '20.00');
+          //createEcodCell(ChildTwo, 'TaxName', 'процент');
+          createEcodCell(ChildTwo, 'TaxAmount', string(schfact.sum[2]+ if(_kor and schfact.tipuser = 7241, korfact.sum[2], 0) ));
+          createEcodCell(ChildTwo, 'TaxableBasis', string(schfact.sum[1]+ if(_kor and schfact.tipuser = 7241, korfact.sum[1], 0) ));
+          createEcodCell(ChildTwo, 'TaxableAmount', string(schfact.sum[1]+ if(_kor and schfact.tipuser = 7241, korfact.sum[1], 0) ));
+          createEcodCell(ChildTwo, 'GrossAmount', string(schfact.sum[3]+ if(_kor and schfact.tipuser = 7241, korfact.sum[3], 0) ));
+          releaseDump(childTwo); // _ Tax-Summary-Line
+        }
+        releaseDump(childOne); // _ Tax-Summary
+        releaseDump(hPartDoc); // _ Invoice-Summary
+      }
+      else
+      if (_type = 25)  { //PriCat-Summary
+        node := XMLDOMDoc_CreateElement(xmlDoc, 'ProductCatalogue-Summary');
+        hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+        releaseDump(Node);
+        createEcodCell(hPartDoc, 'TotalLines', string(posQty));
+        releaseDump(hPartDoc); // _ DespatchAdvice-Summary
+      }
+      else { //DespatchAdvice-Summary
+        node := XMLDOMDoc_CreateElement(xmlDoc, 'DespatchAdvice-Summary');
+        hPartDoc := XMLDOMNode_AppendChild(hDoc, Node);
+        releaseDump(Node);
+        createEcodCell(hPartDoc, 'TotalAmount', string(totalSum));
+        createEcodCell(hPartDoc, 'TotalQuantity', string(totalQty));
+/*
+        //Семенов: Костыль для ОКЕЙ.
+        if( buyerILN = '4607099139992' ){
+          createEcodCell(hPartDoc, 'TotalLines', string(posQty));
+          createEcodCell(hPartDoc, 'TotalGrossAmount', string(grossSum));
+          createEcodCell(hPartDoc, 'TotalTaxAmount', string(totalTax));
+        }
+        //Семенов: Костыль для Холидей.
+*/
+        if _coAttr_EdiDesadvBox <> 1     //20210314 все таки не для всех(например метро)  if  ( true ) // 20181015 для всех выводим теперь buyerILN = '4607809429993' ){
+        {
+          createEcodCell(hPartDoc, 'TotalLines', string(posQty));
+          createEcodCell(hPartDoc, 'TotalNetAmount', string(totalSum));
+          createEcodCell(hPartDoc, 'TotalGrossAmount', string(grossSum));
+          createEcodCell(hPartDoc, 'TotalTaxAmount', string(totalTax));
+        }
+        releaseDump(hPartDoc); // _ DespatchAdvice-Summary
+      }
+      // сохраняем XML
+      releaseDump(hDoc);
+
+      sFileExp := ConvertClientPathToSrv(sFileExp);  //Для сетевых дисков
+
+      if not xmlDOMdoc_save(xmlDoc, sFileExp) {
+        result := false;
+        writelog(' --- ERROR: error file save '''+ sFileExp+ '''!', 1);
+        break;
+      }
+      if not isCorrect { // is document correct?
+        writelog(' --- ERROR: document is not correct ''' + sFileExp+ '''!', 1);
+      }
+      else // move DesAdv.xml to ECOD
+      if not copyMoveFile(sFileExp, sFileSend, true, ecmfClientFrom+ecmfClientTo) {
+        writelog(' --- ERROR: error file move to ECOD ''' + sFileSend+ '''!', 1);
+      }
+      else {
+        writelog(' -----> OK - File exported -----> '''+ sFileSend+ '''.', 1);
+        if (ieHead.subTipDoc = 201) //только для накладных
+          if (tDoc.wType = 3) or (tDoc.wType = 31) {
+            update current katsopr set status = 1, cnote = comp(03E8000000000096h);
+          }
+          else
+            update current katsopr set status = 1, cnote = comp(03E800000000004Fh);
+      }
+      XMLDOMDoc_Done(xmlDoc);
+    } //if isCorrect
+  } //loop tDoc
+} //function doc2xml

@@ -1,0 +1,15 @@
+Interface HelloWorld;
+
+create view;
+
+screen sc1;
+<<
+   Hello world!
+>>
+end;
+
+handleevent
+  cmInit: Message('Hello world!');
+end;
+
+end.

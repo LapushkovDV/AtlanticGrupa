@@ -1,0 +1,46 @@
+//******************************************************************************
+//                                                      (c) корпорация Галактика
+// Галактика ERP - настройки
+// Создание/модификация настроек компонента F_PlPor
+//******************************************************************************
+#include createTune.vih
+
+//------------------------------------------------------------------------------
+handler with replace C_ECOD_DateModifyTune on ExtensionPoint
+  epDateModifyTuneEx (TS : ObjStartCreateTuneEx)
+Action
+{
+  TS.SetLastDateModTuneComp('droga', 2, 1, 2017);
+  result := true;
+}
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+handler with replace C_ECOD_CreateTune on extensionPoint
+  epCreateTuneComponent (TR: ObjCreateTuneEx) [90]
+action
+{
+  result := true;
+  TR.SetComponent('droga');     // установить имя компонента
+
+// Ветка "Настройки Галактики\Общие настройки системы\Обмен бизнес-документами\Интеграция с ECOD\"
+
+  TR.SetParent('EXPIMP');
+  TR.AddPartU('EI.Ecod', 'Интеграция с ECOD Comarch', '');
+  TR.SetParent('EI.Ecod');
+  TR.AddTuneS('EI.Ecod.Folder', 'Папка обмена с ECOD', ftCompString, '', '', '');
+    TR.AddIntr('GetEcodFolder');
+  TR.AddTuneS('EI.Ecod.AttrGLN', 'Атрибут Код покупателя', ftComp, '0', '', '');
+    TR.AddIntr('GetExtAttrComp_KatOrg');
+  TR.AddTuneS('EI.Ecod.AttrMc', 'Атрибут Код МЦ', ftComp, '0', '', '');
+    TR.AddIntr('GetExtAttrComp_KatOrg');
+  TR.AddTuneS('EI.Ecod.Warehouse', 'Склад отгрузки', ftComp, '0', '', '');
+    TR.AddIntr('GetSklad');
+  TR.AddTuneS('EI.Ecod.BuyerList', 'Разрешенный список покупателей для импорта документов', ftString, '', '', '');
+  TR.AddTuneS('EI.Ecod.DesAdvStatus', 'Статус накладной при отправке покупателю', ftCompString, '0', '', '');
+    TR.AddIntr('GetSoprStatus');   
+  TR.AddTuneS('EI.Ecod.RecAdvStatus', 'Статус накладной при получении подтверждения', ftCompString, '0', '', '');
+    TR.AddIntr('GetSoprStatus');   
+  TR.AddTuneS('EI.Ecod.InvoiceStatus', 'Статус накладной при отправке счета-фактуры', ftCompString, '0', '', '');
+    TR.AddIntr('GetSoprStatus');    
+}

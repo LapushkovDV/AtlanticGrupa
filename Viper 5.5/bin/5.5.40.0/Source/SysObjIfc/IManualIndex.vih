@@ -1,0 +1,46 @@
+#ifndef _IManualIndex_
+#define _IManualIndex_
+
+#Component ""
+
+#doc
+ Интерфейс : IManualIndex
+ </brief> <br>
+ Предназначение: Если vip-интерфейс реализует индексы типа manual,
+                 то необходимо реализовать этот объектный интерфейс.
+#end
+ObjInterface IManualIndex;
+
+  Function IndexActivated   // #docl Вызывается при активизации индекса. </brief>
+                            (IndexNum   // #docl Номер объектного индекса, который был выбран. </brief>
+                                        : LongInt)   : Word;    // #docl Код ошибки </brief> <br> Возможны варианты: (tsOk, tsIndexNotFound, tsInternalError).
+
+  Function IndexDeactivated // #docl Вызывается при деактивизации индекса. </brief>
+                            (IndexNum   // #docl Номер объектного индекса, который был выбран. </brief>
+                                        : LongInt) : Word;      // #docl Код ошибки </brief> <br> Возможны варианты: (tsOk, tsIndexNotFound, tsInternalError).
+
+  Function FilterChanged    // #docl Изменение количества фильтров. </brief> Вызывается для нотификации прикладного алгоритма при изменении количества фильтров.
+                            : Word;                             // #docl Код ошибки </brief> <br> Возможны варианты: (tsOk, tsInternalError).
+
+  Function Count            // #docl Количество экземпляров vip-объектов. </brief> Вызывается для определения количества экземпляров vip-объектов.
+                            : LongInt;                          // #docl Количество экземпляров vip-объектов. </brief>
+
+  Function Find             // #docl Вызывается для начала движения по объекту. </brief>
+                            (Direction  // #docl Направление движения.          </brief>
+                                        : Byte) : Word; // #docl Код ошибки </brief> <br> Возможны варианты: (tsOk, tsNotFound, tsInternalError).
+
+  Function Move             // #docl Вызывается для продолжения движения по объекту. </brief>
+                            (Direction  // #docl Направление движения.               </brief>
+                                        : Byte) : Word; // #docl Код ошибки </brief> <br> Возможны варианты: (tsOk, tsNotFound, tsInternalError).
+
+  Function GetAddr          // #docl Адрес объекта. </brief> <br> Возвращает значение (адрес), уникально идентифицирующее экземпляр объекта.
+                            (var Address// #docl Адрес, в который записывается значение. </brief>
+                                        : Comp) : Word; // #docl Код ошибки </brief> <br> Возможны варианты: (tsOk, tsNoPosition, tsInternalError).
+
+  Function GetDirect        // #docl Загружает экземпляр объекта. </brief>
+                            (Address    // #docl Адрес объекта.</brief>
+                                        : Comp) : Word; // #docl Код ошибки </brief> <br> Возможны варианты: (tsOk, tsNotFound, tsInternalError).
+
+End;
+
+#endif

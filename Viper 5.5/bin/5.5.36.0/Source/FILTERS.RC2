@@ -1,0 +1,108 @@
+! Маленькие менюшки для системы фильтров
+
+FiltersLocalMenu_InsertCondition menu
+{
+  - '~П~ростое условие...', cmFilterInsertStandard,
+    'Добавление в список условий одного простого условия по полю',
+    hcFilterInsertStandard, '', kbNoKey;
+  - '~С~трочное условие', cmFilterInsertLine,
+    'Добавление в список условий одного строчного условия',
+    hcFilterInsertLine, '', kbNoKey;
+}
+
+FiltersLocalMenu_InsertUnion menu
+{
+  - '~И~ (Оба вместе)', cmFilterUnionByAnd,
+    'Фильтр сработает, если выполняются оба условия',
+    hcFilterUnionByAnd, '', kbNoKey;
+  - 'И~Л~И (Одно из двух)', cmFilterUnionByOr,
+    'Фильтр сработает, если выполняется хотя бы одно условие',
+    hcFilterUnionByOr, '', kbNoKey;
+}
+
+FiltersLocalMenu_InsertOper menu
+{
+  - '~=~', cmFilterSelectOper_Equal,
+    'Выбрать операцию сравнения "X равно Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  - '~<>~', cmFilterSelectOper_NotEqual,
+    'Выбрать операцию сравнения "X не равно Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  --------------------;
+  - '~<~', cmFilterSelectOper_Less,
+    'Выбрать операцию сравнения "X меньше Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  - '~>~', cmFilterSelectOper_Great,
+    'Выбрать операцию сравнения "X больше Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  - '~<=~', cmFilterSelectOper_LessEqual,
+    'Выбрать операцию сравнения "X меньше или равно Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  - '~>=~', cmFilterSelectOper_GreatEqual,
+    'Выбрать операцию сравнения "X больше или равно Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  --------------------;
+  - '~()~', cmFilterSelectOper_Between,
+    'Выбрать операцию сравнения "X в интервале от A до B (не включая A и B)"',
+    hcFilterSelectOper, '', kbNoKey;
+  - '~[]~', cmFilterSelectOper_InRange,
+    'Выбрать операцию сравнения "X в пределах от A до B (включая сами A и B)"',
+    hcFilterSelectOper, '', kbNoKey;
+  - '~[)~', cmFilterSelectOper_InOut,
+    'Выбрать операцию сравнения "A <= X < B"',
+    hcFilterSelectOper, '', kbNoKey;
+  - '~(]~', cmFilterSelectOper_OutIn,
+    'Выбрать операцию сравнения "A < X <= B"',
+    hcFilterSelectOper, '', kbNoKey;
+  --------------------;
+  - '~О~чистить', cmFilterSelectOper_Nop,
+    'Никакой операции сравнения',
+    hcFilterSelectOper, '', kbNoKey;
+}
+
+FiltersLocalMenu_InsertOperStr menu
+{
+  - '~=~', cmFilterSelectOper_Equal,
+    'Выбрать операцию сравнения "X равно Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  - '~<>~', cmFilterSelectOper_NotEqual,
+    'Выбрать операцию сравнения "X не равно Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  --------------------;
+  - '~<~', cmFilterSelectOper_Less,
+    'Выбрать операцию сравнения "X меньше Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  - '~>~', cmFilterSelectOper_Great,
+    'Выбрать операцию сравнения "X больше Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  - '~<=~', cmFilterSelectOper_LessEqual,
+    'Выбрать операцию сравнения "X меньше или равно Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  - '~>=~', cmFilterSelectOper_GreatEqual,
+    'Выбрать операцию сравнения "X больше или равно Y"',
+    hcFilterSelectOper, '', kbNoKey;
+  --------------------;
+  - '~О~чистить', cmFilterSelectOper_Nop,
+    'Никакой операции сравнения',
+    hcFilterSelectOper, '', kbNoKey;
+}
+
+
+FiltersLocalMenu_InsertLineItem menu
+{
+  - '~П~оле', cmFilterSelectField,
+    'Вставить поле в условие',
+    hcFilterSelectField, '', kbNoKey;
+  = FiltersLocalMenu_InsertOperStr,
+    '~С~равнение',
+    'Вставить сравнение в условие',
+    hcFilterSelectOper, scFilterHelpOnly;
+  - '~Ф~ункция', cmFilterSelectFunction,
+    'Вставить функцию в условие',
+    hcFilterSelectFunction, '', kbNoKey;
+  = FiltersLocalMenu_InsertUnion,
+    '~О~бъединение',
+    'Вставить объединение двух условий',
+    hcFilterSelectUnion, scFilterHelpOnly;
+}
+

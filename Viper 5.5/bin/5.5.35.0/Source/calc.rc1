@@ -1,0 +1,56 @@
+   (scAtlCalcProtocol..scAtlCalcProtocol)
+     {
+       '~F1~ Помощь', cmHelp, kbF1;
+       '~Esc~ Закрыть', cmCancel, kbEsc;
+     }
+
+   (scAtlCalcField..scAtlCalcField)
+     {
+       '~F1~ Помощь', cmHelp, kbF1;
+       '~Enter~ Выбор', cmOk, kbEnter;
+       '~Esc~ Закрыть', cmCancel, kbEsc;
+     }
+
+   (scAtlCalcMain..scAtlCalcMain)
+     {
+       '', cmAtlCalcClear, 'c';
+       '', cmAtlCalcClear, 'C';
+       '', cmAtlCalcClear, 'с';
+       '', cmAtlCalcClear, 'С';
+       '', cmAtlCalcB0, '0';
+       '', cmAtlCalcB1, '1';
+       '', cmAtlCalcB2, '2';
+       '', cmAtlCalcB3, '3';
+       '', cmAtlCalcB4, '4';
+       '', cmAtlCalcB5, '5';
+       '', cmAtlCalcB6, '6';
+       '', cmAtlCalcB7, '7';
+       '', cmAtlCalcB8, '8';
+       '', cmAtlCalcB9, '9';
+       '', cmAtlCalcResult, '=';
+       '', cmAtlCalcAdd, '+';
+       '', cmAtlCalcSub, '-';
+       '', cmAtlCalcMul, '*';
+       '', cmAtlCalcDiv, '/';
+       '', cmAtlCalcPercents, '%';
+       '', cmAtlCalcDelim, ',';
+       '', cmAtlCalcDelim, '.';
+       '', cmAtlCalcDelim, 'ю';
+       '', cmAtlCalcDelim, 'Ю';
+       '', cmAtlCalcM, 'm';
+       '', cmAtlCalcM, 'M';
+       '', cmAtlCalcM, 'v';
+       '', cmAtlCalcM, 'V';
+       '', cmAtlCalcM, 'м';
+       '', cmAtlCalcM, 'М';
+       '', cmAtlCalcM, 'ь';
+       '', cmAtlCalcM, 'Ь';
+       '', cmAtlCalcMRestore, 'r';
+       '', cmAtlCalcMRestore, 'R';
+       '', cmAtlCalcMRestore, 'к';
+       '', cmAtlCalcMRestore, 'К';
+       '', cmAtlCalcBackSpace, kbBack;
+       '~F1~ Помощь', cmHelp, kbF1;
+       '~Enter~ Выбор', cmOk, kbEnter;
+       '~Esc~ Закрыть', cmCancel, kbEsc;
+     }

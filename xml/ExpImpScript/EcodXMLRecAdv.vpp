@@ -1,0 +1,46 @@
+  var _file: string;
+  _file := getFirstFile(sPathLog +'In\','RecAdv_*.xml');
+
+  if (_file <> strDataIsEmpty) {
+    startNewVisual(vtRotateVisual, vfTimer+vfBreak+vfConfirm, ''#3'Обработка данных RecAdv_*.xml ...', 1);
+    writelog(' Обработка RecAdv: ', 1);
+    _descr := sgettune('user.descr'); 
+
+    sPathArch := sPathLog + 'InArh\RecAdv\'  ;  
+
+   if not existFile(sPathArch) {
+       fLOG.openFile(sPathArch, stCreate);
+       fLOG.close;
+   }
+   if not existFile(sPathLog+ 'InErr\RecAdv\') {
+       fLOG.openFile(sPathLog+'InErr\RecAdv\', stCreate);
+       fLOG.close;
+   }
+
+   while _file <> strDataIsEmpty do {
+     isCorrect := true;
+     if not nextVisual break;
+
+     if not RecAdvLoadFromXML(_file) {
+       isCorrect := false;
+       writeLog(''#3' Error - Не известный формат файла: '+ _file, 1);
+       message(logErr);
+     }
+
+     if isCorrect { // удаляем
+       if not deleteFile(_file) message(''#3'Ошибка удаления '+ _file);
+     }
+     else { //иначе перемещаем 
+       if existFile(sFileErr) { if (not DeleteFile(sFileErr))      message(''#3'Ошибка удаления '+sFileErr );   }
+          if not CopyMoveFile(_file, sFileErr , true, ecmfClientFrom+ecmfClientTo)
+            message(''#3'Ошибка перемещения в Err: '+sFileErr);
+       }
+     _file := getNextFile;
+    } //while
+    stopVisual('', 0);
+
+    checkXMLform.write(' ');
+    checkXMLform.putEvent(feBreak);
+    checkXMLform.showFile( 'EcodChkXML.OUT - Протокол Обработки RecAdv: ');          //показать протокол
+    checkXMLform.abortForm;
+  }

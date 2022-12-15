@@ -1,0 +1,33 @@
+#ifndef __IViewTable_vih__
+#define __IViewTable_vih__
+
+#Component ""
+
+// Константы для функции SF_ViewTable (seafld.SearchRecord)
+const
+  rfDefault         = 0000h;
+
+  rfTabMask         = 0003h;  // маска типа интерпретации iTable
+  rfTabName         = 0000h;  // интерпретировать iTable как имя таблицы
+  rfTabTitle        = 0001h;  // интерпретировать iTable как заголовок таблицы
+  rfTabAsTDef       = 0002h;  // интерпретировать iTable как имя TableDef'а
+                              //  для таблицы в памяти
+  rfTabPTableDef    = 0003h;  // интерпретировать iTable как ссылку на TableDef
+
+  rfSortMask        = 000Ch;  // маска типа сортировки колонок
+  rfSmartSort       = 0000h;  // сортировать колонки :
+                              //  1. String'и с "name" в имени
+                              //  2. String'и
+                              //  3. не Comp'ы
+                              //  4. Comp'ы (если разрешены флагом rfAddComp)
+  rfSortByName      = 0004h;  // сортировать колонки по имени поля
+  rfSortByOffset    = 0008h;  // сортировать колонки по смещению поля
+
+  rfEditEnable      = 0010h;  // разрешить редактирование
+  rfColName         = 0020h;  // заголовок колонки - имя поля
+  rfAddComp         = 0040h;  // показывать колонки с полями типа Comp
+  rfOwnDebugger     = 0080h;  // запускать как часть отладчика
+  rfNoRecordHistory = 0100h;  // запретить просмотр истрии изменения записей
+end;
+
+#endif

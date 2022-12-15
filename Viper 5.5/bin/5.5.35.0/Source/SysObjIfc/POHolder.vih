@@ -1,0 +1,40 @@
+#ifndef _POHolder_
+#define _POHolder_
+
+#Component ""
+
+#doc
+  Интерфейс - хранение Pascal - объекта. </brief>
+  Нужно для совместного использования Pascal объектов из vip-а
+#end
+objInterface IPascalObjectHolder; 
+  property handle  // #docl Ссылка на сам pascal объект. </brief>
+                : longint read write;   
+  property needFree // #docl нужно ли удалять объект. </brief>
+                : boolean read write;   
+end;
+
+#doc
+  Vip-интерфейс, реализующий IPascalObjectHolder. </brief>
+#end
+vipInterface vipPascalObjectHolder implements IPascalObjectHolder;
+public:
+  constructor init;  // #docl Конструктор по умолчанию. </brief>
+  constructor create // #docl Конструктор от хендла. </brief>
+                    ( ihandle // #docl Ссылка на сам pascal объект. </brief>
+                              : longint );
+  destructor done; // #docl деструктор. </brief>
+end;
+
+#doc
+  Vip-интерфейс, реализующий IPascalObjectHolder для структуры TMTHandle. </brief>
+#end
+vipInterface vipMTHandleHolder(vipPascalObjectHolder);
+public:
+  destructor done; // #docl деструктор. </brief>
+end;
+
+procedure FreeObj(longint); external 'streams_.dll#TBaseObject_Free';
+
+#endif
+

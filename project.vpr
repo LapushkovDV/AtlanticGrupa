@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>project</ProjectName>
+		<ActiveIndex>10</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="c:\vip\tmp\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\vip\Viper\bin\5.5.28.0</AtlDir>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\*
+					inc\*
+					frm\*
+					pack\*
+					bnk\*
+					xml\*
+					alter_vschet\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+				</ResourceList>
+				<OutputResource>$[Tmp]\debug2.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+				<StartPathDirectory>C:\Galaktika\exe</StartPathDirectory>
+				<RepoSystemName>galnet</RepoSystemName>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_droga9_test</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:localhost[1997]</SqlServerParameters>
+					<FullLoginName>True</FullLoginName>
+					<LogPas>True</LogPas>
+					<UserName>compile</UserName>
+					<Password>Comp1l3</Password>
+					<HwKeyDirectory>\\srv-ru01\GalHWKey</HwKeyDirectory>
+					<LicFileName>..\..\Sup910\exe\license.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<ProjectItems>
+			<ProjectPackage Name="frm">
+				<CoreVip>
+					<VipFiles>
+						<OutputResource>$[Tmp]\debug3.res</OutputResource>
+					</VipFiles>
+					<VipFR>
+						<PackFR>False</PackFR>
+					</VipFR>
+				</CoreVip>
+				<ProjectItems>
+					<ProjectCompileFile FileName="frm\frm.prj" Priority="0"/>
+					<ProjectFolder Name="torg12">
+						<ProjectItems>
+							<ProjectFile FileName="frm\torg12\torg12_droga.rtf"/>
+							<ProjectFile FileName="frm\torg12\torg12_metro.rtf"/>
+							<ProjectFile FileName="frm\torg12\torg12_val.rtf"/>
+							<ProjectFile FileName="frm\torg12\droga_fld.frn"/>
+							<ProjectFile FileName="frm\torg12\droga_tbl.frn"/>
+							<ProjectFile FileName="frm\torg12\droga_var.frn"/>
+							<ProjectFile FileName="frm\torg12\droga_vip.frn"/>
+							<ProjectFile FileName="frm\torg12\atl_fld.frn"/>
+							<ProjectFile FileName="frm\torg12\codeMCmetro.frn"/>
+							<ProjectFile FileName="frm\torg12\group_sp.frn"/>
+							<ProjectFile FileName="frm\torg12\metro_fld.frn"/>
+							<ProjectFile FileName="frm\torg12\torg12_02_Dr.frn"/>
+							<ProjectFile FileName="frm\torg12\torg12fld_val.frn"/>
+							<ProjectFile FileName="frm\torg12\torg12var.frn"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="ttnnew">
+						<ProjectItems>
+							<ProjectFile FileName="frm\ttnnew\p4_ttn_droga.rtf"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="torg3">
+						<ProjectItems>
+							<ProjectFile FileName="frm\torg3\torg_3.rtf"/>
+							<ProjectFile FileName="frm\torg3\DrogaOpr.frn"/>
+							<ProjectFile FileName="frm\torg3\org_decl.frn"/>
+							<ProjectFile FileName="frm\torg3\summaDr.frn"/>
+							<ProjectFile FileName="frm\torg3\torg_3_fld1.frn"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="sklad">
+						<ProjectItems>
+							<ProjectFile FileName="frm\sklad\akciya.rtf"/>
+							<ProjectFile FileName="frm\sklad\reklama.rtf"/>
+							<ProjectFile FileName="frm\sklad\sklad.slk"/>
+							<ProjectFile FileName="frm\sklad\sklad1.slk"/>
+							<ProjectFile FileName="frm\sklad\Sverka.slk"/>
+							<ProjectFile FileName="frm\sklad\torg13.rtf"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="s4fact">
+						<ProjectItems>
+							<ProjectFile FileName="frm\s4fact\droga_tbl.frn"/>
+							<ProjectFile FileName="frm\s4fact\drogaGruzTo.frn"/>
+							<ProjectFile FileName="frm\s4fact\s4fA26122011.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fAshan.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fBahetle.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fD26122011.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fDroga.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fE26122011.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fExport.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fGiper.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fKorablik.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fLenta.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fM26122011.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fMetro.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fPer2.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fTander.rtf"/>
+							<ProjectFile FileName="frm\s4fact\s4fZ26122011.rtf"/>
+							<ProjectFile FileName="frm\s4fact\SFBla2Vp.frn"/>
+							<ProjectFile FileName="frm\s4fact\sign_fld.frn"/>
+							<ProjectFile FileName="frm\s4fact\sign_var.frn"/>
+							<ProjectFile FileName="frm\s4fact\sign_vip.frn"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="order">
+						<ProjectItems>
+							<ProjectFile FileName="frm\order\order.slk"/>
+							<ProjectFile FileName="frm\order\OrderForSbora.slk"/>
+							<ProjectFile FileName="frm\order\orderPlusNDS.slk"/>
+							<ProjectFile FileName="frm\order\orderPlusNDSandSkidki.slk"/>
+							<ProjectFile FileName="frm\order\OrderRemains.slk"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="pack">
+				<CoreVip>
+					<VipFR>
+						<PackFR>True</PackFR>
+					</VipFR>
+				</CoreVip>
+				<ProjectItems>
+					<ProjectCompileFile FileName="pack\pack.prj" Priority="0"/>
+					<ProjectFolder Name="DrogaFunc">
+						<ProjectItems>
+							<ProjectFile FileName="pack\drogaFunc\drogaFunc.vih"/>
+							<ProjectFile FileName="pack\drogaFunc\drogaFunc.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="FillTmpTbl">
+						<ProjectItems>
+							<ProjectFile FileName="pack\FillTmpTbl\certificate.frn"/>
+							<ProjectFile FileName="pack\FillTmpTbl\FillTmpTbl.frm"/>
+							<ProjectFile FileName="pack\FillTmpTbl\barcode2.frn"/>
+							<ProjectFile FileName="pack\FillTmpTbl\mercury.frn"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="bnk">
+				<ProjectItems>
+					<ProjectCompileFile FileName="bnk\bnk.prj" Priority="0"/>
+					<ProjectFolder Name="VypScript">
+						<ProjectItems>
+							<ProjectFile FileName="bnk\VypScript\vypScript.vip"/>
+							<ProjectFile FileName="bnk\VypScript\vypScript.vpp"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="xml">
+				<ProjectItems>
+					<ProjectCompileFile FileName="xml\xml.prj" Priority="0"/>
+					<ProjectFolder Name="ExpImpScript">
+						<ProjectItems>
+							<ProjectFile FileName="xml\ExpImpScript\expImpScript.vip"/>
+							<ProjectFile FileName="xml\ExpImpScript\ecod_func.vip"/>
+							<ProjectFile FileName="xml\ExpImpScript\sts_doc.vpp"/>
+							<ProjectFile FileName="xml\ExpImpScript\ecod_order.vip"/>
+							<ProjectFile FileName="xml\ExpImpScript\ecod_imp.vip"/>
+							<ProjectFile FileName="xml\ExpImpScript\sts_imp.vip"/>
+							<ProjectFile FileName="xml\ExpImpScript\common_func.vpp"/>
+							<ProjectFile FileName="xml\ExpImpScript\ecod_intr.vip"/>
+							<ProjectFile FileName="xml\ExpImpScript\ecod_user.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="alter_vschet">
+				<ProjectItems>
+					<ProjectCompileFile FileName="alter_vschet\alter_vschet.prj" Priority="0"/>
+					<ProjectFolder Name="alter">
+						<ProjectItems>
+							<ProjectFile FileName="alter_vschet\alter\alter_l_basedoc_vschet.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="cnf">
+						<ProjectItems>
+							<ProjectFile FileName="alter_vschet\cnf\L_BASEDOC_VSCHET.cnf"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="helpers">
+						<ProjectItems>
+							<ProjectFile FileName="alter_vschet\helpers\GLOB_AtlanticShowMaravt.vih"/>
+							<ProjectFile FileName="alter_vschet\helpers\GLOB_AtlanticShowMaravt.vip"/>
+							<ProjectFile FileName="alter_vschet\helpers\GLOB_AtlanticShowSkidki.vih"/>
+							<ProjectFile FileName="alter_vschet\helpers\GLOB_AtlanticShowSkidki.vip"/>
+							<ProjectFile FileName="alter_vschet\helpers\register_global_interfaces.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="sale">
+				<ProjectItems>
+					<ProjectCompileFile FileName="sale\sale.prj" Priority="0"/>
+					<ProjectFolder Name="reports">
+						<ProjectItems>
+							<ProjectFile FileName="sale\reports\check.frm"/>
+							<ProjectFile FileName="sale\reports\check.vip"/>
+							<ProjectFile FileName="sale\reports\func.vpp"/>
+							<ProjectFile FileName="sale\reports\sale.vip"/>
+							<ProjectFile FileName="sale\reports\user.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="debitor">
+				<ProjectItems>
+					<ProjectCompileFile FileName="debitor\Debitor.prj" Priority="0"/>
+					<ProjectFolder Name="reports">
+						<ProjectItems>
+							<ProjectFile FileName="debitor\reports\Debitor2.frm"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="helpers">
+						<ProjectItems>
+							<ProjectFile FileName="debitor\helpers\DEBITOR.VIP"/>
+							<ProjectFile FileName="debitor\helpers\Func.vpp"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="real">
+				<ProjectItems>
+					<ProjectCompileFile FileName="real\real.prj" Priority="0"/>
+					<ProjectFolder Name="reports">
+						<ProjectItems>
+							<ProjectFile FileName="real\reports\price_barcode.slk"/>
+							<ProjectFile FileName="real\reports\real.frm"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="helpers">
+						<ProjectItems>
+							<ProjectFile FileName="real\helpers\func.vpp"/>
+							<ProjectFile FileName="real\helpers\real.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="l_dogovor">
+				<ProjectItems>
+					<ProjectCompileFile FileName="l_dogovor\l_dogovor.prj" Priority="0"/>
+					<ProjectFolder Name="alter">
+						<ProjectItems>
+							<ProjectFile FileName="l_dogovor\alter\dogovor.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="cnf">
+						<ProjectItems>
+							<ProjectFile FileName="l_dogovor\cnf\l_dogovor_dogovor.cnf"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="l_skid">
+				<ProjectItems>
+					<ProjectCompileFile FileName="l_skid\l_skid.prj" Priority="0"/>
+					<ProjectFolder Name="reports">
+						<ProjectItems>
+							<ProjectFile FileName="l_skid\reports\user.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="katskid">
+						<ProjectItems>
+							<ProjectFile FileName="l_skid\katskid\katskid.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="marshruts">
+				<ProjectItems>
+					<ProjectCompileFile FileName="marshruts\marshruts.prj" Priority="0"/>
+					<ProjectFolder Name="reports">
+						<ProjectItems>
+							<ProjectFile FileName="marshruts\reports\Marshruts.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="usr">
+				<ProjectItems>
+					<ProjectCompileFile FileName="usr\usr.prj" Priority="0">
+						<ProjectItems>
+							<ProjectFile FileName="usr\DrogaConst.inc"/>
+						</ProjectItems>
+					</ProjectCompileFile>
+					<ProjectFolder Name="reports">
+						<ProjectItems>
+							<ProjectFile FileName="usr\reports\GetPosMassVol.vip"/>
+							<ProjectFile FileName="usr\reports\ImportOstatki.vip"/>
+							<ProjectFile FileName="usr\reports\ImportZayavka.vip"/>
+							<ProjectFile FileName="usr\reports\LogisticInfo.vip"/>
+							<ProjectFile FileName="usr\reports\Raspred.vip"/>
+							<ProjectFile FileName="usr\reports\Raspred_GetDogovor.vip"/>
+							<ProjectFile FileName="usr\reports\Raspred_GetSopr.vip"/>
+							<ProjectFile FileName="usr\reports\SalesReport.vip"/>
+							<ProjectFile FileName="usr\reports\SalesReportSkidka.vip"/>
+							<ProjectFile FileName="usr\reports\SalesReportSkidkaandVozv.vip"/>
+							<ProjectFile FileName="usr\reports\SalesReportSkidkaandVozv2.vip"/>
+							<ProjectFile FileName="usr\reports\SummaryOrder.vip"/>
+							<ProjectFile FileName="usr\reports\TransportReport.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+			<ProjectPackage Name="gui">
+				<ProjectItems>
+					<ProjectCompileFile FileName="gui\gui.prj" Priority="0"/>
+					<ProjectFolder Name="cnf">
+						<ProjectItems>
+							<ProjectFile FileName="gui\cnf\L_SOPRDOC_SOPRDOC.cnf"/>
+							<ProjectFile FileName="gui\cnf\L_SOPRDOC_SOPRDOCB.cnf"/>
+							<ProjectFile FileName="gui\cnf\M_TRANSP_GET_DOR.cnf"/>
+							<ProjectFile FileName="gui\cnf\F_PLPOR_BRPLPORPLAT2.cnf"/>
+							<ProjectFile FileName="gui\cnf\L_SKLAD_PRIHORD.cnf"/>
+							<ProjectFile FileName="gui\cnf\L_SKLAD_SOPINMOV.cnf"/>
+							<ProjectFile FileName="gui\cnf\L_SKLAD_RASHORD.cnf"/>
+							<ProjectFile FileName="gui\cnf\L_MCU_GTSPARTY2KATSOPR.cnf"/>
+						</ProjectItems>
+					</ProjectFolder>
+				</ProjectItems>
+			</ProjectPackage>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\vip\src\alter_vschet\alter_vschet.prj" DateTimeStart="43028,5416496528" DateTimeCompile="9,80324111878872E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtWarning" MessageText="Не задано имя компонента, компонентная принадлежность таблиц учитываться не будет" SourceFileName="C:\vip\src\alter_vschet\helpers\GLOB_AtlanticShowMaravt.vip" SourceLine="5" SourceColumn="1"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="20.10.2017 13:00:07"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<MarkerList>
+			<Marker FileName="..\tmp\admin.cnf" Caption="Нумерованная закладка 1" Line="448" NumIndex="1" MarkerType="mtNumBookmark" Comment="object WVSCHET : InterfaceWindow {"/>
+		</MarkerList>
+		<FileList>
+			<File Name="pack\FillTmpTbl\certificate.frn" PosX="101" PosY="14" OpenEditor="True"/>
+			<File Name="pack\FillTmpTbl\FillTmpTbl.frm" PosX="3" PosY="1116" OpenEditor="True"/>
+			<File Name="pack\pack.prj" PosX="14" PosY="28" OpenEditor="True"/>
+			<File Name="pack\drogaFunc\drogaFunc.vih" PosX="20" PosY="12" OpenEditor="True"/>
+			<File Name="pack\FillTmpTbl\barcode2.frn" PosX="45" PosY="4" OpenEditor="True"/>
+			<File Name="pack\FillTmpTbl\mercury.frn" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="pack\drogaFunc\drogaFunc.vip" PosX="20" PosY="61" OpenEditor="True"/>
+			<File Name="xml\ExpImpScript\ecod_intr.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="xml\ExpImpScript\common_func.vpp" PosX="9" PosY="30" OpenEditor="True"/>
+			<File Name="xml\ExpImpScript\expImpScript.vip" PosX="26" PosY="124" OpenEditor="True"/>
+			<File Name="xml\xml.prj" PosX="9" PosY="60" OpenEditor="True"/>
+			<File Name="xml\ExpImpScript\ecod_func.vip" PosX="46" PosY="632" OpenEditor="True"/>
+			<File Name="xml\ExpImpScript\ecod_user.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="xml\ExpImpScript\ecod_imp.vip" PosX="34" PosY="735" OpenEditor="True" Active="True"/>
+		</FileList>
+	</ProjectManager>
+</Viper>

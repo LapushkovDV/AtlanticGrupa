@@ -1,0 +1,10 @@
+#ifndef __AtlCalc__
+#define __AtlCalc__
+
+#Component ""
+
+VipInterface AtlCalc licensed(free) parameters (aResult // #docl Результат вычислений. </brief>
+                                                        : String; aType // #docl Тип выражения. </brief>
+                                                                        : Byte);
+// #docl Системный интерфейс, реализуюций вычисления. </brief>
+#endif

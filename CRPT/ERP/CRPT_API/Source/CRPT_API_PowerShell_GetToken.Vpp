@@ -80,6 +80,7 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('        "Can''t request new Token"                                                                                                                         ');
     MyWriteLN('    }                                                                                                                                                      ');
     MyWriteLN('}                                                                                                                                                          ');
+//    MyWriteLN('start-sleep 10                                                                                                                                                          ');
 }
 
 

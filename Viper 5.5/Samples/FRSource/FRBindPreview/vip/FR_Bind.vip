@@ -1,0 +1,128 @@
+Interface FRBindSample 'FRAPI Bind Report' (,,sci1Esc), Gray;
+Show (,,180,45);
+
+Table Struct ReportTable
+(
+  NRec     : word     //Номер записи
+, ReportName : string
+)
+with index
+(
+  tmpTable01  =  NRec //(Unique, Surrogate, Journal)
+);
+
+create view
+  var
+    iGr : word;
+    FReport: #TPtr;
+    IsInit: Boolean;
+  from
+    KatMC, KatED, ReportTable,
+    GroupMC
+  where
+  ((
+        GroupMC.nrec == KatMC.cGroupMC
+    and KatMC.cEd    == KatEd.Nrec
+    and KatMC.Nrec   == KatOtpEd.cMcUsl
+    and 1            == KatOtpEd.prmc
+
+    and KatMc.Nrec   == SklOst.cmc
+    and SklOst.cPodr == KatPodr.Nrec
+  ));
+
+  DataStream FRAPI_BindReport_DS
+  (
+    [Date_Rep]  Cur_Date;
+    [User_Name] UserName;
+
+    Table GroupMC
+    (
+      [NppGr] iGr++;
+      [Group_Name] GroupMC.Name;
+      [Group_Code] GroupMC.Kod;
+    );
+
+    Table KatMC
+    (
+      [MC_name]  KatMC.Name;
+      [MC_Code]  KatMC.Barkod;
+      [MC_EdIzm] KatEd.Name;
+    );
+
+     Table SklOst
+    (
+      [Podr_Name] KatPodr.Name;
+      [KolMC]     SklOst.Kol;
+     );
+  )
+
+    HandleEvent table GroupMC
+      cmPreProcess:
+      {
+        iGr := 1;
+      }
+    end;
+  end;
+
+embedded sBut OLE;
+show at (51,1,179,44);
+end;
+
+browse brReportTable (,, sci178Esc);
+show at (1,1,50,44);
+table ReportTable;
+  fields
+    ReportTable.NRec '№',''('Уникальный номер записи'):[0], protect;
+    ReportTable.ReportName 'Имя отчета'('Имя отчета',,):[12], protect;
+end;
+
+HandleEvent
+
+cmInit:
+{
+  var
+    i: Integer;
+  var
+    Reports: array [0..0] of String;
+
+  IsInit := False;
+  FReport := FrCreate(FRAPI_BindReport_DS);
+  FRSetParameters(FReport, frEmbeddedID, sBut);
+  FRGetReportNames(FReport, Reports);
+
+  for(i := 0; i < Count(Reports); i++)
+  {
+    insert current ReportTable set ReportTable.NRec := i + 1,
+                                   ReportTable.ReportName := Reports[i];
+  }
+
+  if Count(Reports) > 0
+    getfirst ReportTable;
+
+  PutCommand(cmValue1);
+}
+
+cmValue1:
+{
+  IsInit := True;
+
+  FRShowReport(FReport);
+  PutCommand(cmPositionChanged);
+}
+
+cmPositionChanged:
+{
+  if IsInit
+  {
+    FROpenReport(FReport, ReportTable.ReportName);
+    FRPrepareReport(FReport, True);
+  }
+}
+
+cmDone:
+{
+  FRDestroy(FReport);
+}
+
+end;
+end.

@@ -1,0 +1,87 @@
+// http://forum.galaktika.by
+
+#include PrintPersonPass.vih
+
+// Отчет 'Печать пропусков' - реализация потока данных
+
+Interface PrintPersonPass;
+
+  var marker : longint;
+
+  create view View2
+  var
+    CurNrec : comp;
+  as select * from
+    Persons,
+    Appendix Photo
+  where
+  ((
+    CurNrec  == Persons.Nrec       and
+    1        == Photo.ObjBlock  and
+    CurNrec  == Photo.Person    and
+    200      == Photo.ObjType
+  ));
+
+  var CurIndex : integer;
+
+  datastream Stream1
+    (
+      // программный источник данных - список сотрудников по маркеру
+      dataset MarkedPersons
+      (
+        [fio] if(IsValid(tnPersons), Persons.FIO, '');
+      );
+
+      // табличный источник данных - фотографии
+      table Photo
+      (
+        [prefix] GetMemoPrefix(tnPhoto);
+        [data]   Photo.Contents;
+      );
+    )
+
+    handleevent dataset MarkedPersons
+    cmPreProcess:
+    {
+      CurIndex := 0;
+    }
+
+    cmOnProcess:
+    {
+      if( CurIndex < GetMarkerCount(marker) )
+      {
+        GetMarker(marker, CurIndex, CurNrec);
+
+        CurIndex++;
+
+        if( getfirst Persons = tsOk )
+          ContinueDataset;
+      }
+    }
+    end;
+  end;
+
+
+  constructor Init;
+  {
+    result := true;
+  }
+
+  destructor Done;
+  {
+  }
+
+  procedure RunReport(AMarker : longint);
+  {
+    if( AMarker = 0)
+      exit;
+
+    if( GetMarkerCount(AMarker) = 0 )
+      exit;
+
+    marker := AMarker;
+
+    RunFReport(Stream1, '', false);
+  }
+
+End.

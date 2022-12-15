@@ -1,0 +1,163 @@
+Interface FRSaveReport 'FR API Save Report' (,,sci1Esc), Gray;
+Show (,,35,7);
+
+create view
+  var
+    iGr : word;
+    FReport: #TPtr;
+    IsShowDialog: boolean;
+    Reports: LongInt;
+  from
+    KatMC, KatED,
+    GroupMC
+  where
+  ((
+        GroupMC.nrec == KatMC.cGroupMC
+    and KatMC.cEd    == KatEd.Nrec
+    and KatMC.Nrec   == KatOtpEd.cMcUsl
+    and 1            == KatOtpEd.prmc
+
+    and KatMc.Nrec   == SklOst.cmc
+    and SklOst.cPodr == KatPodr.Nrec
+  ));
+
+  DataStream FRAPI_SaveReport_DS
+  (
+    [Date_Rep]  Cur_Date;
+    [User_Name] UserName;
+
+    Table GroupMC
+    (
+      [NppGr] iGr++;
+      [Group_Name] GroupMC.Name;
+      [Group_Code] GroupMC.Kod;
+    );
+
+    Table KatMC
+    (
+      [MC_name]  KatMC.Name;
+      [MC_Code]  KatMC.Barkod;
+      [MC_EdIzm] KatEd.Name;
+    );
+
+     Table SklOst
+    (
+      [Podr_Name] KatPodr.Name;
+      [KolMC]     SklOst.Kol;
+     );
+  )
+
+    HandleEvent
+      cmPreProcess :
+      {
+        StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Выполняется формирование отчета...', 0);
+      }
+
+      cmPostProcess :
+      {
+        StopVisual('',0);
+      }
+    end; //DataStream
+
+    HandleEvent table GroupMC
+      cmPreProcess :
+      {
+        iGr := 1;
+      }
+
+      cmOnProcess :
+      {
+        if (Not NextVisual()) BreakProcess;
+      }
+    end;
+  end;
+
+Screen sBut;
+fields
+  Reports: Protect;
+  IsShowDialog: NoProtect;
+Buttons
+  cmFRExcel;
+  cmFRWord;
+  cmFRPDF;
+<<
+  Отчет:
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+   [.] Отображать параметры сохранения`
+
+  <.Excel.> <. Word .> <. PDF .>
+
+>>
+end;
+
+function ExportFRReport(const ReportName, ExportParameters, FileName: String; ExportType: LongInt): Boolean;
+{
+  Result := False;
+
+  if FROpenReport(FReport, ReportName)
+    if FRSetParameters(FReport, ExportType, ExportParameters)
+      if FRPrepareReport(FReport, False)
+        Result := FRExportReport(FReport, ExportType, FileName);
+}
+
+function ExportReport(ExportType: LongInt): Boolean;
+{
+  Result := False;
+  var Params: String = '';
+
+  if IsShowDialog
+  {
+    var res: Word = cmInit;
+
+    case ExportType of
+      frExportBIFF: res := RunInterface('BiffExportParamDialog', Params);
+      frExportRTF: res := RunInterface('WordExportParamDialog', Params);
+      frExportPDF: res := RunInterface('PDFExportParamDialog', Params);
+    end;
+
+    if res <> cmOk
+      exit;
+  }
+  else
+    Params := 'OpenAfterExport= True';
+
+  Result := ExportFRReport(GetEnumString(sBut, #Reports), Params, '', ExportType);
+}
+
+HandleEvent
+
+cmInit:
+{
+  var
+    Reports: array [0..0] of String;
+
+  IsShowDialog := True;
+  FReport := FrCreate(FRAPI_SaveReport_DS);
+  FRGetReportNames(FReport, Reports);
+
+  SetEnumList(sBut, #Reports, Reports);
+}
+
+cmFRExcel:
+{
+  ExportReport(frExportBIFF);
+}
+
+cmFRWord:
+{
+  ExportReport(frExportRTF);
+}
+
+cmFRPDF:
+{
+  ExportReport(frExportPDF);
+}
+
+cmDone:
+{
+  FRDestroy(FReport);
+}
+
+end;
+end.

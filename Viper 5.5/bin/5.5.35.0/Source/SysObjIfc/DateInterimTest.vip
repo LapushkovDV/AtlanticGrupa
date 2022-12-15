@@ -1,0 +1,206 @@
+interface DateInterimTest 'Интервал, периоды' Gray;
+Show at (1,1,80,15);
+
+
+   const
+     TEST_DIT_PERIOD   = 0;        
+     TEST_DIT_INTERVAL = 1;        
+
+     HIDE_DIF_UNLIMIT  =    1;        
+     HIDE_DIF_RELATIVE =    2;        
+     HIDE_DIF_FIXED    =    4;
+     HIDE_DIF_TIME     =    8;
+
+     SKIP_DIF_UNLIMIT  =    1;        
+     SKIP_DIF_RELATIVE =    2;        
+     SKIP_DIF_FIXED    =    4;
+     SKIP_DIF_YEAR     =    8;
+     SKIP_DIF_HALF     =   16;
+     SKIP_DIF_QUART    =   32;
+     SKIP_DIF_MONTH    =   64;
+     SKIP_DIF_WEEK     =  128;
+     SKIP_DIF_DAY      =  256;
+     SKIP_DIF_TIME     =  512;
+
+
+   end;
+
+   var aBType, aBDisable, aBHide, aBAutocalc: word;
+   var vDIFunc: DateInterimFunctions noauto;
+
+
+// ──── П А Н Е Л И ────────────────────────────────
+
+   Screen scTunes;
+      show at (,,,10.5);
+      NoTableNavigation;
+      Fields
+         aBType:     NoProtect;
+         aBDisable:  NoProtect;
+         aBHide:     NoProtect;
+         aBAutocalc: NoProtect;
+
+<<
+`Тип`                      `Недоступные`
+ (.) Период`               [.] Без ограничений`   
+ (.) Интервал`             [.] Текущая дата`      
+                           [.] Фиксированная дата`
+`Скрытые`                  [.] Год`             
+ [.] Без ограничений`      [.] Полугодие`             
+ [.] Текущая дата`         [.] Квартал`             
+ [.] Фиксированная дата`   [.] Месяц`             
+ [.] Время`                [.] Неделя`             
+                           [.] День`             
+ [.] AutoCalc`             [.] Время`             
+>>
+   end;
+
+   Screen scbPeriod (,,scIFace);
+      show at (,11.5,,);
+      NoTableNavigation;
+      Buttons
+         cmOk, Default,,'Установить выбранные значения';
+<<
+   <.  Запуск  .>
+>>                        
+   end;
+
+
+// ──── Ф У Н К Ц И И ────────────────────────────────
+
+   function ConvertFieldsConst(aFConst: word; bHide, bVih: boolean): word;
+   {
+      Result := 0;
+
+      if bVih
+      {
+         if bHide 
+         {
+            if (aFConst and DIF_UNLIMIT)  = DIF_UNLIMIT   Result += HIDE_DIF_UNLIMIT;
+            if (aFConst and DIF_RELATIVE) = DIF_RELATIVE  Result += HIDE_DIF_RELATIVE;
+            if (aFConst and DIF_FIXED)    = DIF_FIXED     Result += HIDE_DIF_FIXED;
+            if (aFConst and DIF_TIME)     = DIF_TIME      Result += HIDE_DIF_TIME;
+         }
+         else
+         {
+            if (aFConst and DIF_UNLIMIT)  = DIF_UNLIMIT   Result += SKIP_DIF_UNLIMIT;
+            if (aFConst and DIF_RELATIVE) = DIF_RELATIVE  Result += SKIP_DIF_RELATIVE;
+            if (aFConst and DIF_FIXED)    = DIF_FIXED     Result += SKIP_DIF_FIXED;
+            if (aFConst and DIF_YEAR)     = DIF_YEAR      Result += SKIP_DIF_YEAR;
+            if (aFConst and DIF_HALF)     = DIF_HALF      Result += SKIP_DIF_HALF;
+            if (aFConst and DIF_QUART)    = DIF_QUART     Result += SKIP_DIF_QUART;
+            if (aFConst and DIF_MONTH)    = DIF_MONTH     Result += SKIP_DIF_MONTH;
+            if (aFConst and DIF_WEEK)     = DIF_WEEK      Result += SKIP_DIF_WEEK;
+            if (aFConst and DIF_DAY)      = DIF_DAY       Result += SKIP_DIF_DAY;
+            if (aFConst and DIF_TIME)     = DIF_TIME      Result += SKIP_DIF_TIME;
+         }
+      }
+      else
+      {
+         if bHide 
+         {
+            if (aFConst and HIDE_DIF_UNLIMIT)  = HIDE_DIF_UNLIMIT   Result += DIF_UNLIMIT;
+            if (aFConst and HIDE_DIF_RELATIVE) = HIDE_DIF_RELATIVE  Result += DIF_RELATIVE;
+            if (aFConst and HIDE_DIF_FIXED)    = HIDE_DIF_FIXED     Result += DIF_FIXED;
+            if (aFConst and HIDE_DIF_TIME)     = HIDE_DIF_TIME      Result += DIF_TIME;
+         }
+         else
+         {
+            if (aFConst and SKIP_DIF_UNLIMIT)  = SKIP_DIF_UNLIMIT   Result += DIF_UNLIMIT;
+            if (aFConst and SKIP_DIF_RELATIVE) = SKIP_DIF_RELATIVE  Result += DIF_RELATIVE;
+            if (aFConst and SKIP_DIF_FIXED)    = SKIP_DIF_FIXED     Result += DIF_FIXED;
+            if (aFConst and SKIP_DIF_TIME)     = SKIP_DIF_TIME      Result += DIF_TIME;
+
+            if (aFConst and SKIP_DIF_YEAR)     = SKIP_DIF_YEAR      Result := Result or DIF_YEAR;
+            if (aFConst and SKIP_DIF_HALF)     = SKIP_DIF_HALF      Result := Result or DIF_HALF;
+            if (aFConst and SKIP_DIF_QUART)    = SKIP_DIF_QUART     Result := Result or DIF_QUART;
+            if (aFConst and SKIP_DIF_MONTH)    = SKIP_DIF_MONTH     Result := Result or DIF_MONTH;
+            if (aFConst and SKIP_DIF_WEEK)     = SKIP_DIF_WEEK      Result := Result or DIF_WEEK;
+            if (aFConst and SKIP_DIF_DAY)      = SKIP_DIF_DAY       Result := Result or DIF_DAY;
+         }
+      }
+   }
+
+// ──── О Б Р А Б О Т Ч И К И ────────────────────────
+
+   HandleEvent
+
+      cmInit:
+        {
+           var b: boolean;
+           if not ReadMyDsk(aBType,    'DateInterimTest_aBType', b)     aBType := TEST_DIT_INTERVAL;
+           if not ReadMyDsk(aBDisable, 'DateInterimTest_aBDisable', b)  aBDisable := DIF_NONE;
+           if not ReadMyDsk(aBHide,    'DateInterimTest_aBHide', b)     aBHide := DIF_NONE;
+           if not ReadMyDsk(aBAutocalc,'DateInterimTest_aBAutocalc', b) aBAutocalc := 1;
+           LoadVipInterface(vDIFunc);
+        }
+
+      cmDone:
+        {
+           SaveMyDsk(aBType,    'DateInterimTest_aBType');
+           SaveMyDsk(aBDisable, 'DateInterimTest_aBDisable');
+           SaveMyDsk(aBHide,    'DateInterimTest_aBHide');
+           SaveMyDsk(aBAutocalc,'DateInterimTest_aBAutocalc');
+           FreeVipInterface(vDIFunc);
+        }
+
+      cmOk:
+        {
+
+           case aBType of
+             TEST_DIT_PERIOD:
+               {
+                  var m_Interim: DateInterimPeriod;
+                  m_Interim := new (DateInterimPeriod, Init);
+                  if m_Interim <> NullRef
+                  {
+                     m_Interim.LoadDateInterim('DateInterimTest_Period');
+                     m_Interim.SetDisableFields(DIF_NONE, ConvertFieldsConst(aBDisable, false, false));
+                     m_Interim.SetHiddenFields(ConvertFieldsConst(aBHide, true, false));
+                     m_Interim.AutoCalc := aBAutocalc <> 0;
+
+                     if m_Interim.SelectDateInterim = cmOk
+                     {
+                        if m_Interim.BegRepresent = DIR_UNLIMIT
+                           m_Interim.BegDate := Date(0, 0, 0);
+                        if m_Interim.EndRepresent = DIR_UNLIMIT
+                           m_Interim.EndDate := Date(0, 0, 0);
+                        Message('CheckDatesCorrespondence=' + string(vDIFunc.CheckDatesCorrespondence(m_Interim.BegDate, m_Interim.EndDate, true)), mfInformation);
+                        Message(vDIFunc.GetInterimInWords(m_Interim.BegDate, m_Interim.BegRepresent, m_Interim.BegSpan, m_Interim.BegValue) + chr(13) +
+                                vDIFunc.GetInterimInWords(m_Interim.EndDate, m_Interim.EndRepresent, m_Interim.EndSpan, m_Interim.EndValue), mfInformation);
+                        m_Interim.SaveDateInterim('DateInterimTest_Period');
+                     }
+                  }
+                  m_Interim := NullRef;
+               }
+
+             TEST_DIT_INTERVAL:
+               {
+                  var m_Interim: DateInterimInterval;
+                  m_Interim := new (DateInterimInterval, Init);
+                  if m_Interim <> NullRef
+                  {
+                     m_Interim.LoadDateInterim('DateInterimTest_Interval');
+                     m_Interim.SetDisableFields(DIF_BEG, ConvertFieldsConst(aBDisable, false, false));
+                     m_Interim.SetDisableFields(DIF_END, ConvertFieldsConst(aBDisable, false, false));
+                     m_Interim.SetHiddenFields(ConvertFieldsConst(aBHide, true, false));
+                     m_Interim.AutoCalc := aBAutocalc <> 0;
+                     if m_Interim.SelectDateInterim = cmOk
+                     {
+                        if m_Interim.BegRepresent = DIR_UNLIMIT
+                           m_Interim.BegDate := Date(0, 0, 0);
+                        if m_Interim.EndRepresent = DIR_UNLIMIT
+                           m_Interim.EndDate := Date(0, 0, 0);
+                        Message('CheckDatesCorrespondence=' + string(vDIFunc.CheckDatesCorrespondence(m_Interim.BegDate, m_Interim.EndDate, true)), mfInformation);
+                        Message(vDIFunc.GetInterimInWords(m_Interim.BegDate, m_Interim.BegRepresent, m_Interim.BegSpan, m_Interim.BegValue) + chr(13) +
+                                vDIFunc.GetInterimInWords(m_Interim.EndDate, m_Interim.EndRepresent, m_Interim.EndSpan, m_Interim.EndValue), mfInformation);
+                        m_Interim.SaveDateInterim('DateInterimTest_Interval');
+                     }
+                  }
+                  m_Interim := NullRef;
+               }
+           end;
+        }
+   end;
+
+end.

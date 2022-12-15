@@ -1,0 +1,223 @@
+#ifndef __TagReader_vih__
+#define __TagReader_vih__
+
+#Component ""
+
+#if #__ToolVersion__ >= 6000
+  #define TIntPtr pointer
+#else
+  #define TIntPtr longint
+#end
+
+type
+  TTagIndexArray = array [0 .. 0] of longint; // #docl Тип параметра для получения значений в виде массива</brief>
+
+  RTagValueReader = record // #docl Курсор для чтения значения атрибута (чтобы прочитать, когда оно длинее 255 символов)</brief>
+    Handle : #TIntPtr;
+    Size   : longint;
+    Disp   : longint;
+  end;
+
+  RTagOwnerInfo = record // #docl Владелец атрибутов (например, интерфейс)</brief>
+    FIndex : longint;
+    FType  : longint;
+    FName  : string;
+    FHint  : string;
+  end;
+
+  RTagElementInfo = record // #docl Единица компиляции, к которой привязан атрибут</brief> 
+    FIndex  : longint;
+    FOwner  : longint;
+    FParent : longint;
+    FType   : longint;
+    FName   : string;
+  end;
+
+  RTagPropertyInfo = record // #docl Имя атрибута</brief>
+    FIndex   : longint;
+    FElement : longint;
+    FName    : string;
+  end;
+
+  RTagValueInfo = record // #docl Значение атрибута</brief>
+    FIndex    : longint;
+    FProperty : longint;
+    FElement  : longint;
+    FSize     : longint;
+    FValue    : string;
+  end;
+
+ObjInterface ITagOwner; // #docl Владелец атрибутов (например, интерфейс)</brief>
+  property FIndex       // #docl Порядковый номер для идентификации элемента</brief>
+      : longint read;
+  property FType        // #docl Тип VipDoc</brief>
+      : longint read;
+  property FName        // #docl Идентификатор объекта</brief>
+      : string  read;
+  property FHint        // #docl Документированное описание объекта VipDoc</brief>
+      : string  read;
+  property FTypeName    // #docl Строчное представление типа VipDoc</brief>
+      : string  read;
+
+  index IIndex    = FIndex;
+  index ITypeName = FType, FName;
+end;
+
+ObjInterface ITagElement; // #docl Единица компиляции, к которой привязан атрибут</brief>
+  property FIndex         // #docl Порядковый номер для идентификации элемента</brief>
+      : longint read;
+  property FOwner         // #docl Порядковый номер владельца атрибутов</brief>
+      : longint read;
+  property FParent        // #docl Порядковый номер родительского элемента в иерархии или 0</brief>
+      : longint read;
+  property FType          // #docl Тип VipDoc</brief>
+      : longint read;
+  property FName          // #docl Идентификатор элемента</brief>
+      : string  read;
+  property FTypeName      // #docl Строчное представление типа VipDoc</brief>
+      : string  read;
+
+  index IIndex       = FIndex;
+  index IOwner       = FOwner;
+  index IParent      = FParent;
+  index IOwnerParent = FOwner, FParent;
+end;
+
+ObjInterface ITagProperty; // #docl Имя атрибута</brief>
+  property FIndex          // #docl Порядковый номер для идентификации элемента</brief>
+      : longint read;
+  property FElement        // #docl Порядковый номер единицы компиляции, к которой привязан атрибут</brief>
+      : longint read;
+  property FName           // #docl Идентификатор атрибута</brief>
+      : string  read;
+
+  index IIndex   = FIndex;
+  index IElement = FElement;
+end;
+
+ObjInterface ITagValue; // Значение атрибута</brief>
+  property FIndex       // #docl Порядковый номер для идентификации элемента</brief>
+      : longint read;
+  property FProperty    // #docl Порядковый номер элемента с именем атрибута</brief>
+      : longint read;
+  property FElement     // #docl Порядковый номер единицы компиляции, к которой привязан атрибут</brief>
+      : longint read;
+  property FSize        // #docl Длина значения в символах</brief>
+      : longint read;
+  property FValue       // #docl Значение атрибута (или первые 255 его символов, если оно длинее)</brief>
+      : string  read;
+
+  index IIndex    = FIndex;
+  index IProperty = FProperty;
+  index IElement  = FElement;
+end;
+
+ObjInterface ITagRegistry;              // #docl Функциональный интерфейс чтения атрибутов VipDoc</brief>
+  function  Load                        // #docl Загрузить атрибуты из ресурсов приложения</brief>
+      (APattern                         // #docl Шаблон для фильтрации идентификаторов владельцев атрибутов</brief>
+          : string = '') : longint      // #docl Количество загруженных объектов</brief>
+      ;
+  procedure Clear                       // #docl Удалить всю загруженную информацию</brief>
+      ;
+  function  GetValueReader              // #docl Получить курсор для последовательного чтения значения атрибута, длина которого может превышать 255 символов</brief>
+      (AValueIndex                      // #docl Порядковый номер для идентификации значения</brief>
+          : longint) : RTagValueReader  // #docl Курсор для последовательного чтения значения атрибута</brief>
+      ;
+  function  ReadNext                    // #docl Прочитать очередную порцию символов из значения атрибута</brief>
+      (var AReader                      // #docl Курсор для последовательного чтения значения атрибута</brief>
+          : RTagValueReader; ASize      // #docl Количество считываемых символов</brief>
+          : longint) : string           // #docl Строка содержит очередную порцию символов из значения атрибута</brief>
+      ;
+  function  XmlWriteObject              // #docl Записать все атрибуты объекта в Xml-файл</brief>
+      (AFileName                        // #docl Имя файла</brief>
+          : string; AOwnerIndex         // #docl Порядковый номер владельца атрибутов</brief>
+          : longint) : boolean          // #docl true, если не было ошибок</brief>
+      ;
+  function  XmlWriteMarker              // #docl Записать все атрибуты перечисленных объектов в Xml-файл</brief>
+      (AFileName                        // #docl Имя файла</brief>
+          : string; AStdMarker          // #docl Ссылка на маркер, содержащий порядковые номера владельцев атрибутов</brief>
+          : #TIntPtr) : boolean         // #docl true, если не было ошибок</brief>
+      ;
+  function  XmlWriteArray               // #docl Записать все атрибуты перечисленных объектов в Xml-файл</brief>
+      (AFileName                        // #docl Имя файла</brief>
+          : string; AArray              // #docl Массив, содержащий порядковые номера владельцев атрибутов</brief>
+          : TTagIndexArray) : boolean   // #docl true, если не было ошибок</brief>
+      ;
+  function  GetTypes2M                  // #docl Получить список, содержащий значения типов VipDoc для всех владельцев атрибутов</brief>
+      (AStdMarker                       // #docl Ссылка на маркер, в который будут помещены идентификаторы типов</brief>
+          : #TIntPtr; AAll              // #docl Если false, то только идентификаторы типов, у которых есть атрибуты</brief>
+          : boolean = false) : longint  // #docl Количество записанных элементов</brief>
+      ;
+  function  GetTypes2A                  // #docl Получить список, содержащий значения типов VipDoc для всех владельцев атрибутов</brief>
+      (var AArray                       // #docl Ссылка на массив, в который будут помещены идентификаторы типов</brief>
+          : TTagIndexArray; AAll        // #docl Если false, то только идентификаторы типов, у которых есть атрибуты</brief>
+          : boolean = false) : longint  // #docl Количество записанных элементов</brief>
+      ;
+  function  GetProperties2M             // #docl Получить список, содержащий порядковые номера всех атрибутов</brief>
+      (AStdMarker                       // #docl Ссылка на маркер, в который будут помещены порядковые номера атрибутов</brief>
+          : #TIntPtr; AType             // #docl Если не -1, то выбираются только атрибуты, у которых тип VipDoc владельца равен указанному значению</brief>
+          : longint = -1) : longint     // #docl Количество записанных элементов</brief>
+      ;
+  function  GetProperties2A             // #docl Получить список, содержащий порядковые номера всех атрибутов</brief>
+      (var AArray                       // #docl Ссылка на массив, в который будут помещены порядковые номера атрибутов</brief>
+          : TTagIndexArray; AType       // #docl Если не -1, то выбираются только атрибуты, у которых тип VipDoc владельца равен указанному значению</brief>
+          : longint = -1) : longint     // #docl Количество записанных элементов</brief>
+      ;
+  function  GetValues2M                 // #docl Получить список, содержащий порядковые номера всех значений атрибутов, соответствующих указанным критериям отбора</brief>
+      (AStdMarker                       // #docl Ссылка на маркер, в который будут помещены порядковые номера значений атрибутов</brief>
+          : #TIntPtr; AProperty         // #docl Если не -1, то выбираются только значения этого атрибута</brief>
+          : longint = -1; AType         // #docl Если не -1, то выбираются только значения атрибутов, у которых тип VipDoc владельца равен указанному значению</brief>
+          : longint = -1; AValuePattern // #docl Шаблон для фильтрации значений атрибутов</brief>
+          : string = '') : longint      // #docl Количество записанных элементов</brief>
+      ;
+  function  GetValues2A                 // #docl Получить список, содержащий порядковые номера всех значений атрибутов, соответствующих указанным критериям отбора</brief>
+      (var AArray                       // #docl Ссылка на массив, в который будут помещены порядковые номера значений атрибутов</brief>
+          : TTagIndexArray; AProperty   // #docl Если не -1, то выбираются только значения этого атрибута</brief>
+          : longint = -1; AType         // #docl Если не -1, то выбираются только значения атрибутов, у которых тип VipDoc владельца равен указанному значению</brief>
+          : longint = -1; AValuePattern // #docl Шаблон для фильтрации значений атрибутов</brief>
+          : string = '') : longint      // #docl Количество записанных элементов</brief>
+      ;
+  function  GetOwnerInfo                // #docl Получить информацию о владельце атрибутов в обход интерфейса навигации</brief>
+      (AOwnerIndex                      // #docl Порядковый номер для идентификации элемента</brief>
+          : longint) : RTagOwnerInfo    // #docl Информация о владельце атрибутов</brief>
+      ;
+  function  GetElementInfo              // #docl Получить информацию об объекте, к которому привязан атрибут, в обход интерфейса навигации</brief>
+      (AElementIndex                    // #docl Порядковый номер для идентификации объекта</brief>
+          : longint) : RTagElementInfo  // #docl Информация об объекте</brief>
+      ;
+  function  GetPropertyInfo             // #docl Получить информацию об имени атрибута в обход интерфейса навигации</brief>
+      (APropertyIndex                   // #docl Порядковый номер для идентификации атрибута</brief>
+          : longint) : RTagPropertyInfo // #docl Информация об имени атрибута</brief>
+      ;
+  function  GetValueInfo                // #docl Получить информацию о значении атрибута в обход интерфейса навигации</brief>
+      (AValueIndex                      // #docl Порядковый номер для идентификации значения атрибута</brief>
+          : longint) : RTagValueInfo    // #docl Информация о значении атрибута</brief>
+      ;
+  function  GetTypeName                 // #docl Получить строчное представление значения VipDoc типа</brief>
+      (AType                            // #docl Код VipDoc типа</brief>
+          : longint) : string           // #docl Представление VipDoc типа в виде строки</brief>
+      ;
+  function GetPropertyByName            // #docl Получить порядковый номер для атрибута по его идентификатору</brief>
+      (APropertyName                    // #docl Идентификатор атрибута </brief>
+          : string) : longint           // #docl Порядковый номер для идентификации атрибута</brief>
+      ;
+  property  AlignCase                   // #docl Если true, Load будет пытаться восстановить исходное написание идентификаторов для владельцев атрибутов</brief>
+          : boolean read write;
+  property  ParseHint                   // #docl Если true, Load будет пытаться получить описание VipDoc для владельцев атрибутов и поместить его в ITagOwner.FHint</brief>
+          : boolean read write;
+  property  SkipVisual                  // #docl Если false, Load будет выдавать визуализацию в процессе загрузки атрибутов</brief>
+          : boolean read write;
+  property  BaseType                    // #docl Тип VipDoc владельцев атрибутов, для которых Load будет загружать атрибуты</brief>
+          : longint read write;
+end;
+
+VipInterface VTagRegistry // #docl Реализация интерфейса чтения атрибутов VipDoc</brief>
+  implements ITagOwner, ITagElement, ITagProperty, ITagValue, ITagRegistry;
+public :
+  constructor Init;
+  destructor  Done;
+end;
+
+#undef TIntPtr
+
+#endif

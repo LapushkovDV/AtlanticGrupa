@@ -1,0 +1,96 @@
+#ifndef __IProxySetupCOM__
+#define __IProxySetupCOM__
+#Component ""
+#include atlcom.vih
+
+//Специальный интерфейс IProxySetup с набором функций для настройки прокси и прав.
+
+//         public void service_SetProxy(long proxyType) // какие прокси использовать из готовых
+const
+                                        useDefaultProxy = 1;  // #docl использовать прокси по умолчанию
+                                        useRequestProxy = 2;  // #docl взять прокси по умолчанию из запроса
+                                        useNewProxy     = 3;  // #docl создать новое
+                                        useNoProxy      = 4;  // #docl без прокси
+
+
+
+//         public void service_SetUriProxy(string uri)  // создать новый прокси с uri
+
+//         public void service_SetUrlProxy(string url, int port) // создать новый прокси с url и порт
+
+//         public void service_SetCredential(long credentialType) // задать права для прокси
+
+                                             useDefaultCredential = 1; // #docl права по умолчанию
+                                             useNetworkCredential = 2; // #docl сетевые права по умолчанию
+                                             useNoCredential      = 3; // #docl не задавать
+end;
+
+
+//         public void service_SetExpect100(bool ause) // использовать или нет Expect100continue
+
+//         public void service_AuthenticationBasic( string user, string password, string domain ) // задание сетевые права
+
+//         public void service_AuthenticationX509Certificate( string certificate ) // добавить сертификат (через файл)
+
+/*
+    var Serv : comIDailyInfo;
+//    Serv := comIDailyInfo (Fab);
+    Serv := comIDailyInfo (New (coCDailyInfo));
+    if (not NullVipRef (Serv))
+    {
+       var Setup : comIProxySetup;
+//       Setup := comIProxySetup (Fab);
+       Setup := comIProxySetup (Serv);
+       if (not NullVipRef (Setup))
+       {
+          Setup.service_SetProxy (2);
+          Setup.service_SetCredential (2);
+//          Setup.service_AuthenticationBasic ('Pupkin','1234','');
+          Setup := NullRef;
+       }
+       Serv.EnumValutesXML(true);
+//       message (Serv.GetLatestDate);
+       Serv := NullRef;
+    }
+
+По умолчанию устанавливается новый прокси с правами по умолчанию Expect100 выкл.
+*/
+
+ObjInterface comIProxySetup( comIDispatch );
+// #docl Специальный интерфейс IProxySetup с набором функций для настройки прокси и прав. </brief>
+  procedure service_SetProxy  // #docl  какие прокси использовать из готовых. </brief> 
+                               ( proxyType // #docl Тип параметра: входной.
+                               : comp );
+  procedure service_SetUriProxy  // #docl  создать новый прокси с uri. </brief> 
+                                  ( uri // #docl Тип параметра: входной.
+                                  : string );
+  procedure service_SetUrlProxy  // #docl  создать новый прокси с url и порт. </brief> 
+                                  ( url // #docl Тип параметра: входной.
+                                  : string; port // #docl Тип параметра: входной.
+                                  : longint );
+  procedure service_SetCredential  // #docl  задать права для прокси. </brief> 
+                                    ( credentialType // #docl Тип параметра: входной.
+                                    : comp );
+  procedure service_SetExpect100  // #docl  использовать или нет Expect100continue. </brief> 
+                                   ( ause // #docl Тип параметра: входной.
+                                   : boolean );
+  procedure service_AuthenticationBasic  // #docl  задать сетевые права. </brief> 
+                                          ( user // #docl Тип параметра: входной.
+                                          : string; password // #docl Тип параметра: входной.
+                                          : string; domain // #docl Тип параметра: входной.
+                                          : string );
+  procedure service_AuthenticationX509Certificate  // #docl  добавить сертификат (через файл). </brief> 
+                                                    ( certificate // #docl Тип параметра: входной.
+                                                    : string );
+end;
+
+VipInterface vcomIProxySetup( vcomIDispatch ) Implements comIProxySetup (virtual);
+// #docl Служебный объект, создавать запрещается !!! </brief>
+public:
+  constructor CreateQI// #docl Создает экземпляр интерфейса. </brief>
+                      ( iComHandle       // #docl Код экземпляра.
+                      : longint; flags   // #docl Свойства экземпляра.
+                      : word );
+end;
+
+#endif

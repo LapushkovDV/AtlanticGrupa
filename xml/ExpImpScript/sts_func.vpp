@@ -1,0 +1,16 @@
+// перевод отпускных единиц из кода ISO в СТС и обратно (дополнить при необходимости)
+function unit2iso(_unit: string): string;
+{
+  case trim(_unit) of
+  '778': result := 'PK';  //pack
+    else result := 'PCE'; //piece
+  end;
+}
+// ----------------------------------------
+function iso2unit(_iso: string): string;
+{
+  case trim(_iso) of
+  'PK': result := 'упаковка';  //pack
+   else result := 'штука'; //piece (PCE)
+  end;
+}

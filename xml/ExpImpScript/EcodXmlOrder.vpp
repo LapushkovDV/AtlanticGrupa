@@ -1,0 +1,59 @@
+//******************************************************************************
+// Droga - Yakovlev                                    (c) корпорация Галактика
+// Галактика 8.10 - обмен бизнес-документами: Импорт
+// ECOD - Order - Заказ
+// Конвертация Order*.xml  в DBF Order*.xml
+//******************************************************************************
+//перемещаем файл order.xml   из  \In  в  \InArh
+    sPathArch := sPathLog + 'InArh\'  ;  
+    sFileArh := sPathArch + sFileImp ;
+
+ if isFileDBF(sFileName) { //если файл в формате DBF  - не удалили предыдущую конвертацию
+   if chkLastImp_Orders(sFileName) // проверка последней операции импорта (Была ли вставка BaseDoc, если была потом удалим файл)
+       exit; // 
+   else { // восстанавливаем из архива
+    if existFile(sFileArh) { 
+      if not copyMoveFile(sFileArh, sFileName, true, ecmfClientFrom+ecmfClientTo) {
+        message(''#3'Ошибка восстановления из Архива файла:'+ sFileName);
+      } //перемещаем файл order.xml
+    } //из архивируем  
+   }  // восстанавливаем из архива
+  }  //isFileDBF
+
+   //загружаем во временную таблицу  tEcOrder
+   if not xml2order(sFileName) {
+     message(''#3'Ошибка xml-формата файла: '+sFileName);
+     checkXMLform.abortForm; exit;
+   }
+   // Проверяем наличие в каталогах KatOrg , KatOtpED
+     if CheckLoadOrder checkXMLForm.abortForm; //если не было ошибок закрываем протокол ошибок
+     else { // если ошибки  при импорте wasError
+      // копируем файл из In в InErr
+       sFileErr := sPathLog + 'InErr\' + sFileImp ;        
+      if existFile(sFileErr) {
+       if not deleteFile(sFileErr) message(''#3'Ошибка удаления '+ sFileErr);
+     }
+     if not copyMoveFile(sFileName, sFileErr, false, ecmfClientFrom+ecmfClientTo) {
+       message(''#3'Ошибка копирования в InErr '+ sFileImp);
+     } //перемещаем файл order.xml
+
+       // Message(''#3' Были ошибки при Проверке файла: '+ sFileImp);
+
+       checkXMLform.write(' ');
+       checkXMLform.putEvent(feBreak);
+       checkXMLform.showFile( 'EcodChkXML.OUT - Ошибки при импорте файла: '+ sFileName); //показать ошибки
+       checkXMLform.abortForm;
+     
+       if (message(''#3' Были ошибки при Проверке файла:'+ sFileImp+ ''#13#10' Прервать процесс?', YesNo+ confirmation) = cmYes) {
+           _raise exUserBreak;
+           exit;  
+       }    
+   } // если ошибки  при импорте wasError
+  //перемещаем файл order.xml   из  \In  в  \InArh
+  if not(existFile(sFileArh)) { //  { if (not DeleteFile(sFileArh))      message(''#3'Ошибка удаления '+sFileArh );   }
+      if not copyMoveFile(sFileName, sFileArh, true, ecmfClientFrom+ecmfClientTo) {
+        message(''#3'Ошибка перемещения '+sFileName );
+      } //перемещаем файл order.xml
+   } //архивируем
+
+   dbf2order(sFileName);  // загружаем в DBF из временной таблицы

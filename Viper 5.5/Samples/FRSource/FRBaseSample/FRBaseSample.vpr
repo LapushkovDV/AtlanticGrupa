@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005015000">
+	<ProjectManager>
+		<ProjectName>FR_Sample</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="D:\Gal\G91_2Urov\EXE_24"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>D:\Atl\EXE_24\exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Gen
+					$[AtlPath]\Source\*
+					..\Inc\*
+					..\..\..\..\..\..\..\Gal\G91_2Urov\SRC\CompSrc\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+				</ResourceList>
+				<OutputResource>$[GalExe]\user.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseName>..\..\..\..\..\..\..\Gal_Database\data_new</DatabaseName>
+					<FullLoginName>True</FullLoginName>
+					<HwKeyDirectory>\\BY01-HWKEY01\HWDIR</HwKeyDirectory>
+					<LicFileName>\\BY01-HWKEY01\License\support\V9\license.btr</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<ProjectItems>
+			<ProjectCompileFile FileName="TmpTable.vip" Priority="0"/>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="D:\TESTWork\FastReport\SamplesFastReport\FR_Rabota_s_Otchetom_Iz_Vip_Koda\SVN\Vip\TmpTable\TmpTable.vip" DateTimeStart="42458.4178657292" DateTimeCompile="3.93634327338077E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\TESTWork\FastReport\SamplesFastReport\FR_Rabota_s_Otchetom_Iz_Vip_Koda\SVN\Vip\TmpTable\Fr3\TMPTABLE!!ITMPTABLE FRSampleDS Тестовая форма.fr3" SourceFileName="D:\TESTWork\FastReport\SamplesFastReport\FR_Rabota_s_Otchetom_Iz_Vip_Koda\SVN\Vip\TmpTable\Fr3\TMPTABLE!!ITMPTABLE FRSampleDS Тестовая форма.fr3"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="29.03.2016 10:01:47"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+		<FileList>
+			<File Name="TmpTable.vip" PosX="16" PosY="15" OpenEditor="True" Active="True"/>
+		</FileList>
+	</ProjectManager>
+</Viper>

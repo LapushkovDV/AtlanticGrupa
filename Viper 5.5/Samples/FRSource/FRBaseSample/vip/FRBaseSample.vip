@@ -1,0 +1,115 @@
+interface FRBaseSample;
+
+Table Struct tmpTable
+(
+  NRec     : word     //Номер записи
+, sString  : string   //
+, wDouble  : Double   //
+, tTime    : Time//
+)
+with index
+(
+  tmpTable01  =  NRec //(Unique, Surrogate, Journal)
+);
+
+Create view vTmpTable
+  var
+    NRec: Word;
+    RecCount: LongInt;
+  as from
+    tmpTable
+;
+
+  DataStream FRSampleDS
+  (
+    [Date_Rep]  Cur_Date;
+    [User_Name] UserName;
+
+    Table tmpTable
+    (
+      [ID] tmpTable.NRec;
+      [TestString] tmpTable.sString;
+      [TestDouble] tmpTable.wDouble;
+      [TestTime] tmpTable.tTime;
+    );
+  )
+
+  HandleEvent
+    cmPreProcess :
+    {
+      StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Выполняется формирование отчета...', 0);
+    }
+
+    cmPostProcess :
+    {
+      StopVisual('',0);
+    }
+  end;
+end;
+
+browse brTmpTable (,, sci178Esc);
+show at (, , , 15);
+table tmpTable;
+  fields
+    tmpTable.NRec '№','записи'('Уникальный номер записи'):[5], protect;
+    tmpTable.sString 'Строка'('Строка',,):[12], protect;
+    tmpTable.wDouble 'Дробное число'('Дробное число',,):[5.5], protect;
+    tmpTable.tTime 'Время'('Время',,):[10,'HH:MM:SS'], protect;
+end;
+
+screen scTmpTable1 (,, sci178Esc);
+show  at (, 16,,);
+table tmpTable;
+  fields
+    RecCount ('Количество вставляемых записей',, ),NoProtect;
+
+  buttons
+    cmAdd,,, 'Добавить записи';
+    cmPrint,,, 'FastReport';
+    cmDelete,,, 'Очистить таблицу';
+
+<<
+
+`Количество добавляемый записей`
+  .@@@@@@@@@@
+       <. Добавить  .> <. Печать .> <. Очистить .>
+
+>>
+end;     //SCREEN
+
+HandleEvent
+cmInit:
+{
+  SetTitle('Количество записей в таблице '+string(RecordsInTable(#tmpTable)) );
+}
+
+cmAdd:  // добавление записи в таблицу
+{
+  var i: LongInt;
+
+  for(i := 0; i < RecCount; i++)
+  {
+    insert current tmpTable set tmpTable.NRec    := i + 1,
+                                tmpTable.sString := 'Тестовая строка ' + String((i * 49 - 20)/3),
+                                tmpTable.wDouble := (i * 49 - 20)/3,
+                                tmpTable.tTime   := Time(i+1, i+5, i+ 10, 0);
+  }
+
+  SetTitle('Количество записей в таблице '+string(RecordsInTable(#tmpTable)));
+  Rereadrecord(#tmpTable);
+}
+
+cmPrint:
+{
+  RunFReport(FRSampleDS, '', False);
+}
+
+cmDelete:  // удаление выбранной записи
+{
+   delete all from tmpTable;
+   SetTitle('Количество записей в таблице '+string(RecordsInTable(#tmpTable)) );
+   Rereadrecord(#tmpTable);
+}
+
+end; //HandleEvent
+end.

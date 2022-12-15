@@ -1,0 +1,75 @@
+interface WordExportParamDialog 'Настройки FastReport' (,, scAtlTreeMark) escclose, alwaysReturn, Gray;
+  show at (, , 35, 14);
+
+  create view viewFRTestSetExportParam
+  var
+    AllPages : Boolean;
+    Pages    : String;
+    RTFOpt   : byte;
+    Params   : String;
+  ;
+
+parameters Params;
+
+screen ActionsParameters 'Параметры';
+  bevel b1{1, 0, 34, 5, bsRaised, bsFrame};
+  bevel b2{1, 5, 34, 12, bsRaised, bsFrame};
+  fields
+    AllPages : NoProtect;
+    Pages    : NoProtect;
+    RTFOpt   : NoProtect;
+
+    buttons
+    cmApply, default;
+    cmCancel;
+
+  <<
+
+    [.] Все страницы отчета`
+   Страницы:
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+   [.] Картинки`
+   [.] WYSIWYG`
+   [.] Разрывы страниц`
+   [.] Неразрывный`
+   [.] Открыть после экспорта`
+
+   <. Сохранить .> <. Отмена .>
+
+    >>
+  end;
+
+handleevent
+
+cmInit:
+{
+  AllPages := true;
+
+  RTFOpt := RTFOpt or 1;
+  RTFOpt := RTFOpt or 2;
+  RTFOpt := RTFOpt or 4;
+  RTFOpt := RTFOpt or 16;
+}
+
+cmApply:
+{
+  Params := 'Pages=' + Pages;
+  Params := Params + ';Picture=' + String((RTFOpt and 1) = 1);
+  Params := Params + ';WISYWIG=' + String((RTFOpt and 2) = 2);
+  Params := Params + ';PageBreaks=' + String((RTFOpt and 4) = 4);
+  Params := Params + ';SuppressPageHeadersFooters=' + String((RTFOpt and 8) = 8);
+  Params := Params + ';OpenAfterExport=' + String((RTFOpt and 16) = 16);
+  Params := Params + ';HeaderFooter=1';
+
+  CloseInterface(cmOk);
+}
+
+cmCancel:
+{
+  CloseInterface(cmCancel);
+}
+
+end;
+end.

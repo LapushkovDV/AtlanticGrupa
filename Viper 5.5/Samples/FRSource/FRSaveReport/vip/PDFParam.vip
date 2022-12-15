@@ -1,0 +1,68 @@
+interface PDFExportParamDialog 'Настройки FastReport' (,, scAtlTreeMark) escclose, alwaysReturn, Gray;
+  show at (, , 35, 12);
+
+  create view viewFRTestSetExportParam
+  var
+    AllPages : Boolean;
+    Pages    : String;
+    PDFOpt   : byte;
+    Params   : String;
+  ;
+
+parameters Params;
+
+screen ActionsParameters 'Параметры';
+  bevel b1{1, 0, 34, 5, bsRaised, bsFrame};
+  bevel b2{1, 5, 34, 10, bsRaised, bsFrame};
+  fields
+    AllPages : NoProtect;
+    Pages    : NoProtect;
+    PDFOpt   : NoProtect;
+
+    buttons
+    cmApply, default;
+    cmCancel;
+
+  <<
+
+    [.] Все страницы отчета`
+   Страницы:
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+   [.] Высокое разрешение`
+   [.] Встроить шрифты`
+   [.] Открыть после экспорта`
+
+   <. Сохранить .> <. Отмена .>
+
+    >>
+  end;
+
+handleevent
+
+cmInit:
+{
+  AllPages := true;
+
+  PDFOpt := PDFOpt or 1;
+  PDFOpt := PDFOpt or 4;
+}
+
+cmApply:
+{
+  Params := 'Pages=' + Pages;
+  Params := Params + ';PrintOptimized=' + String((PDFOpt and 1) = 1);
+  Params := Params + ';EmbeddedFonts=' + String((PDFOpt and 2) = 2);
+  Params := Params + ';OpenAfterExport=' + String((PDFOpt and 4) = 4);
+
+  CloseInterface(cmOk);
+}
+
+cmCancel:
+{
+  CloseInterface(cmCancel);
+}
+
+end;
+end.

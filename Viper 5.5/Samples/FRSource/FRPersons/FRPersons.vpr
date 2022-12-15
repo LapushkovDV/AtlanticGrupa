@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005015000">
+	<ProjectManager>
+		<ProjectName>SaveFRTest</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="D:\Gal\G91_2Urov\EXE_24"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>D:\Atl\exe_24\exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Gen
+					$[AtlPath]\Source\*
+					..\Inc\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+				</ResourceList>
+				<OutputResource>$[GalExe]\user$[ExtRes]</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseName>..\..\..\..\..\..\..\Gal_Database\data_new</DatabaseName>
+					<FullLoginName>True</FullLoginName>
+					<HwKeyDirectory>\\BY01-HWKEY01\HWDIR</HwKeyDirectory>
+					<LicFileName>\\by01-hwkey03.oit.local\license\support\V9\license.btr</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="..\..\..\..\..\..\..\Atl\EXE_24\SOURCE\CFG_ALL.INC" PosX="39" PosY="15" OpenEditor="True"/>
+			<File Name="FRPersons.prj" PosX="9" PosY="3" OpenEditor="True" Active="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="FRPersons.prj" Priority="0">
+				<CoreVip>
+					<VipFiles>
+						<IncludeList>
+							$[AtlPath]\Gen
+							$[AtlPath]\Source\*
+							..\*
+							..\Inc\*
+							..\..\..\..\..\..\..\Gal\G91_2Urov\SRC\CompSrc\*
+						</IncludeList>
+					</VipFiles>
+				</CoreVip>
+				<ProjectItems>
+					<ProjectFile FileName="Vip\FR_Persons.vip"/>
+				</ProjectItems>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<MarkerList>
+			<Marker FileName="Vip\FR_SendMail.vip" Caption="Нумерованная закладка 2" Line="9" NumIndex="2" MarkerType="mtNumBookmark" Comment="Department: comp, // ссылка на головное подразделение"/>
+			<Marker FileName="Vip\FR_SendMail.vip" Caption="Нумерованная закладка 1" Line="181" NumIndex="1" MarkerType="mtNumBookmark" Comment="SetEnumList(sBut, #Reports, sReports);"/>
+		</MarkerList>
+		<CompileMessengerList>
+			<CompileMessenger Name="D:\TESTWork\FastReport\SamplesFastReport\FR_Rabota_s_Otchetom_Iz_Vip_Koda\SVN\Vip\FRSendMail\FRPersons.prj" DateTimeStart="42458.4143528588" DateTimeCompile="4.52893509645946E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\TESTWork\FastReport\SamplesFastReport\FR_Rabota_s_Otchetom_Iz_Vip_Koda\SVN\Vip\FRSendMail\Fr3\FRAPI_TEST!!FRSampleInterface FRPersons Карточка сотрудника.fr3" SourceFileName="D:\TESTWork\FastReport\SamplesFastReport\FR_Rabota_s_Otchetom_Iz_Vip_Koda\SVN\Vip\FRSendMail\Fr3\FRAPI_TEST!!FRSampleInterface FRPersons Карточка сотрудника.fr3"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="29.03.2016 9:56:44"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+	</ProjectManager>
+</Viper>

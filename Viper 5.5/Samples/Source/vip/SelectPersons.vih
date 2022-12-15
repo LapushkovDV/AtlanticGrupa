@@ -1,0 +1,12 @@
+// http://forum.galaktika.by
+
+// Объектный интерфейс для окна выбора сотрудников для отчета 'Печать пропусков'
+ObjInterface ObjSelectPersons;
+  procedure Run;
+end;
+
+VipInterface SelectPersons implements ObjSelectPersons Licensed (Free);
+public:
+  constructor Init;
+  destructor Done;
+end;

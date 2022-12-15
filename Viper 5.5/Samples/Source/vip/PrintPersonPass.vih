@@ -1,0 +1,12 @@
+// http://forum.galaktika.by
+
+// Объектный интерфейс для отчета 'Печать пропусков'
+ObjInterface ObjPrintPersonPass;
+  procedure RunReport(AMarker : longint);
+end;
+
+VipInterface PrintPersonPass implements ObjPrintPersonPass Licensed (Free);
+public:
+  constructor Init;
+  destructor Done;
+end;

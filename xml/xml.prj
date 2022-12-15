@@ -1,0 +1,77 @@
+#define _NewTypeInvoice_2020_
+
+#param /linc:autoexec.vpp
+#statusline "statgal"
+
+#include galnet.inc
+item_num = 32001;
+supl_num = 32002;
+cust_num = 32003;
+//cAtrGLN  = comp(03E8000000000041h); // AttrNam.NREC для "GLN магазина МЕТРО" к KatOrg(tn#1418)
+//cAtrCode = comp(03E8000000000054h); // AttrNam.NREC для "атрибут Код МЦ" к KatOrg(tn#1418)
+allowed_price_delta = 0.00;
+end;
+#include glovars.inc
+
+#define ComponentVersion
+#include extAttr.vih
+#include mcOriginCountry.vih
+#include query.vih
+#include nalogfun.vih
+#include posMarker.vih
+
+#Component "droga"
+ const
+ coAttr_NeedDesadv = 'EDI-Desadv';
+ coAttr_NeedDESMER = 'EDI-DESMER';
+ coAttr_NeedDesscc = 'EDI-Desscc';
+ coAttr_NeedInvoic = 'EDI-Invoic';
+ coAttr_NeedGroupPos = 'EDI-GROUPPOSITIONS';
+ coAttr_EDIInvoicLen  = 'EDI-Invoic-Len';
+ coAttr_EDIInvoicSSCC = 'EDI-Invoic-SSCC';
+ coAttr_Sfera_EDI     = 'Сфера EDI';
+ coAttr_EdiDesadvBox  = 'EDI-DESADV(box)';
+ coAttr_EDI_Invoic_Metro = 'EDI-Invoic-Metro';
+ coAttr_EDI_Invoic_Len_UPAKOVKA = 'EDI-Invoic-Len-UPAKOVKA';//аббревиатура для упаковки. всем ставятся штуки PCE, а если coAttr_EDIInvoicLen = 1 то  CT, и теперь еще ссмотрим на данный атриубт и его значение ставим, если же пусто то СТ
+ coAttr_EDI_MakeLabelInXML = 'EDI-MakeLabelInXML';
+ coAttr_EDI_MakeLabelInXML_NEW = 'EDI-MakeLabelInXML_NEW';
+end;
+#include ExpImpScript\ecod_tbl.vpp
+
+#make "ExpImpScript/ExpImpScript.vip"; // Пред- и пост- обработка Экспорт/Импорт
+
+//#define BUYER_LIST '4607043107459;4607149599998;4607164989996;'
+//#define DEBUG_MODE
+
+
+table struct line_tbl (
+    LineNumber: word,
+    EAN: string,
+    BuyerItemCode: string,
+    SupplierItemCode: string,
+    ItemDescription: string,
+    OrderedQuantity: double,
+    DeliveredQuantity: double,
+    AcceptedQuantity: double,
+    DamagedQuantity: double,
+    OrderedUnitNetPrice: double,
+    OrderedUnitGrosPrice: double,
+    NetAmount: double,
+    GrossAmount: double,
+    TaxRate: double,
+    UnitOfMeasure: string,
+    OrderedUnitPacksize: double,
+    ItemType: string,
+    NumberOfPackages: double,
+    UnitPacksize: double
+)
+with index (
+    i00 = BuyerItemCode+ EAN,
+    i01 = LineNumber,
+    i02 = EAN
+);
+    
+#make "ExpImpScript/ecod_tune.vip";
+#make "ExpImpScript/ecod_intr.vip";
+#make "ExpImpScript/ecod_imp.vip"; // Обработка входящих заказов и подтверждений о приеме товара
+#make "ExpImpScript/ecod_user.vip";

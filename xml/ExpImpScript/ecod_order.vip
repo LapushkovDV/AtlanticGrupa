@@ -1,0 +1,410 @@
+//----------------------------------------------------------------------------------------------------------------
+procedure setKatSoprStatus(_status: word; _note: comp; _comment: string);
+{
+  insert statLog set
+    lastUser = 'Исполняется',
+    cDoc = katSopr.nRec,
+    docType = 100,
+    cNewNote = _note,
+    cOldNote = katSopr.cNote,
+    newStatus = 1,
+    oldStatus = katSopr.Status, 
+    dOper = cur_date,
+    timeOper = cur_time,
+    descr = _descr,
+    comment = _comment;//'Ecod - уведомление о получении RecAdv' ;
+  katSopr.status := _status;
+  katSopr.cNote := _note;
+}
+// проверка последней операции импорта
+function chkLastImp_Orders(_file: string): boolean;  // если false восстанавливаем файл xml из архива 
+var
+  _handle: longint;
+  nOrd, strOrg: string;
+  dateDoc: date;
+{
+// Читаем из DBF OrderNumber, dDoc, sOrg
+  _handle := dbfOpen(_file, stOpen);
+  result := (_handle != 0);
+  if not result {
+    message(''#3'Ошибка при открытии DBF файла '+ _file+ ''#13#3'(HandleOut = 0)');
+    exit;
+  }
+
+  if (dbfGetFirst(_handle) = tsOk) {
+    nOrd := trim(dbfGetFieldValue(_handle, 'OrderNum'));
+
+    strOrg := dbfGetFieldValue(_handle,'dDoc');
+    if (strOrg = '') dateDoc := date(0,0,0);
+    else dateDoc := StrToDate(strOrg, fdateDBF);
+    strOrg := dbfGetFieldValue(_handle, 'sOrg');
+
+    result := (dateDoc = cur_date);  //чтобы обновить дату заново будем импортровать
+  }
+  else wasImportedBefore := true; //если ни одной записи
+//  message('nOrd:'+nOrd+''#13#10'DateDoc:'+DateToStr(dateDoc,'DD.MM.YY') +''#13#10'sOrg:'+strOrg);
+  dateDoc := date(1, 1, year(dateDoc)); //1 января
+
+  if not wasImportedBefore { // Проверяем наличие в базе данных ???
+    if (getfirst fastfirstrow orgimp where ((strOrg == name)) = tsOk) {
+      if (getFirst fastfirstrow basedoc 
+        where ((201==vidDoc and OrgImp.nRec==cOrg and dateDoc <<= dDoc    //в текущем год
+          and baseDoc.nRec /== stepDoc.cbasedoc and nOrd == stepDoc.NKONT (noindex)
+        )) != tsOk) { // занесли ДО в ручную
+        if nOrd != '' {
+          wasImportedBefore := (getFirst fastfirstrow basedoc where ((201 == vidDoc and OrgImp.nRec==cOrg and dateDoc <<= dDoc))
+            and pos(nOrd, basedoc.name) > 0) = tsOk;
+        }
+      } // занесли ДО в ручную
+      else wasImportedBefore := true;
+    } //OrgImp
+    else {
+      wasImportedBefore := (getFirst fastfirstrow basedoc 
+         where ((201==vidDoc and dateDoc <<= dDoc and basedoc.nRec /== stepdoc.cbasedoc and nOrd == StepDoc.NKONT (noindex)
+         ))  = tsOk);
+    } // not OrgImp
+  } // Проверяем наличие в базе данных
+
+  if wasImportedBefore {
+    dbfDeleteAllRecords(_handle);
+    saveMyDsk(wasImportedBefore, 'wasImportedBefore_EcodOrders') ;
+  } //wasImportedBefore
+
+  dbfClose(_handle);
+} //procedure ChkLastImp_Orders
+// ----------------------------------------------------------
+//  загрузка из XML-файла
+//  Load Order From XML
+// ------------------------------------------------------------
+function xml2order(_file: string): boolean;
+var
+  line, lineNode, lineNodeList, linelength, LineItem, htNode, htNodelist, lengthNL, childNode: longint;
+  str, strOrg: string;
+{
+  result := false;
+  xmlDoc := XMLDOMDoc_New;
+
+  if XMLDOMDoc_load(xmlDoc, _file) {
+    #declare oXML_GetNode(ParentNodeHandle, NodeName, NodeHandle)   //получить NodeHandle по имени узла
+      #NodeHandle := 0; 
+      hNodeList := XMLDOMDoc_GetElementsByTagName(#ParentNodeHandle, #NodeName);
+      if (hNodeList <> 0) {
+        lenNodeList := XMLDOMNodeList_get_Length(hNodeList);
+        if (lenNodeList <> 1) { // в файле не один документ
+          writelog(' --- ERROR: более одного ('+lenNodeList+') документа в файле', 1);
+        }
+        else #NodeHandle := XMLDOMNodeList_get_Item(hNodeList , 0);
+        XMLDOMNode_Release(hNodeList);
+        hNodeList := 0;
+      }
+      else {
+        writelog(' --- ERROR: Нет узла ' + #NodeName, 1);
+      }
+    #end
+
+    #oXML_GetNode(xmlDoc, 'Document-Order',  hDoc)
+    if (hdoc <> 0) { // handle node 'Document-Order'
+    //clearBuffer(#tOrder);
+
+    #declare Loop_oXML_chNodes(ParentNode, chNodeList,  NodeListLength, counter, chNode)   //цикл по дочерним узлам
+      #chNodeList := XMLDOMNode_get_ChildNodes(#ParentNode);
+      if(#chNodeList <> 0) {
+        #NodeListLength := XMLDOMNodeList_get_Length(#chNodeList);
+        for (#counter := 0; #counter < #NodeListLength; ++#counter) {
+          #chNode := XMLDOMNodeList_get_Item(#chNodeList, #counter);
+    #end  
+    #declare EndLoop_oXML_chNodes(chNodeList,  chNode)   //цикл по дочерним узлам
+          releaseDump(#chNode); 
+        } // for hPartDoc
+        releaseDump(#chNodeList);
+      } //hPartDocl
+    #end
+
+    #Loop_oXML_chNodes(hDoc, hPartDocl, lenNodeList, i, hPartDoc)   //цикл по дочерним узлам  Частей документа
+      case XMLDOMNode_get_NodeName(hPartDoc) of
+        'Order-Header': {
+          #Loop_oXML_chNodes(hPartDoc, htNodelist, lengthNL, j, htNode)   //цикл по дочерним узлам Order-Header
+            case XMLDOMNode_get_NodeName(htNode) of
+            'OrderNumber': {
+              doc_no := GetTextValue(htNode);
+              //tEcOrder.OrderNumber := str;
+              writelog('Order #'+ doc_no, 1);
+            }
+            'OrderDate': {
+              str := GetTextValue(htNode);
+              order_date := strToDate(str, ieHead.dFormat);
+              //writelog(' fr#' +str, 1);
+            }
+            'ExpectedDeliveryDate': {
+              str := GetTextValue(htNode);
+              tEcOrder.ExpDate := strToDate(str, ieHead.dFormat);
+            }
+            'DocumentFunctionCode': {
+              str := GetTextValue(htNode);
+              if (str <> 'O' and str <> 'P') {
+                writelog(', error DocumentFunctionCode: ' + str, 1);
+              }
+            }
+            end; //case htNode
+          #EndLoop_oXML_chNodes(htNodelist,  htNode) 
+        } //Order-Header
+        'Order-Parties': {
+          strOrg := '';
+          #Loop_oXML_chNodes(hPartDoc, htNodelist, lengthNL, j, htNode)   //цикл по дочерним узлам
+            case XMLDOMNode_get_NodeName(htNode) of
+            'Buyer': {
+              childNode := FindFirstChild(htNode);  // Buyer ILN
+              str := trim(GetTextValue(childNode));
+              tEcOrder.sGrPol := str; 
+              if (str <> '' and strOrg ='') strOrg := str;
+              logErr := LogErr + ', Buyer#' + str;
+              XMLDOMNode_Release(childNode);
+              childNode := 0;
+            }
+            'DeliveryPoint': {
+              childNode := FindFirstChild(htNode); // Buyer ILN
+              str := trim(GetTextValue(childNode));
+              tEcOrder.dPoint := str; 
+              XMLDOMNode_Release(childNode);
+              childNode  := 0;
+            }
+            'Invoicee': {
+              childNode := FindFirstChild(htNode); // Invoicee ILN
+              str := trim(GetTextValue(childNode)); 
+              if (str <> '') strOrg := str;
+              writelog(', invoicee#' + str, 1);
+              XMLDOMNode_Release(childNode);  childNode  := 0;
+            }
+            end; //case htNode
+          #EndLoop_oXML_chNodes(htNodelist,  htNode) 
+          if (strOrg = '')  logErr += ', error Buyer - не определен' ;
+          else tEcOrder.sOrg :=strOrg;  //Плательщик
+        } //'Order-Parties'
+        'Order-Lines': {
+          #Loop_oXML_chNodes(hPartDoc, lineNodelist, linelength, line , lineNode)   //цикл по дочерним узлам Order-Lines
+           LineItem := FindFirstChild(lineNode); // Line-Item
+            #Loop_oXML_chNodes(LineItem, htNodelist, lengthNL, j, htNode)   //цикл по дочерним узлам LineItem
+               case XMLDOMNode_get_NodeName(htNode) of
+               'LineNumber': {
+                 str := getTextValue(htNode);
+                 tEcOrder.Npp := word(str); 
+               }
+               'EAN': {
+                 str := getTextValue(htNode);
+                 tEcOrder.EAN := str;
+               }
+               'BuyerItemCode': {
+                 str := getTextValue(htNode);
+                 tEcOrder.BItemCode := str;
+               }
+               'ItemDescription': {
+                 str := getTextValue(htNode);
+                 tEcOrder.ItemDescr := str;
+               }
+               'OrderedQuantity': {
+                 str := getTextValue(htNode);
+                 tEcOrder.Kol := double(str);
+               }
+               'OrderedUnitNetPrice': {
+                 str := GetTextValue(htNode);
+                 tEcOrder.Price := double(str); 
+               }
+               end; //case htNode
+            #EndLoop_oXML_chNodes(htNodelist,  htNode) 
+            insert current tEcOrder;
+
+           XMLDOMNode_Release(LineItem);
+           LineItem := 0;
+          #EndLoop_oXML_chNodes(lineNodelist, lineNode) 
+        } //Order-Lines
+      end; //case hPartDoc
+
+    #EndLoop_oXML_chNodes(hPartDocl,  hPartDoc) 
+
+    XMLDOMNode_Release(hDoc);
+    hDoc := 0;
+    } //Document-Order
+  } //XMLDOMDoc_Load
+  XMLDOMDoc_Done(xmlDoc);
+  xmlDoc := 0;
+  result := (getfirst tEcOrder = tsOk);
+}
+
+function checkLoadOrder: boolean;
+var
+  strOrg, strOrgTo, sMC, sEdIzm: string;
+  akoef: double;
+{
+  if getFirst tEcOrder = tsOk {
+    sGLN := tEcOrder.sOrg; // Покупатель   
+    if getFirst atrGLN = tsOk { 
+      if getFirst katOrg = tsOk {
+        strOrg := katOrg.Name;
+        idAtrMc := findIdAtrMc(katOrg.nRec);
+      }
+      else {
+        strOrg := sGLN;
+        wasErrorImp := true;
+        writelog(' --- ERROR: нет организации (KATORG.NREC=' + AtrGLN.cRec+ ')', 1);
+      }
+    }
+    else {
+      strOrg := sGLN;
+      wasErrorImp := true;
+      writelog(' --- ERROR: не найден контрагент с GLN #' + sGLN, 1);
+    }
+    sGLN := tEcOrder.sGrPol; // Грузополучатель   
+    if getFirst atrGLN = tsOk {
+      if getFirst katOrg != tsOk {
+        strOrgTo := sGLN;
+        wasErrorImp := true;
+        writelog(' --- ERROR: нет организации (KATORG.NREC=' + AtrGLN.cRec+ ')', 1);
+      }
+      else strOrgTo := katOrg.name;
+    }
+    else {
+      strOrgTo := sGLN;
+      wasErrorImp := true;
+      writelog(' --- ERROR: не найден Грузополучатель с GLN #' + sGLN, 1);
+    }
+  } //if GetFirst tEcOrder
+
+  _loop tEcOrder {
+    // МЦ 
+    sMC := tEcOrder.EAN;
+    sEdIzm := ''; 
+     
+    if GetFirst fastfirstrow KatOtpEd where ((tEcOrder.EAN == bKod)) = tsOk { //1 -Ищем по EAN 
+      sEdIzm := KatOtpEd.Name;
+
+      if GetFirst fastfirstrow KatMc where ((KatOtpEd.cMcUsl == nRec)) != tsOk {
+        wasErrorImp := true;
+        writelog(''#9#9'   #'+ tEcOrder.NPP+'- error 1: не найдена МЦ (KATMC.NREC=' + KatOtpEd.cMcUsl+ ')', 1);
+      }
+      else sMc := KatMc.Barkod;
+
+      //пересчитываем в Активную Отп.Ед.изм. если возможно
+       #declare ifFindAktEdIzm
+         if getFirst fastfirstrow KatOtpEdAkt = tsOk { 
+           if (katOtpEdAkt.nRec <> KatOtpEd.nRec) {
+             if (katOtpEd.koef = 1) {
+               if (katOtpEdAkt.koef > 1) {  
+                 akoef := KatOtpEdAkt.koef/KatOtpEd.koef;
+                 if (round(tEcOrder.Kol/ akoef)- round(tEcOrder.Kol/ akoef, 2) = 0) { //если получаем целое кол-во
+                   sEdIzm := KatOtpEdAkt.Name ;
+                   tEcOrder.kol := tEcOrder.Kol/ akoef;
+                   tEcOrder.price := tEcOrder.Price* akoef;
+                 }
+               }
+             }
+           } //(KatOtpEdAkt.nRec <> KatOtpEd.nRec)
+         } //getfirst KatOtpEdAkt
+       #end
+       #ifFindAktEdIzm
+       } // 1 -Ищем по EAN KatOtpEd
+       else { // 2 Иначе ищем по коду МЦ покупателя
+         if (idAtrMc = 0 or tEcOrder.BItemCode = '') {
+           wasErrorImp := true;
+           writelog(''#9#9'   #'+ tEcOrder.NPP+'- error: не найдена MЦ с EAN #' + sMC +' '+tEcOrder.ItemDescr, 1);
+         }
+         else {
+           if getFirst atrCodeMC where ((idAtrMC == cattrnam and tEcOrder.BItemCode == vString (noindex))) = tsOk {
+             if getFirst fastfirstrow KatMc where ((AtrCodeMC.cRec == nRec)) = tsOk {
+               sMc := katMc.barkod;         
+               if getFirst fastfirstrow KatOtpEd where ((1 == PrMC and KatMc.nRec == cMcUsl and 1 == koef)) = tsOk {
+                 sEdIzm := KatOtpEd.Name;
+                 #ifFindAktEdIzm
+               }
+             } //katMC2 
+             else {
+                wasErrorImp := true;
+                writelog(''#9#9'   #'+ tEcOrder.NPP+'- ERROR: не найдена МЦ (KATMC.NREC=' + AtrCodeMC.cRec+ ')', 1);
+             }
+           } //AtrCodeMC
+           else {
+             wasErrorImp := true;
+             writelog(''#9#9'   #'+ tEcOrder.NPP+'- ERROR: не найдена МЦ с EAN #' +sMC+ ', BuyerItemCode #' + tEcOrder.BItemCode+ ' '+ tEcOrder.ItemDescr, 1);
+           }
+         }
+       } //2 Иначе ищем по коду МЦ покупателя
+
+       tEcOrder.sOrg := strOrg;
+       tEcOrder.sGrPol := strOrgTo;
+       tEcOrder.EAN := sMC;
+       tEcOrder.ItemDescr := sEdIzm;
+
+       update current tEcOrder;
+     } //_loop  tEcOrder
+  result := not wasErrorImp;
+} //Function CheckLoadOrder
+
+function dbf2order(_file: string): boolean;
+var
+  _handle : longint;
+  sDo: string;
+  d0: date;
+{
+  _handle := dbfOpen(_file, stCreate);
+  if (_handle = 0) {
+    message(''#3'Ошибка при создании файла '+ _file+
+            ''#13#3'(HandleOut = 0)');
+    result := false;
+    exit;
+  }
+
+  dbfAddField(_handle, 'noDoc'     , dbChar, 35,0);  //basedoc.NoDoc
+  dbfAddField(_handle, 'dDoc'      , dbDate, 8 ,0);  // basedoc.dDoc
+  dbfAddField(_handle, 'orderNum'  , dbChar, 35,0);  //StepDoc.NKONT
+  dbfAddField(_handle, 'orderDate' , dbDate, 8 ,0);  // STEPDOC.DIZVMAX //Известить до
+  dbfAddField(_handle, 'expDate'   , dbDate, 8 ,0);  // STEPDOC.DOTGR   //Отгрузить до
+  dbfAddField(_handle, 'sOrg'      , dbChar,151,0);  // basedoc.cOrg
+  dbfAddField(_handle, 'sGrPol'    , dbChar,151,0);   
+  dbfAddField(_handle, 'dPoint'    , dbChar, 13,0);  //StepDoc.nSert  //номер сертификата
+  dbfAddField(_handle, 'npp'       , dbNum , 8 ,0);
+  dbfAddField(_handle, 'kodMC'     , dbChar, 14,0);  //KatMc.barKod
+  dbfAddField(_handle, 'ed'        , dbChar, 14,0);  //KatOtpEd.name
+  dbfAddField(_handle, 'kol'       , dbNum , 15,5);
+  dbfAddField(_handle, 'price'     , dbNum , 15,5);
+
+  dbfAddField(_handle, 'tipDO'     , dbChar, 21,0);
+  dbfAddField(_handle, 'name'      , dbChar, 80,0);
+  dbfAddField(_handle, 'direct'    , dbNum , 2 ,0);
+  dbfAddField(_handle, 'vhNal'     , dbNum , 2 ,0);
+  dbfAddField(_handle, 'group'     , dbChar, 4 ,0);
+
+  // Номер ДО
+  sDO:= '';
+  d0 := cur_Date;
+  _loop tEcOrder {
+    dbfClearBuffer(_handle); // чистим буфер новой записи в DBF-приемнике
+
+    dbfPutFieldValue(_handle, 'noDoc'    , sDO) ;     //GetLastNumD ДО на продажу
+    dbfPutFieldValue(_handle, 'dDoc'     , dateToStr(d0,fdateDBF) );
+    dbfPutFieldValue(_handle, 'orderNum' , tEcOrder.OrderNumber) ; 
+    dbfPutFieldValue(_handle, 'orderDate', dateToStr(tEcOrder.OrderDate,fdateDBF) );
+    dbfPutFieldValue(_handle, 'expDate'  , dateToStr(tEcOrder.ExpDate,fdateDBF)  ) ;
+    dbfPutFieldValue(_handle, 'sOrg'     , tEcOrder.sOrg) ;
+    dbfPutFieldValue(_handle, 'sGrPol'   , tEcOrder.sGrPol) ;
+    dbfPutFieldValue(_handle, 'dPoint'   , tEcOrder.dPoint) ;
+
+    dbfPutFieldValue(_handle, 'kodMC' , tEcOrder.EAN) ;
+    dbfPutFieldValue(_handle, 'ed'    , tEcOrder.ItemDescr) ;
+    dbfPutFieldValue(_handle, 'npp'   , tEcOrder.NPP) ;
+    dbfPutFieldValue(_handle, 'kol'   , string(tEcOrder.kol, 15, 5)) ;
+    dbfPutFieldValue(_handle, 'price' , string(tEcOrder.Price, 15, 5)) ;
+
+    dbfPutFieldValue(_handle, 'tipDO' , 'Основание на продажу') ;
+    dbfPutFieldValue(_handle, 'name'  ,  'заказ №' + tEcOrder.OrderNumber + ' ediECOD ' ) ;
+    dbfPutFieldValue(_handle, 'direct', 1) ;
+    dbfPutFieldValue(_handle, 'vhNal' , 2) ;
+    dbfPutFieldValue(_handle, 'group' , 'Imp') ;
+
+    dbfInsertRecord(_handle);
+  } //loop  
+  dbfClose(_handle);
+
+  if not wasErrorImp  {
+    writeLog(' - Ok', 0);
+    result := true;
+  }
+} //function OrderLoadToDBF

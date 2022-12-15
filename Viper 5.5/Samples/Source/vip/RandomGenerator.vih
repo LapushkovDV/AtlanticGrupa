@@ -1,0 +1,46 @@
+#ifndef __RandomGenerator_vih__
+#define __RandomGenerator_vih__
+
+ObjInterface ObjRandomGenerator;
+
+  #doc
+  свойство для чтения и записи счетчика псевдослучайной последовательности
+  #end
+  property LastRandomCounter: comp;
+
+  #doc
+  функция генерации следующего числа псевдослучайной последовательности
+  результат - случайное число от 0 до Range-1
+  #end
+  function NextRandomNumber(Range: longInt): longInt;
+
+  #doc
+  функция генерации случайной даты между датами DateBegin и DateEnd включительно
+  #end
+  function NextRandomDate(DateBegin: date; DateEnd: date): date;
+
+  #doc
+  функция генерации случайной последовательности
+  букв русского алфавита и цифр длиною CodeLength
+  #end
+  function NextRandomCode(CodeLength: longInt): string;
+
+
+  #doc
+  функция генерации слова из слогов
+  с разными вероятностями генерируются слова из двух слогов (4-, 5- либо 6-буквенные)
+  или из трех слогов (6- либо 7-буквенные)
+  #end
+  function NextRandomWord: string;
+
+  #doc
+  функция генерации предложения из слов
+  количество слов в предложении - случайное число от 1 до 40.
+  #end
+  function NextRandomText: string;
+
+End;
+
+VipInterface RandomGenerator Implements ObjRandomGenerator licensed (free);
+
+#endif

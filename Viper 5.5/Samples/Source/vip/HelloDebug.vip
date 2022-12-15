@@ -1,0 +1,62 @@
+// Объявление собственного события
+const
+  cmDebugEvent = 9999;
+end;
+
+// Объявление произвольной структуры
+type THumanData = record
+  FIO      : String;
+  Age      : word;
+  Children : byte;
+end;
+
+// Объявление интерфейса
+Interface HelloDebug;
+  show at ( , , 30, 7);  // отобразить интерфейс окном. 30 - ширина, 7 - высота
+
+// Объявление глобальных переменных
+var Human : THumanData;
+var NumVar : Word;
+
+create view vDebugView;
+
+screen scHelloDebug;
+  buttons
+    cmDebugEvent,,, 'Нажми кнопку!',,;
+<<
+   Hello debugging world!
+   <. Push me .>
+>>
+end; 
+
+handleevent
+  cmInit:
+  {
+    var ArrStr : array [0..5] of string; // Объявление массива строк
+    ArrStr[0] := 'Мама';
+    ArrStr[1] := 'Папа';
+    ArrStr[2] := 'Я';
+    ArrStr[3] := 'Все';
+    ArrStr[4] := 'Спортивная';
+    ArrStr[5] := 'Семья!';
+
+    NumVar := 1;
+    NumVar := NumVar + 1;
+
+    // Инициализация глобальной переменной
+    Human.FIO      := 'Иванов И.И.';
+    Human.Age      := 20;
+    Human.Children := 0;
+
+    if (NumVar >= 10) then
+        Human.FIO   := 'Сидоров В.А.';
+  }
+
+  cmDebugEvent: // Обработчик события на кнопку <. Push me .>
+  {
+     Human.Age := Human.Age + NumVar;
+     Message(Human.FIO);
+  }
+end; 
+
+end.

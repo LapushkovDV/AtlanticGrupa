@@ -59,8 +59,7 @@ const
  coAttrNam_GUID           = 'GUID';
  coAttrNam_BusinessEntity = 'VETIS_BusinessEntity';
  coATLANTIC_DIADOCAUTO_LOGNAME = 'ATLANTIC_DIADOCAUTO_LOGNAME';
-
-
+ coAttr_EDI_MakeLabelInXML_NEW = 'EDI-MakeLabelInXML_NEW';
 end;
 
 table struct tBuffer

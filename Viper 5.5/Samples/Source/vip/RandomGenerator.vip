@@ -1,0 +1,112 @@
+#include RandomGenerator.vih
+
+Interface RandomGenerator;
+
+var LastRandomCntr: comp; //счетчик псевдослучайной последовательности
+
+const
+  ConsonantLetters: string = 'сркмпнлтвдхбгшзфжцйчщ';//'сртмпблвкзлхдвнсдстчктбцпчнггйрмцжкврбпнйфзхзщлдфшгшмжщйхшцжчфщ'; //массив согласных букв (каждой по 3)
+  VowelLetters: string = 'оаеиуяёюэы';//'оиаюаоэиюеяиоэыеэеяяуёуюаыёуёы'; //массив гласных букв (каждой по 3)
+  Symbols: string = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя0123456789'; //массив букв и цифр
+end;
+
+
+//свойство для чтения и записи счетчика псевдослучайной последовательности
+property LastRandomCounter: comp absolute LastRandomCntr;
+
+//функция генерации следующего числа псевдослучайной последовательности
+//результат - случайное число от 0 до Range-1
+function NextRandomNumber(Range: longInt): longInt;
+{
+  LastRandomCntr := 1664525 * LastRandomCntr + 1013904223 - ((1664525 * LastRandomCntr + 1013904223) / 2147483647) * 2147483647;
+  result := longInt(abs(LastRandomCntr - (LastRandomCntr/Range) * Range));
+}
+
+//функция генерации случайной даты между датами DateBegin и DateEnd включительно
+function NextRandomDate(DateBegin: date; DateEnd: date): date;
+{
+  result := Add_Day(DateBegin, NextRandomNumber(longInt(DateEnd) - longInt(DateBegin) + 1));
+}
+
+//функция генерации случайной последовательности
+//букв русского алфавита и цифр длиною CodeLength
+function NextRandomCode(CodeLength: longInt): string;
+{
+  var SymbolNum: longInt;
+  var ResultCode: string;
+
+  ResultCode := '';
+
+  for(SymbolNum := 1; SymbolNum <= CodeLength; SymbolNum++)
+    ResultCode := ResultCode + Symbols[NextRandomNumber(Length(Symbols)) + 1];
+
+  result := ResultCode;
+}
+
+//функция генерации случайной буквы русского алфавита
+//если LetterType = 0 генерируется случайная гласная буква
+//если LetterType = 1 генерируется случайная согласная буква
+function NextRandomLetter(LetterType: integer): char;
+{
+  case LetterType of
+    0: result := VowelLetters[NextRandomNumber(NextRandomNumber(Length(VowelLetters)) + 1) + 1];
+    1: result := ConsonantLetters[NextRandomNumber(NextRandomNumber(NextRandomNumber(Length(ConsonantLetters)) + 1) + 1) + 1];
+    else result := Chr(0);
+  end;
+}
+
+//функция генерации слога из случайных букв
+//если SyllableType = 0, то слог будет двухбуквенный
+//в 30% случаев он будет вида гс (где г - гласная буква, с - согласная),
+//в 70% случаев - вида сг.
+//если SyllableType = 1, то слог будет трехбуквенный вида сгс
+function NextRandomSyllable(SyllableType: integer): string;
+{
+  case SyllableType of
+    0:
+    {
+      case NextRandomNumber(100000) mod 10 of
+        0..2: result := NextRandomLetter(0) + NextRandomLetter(1);
+        3..9: result := NextRandomLetter(1) + NextRandomLetter(0);
+      end;
+    }
+    1: result := NextRandomLetter(1) + NextRandomLetter(0) + NextRandomLetter(1);
+    else result := '';
+  end;
+}
+
+//функция генерации слова из слогов
+//с разными вероятностями генерируются слова из двух слогов (4-, 5- либо 6-буквенные)
+//или из трех слогов (6- либо 7-буквенные)
+function NextRandomWord: string;
+{
+  case longInt(abs(NextRandomNumber(100000))) mod 100 of
+    0..11: result := NextRandomSyllable(0) + NextRandomSyllable(0);
+    12..23: result := NextRandomSyllable(1) + NextRandomSyllable(0) + NextRandomSyllable(0);
+    24..44: result := NextRandomSyllable(0) + NextRandomSyllable(1);
+    45..52: result := NextRandomSyllable(0) + NextRandomSyllable(1) + NextRandomSyllable(0);
+    53..73: result := NextRandomSyllable(1) + NextRandomSyllable(0);
+    74..85: result := NextRandomSyllable(0) + NextRandomSyllable(0) + NextRandomSyllable(1);
+    86..91: result := NextRandomSyllable(1) + NextRandomSyllable(1);
+    92..99: result := NextRandomSyllable(0) + NextRandomSyllable(0) + NextRandomSyllable(0);
+  end;
+}
+
+//функция генерации предложения из слов
+//количество слов в предложении - случайное число от 1 до 40.
+function NextRandomText: string;
+{
+  var WordsCount: longInt;
+  var WordsNum: longInt;
+  var ResultText: string;
+
+  ResultText := '';
+  WordsCount := NextRandomNumber(40) + 1;
+
+  for(WordsNum := 1; WordsNum <= WordsCount; WordsNum++)
+    ResultText := ResultText + NextRandomWord + ' ';
+
+  result := ResultText;
+}
+
+End.

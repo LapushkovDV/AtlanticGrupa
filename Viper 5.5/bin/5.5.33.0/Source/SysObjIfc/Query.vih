@@ -1,0 +1,415 @@
+#ifndef _Query_
+#define _Query_
+
+#Component ""
+
+#include POHolder.vih
+
+// Константы для использования в функции addOrder
+const
+  qfcAsc = 'ASC';
+  qfcDesc = 'DESC';
+end;
+
+// Константы для использования в функции addFilter
+const
+  qfcAnd = 'AND';
+  qfcOr = 'OR';
+end;
+
+// Константы для использования в функции addFilter
+const
+  qfcEqual          = '=';
+  qfcGreater        = '>';
+  qfcLess           = '<';
+  qfcNotEqual       = '<>';
+  qfcGreaterOrEqual = '>=';
+  qfcLessOrEqual    = '<=';
+  qfcBooleanFunc    = '?';
+end;
+
+exception exQuery;
+  exception exNoResult  (exQuery) [NoMessage]; // #docl Исключение, нет данных для выборки. </brief>
+  exception exMoreResult(exQuery);             // #docl Исключение, в выборке более одной строки. </brief>
+  exception exMoreColumn(exQuery);             // #docl Исключение, в выборке более одной колонки. </brief>
+
+objinterface IQueryManager; forward;
+
+objInterface IResultCol; // #docl Интерфейс - колонка результата выборки. </brief>
+  property name  // #docl Имя колонки. </brief>
+                : string read;   
+  property dtype // #docl Тип данных колонки. </brief>
+                : byte   read;   
+  property size  // #docl Размер данных колонки. </brief>
+                : word   read;   
+  property prec  // #docl Длина мантиссы колонки. </brief>
+                : byte   read;   
+  property dec   // #docl Положение десятичной точки колонки. </brief>
+                : byte   read;   
+  property value // #docl Значение колонки. </brief> 
+                : variant read; 
+end;
+
+objInterface IResultRow; // #docl Интерфейс - строка результата выборки. </brief>
+  property count // #docl Количество колонок в строке. </brief>
+                 : integer read; 
+  function col // #docl Получить колонку по имени. </brief>
+              ( name // #docl Имя колонки. </brief>
+                     : string ) : IResultCol; // #docl Найденная колонка или nullRef. </brief>
+  function val // #docl Получить значение колонки по имени. </brief>
+              ( name // #docl Имя колонки. </brief>
+                     : string ) : variant; // #docl Значение найденной колонки или пустое значение. </brief>
+  function colAt // #docl Получить колонку по номеру. </brief>
+                ( num // #docl Номер колонки. </brief>
+                      : integer ) : IResultCol; // #docl Найденная колонка или nullRef. </brief>
+  function valAt // #docl Получить значение колонки по номеру. </brief>
+                ( num // #docl Номер колонки. </brief>
+                      : integer ) : variant; // #docl Значение колонки или пустое значение. </brief>
+end;
+
+objInterface IQueryParam; // #docl Интерфейс - параметр запроса. </brief>
+  property name  // #docl Имя параметра. </brief>
+                 : string read;          
+  property value // #docl Значение параметра. </brief> Через присваивание возможно задание значения.
+                 : variant read write;   
+end;
+
+objInterface IQueryParams; // #docl Интерфейс - коллекция параметров запроса. </brief>
+  property count // #docl Количество параметров запроса. </brief>
+                 : integer read;
+  function param // #docl Получить параметр по имени. </brief>
+                ( name // #docl Имя параметра. </brief>
+                       : string ) : IQueryParam; // #docl Найденный параметр или nullRef. </brief>
+  function val // #docl Получить значение параметра по имени. </brief>
+              ( name // #docl Имя параметра. </brief>
+                     : string ) : variant; // #docl Значение найденного параметра или пустое значение. </brief>
+  function paramAt // #docl Получить параметр по номеру. </brief>
+                  ( num // #docl Номер параметра. </brief>
+                        : integer ) : IQueryParam; // #docl Найденный параметр или nullRef. </brief>
+  function valAt // #docl Получить значение параметра по номеру. </brief>
+                ( num // #docl Номер параметра. </brief>
+                      : integer ) : variant; // #docl Значение параметра или пустое значение. </brief>
+end;
+
+objInterface IOrder; // #docl Интерфейс - порядок сортировки для IResultSet. </brief>
+  function add // #docl Добавить сегмент в порядок. </brief>
+              ( column // #docl Имя колонки. </brief>
+                       : string; 
+                ascending // #docl Сортировка по убыванию или по возрастанию. </brief> Может принимать значения 'asc' или 'desc'. Можно использовать константы qfcAsc и qfcDesc
+                       : string ) : IOrder; // #docl Ссылка на самого себя. </brief>
+end;
+
+objInterface IFilter; // #docl Интерфейс - фильтр для IResultSet. </brief>
+  function add // #docl Добавить сегмент в фильтр. </brief>
+              ( combination // #docl Способ соединения с предыдущим сегментом. </brief> Может принимать значения 'and' или 'or', для первого сегмента фильтра логично указать '', хотя фактически значение будет игнорироваться. Можно использовать константы qfcAnd и qfcOr
+                            : string; 
+                column // #docl Имя колонки. </brief>
+                            : string; 
+                cond // #docl Условие сравнения. </brief> Может принимать значения '=', '<>', '>', '>=', '<', '<=' или '?'. Можно использовать константы qfcEqual, qfcGreater и т.д. Значение '?' означает наличие булевского выражения в value, при этом значение параметра column игнорируется
+                            : string; 
+                value // #docl Значение колонки для сравнения. </brief>
+                            : variant ) : IFilter; // #docl Ссылка на самого себя. </brief>
+end;
+
+objInterface IResultSet; // #docl Интерфейс - копия выборки в памяти. </brief> Реализовано на таблицах в памяти
+  property row // #docl Текущая строка выборки. </brief>
+               : IResultRow read;
+  function getFirst // #docl Спозиционироваться на первую запись выборки. </brief>
+                    : integer; // #docl Код возврата: tsOk и т.д. </brief>
+  function getLast  // #docl Спозиционироваться на последнюю запись выборки. </brief>
+                    : integer; // #docl Код возврата: tsOk и т.д. </brief>
+  function getNext  // #docl Спозиционироваться на следующую запись выборки. </brief>
+                    : integer; // #docl Код возврата: tsOk и т.д. </brief>
+  function getPrev  // #docl Спозиционироваться на предыдущую запись выборки. </brief>
+                    : integer; // #docl Код возврата: tsOk и т.д. </brief>
+  property count : longint read; // #docl Количество записей в выборке. </brief> Возвращает общее количество записей без учета наложенных фильтров
+
+  function setOrder // #docl Задать порядок сортировки для выборки. </brief> Предыдущий порядок сбрасывается. При передаче nullRef сортировка сбрасывается в значение по умолчанию.
+                   ( order // #docl Устанавливаемый порядок. </brief>
+                           : IOrder ) : IResultSet; // #docl Ссылка на самого себя. </brief>
+  function setFilter // #docl Задать фильтр для выборки. </brief> Предыдущий фильтр сбрасывается.При передаче nullRef выборка будет без фильтра.
+                    ( filter // #docl Устанавливаемый фильтр. </brief>
+                             : IFilter ) : IResultSet; // #docl Ссылка на самого себя. </brief>
+end;
+
+objInterface IQuery; // #docl Интерфейс - запрос к БД. </brief>
+  property queryManager : IQueryManager read; // #docl queryManager, через который был создан запрос. </brief>
+  #doc
+    Добавляет критерий в запрос. </brief>
+    Отличительной особенностью функции является то, что программист может не заботиться 
+    о наличии секции where в запросе, и нужно или не нужно добавлять combination. 
+    Функция сама вставит строку критерия в нужное место запроса. 
+    В простых случаях, строка критериев добавляется непосредственно в запрос в секцию where. 
+    При этом, содержимое оригинального where (если таковое существует) заключается в 
+    скобки (), и далее через combination конкатенируется criteria. Для второго и 
+    последующих вызовов функции новых скобок не добавляется, просто через combination 
+    конкатенируется criteria. Для сложных случаев с union, group by, having и т.д. 
+    запрос формируется по принципу select * from ( <оригинальный запрос> ) where <criteria> order by <оригинальный order by>. 
+    Для второго и последующих вызовов функции просто через combination конкатенируется criteria.
+    Надо учитывать, что если если оригинальный запрос содержал order by, то он
+    будет перенесен в запрос верхнего уровня. При этом запрос будет корректно работать только
+    в том случае, если в order by были указаны колонки, содержащиеся в секции select 
+    оригинального запроса.
+  #end
+  function addCriteria( combination // #docl Способ соединения с предыдущим сегментом. </brief> Может принимать значения 'and' или 'or'. Значение по умолчанию - 'and' (combination = ''). Можно использовать константы qfcAnd и qfcOr
+                                    : string; 
+                        criteria // #docl Содержимое добавляемого критерия. </brief> Может принимать значание в виде простой строки, в виде строки сформированной sqlAddStr, в виде sqlQuery. Допускается использование как поименнованных, так и embedded параметров.
+                                    : variant ) : IQuery; // #docl Ссылка на самого себя. </brief>
+  #doc
+   Устанавливает значение макроса уровня запроса. </brief>
+   Значения макропеременных хранятся в самом объекте, и время их жизни определяется 
+   временем жизни объекта. Приоритет области видимости следующий - уровень запроса, 
+   уровень queryManager, уровень интерфейса, глобальный уровень.
+  #end
+  function setMacro( macro // #docl Имя устанавливаемого макроса. </brief> 
+                           : string; 
+                     value : // #docl Значение устанавливаемого макроса. </brief> Может принимать значение в виде: простой строки; строки, сформированной sqlAddStr; sqlQuery.
+                             variant ) : IQuery; // #docl Ссылка на самого себя. </brief>
+  #doc
+    Возвращает, на каком уровне определена макропеременная. </brief>
+      sqlMacroNotDefined - макрос не найден.
+      sqlMacroGlobal       - макрос найден на глобальном уровне. 
+      sqlMacroInterface    - макрос найден на уровне интерфейса.
+      sqlMacroQueryManager - макрос найден на уровне queryManager.
+      sqlMacroQuery        - макрос найден на уровне запроса.
+  #end
+  function isMacroDefined( macro // #docl Имя проверяемого макроса. </brief> 
+                                 : string ) : byte; // #docl На каком уровне определен макрос. </brief> 
+  
+  function setParam // #docl Устанавливает значение поименованного параметра. </brief>
+                   ( name // #docl Имя параметра. </brief>
+                           : string; 
+                     param // #docl Значение параметра. </brief> При установке значение параметра передается по ссылке. Поэтому можно изменить значение оригинальной переменной и вызвать execute.
+                           : SQLParamPtr ) : IQuery; // #docl Ссылка на самого себя. </brief>
+  #doc
+    Выполнить запрос. </brief> 
+    При первом вызове функции и после выполнения addCriteria автоматически 
+    вызывается prepare. Так что можно неоднократно вызывать execute, меняя 
+    значения параметров.
+  #end
+  function execute : IQuery; // #docl Ссылка на самого себя. </brief>
+  function fetch // #docl Выбрать очередную запись запроса. </brief> 
+                   : IQuery; // #docl Ссылка на самого себя. </brief>
+  #doc
+    Возвращает копию выборки запроса. </brief> 
+    Функция сама вызывает execute. 
+    Реализована на механизме таблиц в памяти. После получения выборка полностью автономна.
+  #end
+  function getResultSet : IResultSet; // #docl Ссылка на объект, для управления выборкой. </brief> 
+  #doc
+    Возвращает строку выборки запроса. </brief> 
+    Функция сама вызывает execute. 
+    Работает только если в выборке одна строка, иначе выбрасывает исключения 
+    exNoResult, exMoreResult. После получения строка выборки полностью автономна.
+  #end
+  function getResultRow : IResultRow; // #docl Ссылка на объект, для управления строкой выборки. </brief> 
+  #doc
+    Возвращает одно значение из выборки запроса. </brief> 
+    Функция сама вызывает execute. 
+    Работает только если в выборке одна строка, и одна колонка иначе выбрасывает 
+    исключения exNoResult, exMoreResult, exMoreColumn. 
+  #end
+  function getResultValue : variant; // #docl Значение из выборки запроса. </brief>
+  property row // #docl Текущая строка выборки запроса. </brief> Значения попадают в строку после вызова функции fetch
+               : IResultRow read; 
+  property errorCode // #docl Код ошибки выполнения предыдущей операции. </brief> tsOk и т.д.
+               : integer read;
+  property rowCount // #docl Количество строк в выборке. </brief>
+               : longint read;
+  property params // #docl Параметры запроса. </brief> 
+               : IQueryParams read;
+end;
+
+objInterface IQueryManager; // #docl Интерфейс реализует функциональность по созданию запросов и других вспомогательных объектов. </brief> 
+  function createQuery // #docl Создать запрос. </brief> 
+                      ( iquery // #docl Строка запроса. </brief> Может принимать значание в виде простой строки, в виде строки сформированной sqlAddStr, в виде sqlQuery.
+                               : variant ) : IQuery; // #docl Созданный запрос. </brief>
+  function createOrder // #docl Создать Порядок сортировки. </brief>
+                       : IOrder; // #docl Созданный порядок сортировки. </brief>
+  function createFilter // #docl Создать фильтр. </brief>
+                       : IFilter; // #docl Созданный фильтр. </brief>
+  #doc
+   Устанавливает значение макроса уровня queryManager. </brief>
+   Значения макропеременных хранятся в самом в объекте, и время их жизни определяется 
+   временем жизни объекта. Приоритет области видимости следующий - уровень запроса, 
+   уровень queryManager, уровень интерфейса, глобальный уровень.
+  #end
+  function setMacro( macro // #docl Имя устанавливаемого макроса. </brief> 
+                           : string; 
+                     value : // #docl Значение устанавливаемого макроса. </brief> Может принимать значание в виде простой строки, в виде строки сформированной sqlAddStr, в виде sqlQuery.
+                             variant ) : IQueryManager; // #docl Ссылка на самого себя. </brief>
+  #doc
+    Возвращает, на каком уровне определена макропеременная. </brief>
+      sqlMacroNotDefined - макрос не найден.
+      sqlMacroGlobal       - макрос найден на глобальном уровне. 
+      sqlMacroInterface    - макрос найден на уровне интерфейса.
+      sqlMacroQueryManager - макрос найден на уровне queryManager.
+  #end
+  function isMacroDefined( macro // #docl Имя проверяемого макроса. </brief> 
+                                 : string ) : byte; // #docl На каком уровне определен макрос. </brief> 
+end;
+
+//---------------------------------------//
+// Служебные объекты                     //
+//---------------------------------------//
+
+type 
+  TFilterSeg // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками.
+             = record
+    combination : string; 
+    column : string; 
+    cond : string; 
+    value : variant;
+  end;
+
+  TFilterDef // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками.
+             = array[1..1] of TFilterSeg;
+
+  TOrderSeg // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками.
+            = record
+    column : string; 
+    ascending : string; 
+  end;
+
+  TOrderDef // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками.
+            = array[1..1] of TOrderSeg;
+
+objInterface IQueryManagerInternal; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками.
+  property macroHolder // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками.
+                       : longint read;
+end;
+
+objInterface IQueryInternal; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+  property fields // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                  : longint read;
+  property fieldsDef // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                  : longint read;
+end;
+
+objInterface IResultSetInternal; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+  property handle // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                  : longint read;
+end;
+
+objInterface IResultRowInternal; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+  procedure addColumn // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                     ( col // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                           : longint; 
+                       def // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                           : longint );
+end;
+
+objInterface IFilterInternal; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+  property filterDef // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                     : TFilterDef read;
+  property handle // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                  : longint;
+end;
+
+objInterface IOrderInternal; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+  property orderDef // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                    : TOrderDef read;
+  property handle // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                  : longint;
+end;
+
+vipInterface vipQuery implements IQuery, IQueryInternal; // #docl Служебный объект. </brief> Не предназначен для создания прикладными разработчиками. Создавать только через IQueryManager
+public:
+  constructor create // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                    ( imanager // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                               : IQueryManager; 
+                      iquery // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                               : variant );
+  destructor done; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+end;
+
+vipInterface vipResultCol implements IResultCol; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+public:
+  constructor create // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                    ( iField // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                             : longint; 
+                      iFieldDef // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                             : longint ;
+                      iFields // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                             : IPascalObjectHolder; 
+                      iFieldsDef // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                             : IPascalObjectHolder;
+                      imth // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                             : IPascalObjectHolder );
+end;
+
+vipInterface vipResultColCopy implements IResultCol; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+public:
+  constructor create // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                    ( icol // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                           : IResultCol );
+end;
+
+vipInterface vipResultRow implements IResultRow, IResultRowInternal; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+public:
+  constructor create // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                    ( ifields // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                              : IPascalObjectHolder; 
+                      ifieldsDef // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                              : IPascalObjectHolder ; 
+                      imth // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                              : IPascalObjectHolder ); 
+  constructor createCopy // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                        ( row // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                              : IResultRow );
+end;
+
+vipInterface vipResultSet implements IResultSet, IResultSetInternal;
+public:
+  constructor create( mt : longint );
+  destructor done;
+end;
+
+vipInterface vipQueryParams implements IQueryParams; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+public:
+  constructor create // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                    ( iparams // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                              : IPascalObjectHolder );
+end;
+
+vipInterface vipQueryParam implements IQueryParam; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+public:
+  constructor create // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                    (  iparam // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                             : longint;
+                      iparams // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+                              : IPascalObjectHolder );
+end;
+
+vipInterface vipFilter implements IFilter, IFilterInternal; // #docl Служебный объект. </brief> Не предназначен для создания прикладными разработчиками. Создавать только через IQueryManager
+public:
+  constructor init; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+  destructor done; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+end;
+
+vipInterface vipOrder implements IOrder, IOrderInternal; // #docl Служебный объект. </brief> Не предназначен для создания прикладными разработчиками. Создавать только через IQueryManager
+public:
+  constructor init; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+  destructor done; // #docl Служебный объект. </brief> Не предназначен для использования прикладными разработчиками
+end;
+
+//---------------------------------------------------------------//
+
+#doc
+  Vip-интерфейс, реализующий IQueryManager. </brief>
+  Можно создавать экземпляры этого объекта для использования в каких-то хитрых случая.
+  Однако, в большинстве вариантов достаточно использовать стандартную глобальную переменную
+  queryManager.
+#end
+vipInterface vipQueryManager implements IQueryManager, IQueryManagerInternal;
+public:
+  destructor done; // #docl Деструктор. </brief> 
+end;
+
+#doc
+  Стандартная глобальная переменная, реализующая IQueryManager.
+#end
+var queryManager : IQueryManager(vipQueryManager);
+
+#endif
+

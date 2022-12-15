@@ -130,7 +130,7 @@ Function getBaseDocNrecByNoDoc(_nodoc : string): comp;
 
 function getmcbyGTIN(_gtIN : string) : comp;
 {
-  mylog('getmcbyGTIN(_gtIN : string) : comp; _gtIN = ' + _gtIN)
+  mylog('getmcbyGTIN(_gtIN : string) : comp; _gtIN = ' + _gtIN);
   var _result : comp = 0h;
   if _gtIN = '' then exit;
 
@@ -148,7 +148,7 @@ function getmcbyGTIN(_gtIN : string) : comp;
      }
    }
    if getfirst katmc where ((_result == katmc.nrec)) = tsOK {}
-  mylog('getmcbyGTIN(_gtIN : string) : comp; _result  = ' + _result )
+  mylog('getmcbyGTIN(_gtIN : string) : comp; _result  = ' + _result );
 
  result := _result
 }

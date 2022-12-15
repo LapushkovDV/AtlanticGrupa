@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005015000">
+	<ProjectManager>
+		<ProjectName>SaveFRTest</ProjectName>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="D:\Gal\EXE_API\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>D:\Atl\55_API\exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Gen
+					$[AtlPath]\Source\*
+					..\..\vip_source*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_StatLine.res
+				</ResourceList>
+				<OutputResource>$[GalExe]\user$[ExtRes]</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseName>..\..\..\..\Gal\DataBase\data_los</DatabaseName>
+					<FullLoginName>True</FullLoginName>
+					<HwKeyDirectory>\\BY01-HWKEY01\HWDIR</HwKeyDirectory>
+					<LicFileName>\\by01-hwkey03.oit.local\license\support\V9\license.btr</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<ActiveIndex>1</ActiveIndex>
+		<FileList>
+			<File Name="Vip\FRStrongTest.vip" PosX="73" PosY="125" OpenEditor="True" Active="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="FRSrongTest.prj" Priority="0">
+				<ProjectItems>
+					<ProjectFile FileName="Vip\FRStrongTest.vip"/>
+				</ProjectItems>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<CompileMessengerList>
+			<CompileMessenger Name="D:\Atl\FR_Revolution2\vip_source\FRStrongTest\FRSrongTest.prj" DateTimeStart="42269,4893750463" DateTimeCompile="1,15277798613533E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\Atl\FR_Revolution2\vip_source\FRStrongTest\Fr3\FRAPI_TEST!!FRPreviewSample FRAPI_SaveReport_DS Список МЦ по группам Суммы.fr3" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRStrongTest\Fr3\FRAPI_TEST!!FRPreviewSample FRAPI_SaveReport_DS Список МЦ по группам Суммы.fr3"/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен файл: D:\Atl\FR_Revolution2\vip_source\FRStrongTest\Fr3\FRAPI_TEST!!FRPreviewSample FRAPI_SaveReport_DS Список МЦ по группам.fr3" SourceFileName="D:\Atl\FR_Revolution2\vip_source\FRStrongTest\Fr3\FRAPI_TEST!!FRPreviewSample FRAPI_SaveReport_DS Список МЦ по группам.fr3"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="22.09.2015 11:44:43"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+	</ProjectManager>
+</Viper>

@@ -1,0 +1,103 @@
+Interface FRBindSample2 'FRAPI Bind Report' (,,sci1Esc), Gray;
+Show (,,180,45);
+
+create view
+  var
+    iGr : word;
+    FReport: #TPtr;
+    Reports: LongInt;
+  from
+    KatMC, KatED,
+    GroupMC
+  where
+  ((
+        GroupMC.nrec == KatMC.cGroupMC
+    and KatMC.cEd    == KatEd.Nrec
+    and KatMC.Nrec   == KatOtpEd.cMcUsl
+    and 1            == KatOtpEd.prmc
+
+    and KatMc.Nrec   == SklOst.cmc
+    and SklOst.cPodr == KatPodr.Nrec
+  ));
+
+  DataStream FRAPI_BindReport_DS
+  (
+    [Date_Rep]  Cur_Date;
+    [User_Name] UserName;
+
+    Table GroupMC
+    (
+      [NppGr] iGr++;
+      [Group_Name] GroupMC.Name;
+      [Group_Code] GroupMC.Kod;
+    );
+
+    Table KatMC
+    (
+      [MC_name]  KatMC.Name;
+      [MC_Code]  KatMC.Barkod;
+      [MC_EdIzm] KatEd.Name;
+    );
+
+     Table SklOst
+    (
+      [Podr_Name] KatPodr.Name;
+      [KolMC]     SklOst.Kol;
+     );
+  )
+
+    HandleEvent table GroupMC
+      cmPreProcess:
+      {
+        iGr := 1;
+      }
+    end;
+  end;
+
+embedded sBut OLE;
+show at (51,1,179,44);
+end;
+
+Screen scMenu;
+show at (1,1,50,44);
+fields
+  Reports: Protect;
+Buttons
+  cmFRPreview;
+<<
+  Отчет:
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  <.Встроить .>
+
+>>
+end;
+
+HandleEvent
+
+cmInit:
+{
+  var
+    Reports: array [0..0] of String;
+
+  FReport := FrCreate(FRAPI_BindReport_DS);
+  FRSetParameters(FReport, frEmbeddedID, sBut);
+  FRGetReportNames(FReport, Reports);
+
+  SetEnumList(scMenu, #Reports, Reports);
+}
+
+cmFRPreview:
+{
+  if FROpenReport(FReport, GetEnumString(scMenu, #Reports))
+    if FRPrepareReport(FReport, True)
+      FRShowReport(FReport);
+}
+
+cmDone:
+{
+  FRDestroy(FReport);
+}
+
+end;
+end.

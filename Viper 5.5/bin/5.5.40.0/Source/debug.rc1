@@ -1,0 +1,225 @@
+        (scDebuger..scDebuger)
+        {
+        '~F2~ Точка ост.', cmSetBreakPoint, kbF2;
+        '~F3~ Файлы', cmModules, kbF3;
+        '~F4~ До курсора', cmHere, kbF4;
+        '~F7~ Шаг', cmStepInto, kbF7;
+        '~F8~ Шаг через',cmStep, kbF8;
+        '~F9~ Запустить', cmRun, kbF9;
+        '~F11~ Прервать', cmBreakProgram, kbF11;
+
+        '~Ctrl+O~ Тек.позиц.', cmOrigin, kbCtrlO;
+        '~Ctrl+I~ Интерфейс', cmSendFocusToInterface, kbCtrlI;
+        '~Ctrl+H~ Скрыть', cmHideDebuggerWindow, kbCtrlH;
+        '', cmHideDebuggerWindow, kbEsc;
+
+        '', cmReturnFromFunction, kbAltF8;
+        '', cmEditBreakpoint, kbAltF2;
+        '', cmGotoPrevInstance, kbAltLeft;
+        '', cmGotoNextInstance, kbAltRight;
+
+        '', cmShowProfilerWindow, kbAltP;
+        '', cmSetProfOperator, kbCtrlF9;
+        '', cmSetProfCall, kbCtrlF10;
+        '', cmSetProfRegion, kbCtrlF11;
+        '', cmSetProfOperatorBlock, kbShiftF9;
+        '', cmSetProfOperatorAll, kbAltF9;
+        '', cmSetProfRegionBlock, kbShiftF11;
+        '', cmSetProfRegionAll, kbAltF11;
+
+#include debug.rc2
+#include debug.rc3
+        }
+
+        (scInterface_VDEBUG_OptionsWindow..scInterface_VDEBUG_OptionsWindow)
+        {
+        '~F3~ Выбрать', cmPick, kbF3;
+        '~F7~ Добавить', cmInsert, kbF7;
+        '~F8~ Удалить', cmDelete, kbF8;
+        '~Enter~ Отлаживать', cmDefault, kbEnter;
+        '~Ctrl+R~ Обновить', cmRefreshDebuggerWindow, kbCtrlR;
+        '~Ctrl+I~ Показать интерфейс', cmSendFocusToInterface, kbCtrlI;
+        '~Ctrl+A~ Отлаживать все', cmDebugAll, kbCtrlA;
+        '~Ctrl+D~ Прекратить отладку', cmDetachAllDebuggers, kbCtrlD;
+
+#include debug.rc2
+        '~Alt+O~ Лог', cmShowLogWindow, kbAltO;
+        '~Alt+D~ База данных', cmShowDatabaseWindow, kbAltD;
+        '~Alt+P~ Проф.', cmShowProfilerWindow, kbAltP;
+        '', cmShowStackWindow,       kbAltS;
+        }
+
+        (scInterface_VDEBUG_LogWindow..scInterface_VDEBUG_LogWindow)
+        {
+        '~Ctrl+O~ Открыть файл', cmOpenDebugLog, kbCtrlO;
+        '~Ctrl+C~ Закрыть файл', cmCloseDebugLog, kbCtrlC;
+        '~Ctrl+L~ Пауза/Продолжить', cmToggleDebugLog, kbCtrlL;
+        '~Ctrl+A~ Добавить', cmAddToDebugLog, kbCtrlA;
+        '~Ctrl+E~ Очистить', cmEraseDebugLog, kbCtrlE;
+        '~Ctrl+M~ Сообщения', cmEditMessagesFilter, kbCtrlM;
+
+#include debug.rc2
+        '', cmShowLogWindow, kbAltO;
+        '', cmShowDatabaseWindow, kbAltD;
+        '', cmShowProfilerWindow, kbAltP;
+        }
+
+        (scInterface_VDEBUG_ProfilerWindow..scInterface_VDEBUG_ProfilerWindow)
+        {
+        '~Enter~ Перейти', cmDefault, kbEnter;
+        '~F6~ Окно отл.', cmGotoSource, kbF6;
+        '~F8~ Удалить', cmDelete, kbF8;
+        '~Ctrl+N~ Очистить всё', cmProfilerNew, kbCtrlN;
+        '~Ctrl+R~ Отчет', cmProfilerReport, kbCtrlR;
+//        '~Ctrl+L~ Load', cmProfilerLoad, kbCtrlL;
+//        '~Ctrl+S~ Save', cmProfilerSave, kbCtrlS;
+        '~Ctrl+C~ Очистить группу', cmProfileItemsClear, kbCtrlC;
+        '~Ctrl+V~ Проверить области', cmCheckRegions, kbCtrlV;
+
+#include debug.rc2
+
+        '', cmShowLogWindow, kbAltO;
+        '', cmShowDatabaseWindow, kbAltD;
+        '', cmShowProfilerWindow, kbAltP;
+
+        '', cmMarkRec, kbIns;
+        '', cmMarkAll, kbGrayPlus;
+        '', cmUnMarkAll, kbGrayMinus;
+        '', cmInvertMark, kbGrayMul;
+        }
+
+        (scInterface_VDEBUG_BreakpointsWindow..scInterface_VDEBUG_BreakpointsWindow)
+        {
+        '~Enter~ Перейти', cmDefault, kbEnter;
+        '', cmPick, kbF3;
+        '~F4~ Редакт.', cmEditBreakpointEx, kbF4;
+        '~F6~ Окно отл.', cmGotoSource, kbF6;
+        '~F8~ Удалить', cmDelete, kbF8;
+        '~Ins~ Вкл./Выкл.', cmEnableDisableBreakpoint, kbIns;
+        '~Num+~ Вкл.все', cmEnableAllBreakpoints, kbGrayPlus;
+        '~Num-~ Выкл.все', cmDisableAllBreakpoints, kbGrayMinus;
+        '~Ctrl+Num+~ Вкл.гр', cmEnableBreakpointsGroup, kbCtrlGrayPlus;
+        '~Ctrl+Num-~ Выкл.гр', cmDisableBreakpointsGroup, kbCtrlGrayMinus;
+        '~Ctrl+F8~ Удалить все', cmDeleteAllBreakpoints, kbCtrlF8;
+        '~Ctrl+P~ Найти откр./закр.', cmGotoProfRegion, kbCtrlP;
+        '~Ctrl+V~ Проверить области', cmCheckRegions, kbCtrlV;
+
+#include debug.rc2
+#include debug.rc3
+        }
+
+        (scInterface_VDEBUG_StackWindow..scInterface_VDEBUG_StackWindow)
+        {
+        '~Enter~ Перейти', cmDefault, kbEnter;
+        'F6~ Окно отл.', cmGotoSource, kbF6;
+
+#include debug.rc2
+#include debug.rc3
+        }
+
+        (scInterface_VDEBUG_WatchesWindow..scInterface_VDEBUG_WatchesWindow)
+        {
+        '~F6~ Окно отл.', cmGotoSource, kbF6;
+        '~F7~ Добавить', cmInsert, kbF7;
+        '~F8~ Удалить', cmDelete, kbF8;
+        '~Enter~ Обновить/Модифиц.', cmModifyField, kbEnter;
+        '~Ctrl+R~ Обновить все', cmRefreshDebuggerWindow, kbCtrlR;
+        '', cmTreeOpenNode,  kbCtrlEnter;
+        '', cmTreeCloseNode, kbCtrlBack;
+
+#include debug.rc2
+#include debug.rc3
+        }
+
+        (scInterface_VDEBUG_LocalsWindow..scInterface_VDEBUG_LocalsWindow)
+        {
+        '~F6~ Окно отл.', cmGotoSource, kbF6;
+!        '~Ctrl+Enter~ Open/Close structure', cmOpenCloseStructure, kbCtrlEnter;
+        '~Ctrl+Enter~ Открыть структ.', cmTreeOpenNode, kbCtrlEnter;
+        '~Ctrl+Backspace~ Закрыть структ.', cmTreeCloseNode, kbCtrlBack;
+        '~Enter~ Обновить/Модифиц.', cmModifyField, kbEnter;
+        '~Ctrl+R~ Обновить все', cmRefreshDebuggerWindow, kbCtrlR;
+
+#include debug.rc2
+#include debug.rc3
+        }
+
+        (scInterface_VDEBUG_FilesWindow..scInterface_VDEBUG_FilesWindow)
+        {
+        '~Enter~ Перейти', cmDefault, kbEnter;
+        '~F6~ Окно отл.', cmGotoSource, kbF6;
+        '~Ctrl+R~ Пересканировать пути', cmRefreshDebuggerWindow, kbCtrlR;
+        '~Ctrl+O~ Тек.файл', cmOrigin, kbCtrlO;
+
+#include debug.rc2
+#include debug.rc3
+        }
+
+        (sc_VDEBUG_StdView..sc_VDEBUG_StdView)
+        {
+        '~F1~ Справка',  cmHelp,     kbF1;
+        '~Esc~ Закрыть', cmClose,    kbAltF3;
+
+#include debug.rc2
+        }
+
+        (sc_VDEBUG_Std..sc_VDEBUG_Std)
+        {
+        '~F1~ Справка', cmHelp, kbF1;
+        '~Enter~ Применить', cmOk, kbEnter;
+        '~Esc~ Закрыть', cmClose, kbEsc;
+
+#include debug.rc2
+        }
+
+        (sc_VDEBUG_SelectOne..sc_VDEBUG_SelectOne)
+        {
+        '~F1~ Справка',  cmHelp,    kbF1;
+        '~Enter~ Выбор', cmDefault, kbEnter;
+        '~Esc~ Закрыть', cmClose,   kbEsc;
+
+#include debug.rc2
+        }
+
+        (sc_VDEBUG_Markers..sc_VDEBUG_Markers)
+        {
+        '~F1~ Справка',     cmHelp,          kbF1;
+        '~Esc~ Закрыть',    cmClose,         kbEsc;
+        '~Enter~ Выбрать',  cmDefault,       kbEnter;
+        '~F2~ Сортировка',  cmColumnClicked, kbF2; 
+        '~Ins~ Пометка',    cmMarkRec,       kbIns;
+        '~Num+~ Все',       cmMarkAll,       kbGrayPlus;
+        '~Num-~ Снять',     cmUnMarkAll,     kbGrayMinus;
+        '~Num*~ Инверт',    cmInvertMark,    kbGrayMul;
+
+#include debug.rc2
+        }
+
+        (scInterface_VDEBUG_DatabaseWindow..scInterface_VDEBUG_DatabaseWindow)
+        {
+        '~F1~ Справка',     cmHelp,                kbF1;
+        '~Enter~ Карточка', cmDefault,             kbEnter;
+        '~Alt+R~ Обновить', cmShowDatabaseWindow,  kbAltR;
+        '', cmPrev,                                kbShiftF6;
+
+#include debug.rc2
+#include debug.rc3
+        }
+
+        (scAQADebuger..scAQADebuger)
+        {
+        '~F2~ Точка останова', cmSetBreakPoint, kbF2;
+        '~F7~ Шаг', cmStepInto, kbF7;
+        '~F8~ Шаг через',cmStep, kbF8;
+        '~F9~ Запустить', cmRun, kbF9;
+
+        '~Ctrl+O~ Тек.позиц.', cmOrigin, kbCtrlO;
+        '~Alt+F5~ Скрыть',cmUserScreen,kbAltF5;
+
+        '', cmReturnFromFunction, kbAltF8;
+        '', cmEditBreakpoint, kbAltF2;
+        '', cmGotoPrevInstance, kbAltLeft;
+        '', cmGotoNextInstance, kbAltRight;
+#include debug.rc2
+#include debug.rc3
+        }

@@ -1,0 +1,399 @@
+// ----------------------------------------------------------
+// Atlantic Grupa - Yakovlev, Samusenko
+// Галактика 9.1 - обмен бизнес-документами
+// интерфейс pre- и post-обработки данных для экспорта/импорта
+// (c) 2015 корпорация Галактика
+// ----------------------------------------------------------
+#Include ObjiexpImpScript_droga.vih
+
+
+
+//------------------------------------------------------------------------------
+// Обработчик точки расширения epBeforeExport
+// Всегда должен возвращать TRUE для вызова других обработчиков.
+handler with replace default_beforeExport on extensionPoint epBeforeExport (cIEHead : comp; sFileName : string) [100]
+action
+{
+   var ifc : ExpImpScript_Droga;
+   ifc.BeforeExport (cIEHead, sFileName);
+   result := true;
+}
+
+//------------------------------------------------------------------------------
+// Обработчик точки расширения epAfterExport
+// Всегда должен возвращать TRUE для вызова других обработчиков.
+handler with replace default_afterExport on extensionPoint epAfterExport (cIEHead : comp; sFileName : string) [100]
+action
+{
+   var ifc : ExpImpScript_Droga;
+   ifc.AfterExport (cIEHead, sFileName);
+   result := true;
+}
+
+//------------------------------------------------------------------------------
+// Обработчик точки расширения epBeforeImport
+// Всегда должен возвращать TRUE для вызова других обработчиков.
+handler with replace default_beforeImport on extensionPoint epBeforeImport (cIEHead : comp; sFileName : string) [100]
+action
+{
+   var ifc : ExpImpScript_Droga;
+   ifc.BeforeImport (cIEHead, sFileName);
+   result := true;
+}
+
+//------------------------------------------------------------------------------
+// Обработчик точки расширения epAfterImport
+// Всегда должен возвращать TRUE для вызова других обработчиков.
+handler with replace default_afterImport on extensionPoint epAfterImport (cIEHead : comp; sFileName : string) [50]
+action
+{
+   var ifc : ExpImpScript_Droga;
+   ifc.AfterImport (cIEHead, sFileName);
+   result := true;
+}
+
+//------------------------------------------------------------------------------
+// ObjExpImpScript - вызвается интерфейсами до/после экспорта/импорта документов.
+// Сторонние разработчики могут написать свои реализации этого объектного интерфейса,
+// чтобы привести данные в файле к нужному формату
+
+
+interface expImpScript_droga;
+  const
+    //fdateXML  = 'YYYY-MM-DD';
+    //fdateDBF  = 'YYYYMMDD';
+    cAtrPath  = comp(03E8000000000053h); //  AttrNam.NREC для "ECOD папка OUT" к KatOrg
+    //sellerILN =  '4607043107459'; // GLN Дрога Колинска
+    //cNoteR1   = comp(03E800000000004Fh); //Получено полностью
+    //cNoteR2   = comp(03E8000000000050h); // Получено частично
+  end;
+ table struct tmpTableSSCCP
+  (
+     PALLETSSCC : string
+    ,nppSSCC           : word
+  )
+  with index
+  (
+    ind0 = PALLETSSCC
+  )
+  ;
+  Table Struct SpSoprWasInGroupPos
+  (
+   cSpSopr : comp
+  )
+  with index
+  (
+   ind0 = cSpSopr
+  )
+  ;
+  Table Struct SpStepWasInGroupPos
+  (
+   cSpStep : comp
+  )
+  with index
+  (
+   ind0 = cSpStep
+  )
+  ;
+  create view
+  var
+   _logGlob : string = '';
+   sGLN: string;
+   cAtrMc: comp;
+   _cKsSrc : comp;
+   _nppSPSOPR : word = 0;
+   baseDocnrec : comp;
+     _coAttr_NeedInvoic
+   , _coAttr_EDIInvoicLen
+   , _coAttr_EDIInvoicSSCC
+   , _coAttr_EdiDesadvBox
+   , _coAttr_EDI_Invoic_Metro
+   , _coAttr_EDI_MakeLabelInXML : double;
+
+   _coAttr_EDI_Invoic_Len_UPAKOVKA : string = '';
+    _needConsignor        : boolean = false;
+    _needCarrier          : boolean = true;
+    _needUltimateCustomer : boolean = false;
+    _needPackageReference : boolean = false;
+    _isInvoice : boolean = false;
+  as select * from  ieHead, AttrVal atrGLN
+  , katOrg
+  , katOtpEd
+  , katOtpEd katOtpEdAkt
+  , katOtpEd katOtpEdUch
+  , katOtped katOtpedShtuka
+  , kated
+  , katMC
+  , katOrg orgImp
+  , addressN
+  , sterr
+  , basedoc
+  , stepdoc
+  , spstep
+  , basedoc base_num
+  , tDoc
+  , schfact
+  , katsopr
+  , SpSopr
+  , SpSopr SpSopr2
+  , katusl  //desAdv
+  , lastNumD
+  , katbank
+  , klval
+  , katpodr
+  , katparty
+  , dogovor
+  , dogovor contract
+  , spdocs
+  , katpayment
+  , katsopr korsopr
+  , spsopr korspec
+  , schfact korfact
+  , SPSCHF SPSCHF_PercNDS
+  , KatSopr KsSrc
+  , KatSopr KsSrc1
+  , schfact SfSrc
+  , tmpTableSSCCP
+  , SpSoprWasInGroupPos
+  , SpStepWasInGroupPos
+  , StepDoc StepDocSTS
+
+  , ATL_PickingRep_HEAD
+  , ATL_PickingRep_Spec
+
+  , ATL_MERCURY_HEAD
+  , ATL_MERCURY_SPEC
+  , ATL_MERCURY_SPEC   ATL_MERCURY_SPEC_2
+  where ((
+    coGetTune('EI.Ecod.AttrGLN') == atrGLN.cattrnam    //  AttrNam.NREC для "GLN магазина МЕТРО" к KatOrg(tn#1418)
+    and sGLN == AtrGLN.vstring (noindex)
+    and AtrGLN.cRec == KatOrg.nRec
+
+    and 1 == KatOtpEdAkt.PrMc and KatOtpEd.cMcUsl == KatOtpEdAkt.cMcUsl and 1 == KatOtpEdAkt.Akt   // Активная Ед.Изм
+
+  //  and  idAtrMC   == AtrCodeMC.CATTRNAM    //  AttrNam.NREC для внеш.атрибута  к KatMc
+  //  and  tEcOrder.BItemCode == AtrCodeMC.vString (noindex)
+
+    and katSopr.nRec == spSopr.cSopr
+    and katSopr.nRec == ATL_MERCURY_HEAD.cSopr
+    and spSopr.nrec == ATL_MERCURY_SPEC.cSpSopr
+    and spSopr.nrec == ATL_MERCURY_SPEC_2.cSpSopr
+
+    and 1 == KatOtpEdUch.prMC and katMc.nRec == katOtpEdUch.cMcUsl and 1 == katOtpEdUch.koef    //Учетная Ед.Изм
+  //and SpSopr.cSpStep==SpStep.nRec
+
+    and ieHead.nrec == eximLogT.cLog
+    and 2 == eximLogT.status
+
+    and if(orgImp.cjuridicaladdr > 0, orgImp.cjuridicaladdr, orgImp.cpostaddr) == addressN.nrec
+    and addressN.csterr == sterr.nrec
+
+    and dogovor.cdogovor == contract.nrec
+    and dogovor.tidk == spdocs.tidk
+    and dogovor.nrec == spdocs.cdoc
+
+    and katsopr.cadoc == korsopr.nrec
+    and spsopr.cadocsp == korspec.nrec
+    and korsopr.cschfact == korfact.nrec
+    and _cKsSrc == KsSrc1.nrec
+    and KsSrc1.cschfact == SfSrc.nrec
+
+  ));
+
+  form checkXMLForm('EcodChkXML.OUT', 'ecodCheckXML') with novisual;
+
+  var
+    wasErrorImp, wasImportedBefore, isCorrect: boolean;   //были ошибки  при импорте , был прерван импорт ,
+    xmlDoc, hDoc, hPartDoc, hAttrDoc, hValueDoc: longint; // Handle XML-документа
+    nodeList, nodeListLen, partDoc, partDocLen, attrDoc, attrDocLen, valueDoc, valueDocLen: longint;  //
+    i, j, k, totalQty, posQty: longInt ; // счетчики hImpFiles
+    totalSum, grossSum, totalTax: double;  //Сумма по документу
+    _sum_m, _tax_m, _gross_m, _sum_p, _tax_p, _gross_p: double;
+    posExt: byte;
+    log_path, logErr, sFileMask, sFileImp, sFileErr, sFileArh, sPathArch, sFileTmp, _descr: string; //путь и содержание журнала  обрабатываемый файл
+    sellerILN, buyerILN, deliveryILN: string; // GLN
+    UPD_type, CodeByBuyer: string; // Для заполнения УПД
+    AmountInPack: longint;
+    TypeOfDoc: longInt; // УПД
+    extAttr: iExtAttr;
+  //  oStatLog : vipStatLog;
+    dat: date;
+    npp: word;
+    str, tmp, hdr, num: string;
+    unit, code, prev, ship: comp;
+    qty, len, dbf_handle, nAll, nTmc, nBar: longint;
+    prc: double;
+  // end var
+
+    file fLog;   // переменная типа файл
+    file fTmc;
+    file fEan;
+    file fSrc;
+    file fDst;
+Procedure mylog(_mylog: string);
+{
+  if _logGlob = '' then
+   {
+    _logGlob := GetStringParameter('Files','OutputFilesDirectory',0)+'\ExportXML_'+datetostr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS')+'.log';
+   }
+  logstrtofile(_logGlob, DateToStr(Cur_date,'YYYY.MM.DD')+' '+timetostr(Cur_time,'HH:MM:SS')+':'+ _mylog);
+
+}
+function GetKsSrc(_cRec: comp): comp;
+{
+  result := 0h;
+  if getfirst fastfirstrow KsSrc where ((_cRec == KsSrc.nrec)) = tsOK
+   then
+   {
+     if KsSrc.cADoc <> 0h
+      then result := GetKsSrc(KsSrc.cAdoc)
+      else result := KsSrc.nrec
+   }
+}
+#include ecod_func.vip     // Функции Конвертации из ECOD
+#include sts_func.vpp      // Функции конвертации из STS Logistic
+
+// эта процедура вызвается до того, как файл для экспорта будет открыт
+// sFileName - полный путь к файлу
+// cIEHead - ссылка на настройку экспорта
+public procedure beforeExport(cIEHead : comp; sFileName : string);
+{
+  if (cIEHead = 0)  sFileName := '';   // Чтобы не было предупреждений при компиляции
+}
+
+// эта процедура вызвается после того, как файл с результатами экспорта закрыт
+// sFileName - полный путь к файлу
+// cIEHead - ссылка на настройку экспорта
+procedure afterExport(cIEHead: comp; sFileName: string);
+{
+//if (cIEHead = 0)  sFileName := '';   // Чтобы не было предупреждений при компиляции
+
+  if (getfirst ieHead where((cIEHead == nRec)) <> tsOk) {
+    message('Не найдена настройка экспорта !');
+    exit;
+  }
+  else
+    if (pos('ecod', loCase(IEHead.name)) = 0) and (pos('sts', loCase(IEHead.name)) = 0) exit; // если не ECOD или STS в названии настройки
+  //if(IEHead.MessType <> 1 ) exit; // (ieDBF = 1) если не DBF-формат, то на выход
+  log_path := sPathArch := ieHead.messageDir;
+  log_path += 'Log\';
+  if not existFile(log_path) createDirectory(log_path);
+  sPathArch += 'Arch\';
+  if not existFile(sPathArch) createDirectory(sPathArch);
+  tmp := translatePath('%USERPROFILE%')+ '\temp\';
+  if not existFile(tmp) createDirectory(tmp);
+  case ieHead.tipDoc of
+  1: { //ДО
+    #include sts_doc.vpp   // постобработка basedoc для STS Logistics
+  }
+  2: { //Накладная
+    case ieHead.subTipDoc of
+    201: { // накладная на продажу - экспорт в XML
+      if not dbf2doc(sFileName) { // загружаем в tDoc
+        message('Нет данных для экспорта!');
+        exit;
+      }
+      doc2xml(tDoc.wType); // сохраняем в XML DesAdv.xml/ invoice.xml
+    }
+    600: { // накладная на внутреннее перемещение Экспорт в order_in.csv
+    #include sts_doc.vpp
+    }
+    end; //case
+  }
+  3, 25: { //СФ, договор - экспорт в XML
+      if not dbf2doc(sFileName) { // загружаем dbf-файл в tDoc
+        message('Нет данных для экспорта!');
+        exit;
+      }
+      doc2xml(iehead.tipDoc); // сохраняем в XML invoice.xml/ pricat.dbf
+  }
+  9: {
+    #include sts_org.vpp // пост-обработка katorg для STS Logistics
+  }
+  10: {
+    #include sts_tmc.vpp // пост-обработка katmc для STS Logistics
+  }
+  end; //case
+  if (ieHead.tipDoc > 1 ){
+    checkXMLform.write(' ');
+    checkXMLform.putEvent(feBreak);
+    checkXMLform.showFile('ecodChkXML.out - Протокол экспорта: '+ sFileName); //показать протокол
+    checkXMLform.abortForm;
+  }
+}
+
+// эта процедура вызывается до того, как файл с данными для импорта будет открыт
+// sFileName - полный путь к файлу
+// cIEHead - ссылка на настройку импорта
+procedure beforeImport(cIEHead: comp; sFileName: string);
+{
+  if (getfirst ieHead where ((cIEHead == nRec)) <> tsOk) {
+    message('Не найдена настройка экспорта !');
+    exit;
+  }
+  else
+  if (pos('ecod', loCase(ieHead.name)) = 0) and (pos('sts', loCase(ieHead.name)) = 0) exit; // если не ECOD или STS в названии настройки
+  wasImportedBefore := false;
+//if (not ExistFile(sFileName)) exit;
+  log_path := sPathArch := ieHead.messageDir;
+  if (pos('sts', loCase(ieHead.name)) > 0) { // STS -> Droga
+    log_path += 'Log\';
+    if not existFile(log_path) createDirectory(log_path);
+    sPathArch += 'Arch\';
+    if not existFile(sPathArch) createDirectory(sPathArch);
+    tmp := translatePath('%USERPROFILE%')+ '\temp\';
+    if not existFile(tmp) createDirectory(tmp);
+    case ieHead.subTipDoc of
+    101: sFileMask := 'rct_*.csv';
+    201: sFileMask := 'ord_*.csv';
+    end; //case
+  }
+  case ieHead.tipDoc of
+  1: { // ДО
+    if (pos('sts', loCase(ieHead.name)) > 0) { // STS -> Droga
+      #include sts_imp.vip
+    }
+  } // ДО
+  2: {// накладная
+      #include sts_rct.vip
+  }
+  end; //case
+} //procedure BeforeImport
+
+// эта процедура вызывается после того, как файл с данными для импорта будет закрыт
+// sFileName - полный путь к файлу
+// cIEHead - ссылка на настройку импорта
+procedure afterImport(cIEHead : comp; sFileName : string);
+{
+  if (getfirst ieHead where ((cIEHead == nRec)) <> tsOk) {
+    message('Не найдена настройка экспорта !');
+    exit;
+  }
+  else
+  if (pos('sts', loCase(ieHead.name)) > 0) { // STS -> Droga
+    //очистка dbf файла после импорта
+    dbf_handle := dbfOpen(sFileName, stOpen);
+    if (dbf_handle != 0) {
+      dbfDeleteAllRecords(dbf_handle); //
+      dbfClose(dbf_handle);
+    }
+        //message('after import!');
+  }
+  else
+  if (pos('ecod', loCase(ieHead.name)) > 0) { // если ECOD в названии настройки
+  // Если успешный импорт Order.xml удаляем Order.xml
+    if readMyDsk(wasImportedBefore, 'wasImportedBefore_EcodOrders', false)
+      if existFile(sFileName) {}
+        //if not deleteFile(sFileName) message(''#3' Ошибка удаления DBF: '+sFileName);
+  }
+  if (cIEHead = 0) sFileName := '';   // Чтобы не было предупреждений при компиляции
+}
+end. // интерфейс
+
+//Форма для протокола
+.form 'ecodCheckXML'
+.nameInList 'Форма для протокола'
+.{
+^
+.}
+.endform

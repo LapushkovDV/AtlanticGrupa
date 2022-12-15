@@ -1,0 +1,80 @@
+#include RandomGenerator.vih
+
+vipinterface TestRandomTable licensed (free);
+
+interface TestRandomTable 'Нагрузочный тест FastReport';
+
+  var rnd: RandomGenerator;
+
+  table struct TestData
+  (
+    RowNum    : longint,
+    NoDoc     : string,
+    PartMajor : string,
+    PartMinor : string,
+    DateDoc   : date,
+    SummaDoc  : double,
+    PriceDoc  : double,
+    OrgName   : string
+  );
+
+  create view as select * from TestData;
+
+  dataStream TestStream
+    (
+      table TestData
+      (
+        TestData.RowNum;
+        TestData.NoDoc;
+        TestData.PartMajor;
+        TestData.PartMinor;
+        TestData.DateDoc;
+        TestData.SummaDoc;
+        TestData.PriceDoc;
+        TestData.OrgName;
+      );
+    )
+  end;
+
+  Screen scr '';
+    buttons
+      cmValue1;
+<<
+    Генерация данных через table struct и RandomGenerator
+
+    <.  Start FastReport  .>
+>>
+  end;
+
+  procedure CreateTestData;
+  {
+    var i : longint;
+
+    StartNewVisual(vtIndicatorVisual, vfBreak + vfConfirm + vfTimer, 'CreateTestData', 10000);
+    for( i:=0; i<10000; i++)
+    {
+      if (not NextVisual)
+        break;
+
+      TestData.RowNum    := i;
+      TestData.NoDoc     := rnd.NextRandomCode(3);
+      TestData.PartMajor := 'Part major '+rnd.NextRandomNumber(10);
+      TestData.PartMinor := 'Part minor '+rnd.NextRandomNumber(100);
+      TestData.DateDoc   := rnd.NextRandomDate(date(01,01,1950), date(31,12,2100));
+      TestData.SummaDoc  := rnd.NextRandomNumber(100000000)/100;
+      TestData.PriceDoc  := rnd.NextRandomNumber(100000000)/100;
+      TestData.OrgName   := rnd.NextRandomText;
+      insert current TestData;
+    }
+    StopVisual('', 0);
+  }
+
+  handleEvent
+    cmInit:
+      CreateTestData;
+
+    cmValue1:
+      RunFReport(TestStream,'',false);
+  end;
+
+end.

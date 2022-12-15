@@ -1,0 +1,107 @@
+interface BiffExportParamDialog 'Настройки Excel' (,, scAtlTreeMark) escclose, alwaysReturn, Gray;
+  show at (, , 35, 22 );
+
+  var
+    AllPages        : Boolean;
+    Pages           : String;
+    PageBreak       : Boolean;
+    PagesPerSheet   : LongInt;
+    ExportOpt       : Byte;
+    FileOpt         : Byte;
+    Params      : String;
+
+parameters Params;
+
+screen ActionsParameters 'Параметры';
+  bevel b1{1, 0, 34, 5, bsRaised, bsFrame};
+  bevel b2{1, 5, 34, 10, bsRaised, bsFrame};
+  bevel b3{1, 10, 34, 15, bsRaised, bsFrame};
+  bevel b4{1, 15, 34, 20, bsRaised, bsFrame};
+  fields
+    AllPages        : NoProtect;
+    Pages           : NoProtect;
+    PageBreak       : NoProtect;
+    PagesPerSheet   :[LIST
+      0 'Максимум страниц на лист',
+      1 '500 страниц на лист',
+      2 '100 страниц на лист',
+      3 '50 страниц на лист',
+      4 '10 страниц на лист',
+      5 'одна страниц на лист'] Protect;
+
+    ExportOpt       : NoProtect;
+    FileOpt : NoProtect;
+
+    buttons
+    cmApply, default;
+    cmCancel;
+
+  <<
+
+    [.] Все страницы отчета`
+   Страницы:
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+    (.) Ликвидировать разрывы страниц`
+    (.) Сохранить разметку страниц:`
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+   [.] Картинки`
+   [.] Удалять пустые строки`
+   [.] Экспортировать формулы`
+
+
+   [.] Отображать диалог настроек`
+   [.] Открыть после экспорта`
+
+   <. Сохранить .> <. Отмена .>
+
+    >>
+  end;
+
+handleevent
+
+cmInit:
+{
+  Params := '';
+
+  AllPages := true;
+
+  ExportOpt := ExportOpt or 1;
+  ExportOpt := ExportOpt or 2;
+  ExportOpt := ExportOpt or 4;
+
+  FileOpt := FileOpt or 1;
+}
+
+cmApply:
+{
+  Params := 'Pages=' + Pages + ';PageBreaks=' + String(PageBreak);
+
+  case PagesPerSheet of
+    0: Params := Params + ';PagesPerSheet=-1';
+    1: Params := Params + ';PagesPerSheet=500';
+    2: Params := Params + ';PagesPerSheet=100';
+    3: Params := Params + ';PagesPerSheet=50';
+    4: Params := Params + ';PagesPerSheet=10';
+    5: Params := Params + ';PagesPerSheet=1';
+  end;
+
+  Params := Params + ';Picture=' + String((ExportOpt and 1) = 1);
+  Params := Params + ';DeleteEmptyRows=' + String((ExportOpt and 2) = 2);
+  Params := Params + ';Formulas=' + String((ExportOpt and 4) = 4);
+  Params := Params + ';ShowDialog=' + String((FileOpt and 1) = 1);
+  Params := Params + ';OpenAfterExport=' + String((FileOpt and 2) = 2);
+
+  CloseInterface(cmOk);
+}
+
+cmCancel:
+{
+  CloseInterface(cmCancel);
+}
+
+end;
+end.

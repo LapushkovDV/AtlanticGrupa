@@ -1,0 +1,82 @@
+//******************************************************************************
+// Droga - Samusenko                                    (c) корпорация Галактика
+// Галактика 8.10 - обмен бизнес-документами  Экспорт
+// STS - KatMC - Каталог МЦ
+// постобработка katmc для STS Logistics
+//******************************************************************************  
+  _try {
+    writeLog('Обработка файла: '+ sFileName, 1);
+    fSrc.openFile(sFileName, stOpenRead);
+    fSrc.seek(0);
+    tmp := translatePath('%USERPROFILE%')+ '\temp\';
+    fTmc.openFile(tmp+ 'item_in.csv', stCreate);
+    fEan.openFile(tmp+ 'bar_in.csv', stCreate);
+    qty := 0;
+    prev := -1;
+    nAll := nTmc := nBar := 0;
+    hdr := tmp := '';
+    while not fSrc.eof() do {
+      nAll++;
+      fSrc.readLn(str);
+      code := comp(parseWord(str, 1, ';'));
+      if getfirst katmc where ((code == nrec)) != tsOk continue; // mc not found - cann't be
+      if katmc.barkod2 = ''
+        update current katmc set barkod2 = extAttr.sGetAttr(coKatMC, katmc.nrec, 'Код SAPа');
+      if katmc.barkod2 = '' continue; // no need without SAP code
+      unit := comp(parseWord(str, 2, ';'));
+      ship := comp(parseWord(str, 3, ';'));
+      nBar++;
+      fEan.writeLn('INFOSK;'+ katmc.barkod2+ ';'+ parseWord(str, 5, ';')+ ';'+ unit2iso(extAttr.sGetAttr(coKated, if(ship > 0, ship, unit), 'Код')));
+      if code <> prev {
+        prev := code;
+        if (hdr <> '') and (tmp = '') fTmc.writeLn(hdr+ ';;;;;;;;;;;E_Pal'); //нет альтернативной единицы
+        hdr := 'INFO;ATL;'+ katmc.barkod2+ ';'+ oem2ansi(KATMC.NAME)+ ';'+ string(KATMC.DEFGODNDAYS,0,0)+ ';'+ unit2iso(extAttr.sGetAttr(coKated, unit, 'Код'))+ ';'; //'796;'
+        hdr += doubletostr(KATMC.MASSA, '667[|,]~999')+ ';'+ doubletostr(KATMC.SIZEX, '667[|,]~999;')+ doubletostr(KATMC.SIZEZ, '667[|,]~999;')+ doubletostr(KATMC.SIZEY, '667[|,]~999;');
+        hdr += 'KGM;MTR;';//'166;006;';
+        tmp := '';
+      } //new mc
+      qty := word(parseWord(str, 6, ';'));
+      if (qty = 1) //активная отпускная
+        qty := word(parseWord(str, 4, ';'));
+      if (qty > 1) {
+        tmp := unit2iso(extAttr.sGetAttr(coKated, ship, 'Код'))+ ';'+ string(qty)+ ';;;;;;;;;;E_Pal'; //'796;'
+        nTmc++;
+        fTmc.writeLn(hdr+ tmp);
+        //tmp := '';
+      }
+    }
+    if (hdr <> '') and (tmp = '') {
+      nTmc++;
+      fTmc.writeLn(hdr+ ';;;;;;;;;;;E_Pal'); //нет альтернативной единицы
+    }
+  }
+  _except
+    on ExFile: {
+      writeLog('Ошибка работы с файлом выгрузки '''+ sFileName+ '''', 1);
+    }
+  _finally {
+    fTmc.close;
+    fEan.close;
+    fSrc.close;
+    writeLog('Обработано строк: '+ string(nAll)+ '. Выгружено записей о товарах: '+ string(nTmc)+ ', записей о штрих-кодах: '+ string(nBar), 1);
+  }
+  if existFile(sFileName) {
+    writeLog('Файл: '+ sFileImp+ ' обработан', 1);
+    qty := 0;
+    len := 6;
+    if (getfirst lastNumD where ((coKatMC==lndType and ieHead.name==lndSubT)) = tsOk) {
+      qty := word(lastNumD.lndNum);
+      len := length(lastNumD.lndNum);
+      if qty >= longint(lpadch('', '9', len))
+        qty := 0;     
+    }
+    else insert lastNumD set lndType = coKatmc, lndSubT = IEHead.name;
+    qty += 1;
+    update current lastNumD set lndNum = lpadch(string(qty), '0', len);
+    tmp := translatePath('%USERPROFILE%')+ '\temp\';
+    copyMoveFile(tmp+ 'item_in.csv', ieHead.messageDir+ 'item_in'+ lastNumD.lndNum+ '.csv', true,
+      ecmfClientFrom+ecmfClientTo);
+    copyMoveFile(tmp+ 'bar_in.csv', ieHead.messageDir+ 'bar_in'+ lastNumD.lndNum+ '.csv', true,
+      ecmfClientFrom+ecmfClientTo);
+    deleteFile(sFileName);
+  }

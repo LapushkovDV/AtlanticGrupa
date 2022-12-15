@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005010000">
+	<ProjectManager>
+		<ProjecName>Sample Project</ProjecName>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Program Files (x86)\Galaktika Corp\Viper 5.5\bin\5.5.12.0</AtlDir>
+				<ClearResource>True</ClearResource>
+				<ComponentName>$[FileName]</ComponentName>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\SOURCE
+					$[AtlPath]\SOURCE\SYSOBJIFC
+					$[ProjectPath]\vip
+				</IncludeList>
+				<OutputResource>$[ProjectPath]\Start\Sample.res</OutputResource>
+				<SubServientResource>$[ProjectPath]\Start\temp\sample_viper\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[ProjectPath]\Start\temp\sample_viper\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[ProjectPath]\Start\temp\sample_viper</OutputDirectory>
+				<TemporaryDirectory>$[ProjectPath]\Start\temp\sample_viper</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<DatabaseID>test</DatabaseID>
+				<SqlServerParameters>GalExpress</SqlServerParameters>
+				<DatabaseDriver>2</DatabaseDriver>
+				<DatabaseName></DatabaseName>
+			</VipDatabase>
+			<VipLicense>
+				<HwKeyDirectory>
+					\\by01-hwkey01\HWDIR
+				</HwKeyDirectory>
+				<LicFileName>
+					\\by01-hwkey01\License\support\V9\license.ora
+				</LicFileName>
+			</VipLicense>
+			<VipFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+				<PackFR>True</PackFR>
+			</VipFR>
+			<VipDebug>
+				<ActiveConfigure>по умолчанию</ActiveConfigure>
+				<DebugConfigList>
+					<DebugConfig Name="по умолчанию">
+						<AppFileName>$[AtlPath]\Exe\vip.exe</AppFileName>
+						<AppCatalog>$[ProjectPath]\Start</AppCatalog>
+						<AppParameters>/c:StartSample.cfg</AppParameters>
+					</DebugConfig>
+				</DebugConfigList>
+			</VipDebug>
+		</CoreVip>
+		<ActiveIndex>0</ActiveIndex>
+		<ProjectItems>
+			<ProjectCompileFile FileName="Source\Sample.prj">
+				<ProjectItems>
+					<ProjectFolder Name="Hello">
+						<ProjectItems>
+							<ProjectFile FileName="Source\vip\HelloWorld.vip"/>
+							<ProjectFile FileName="Source\vip\HelloDebug.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="Persons">
+						<ProjectItems>
+							<ProjectFile FileName="Source\vip\PrintPersonPass.vih"/>
+							<ProjectFile FileName="Source\vip\PrintPersonPass.vip"/>
+							<ProjectFile FileName="Source\vip\SelectPersons.vih"/>
+							<ProjectFile FileName="Source\vip\SelectPersons.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFolder Name="Random">
+						<ProjectItems>
+							<ProjectFile FileName="Source\vip\RandomGenerator.vih"/>
+							<ProjectFile FileName="Source\vip\RandomGenerator.vip"/>
+							<ProjectFile FileName="Source\vip\TestRandomDataSet.vip"/>
+							<ProjectFile FileName="Source\vip\TestRandomTable.vip"/>
+						</ProjectItems>
+					</ProjectFolder>
+					<ProjectFile FileName="Source\vip\KatDocPrint.vip"/>
+				</ProjectItems>
+			</ProjectCompileFile>
+		</ProjectItems>
+	</ProjectManager>
+</Viper>

@@ -1,0 +1,14 @@
+#ifndef _stdMenu_
+#define _stdMenu_
+
+#Component ""
+
+Menu _LOGO_VERT;  // фальшивые меню для деска
+Menu _LOGO_HOR;
+Menu _DOWN_HOR;
+Menu _UP_HOR;
+
+Menu Vspom;
+
+#endif
+

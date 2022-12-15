@@ -1,0 +1,140 @@
+Interface FRStrongTest 'FRAPI Preview Report' (,,sci1Esc), Gray;
+Show (,,36,10);
+
+create view
+  var
+    iGr : word;
+    FReport: #TPtr;
+    Reports: LongInt;
+    IsClearLastReport: Boolean;
+    ReportCount: LongInt;
+  from
+    KatMC, KatED,
+    GroupMC
+  where
+  ((
+        GroupMC.nrec == KatMC.cGroupMC
+    and KatMC.cEd    == KatEd.Nrec
+    and KatMC.Nrec   == KatOtpEd.cMcUsl
+    and 1            == KatOtpEd.prmc
+
+    and KatMc.Nrec   == SklOst.cmc
+    and SklOst.cPodr == KatPodr.Nrec
+  ));
+
+  DataStream FRAPI_SaveReport_DS
+  (
+    [Date_Rep]  Cur_Date;
+    [User_Name] UserName;
+
+    Table GroupMC
+    (
+      [NppGr] iGr++;
+      [Group_Name] GroupMC.Name;
+      [Group_Code] GroupMC.Kod;
+    );
+
+    Table KatMC
+    (
+      [MC_name]  KatMC.Name;
+      [MC_Code]  KatMC.Barkod;
+      [MC_EdIzm] KatEd.Name;
+    );
+
+     Table SklOst
+    (
+      [Podr_Name] KatPodr.Name;
+      [KolMC]     SklOst.Kol;
+     );
+  )
+
+    HandleEvent table GroupMC
+      cmPreProcess :
+      {
+        iGr := 1;
+      }
+    end;
+  end;
+
+Screen sBut;
+fields
+  Reports: Protect;
+  IsClearLastReport: NoProtect;
+  ReportCount: NoProtect;
+Buttons
+  cmFRPreview;
+  cmFRSave;
+<<
+  Отчет:
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    [.] Очищать отчет перед формированием`
+
+    .@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+  <.Показать .> <. Сохранить .>
+
+>>
+end;
+
+HandleEvent
+
+cmInit:
+{
+  var
+    sReports: array [0..0] of String;
+
+  IsClearLastReport := True;
+
+  FReport := FrCreate(FRAPI_SaveReport_DS);
+  FRGetReportNames(FReport, sReports);
+
+  ReportCount := Count(sReports);
+
+  SetEnumList(sBut, #Reports, sReports);
+}
+
+cmFRPreview:
+{
+  if FROpenReport(FReport, GetEnumString(sBut, #Reports))
+  {
+    StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Выполняется формирование отчета...', 0);
+
+    var i: Longint;
+    for(i := 0; i < ReportCount; i++)
+    {
+      FRPrepareReport(FReport, False);
+      NextVisual();
+    }
+
+    FRShowReport(FReport);
+    StopVisual('', 0);
+  }
+}
+
+cmFRSave:
+{
+  if FROpenReport(FReport, GetEnumString(sBut, #Reports))
+    if FRSetParameters(FReport, frExportBiff, '')
+    {
+      StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Выполняется формирование отчета...', 0);
+
+      var i: Longint;
+      for(i := 0; i < ReportCount; i++)
+      {
+        FRExportReport(FReport, frExportBiff, '');
+        NextVisual();
+      }
+
+      StopVisual('', 0);
+    }
+}
+
+
+cmDone:
+{
+  FRDestroy(FReport);
+}
+
+end;
+end.

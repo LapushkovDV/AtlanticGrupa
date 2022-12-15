@@ -1,0 +1,119 @@
+Interface FRPreviewSample 'FRAPI Preview Report' (,,sci1Esc), Gray;
+Show (,,35,8);
+
+create view
+  var
+    iGr : word;
+    FReport: #TPtr;
+    Reports: LongInt;
+    IsClearLastReport: Boolean;
+  from
+    KatMC, KatED,
+    GroupMC
+  where
+  ((
+        GroupMC.nrec == KatMC.cGroupMC
+    and KatMC.cEd    == KatEd.Nrec
+    and KatMC.Nrec   == KatOtpEd.cMcUsl
+    and 1            == KatOtpEd.prmc
+
+    and KatMc.Nrec   == SklOst.cmc
+    and SklOst.cPodr == KatPodr.Nrec
+  ));
+
+  DataStream FRAPI_SaveReport_DS
+  (
+    [Date_Rep]  Cur_Date;
+    [User_Name] UserName;
+
+    Table GroupMC
+    (
+      [NppGr] iGr++;
+      [Group_Name] GroupMC.Name;
+      [Group_Code] GroupMC.Kod;
+    );
+
+    Table KatMC
+    (
+      [MC_name]  KatMC.Name;
+      [MC_Code]  KatMC.Barkod;
+      [MC_EdIzm] KatEd.Name;
+    );
+
+     Table SklOst
+    (
+      [Podr_Name] KatPodr.Name;
+      [KolMC]     SklOst.Kol;
+     );
+  )
+
+    HandleEvent
+      cmPreProcess :
+      {
+        StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Выполняется формирование отчета...', 0);
+      }
+
+      cmPostProcess :
+      {
+        StopVisual('',0);
+      }
+    end; //DataStream
+
+    HandleEvent table GroupMC
+      cmPreProcess :
+      {
+        iGr := 1;
+      }
+
+      cmOnProcess :
+      {
+        if (Not NextVisual()) BreakProcess;
+      }
+    end;
+  end;
+
+Screen sBut;
+fields
+  Reports: Protect;
+  IsClearLastReport: NoProtect;
+Buttons
+  cmFRPreview;
+<<
+  Отчет:
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+    [.] Очищать отчет перед формированием`
+
+  <.Показать.>
+
+>>
+end;
+
+HandleEvent
+
+cmInit:
+{
+  var
+    Reports: array [0..0] of String;
+
+  IsClearLastReport := True;
+  FReport := FrCreate(FRAPI_SaveReport_DS);
+  FRGetReportNames(FReport, Reports);
+
+  SetEnumList(sBut, #Reports, Reports);
+}
+
+cmFRPreview:
+{
+  if FROpenReport(FReport, GetEnumString(sBut, #Reports))
+    if FRPrepareReport(FReport, IsClearLastReport)
+      FRShowReport(FReport);
+}
+
+cmDone:
+{
+  FRDestroy(FReport);
+}
+
+end;
+end.

@@ -1,0 +1,175 @@
+#Component "F_UserReport"
+
+#include userreport.vih  // описание интерфейса пользовательских отчетов
+
+vipInterface UserReport_ecod_order          implements iUserReport licensed(free);
+vipInterface UserReport_ecod_order_SFERAEDI implements iUserReport licensed(free);
+vipInterface UserReport_ecod_recadv         implements iUserReport licensed(free);
+vipInterface UserReport_ecod_recadv_SFERAEDI implements iUserReport licensed(free);
+!-------------------------------------------------------------------------------
+interface UserReport_ecod_order;
+create view;
+!-------------------------------------------------------------------------------
+// Запуск отчета на выполнение при выборе его из списка отчетов
+procedure run;
+begin
+  runInterface('droga::ecod_import', 'order_*', 0);
+end;
+!-------------------------------------------------------------------------------
+// Наименование отчета в списке
+function getReportName: string;
+begin
+  getReportName := '1. Импорт заказов. Order ECOD Comarch (ver.1.01)';
+end;
+!-------------------------------------------------------------------------------
+// Наименования групп, в которые входит отчет
+function getGroupName (level: word): string;
+begin
+  getGroupName := '';
+/*
+  case level of
+  1: getGroupName := '';
+  end;
+*/
+end;
+!-------------------------------------------------------------------------------
+// Приоритет отчета - сортировка внутри группы выполняется сначала
+// по приоритету, а затем по наименованию
+function getPriority: integer;
+begin
+  getPriority := 0;
+end;
+!-------------------------------------------------------------------------------
+// ModuleID модулей, в которых будет виден отчет
+// '*' - отчет будет виден в любом модуле
+function visibleInModule(ind: byte): string;
+begin
+  visibleInModule := 'SELL';
+/*
+  case ind of
+  1: visibleInModule := 'SELL';
+  2: visibleInModule := 'DOGOVOR';
+  3: visibleInModule := 'B_FINANS'; //ФРО
+  end;
+*/
+end;
+end.
+interface UserReport_ecod_order_SFERAEDI;
+create view;
+!-------------------------------------------------------------------------------
+// Запуск отчета на выполнение при выборе его из списка отчетов
+procedure run;
+begin
+  runInterface('droga::ecod_import', 'orders*', 0);
+end;
+!-------------------------------------------------------------------------------
+// Наименование отчета в списке
+function getReportName: string;
+begin
+  getReportName := '1.1 Импорт заказов Сфера EDI';
+end;
+!-------------------------------------------------------------------------------
+// Наименования групп, в которые входит отчет
+function getGroupName (level: word): string;
+begin
+  getGroupName := '';
+/*
+  case level of
+  1: getGroupName := '';
+  end;
+*/
+end;
+!-------------------------------------------------------------------------------
+// Приоритет отчета - сортировка внутри группы выполняется сначала
+// по приоритету, а затем по наименованию
+function getPriority: integer;
+begin
+  getPriority := 0;
+end;
+!-------------------------------------------------------------------------------
+// ModuleID модулей, в которых будет виден отчет
+// '*' - отчет будет виден в любом модуле
+function visibleInModule(ind: byte): string;
+begin
+  visibleInModule := 'SELL';
+/*
+  case ind of
+  1: visibleInModule := 'SELL';
+  2: visibleInModule := 'DOGOVOR';
+  3: visibleInModule := 'B_FINANS'; //ФРО
+  end;
+*/
+end;
+end.
+!-------------------------------------------------------------------------------
+interface UserReport_ecod_recadv;
+create view;
+!-------------------------------------------------------------------------------
+// Запуск отчета на выполнение при выборе его из списка отчетов
+procedure run;
+begin
+  runInterface('droga::ecod_import', 'recadv_*', 0);
+end;
+!-------------------------------------------------------------------------------
+// Наименование отчета в списке
+function getReportName: string;
+begin
+  getReportName := '2. Импорт подтверждений приемки. RecAdv ECOD Comarch (ver. 1.01)';
+end;
+!-------------------------------------------------------------------------------
+// Наименования групп, в которые входит отчет
+function getGroupName (level: word): string;
+begin
+  getGroupName := '';
+end;
+!-------------------------------------------------------------------------------
+// Приоритет отчета - сортировка внутри группы выполняется сначала
+// по приоритету, а затем по наименованию
+function getPriority: integer;
+begin
+  getPriority := 0;
+end;
+!-------------------------------------------------------------------------------
+// ModuleID модулей, в которых будет виден отчет
+// '*' - отчет будет виден в любом модуле
+function visibleInModule(ind: byte): string;
+begin
+  visibleInModule := 'SELL';
+end;
+end.
+
+interface UserReport_ecod_recadv_SFERAEDI;
+create view;
+!-------------------------------------------------------------------------------
+// Запуск отчета на выполнение при выборе его из списка отчетов
+procedure run;
+begin
+  runInterface('droga::ecod_import', 'recadv*', 0);
+end;
+!-------------------------------------------------------------------------------
+// Наименование отчета в списке
+function getReportName: string;
+begin
+  getReportName := '2.1 Импорт подтверждений приемки Recadv Сфера EDI';
+end;
+!-------------------------------------------------------------------------------
+// Наименования групп, в которые входит отчет
+function getGroupName (level: word): string;
+begin
+  getGroupName := '';
+end;
+!-------------------------------------------------------------------------------
+// Приоритет отчета - сортировка внутри группы выполняется сначала
+// по приоритету, а затем по наименованию
+function getPriority: integer;
+begin
+  getPriority := 0;
+end;
+!-------------------------------------------------------------------------------
+// ModuleID модулей, в которых будет виден отчет
+// '*' - отчет будет виден в любом модуле
+function visibleInModule(ind: byte): string;
+begin
+  visibleInModule := 'SELL';
+end;
+end.

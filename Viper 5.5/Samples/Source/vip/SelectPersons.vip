@@ -1,0 +1,93 @@
+// http://forum.galaktika.by
+
+#include SelectPersons.vih
+#include PrintPersonPass.vih
+
+// Окно выбора сотрудников для отчета 'Печать пропусков'
+
+Interface SelectPersons;
+
+  var marker : longint;
+  var report : PrintPersonPass new;
+
+  create view View1
+  as select
+    *
+  from
+    Persons,
+    Appendix
+  where
+  ((
+    1             == Appendix.ObjBlock  and
+    Persons.Nrec  == Appendix.Person    and
+    200           == Appendix.ObjType
+  ));
+
+  screen screen1;
+    show at (,,,3);
+    notablenavigation;
+    controls
+      button bounds ( 1, 1, 31, 2.5 ),  cmMarkUnMark , 'Пометка';
+      button bounds ( 41, 1, 71, 2.5 ), cmValue2 , 'Печать пропусков';
+  end;
+
+  browse Browse1 (,,sci1InsPM);
+    show at (,4,,15);
+    table Persons;
+    fields
+      if(FoundMarker(marker, Persons.Nrec), 'V', '') :[2], protect;
+      Persons.FIO 'ФИО' :[30], protect;
+      if(IsValid(tnAppendix), '@', '') 'Фото' :[4], protect;
+  end;
+
+  Text memoid=memo1 Appendix.Contents;
+    show at (,16,,);
+
+  constructor Init;
+  {
+    marker := InitMarker('', 8, 10, 10, false);
+    result := true;
+  }
+
+  destructor Done;
+  {
+    DoneMarker(marker, '');
+  }
+
+  procedure Run;
+  {
+    RunWindow(wnMainWindow);
+  }
+
+  tableevent table Appendix;
+    cmInsertRecord:
+      insert current Appendix;
+
+    cmUpdateRecord:
+      update current Appendix;
+
+    cmDeleteRecord:
+      delete current Appendix;
+  end;
+
+  handleevent
+    cmMarkUnmark:
+    {
+      InvertMarker(marker, Persons.Nrec);
+      RedrawCurrentAndGo(Browse1, true);
+      ReDrawPanel(tnAppendix);
+    }
+
+    cmValue2:
+    {
+      if( GetMarkerCount(marker) = 0 )
+      {
+        InvertMarker(marker, Persons.Nrec);
+        RedrawPanel(tnPersons);
+      }
+
+      report.RunReport(marker);
+    }
+  end;
+
+End.

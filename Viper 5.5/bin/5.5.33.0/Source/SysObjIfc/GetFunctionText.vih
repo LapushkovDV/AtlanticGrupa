@@ -1,0 +1,8 @@
+#Component ""
+
+ObjInterface IGetFunctionText;
+// #docl Системный интерфейс доступа к скриптам. </brief> <br> Реализует доступ к произвольным скриптам, заданным именем.
+  function Compile // #docl Компиляция скрипта. </brief> <br> Поиск по базе скриптов и, в случае успешного поиска, компиляция.
+                            (Func_Name // #docl Имя скрипта. </brief> <br> Допускаются русские буквы.
+                                        : String) : LongInt; // #docl Возвращает handle скрипта </brief> <br>
+End;

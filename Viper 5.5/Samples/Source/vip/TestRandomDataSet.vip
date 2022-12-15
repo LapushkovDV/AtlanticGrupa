@@ -1,0 +1,60 @@
+#include RandomGenerator.vih
+
+vipinterface TestRandomDataSet licensed (free);
+
+interface TestRandomDataSet 'Нагрузочный тест FastReport';
+
+  var rnd: RandomGenerator;
+  var TestDataRowNum : longint;
+
+  create view;
+
+  dataStream TestStream
+    (
+      dataset TestData
+      (
+        [RowNum]    TestDataRowNum;
+        [NoDoc]     rnd.NextRandomCode(3);
+        [PartMajor] 'Part major '+rnd.NextRandomNumber(10);
+        [PartMinor] 'Part minor '+rnd.NextRandomNumber(100);
+        [DateDoc]   rnd.NextRandomDate(date(01,01,1950), date(31,12,2100));
+        [SummaDoc]  rnd.NextRandomNumber(100000000)/100;
+        [PriceDoc]  rnd.NextRandomNumber(100000000)/100;
+        [OrgName]   rnd.NextRandomText;
+      );
+    )
+
+    handleevent dataset TestData
+      cmPreProcess:
+      {
+        TestDataRowNum := 0;
+      }
+      cmOnProcess:
+      {
+        if( not NextVisual )
+          BreakProcess;
+
+        TestDataRowNum++;
+
+        if( TestDataRowNum <= 10000 )
+          ContinueDataset;
+      }
+    end;
+  end;
+
+  Screen scr '';
+    buttons
+      cmValue1;
+<<
+    Генерация данных через dataset и RandomGenerator
+
+    <.  Start FastReport  .>
+>>
+  end;
+
+  handleEvent
+    cmValue1:
+      RunFReport(TestStream,'',false);
+  end;
+
+end.

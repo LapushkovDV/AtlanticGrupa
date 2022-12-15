@@ -1,0 +1,36 @@
+#ifndef __FTFunc_vih__
+#define __FTFunc_vih__
+
+#Component ""
+
+  VipInterface FTFunc licensed (free);
+  // #docl Системный интерфейс. </brief>
+
+  public:
+    function GetTypeStrByCode   // #docl Получить строку, содержащую описание заданного типа. </brief>
+                                (aCode  // #docl "Расшифровываемый" тип. </brief>
+                                        : byte) 
+                                : String; // #docl Результат преобразования. </brief> <br> Может быть Void,Boolean,Char,Byte,Word,Integer,LongInt,Date,Time,Pointer,Single,Double,String,ZString,LVar,Buffer,AutoInc,Comp,DateTime.
+
+    function GetTypeStrByCodeEx // #docl Получить строку, содержащую описание заданного типа. </brief> Расширенная функция GetTypeStrByCode для строк.
+                                (aCode  // #docl "Расшифровываемый" тип. </brief>
+                                        : byte; aSize   // #docl Размер для строки -1 </brief> Например, если = 5, и тип ftString, то получим String[4].
+                                        : word; aPRec   // #docl Размер мантиссы для числа с фиксированной точностью.
+                                        : byte; aDec    // #docl Размер дробной части для числа с фиксированной точностью.
+                                        : byte)
+                                : String;  // #docl Результат преобразования. </brief> <br> Может быть Void,Boolean,Char,Byte,Word,Integer,LongInt,Date,Time,Pointer,Single,Double,String[Size-1],ZString,LVar,Buffer,AutoInc,Comp,DateTime.
+
+    function GetIndexFlagStr    // #docl Получить краткое строковое описание свойства индекса. </brief>
+                                (aFlag  // #docl Флаг индекса </brief>
+                                        : Word) : String; // #docl Подмножество из: ['Ун.', 'Мод.', 'ВРег.', 'Уб.', 'Сурр.', 'Жур.', 'AInc]'. </brief>
+
+    function GetNullByType      // #docl Получить нулевое значение в строковом виде в зависимости от передаваемого типа. </brief>
+                                (aCode  // #docl Тип, нулевое значение которого требуется получить в виде строки. </brief>
+                                        : byte) : String; // #docl Нулевое значение в строковом виде. Например, '0.0' или '0:0:00'. </brief>
+
+    function GetTypeLength      // #docl Получить длину в байтах переменной в зависимости от передаваемого типа. </brief>
+                                (bType  // #docl Тип данных </brief>
+                                        : byte) : Longint;
+  end;
+
+#endif

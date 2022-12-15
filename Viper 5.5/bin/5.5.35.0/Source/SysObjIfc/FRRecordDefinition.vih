@@ -1,0 +1,45 @@
+#ifndef __FRRecordDefinition_vih__
+#define __FRRecordDefinition_vih__
+
+const
+  frExportBIFF       = 0;
+  frExportXML        = 1;
+  frExportRTF        = 2;
+  frExportPDF        = 3;
+  frExportHTML       = 6;
+  frExportSimpleText = 13;
+  frExportXLSX       = 15;
+  frExportFP3        = 20;
+  frPrintParams      = 21;
+  frMailParams       = 22;
+  frEmbeddedID       = 30;
+
+  frcShowReport      = 1000;
+  frcExportReport    = 1001;
+  frcSendMailReport  = 1002;
+  frcPrintReport     = 1003;
+  frcDesignReport    = 1004;
+end;
+
+type
+  frxSendMailParam = record
+    MailTo     : String;
+    Subject    : String;
+    Body       : String;
+    ShowDialog : Boolean;
+  end;
+
+  frxSendMailParam2 = record
+    MailTo     : #TPtr;
+    Subject    : #TPtr;
+    Body       : #TPtr;
+    ShowDialog : Boolean;
+  end;
+
+  frxChoiceDialogParam = record
+    Action      : LongInt;
+    ActionIndex : LongInt;
+    IsSilence   : Boolean;
+  end;
+
+#endif

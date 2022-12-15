@@ -1,0 +1,8 @@
+
+  (scQuickChoice .. scQuickChoice)
+  {
+    '~F1~ Справка',  cmHelp,   kbF1;
+    '~Enter~ Выбор', cmOk,     kbEnter;
+    '~Esc~ Отмена',  cmCancel, kbEsc;
+  }
+

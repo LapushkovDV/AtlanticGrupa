@@ -1,0 +1,154 @@
+Interface FRChoiceDialog 'FR API Choice dialog' (,,sci1Esc), Gray;
+Show (,,40,8);
+
+create view
+  var
+    iGr : Word;
+    FReport: #TPtr;
+    Reports: LongInt;
+  from
+    KatMC, KatED,
+    GroupMC
+  where
+  ((
+        GroupMC.nrec == KatMC.cGroupMC
+    and KatMC.cEd    == KatEd.Nrec
+    and KatMC.Nrec   == KatOtpEd.cMcUsl
+    and 1            == KatOtpEd.prmc
+
+    and KatMc.Nrec   == SklOst.cmc
+    and SklOst.cPodr == KatPodr.Nrec
+  ));
+
+  DataStream FRAPI_SaveReport_DS
+  (
+    [Date_Rep]  Cur_Date;
+    [User_Name] UserName;
+
+    Table GroupMC
+    (
+      [NppGr] iGr++;
+      [Group_Name] GroupMC.Name;
+      [Group_Code] GroupMC.Kod;
+    );
+
+    Table KatMC
+    (
+      [MC_name]  KatMC.Name;
+      [MC_Code]  KatMC.Barkod;
+      [MC_EdIzm] KatEd.Name;
+    );
+
+     Table SklOst
+    (
+      [Podr_Name] KatPodr.Name;
+      [KolMC]     SklOst.Kol;
+     );
+  )
+
+    HandleEvent
+      cmPreProcess :
+      {
+        StartNewVisual(vtRotateVisual, vfTimer + vfBreak + vfConfirm, 'Выполняется формирование отчета...', 0);
+      }
+
+      cmPostProcess :
+      {
+        StopVisual('',0);
+      }
+    end; //DataStream
+
+    HandleEvent table GroupMC
+      cmPreProcess :
+      {
+        iGr := 1;
+      }
+
+      cmOnProcess :
+      {
+        if (Not NextVisual()) BreakProcess;
+      }
+    end;
+  end;
+
+Screen sBut;
+fields
+  Reports: Protect;
+Buttons
+  cmFRPrint;
+<<
+  Отчет:
+   .@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+     <.Действие.>
+
+>>
+end;
+
+HandleEvent
+
+cmInit:
+{
+  var
+    sReports: array [0..0] of String;
+
+  FReport := FRCreate(FRAPI_SaveReport_DS);
+
+  if FReport <> 0
+    FRGetReportNames(FReport, sReports);
+
+  SetEnumList(sBut, #Reports, sReports);
+}
+
+cmFRPrint:
+{
+  var
+    DialogParam: frxChoiceDialogParam;
+  var
+    i: LongInt;
+  var
+    repStr: String;
+  var
+    sReports: array [0..0] of String;
+
+  if (FReport <> 0) and FROpenReport(FReport, GetEnumString(sBut, #Reports))
+  {
+    FRGetReportNames(FReport, sReports);
+    ClearAdvRecord(DialogParam);
+
+    if FRShowChoiceDialog(FReport, sReports, DialogParam)
+    {
+      repStr := 'Выбранных отчетов -> ' + Count(sReports) + chr(13) + chr(10);
+
+      for(i := 0; i < Count(sReports); i++)
+        repStr := repStr + String(i+1) + '-отчет -> ' + sReports[i] + chr(13) + chr(10);
+
+      Message(repStr);
+
+      case DialogParam.Action of
+      frcExportReport:
+        Message('Выбран экспорт');
+
+      frcShowReport:
+        Message('Выбран просмотр');
+
+      frcSendMailReport:
+        Message('Выбрана отправка по почте');
+
+      frcPrintReport:
+        Message('Выбрана печать');
+
+      frcDesignReport:
+        Message('Выбран дизайнер');
+    end;
+    }
+  }
+}
+
+cmDone:
+{
+  FRDestroy(FReport);
+}
+
+end;
+end.
