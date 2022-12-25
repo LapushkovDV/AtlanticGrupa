@@ -51,6 +51,11 @@ type   TSurrPtr = comp;
 #declare f_(str_)
 if (trim(#str_) = '', '-', #str_)
 #end
+#include TotalOrganizationAttributes.vih // работа с атрибутами организации
+#include AdrFunc.vih
+//#include TotalOrganizationAttributes.var // работа с атрибутами организации
+
+var TOA   : TotalOrganizationAttributes;
 
 //Расчет массы и объема по позиции документов
 #make "etc\getposmassvol.vip"
