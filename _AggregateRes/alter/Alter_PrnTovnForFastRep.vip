@@ -1,4 +1,5 @@
-////////////// подменяем обработчик событий 
+#include PrnSoprMem.inc
+////////////// подменяем обработчик событий
 #component "L_PRNSOPR"
 alter interface PrnTovnForFastRep;
 Overload
@@ -20,6 +21,7 @@ spsopr SpSoprPrint_MC
 , BaseDoc BaseDocPrint
 , SpSopr SpSoprPrint
 , katOrg GruzTo
+
 where
 ((
 fr_docspecif.SpSoprNRec == SpSoprPrint_MC.Nrec
@@ -37,6 +39,7 @@ and fr_dochead.SchFact_NRec    ==  SFCur.nrec
 
 and KatSoprPrint.CGRUZTO == GruzTo.nrec
 ))
+
 ;
 function GetKsSrc(_cRec: comp): comp;
 {
