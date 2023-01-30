@@ -53,37 +53,39 @@ Function CreateNewXml([string]$fnNewXmlFilePath, $fnAggregationUnits, [array]$fn
 
     #Write the XML delcaration.
     $XmlObjectWriter.WriteStartDocument()
+    
+    $document_id = "unit_pack_"+$(new-guid).tostring()
 
     #$XmlObjectWriter.WriteComment(“writes out a start tag with the specified local name.”)
     $XmlObjectWriter.WriteStartElement(“unit_pack“) # <– unit_pack
-    $XmlObjectWriter.WriteAttributeString("document_id","unit_pack_7FFF90D5-4785-7EC9-899E-534A7BAA2B71")
+    $XmlObjectWriter.WriteAttributeString("document_id",$document_id)
     $XmlObjectWriter.WriteAttributeString("VerForm","1.03" )
     $XmlObjectWriter.WriteAttributeString("file_date_time",$(Get-Date -Format "yyyy-MM-ddТHH:mm:ssK"))
     $XmlObjectWriter.WriteAttributeString("VerProg","VerProg1")
 
     $XmlObjectWriter.WriteStartElement(“Document“) # <– Start Document
     $XmlObjectWriter.WriteAttributeString("operation_date_time",$(Get-Date -Format "yyyy-MM-ddТHH:mm:ssK"))
-    $XmlObjectWriter.WriteAttributeString("document_number","157743-20199")
+    $XmlObjectWriter.WriteAttributeString("document_number","1")
 
     $XmlObjectWriter.WriteStartElement(“organisation”)# <- start organisation
 
      $XmlObjectWriter.WriteStartElement(“id_info") # <- start id_info 
       $XmlObjectWriter.WriteStartElement(“LP_info“) # <– LP_info
-       $XmlObjectWriter.WriteAttributeString("org_name","Атлантик")
-       $XmlObjectWriter.WriteAttributeString("LP_TIN","5834052090")
-       $XmlObjectWriter.WriteAttributeString("RRC","504801001")
+       $XmlObjectWriter.WriteAttributeString("org_name",'ООО "АТЛАНТИК БРЕНДС"')
+       $XmlObjectWriter.WriteAttributeString("LP_TIN","7709191580")
+       $XmlObjectWriter.WriteAttributeString("RRC","771901001")
       $XmlObjectWriter.WriteEndElement() # End <– LP_info
      $XmlObjectWriter.WriteEndElement() # <– End id_info
 
      $XmlObjectWriter.WriteStartElement(“Address“) # <– Address
       $XmlObjectWriter.WriteStartElement(“location_address") # <– location_address
        $XmlObjectWriter.WriteAttributeString("country_code","643")
-       $XmlObjectWriter.WriteAttributeString("text_address","142305")
+       $XmlObjectWriter.WriteAttributeString("text_address","105094, Г.МОСКВА, ВНУТРИГОРОДСКАЯ ТЕРРИТОРИЯ ГОРОДА ФЕДЕРАЛЬНОГО ЗНАЧЕНИЯ МУНИЦИПАЛЬНЫЙ ОКРУГ СОКОЛИНАЯ ГОРА, УЛ ЗОЛОТАЯ, Д. 11, ПОМЕЩ. 4Б10")
       $XmlObjectWriter.WriteEndElement() # End <– location_address
      $XmlObjectWriter.WriteEndElement() # End <– Address
       $XmlObjectWriter.WriteStartElement("contacts") # <– contacts   
-       $XmlObjectWriter.WriteAttributeString("phone_number","9999-99-85")
-       $XmlObjectWriter.WriteAttributeString("email","22@mail.ru")
+       $XmlObjectWriter.WriteAttributeString("phone_number","+79163861622")
+       $XmlObjectWriter.WriteAttributeString("email","elena.laletina@atlanticgrupa.com")
       $XmlObjectWriter.WriteEndElement() # End <– contacts
     $XmlObjectWriter.WriteEndElement() # <– End organisation
 
