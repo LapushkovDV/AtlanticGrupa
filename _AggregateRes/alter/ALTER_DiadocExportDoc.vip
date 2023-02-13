@@ -92,7 +92,10 @@ procedure Check_TmpSpSopr ;
                                                   ))
              ) <> tsOK
              {
-              Write_Mess(' не найден SapCode "'+_SapCode+'" в позициях PickingReport');
+              if katmc_check.cGroupMC <>  03E8000000000019h // '410203' Паштеты в новом дизайне - по ним такие ошибки не должны идти
+               {
+                Write_Mess(' не найден SapCode "'+_SapCode+'" в позициях PickingReport');
+               }
              }
 
 
