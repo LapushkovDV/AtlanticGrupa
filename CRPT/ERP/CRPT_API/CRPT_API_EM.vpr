@@ -272,13 +272,10 @@
 		<FileList>
 			<File Name="CRPT_API.prj" PosX="19" PosY="72" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_PowerShell.vip" PosX="39" PosY="230" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_IdentifyToolsInfo.Vpp" PosX="46" PosY="295" OpenEditor="True" Active="True"/>
+			<File Name="Source\CRPT_API_PowerShell_IdentifyToolsInfo.Vpp" PosX="34" PosY="261" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="45" PosY="17" OpenEditor="True"/>
-			<File Name="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_GetUnitList.Vpp" PosX="144" PosY="230" OpenEditor="True"/>
-			<File Name="\\10.1.12.115\d$\_\ATL\VetisAPI\ERP\Source\VetisAPI_Viewer_Product.VIP" PosX="107" PosY="18" OpenEditor="True"/>
 			<File Name="Source\CRPT_PRJ_tune.vip" PosX="32" PosY="38" OpenEditor="True"/>
-			<File Name="\\10.1.12.115\d$\_\ATL\VetisAPI\ERP\Source\VetisAPI_PowerShell.VIP" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="\\10.1.12.115\d$\_\ATL\VetisAPI\ERP\Source\VetisAPI_Viewer_STOCK.VIP" PosX="75" PosY="115" OpenEditor="True"/>
+			<File Name="..\..\..\_AggregateRes\alter\ALTER_DiadocExportDoc.vip" PosX="53" PosY="95" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="CRPT_API.prj" Priority="0">

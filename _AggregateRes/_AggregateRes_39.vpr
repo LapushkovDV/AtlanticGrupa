@@ -267,7 +267,7 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="64" PosY="24" OpenEditor="True" Active="True"/>
+			<File Name="_AggregateRes.prj" PosX="14" PosY="5" OpenEditor="True" Active="True"/>
 			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="16" PosY="33" OpenEditor="True"/>
 			<File Name="Source\LOADORDER\LoadOrder_CRPT.vip" PosX="62" PosY="11" OpenEditor="True"/>
 			<File Name="Source\MERCURYPRJ\PickingReport_Import.vip" PosX="1" PosY="1" OpenEditor="True"/>
