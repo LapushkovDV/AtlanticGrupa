@@ -172,7 +172,7 @@ var
       } //_loop tData
       xlWriteMatrixToExcel(4, 1);  /// Άαβ Ά«ο¥¬ α 4-© αβΰ®ª¨
       xlFreeMatrix;
-      for (i := 21; i <= 33; i := i+ 3) xlSetCellFormula('=…†“’—›….’ƒ(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i);
+      for (i := 21; i <= 33; i := i+ 3) xlSetCellFormula('=SUBTOTAL(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i);
       xlRunMacro('MarkBlue');
     } //Data
     else {
@@ -278,7 +278,7 @@ var
       } //_loop tData
       xlWriteMatrixToExcel(4, 1);  /// Άαβ Ά«ο¥¬ α 4-© αβΰ®ª¨
       xlFreeMatrix;
-      for (i := 21; i <= 33+3; i := i+ 3) xlSetCellFormula('=…†“’—›….’ƒ(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i);
+      for (i := 21; i <= 33+3; i := i+ 3) xlSetCellFormula('=SUBTOTAL(109; R[3]C:R['+(j+3)+']C)', 1, i ,1 ,i);
       xlRunMacro('MarkBlue');
     } //Data
     else {
@@ -356,7 +356,7 @@ var
     xlFreeMatrix;
     for (i := 15; i <= 28; i++) {
       if (i != 16 and i != 19 and i != 23)
-        xlSetCellFormula('=…†“’—›….’ƒ(109; R[3]C:R[' + string(j+ 3) + ']C)', 1, i ,1 ,i);
+        xlSetCellFormula('=SUBTOTAL(109; R[3]C:R[' + string(j+ 3) + ']C)', 1, i ,1 ,i);
     }
   } // DataTTL
   else {
@@ -493,7 +493,7 @@ var
     xlFreeMatrix;
     for (i := 11; i <= 24; i++) {
       if (i != 12) and (i != 15) and (i != 18)
-        xlSetCellFormula('=…†“’—›….’ƒ(109; R[3]C:R['+ string(j+ 3)+ ']C)', 1, i, 1, i);
+        xlSetCellFormula('=SUBTOTAL(109; R[3]C:R['+ string(j+ 3)+ ']C)', 1, i, 1, i);
     }
   }  //xlSetActiveSheetByName('TTL_C')
   if xlSetActiveSheetByName('TTL_Item') {
@@ -513,7 +513,7 @@ var
     xlFreeMatrix;
     for (i := 11; i <= 24; i++) {
       if (i != 12) and (i != 15) and (i != 18)
-        xlSetCellFormula('=…†“’—›….’ƒ(109; R[3]C:R[' + string(j+ 3)+ ']C)', 1, i ,1 ,i);
+        xlSetCellFormula('=SUBTOTAL(109; R[3]C:R[' + string(j+ 3)+ ']C)', 1, i ,1 ,i);
     }
   }  //xlSetActiveSheetByName('TTL_Item')
   restartVisual(' £ 3 ¨§ 3: ‚λ£ΰγ§ª  Ά Excel' , 0);
@@ -538,7 +538,7 @@ var
         xlFreeMatrix;
         for (i := 11; i <= 24; i++ ) {
           if (i != 12 and i != 15 and i != 18)
-            xlSetCellFormula('=…†“’—›….’ƒ(109; R[3]C:R['+ string(j+ 3)+ ']C)', 1, i, 1, i);
+            xlSetCellFormula('=SUBTOTAL(109; R[3]C:R['+ string(j+ 3)+ ']C)', 1, i, 1, i);
         }
       } //xlSetActiveSheet
 
@@ -560,7 +560,7 @@ var
         xlFreeMatrix;
         for (i := 11; i <= 24; i++) {
           if (i != 12 and i != 15 and i != 18)
-            xlSetCellFormula('=…†“’—›….’ƒ(109; R[3]C:R[' + string(j+ 3) + ']C)', 1, i, 1, i);
+            xlSetCellFormula('=SUBTOTAL(109; R[3]C:R[' + string(j+ 3) + ']C)', 1, i, 1, i);
         }
       }  //xlSetActiveSheet2
     } //bSbytTTL
@@ -583,7 +583,7 @@ var
         xlFreeMatrix;
         for (i := 11; i <= 24; i++) {
           if (i != 12) and (i != 15) and (i != 18)
-            xlSetCellFormula('=…†“’—›….’ƒ(109; R[3]C:R['+ string(j+ 3)+ ']C)', 1, i, 1, i);
+            xlSetCellFormula('=SUBTOTAL(109; R[3]C:R['+ string(j+ 3)+ ']C)', 1, i, 1, i);
         }
       }  //xlSetActiveSheet
     } //bSbytTTL

@@ -262,13 +262,14 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="xml.prj" PosX="1" PosY="33" OpenEditor="True"/>
-			<File Name="ExpImpScript\expImpScript.vip" PosX="5" PosY="179" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_func.vip" PosX="63" PosY="1147" OpenEditor="True"/>
-			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="57" PosY="19" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_imp.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="xml.prj" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="ExpImpScript\expImpScript.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="ExpImpScript\ecod_func.vip" PosX="90" PosY="743" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="39" PosY="11" OpenEditor="True"/>
+			<File Name="ExpImpScript\ecod_imp.vip" PosX="24" PosY="667" OpenEditor="True"/>
 			<File Name="ExpImpScript\sts_doc.vpp" PosX="4" PosY="83" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_user.vip" PosX="71" PosY="29" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\ecod_user.vip" PosX="51" PosY="12" OpenEditor="True"/>
+			<File Name="ExpImpScript\common_func.vpp" PosX="56" PosY="11" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="xml.prj" Priority="0">
