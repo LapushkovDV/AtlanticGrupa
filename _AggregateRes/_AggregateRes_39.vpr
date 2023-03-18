@@ -270,7 +270,7 @@
 			<File Name="_AggregateRes.prj" PosX="21" PosY="204" OpenEditor="True"/>
 			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="16" PosY="33" OpenEditor="True"/>
 			<File Name="Source\LOADORDER\LoadOrder_CRPT.vip" PosX="62" PosY="11" OpenEditor="True"/>
-			<File Name="Source\MERCURYPRJ\PickingReport_Import.vip" PosX="36" PosY="320" OpenEditor="True" Active="True"/>
+			<File Name="Source\MERCURYPRJ\PickingReport_Import.vip" PosX="48" PosY="252" OpenEditor="True" Active="True"/>
 			<File Name="Source\loadorder\LoadOrder_tune.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="Source\sale_user.vip" PosX="35" PosY="9" OpenEditor="True"/>
 			<File Name="Source\sale_sale.vip" PosX="12" PosY="288" OpenEditor="True"/>
