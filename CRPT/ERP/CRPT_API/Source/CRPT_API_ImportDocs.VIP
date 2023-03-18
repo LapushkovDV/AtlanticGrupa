@@ -21,7 +21,9 @@ Parameters
  _pMarker
 ;
 
-Create view as
+Create view
+var _logFile : string='';
+
 select
   kituInfo.cis (fieldname = kituCis)
  ,kituInfo.status (fieldname = kituStatus)
@@ -51,7 +53,9 @@ function curdatetimestr: string;
 }
 Procedure MyLog(_str : string);
 {
-  logstrtofile('_MylogFile.txt',curdatetimestr + _str)
+  if _logFile = '' then _logFile := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'CRPT_CRPT_API_ImportDocList_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+  logstrtofile(_logFile,curdatetimestr + _str)
+
 }  // delete уже есть
 
 Procedure SetDefaultDoc; {

@@ -61,6 +61,7 @@ Create view
      _ListName : string = '';
      _MylogFile : string;
      _rqstError : string;
+     _logFile  : string = '';
 select
   CRPT_INFOLIST.cis
 from
@@ -89,7 +90,9 @@ function curdatetimestr: string;
 
 Procedure MyLog(_str : string);
 {
-  logstrtofile('_MylogFile.txt',curdatetimestr + _str)
+   if _logFile = '' then _logFile := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'CRPT_API_PowerShell_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+  logstrtofile(_logFile,curdatetimestr + _str)
+
 }
 
 #include source\VetisAPI_PowerShell_OpenFileExcelSearchCells.vpp

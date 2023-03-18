@@ -530,20 +530,44 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
                     ) = tsOK
                      {
                        mylog('if (getfirst fastfirstrow katOtpedShtuka');
-                       var _labelKol : string =  doubletostr(spsopr.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
-                       var _labelGTIN : string = replace(lpad(katOtpedShtuka.bkod,14),' ','0');
 
-                       node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
-                       ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+//and schfact.tipuser =  7241
+//_qty
+// korspec.kolfact
+                      if schfact.tipuser =  7241 {
+                         var _labelKol_prev : string =  doubletostr(korspec.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                         var _labelKol_curr : string =  doubletostr((korspec.kolfact + spsopr.kolfact)*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                         var _labelGTIN : string = replace(lpad(katOtpedShtuka.bkod,14),' ','0');
 
-                       mylog('number = ' + '02'+_labelGTIN+'37'+_labelKol);
+                         node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
+                         ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
 
-                           node     := XMLDOMDoc_CreateElement(xmlDoc, 'References');
-                           ChildThree := XMLDOMNode_AppendChild(ChildTwo, node);
-                           createEcodCell(ChildThree, 'Type','AW');
-                           createEcodCell(ChildThree, 'Number','02'+_labelGTIN+'37'+_labelKol);
-                           releaseDump(ChildThree);
-                       releaseDump(ChildTwo);
+                         mylog('number = ' + '02'+_labelGTIN+'37'+_labelKol_prev);
+                         mylog('ChangedNumber = ' + '02'+_labelGTIN+'37'+_labelKol_curr);
+                             node     := XMLDOMDoc_CreateElement(xmlDoc, 'References');
+                             ChildThree := XMLDOMNode_AppendChild(ChildTwo, node);
+                             createEcodCell(ChildThree, 'Type','AW');
+                             createEcodCell(ChildThree, 'Number','02'+_labelGTIN+'37'+_labelKol_prev);
+                             createEcodCell(ChildThree, 'ChangedNumber','02'+_labelGTIN+'37'+_labelKol_curr);
+                             releaseDump(ChildThree);
+                         releaseDump(ChildTwo);
+                      }
+                      else {
+                         var _labelKol : string =  doubletostr(spsopr.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                         var _labelGTIN : string = replace(lpad(katOtpedShtuka.bkod,14),' ','0');
+
+                         node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
+                         ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+
+                         mylog('number = ' + '02'+_labelGTIN+'37'+_labelKol);
+
+                             node     := XMLDOMDoc_CreateElement(xmlDoc, 'References');
+                             ChildThree := XMLDOMNode_AppendChild(ChildTwo, node);
+                             createEcodCell(ChildThree, 'Type','AW');
+                             createEcodCell(ChildThree, 'Number','02'+_labelGTIN+'37'+_labelKol);
+                             releaseDump(ChildThree);
+                         releaseDump(ChildTwo);
+                       }
                      }
                 }
        }

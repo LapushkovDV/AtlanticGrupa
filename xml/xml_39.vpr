@@ -263,13 +263,13 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="xml.prj" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\expImpScript.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_func.vip" PosX="90" PosY="743" OpenEditor="True" Active="True"/>
-			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="39" PosY="11" OpenEditor="True"/>
+			<File Name="ExpImpScript\expImpScript.vip" PosX="34" PosY="196" OpenEditor="True"/>
+			<File Name="ExpImpScript\ecod_func.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="57" PosY="545" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_imp.vip" PosX="24" PosY="667" OpenEditor="True"/>
 			<File Name="ExpImpScript\sts_doc.vpp" PosX="4" PosY="83" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_user.vip" PosX="51" PosY="12" OpenEditor="True"/>
-			<File Name="ExpImpScript\common_func.vpp" PosX="56" PosY="11" OpenEditor="True"/>
+			<File Name="ExpImpScript\common_func.vpp" PosX="56" PosY="11" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="xml.prj" Priority="0">
@@ -292,11 +292,12 @@
 			<Marker FileName="ExpImpScript\sts_doc.vpp" Caption="Нумерованная закладка 1" Line="31" NumIndex="1" MarkerType="mtNumBookmark" Comment="_SSCCCodes := getsscc"/>
 			<Marker FileName="xml.prj" Caption="Нумерованная закладка 1" Line="33" NumIndex="1" MarkerType="mtNumBookmark" Comment="coAttr_EdiDesadvBox  = 'EDI-DESADV(box)';"/>
 			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 1" Line="958" NumIndex="1" MarkerType="mtNumBookmark" Comment="_varAttr_EDI_Invoic_Metro"/>
-			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 2" Line="85" NumIndex="2" MarkerType="mtNumBookmark" Comment="if"/>
-			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="210" NumIndex="1" MarkerType="mtNumBookmark" Comment="createEcodCell(ChildTwo, 'LineNumber', _npp ); // 20221126 все изза разбиения позиций по серийникам для Ленты spsopr.npp);"/>
+			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="531" NumIndex="1" MarkerType="mtNumBookmark" Comment="{"/>
+			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 2" Line="179" NumIndex="2" MarkerType="mtNumBookmark" Comment="_qty += round(korspec.kolfact*_koef);"/>
+			<Marker FileName="..\_AggregateRes\Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="199" NumIndex="1" MarkerType="mtNumBookmark" Comment="result := iCRPT_API_PowerShell.GetRequestToAPIisExistCis(_cis);"/>
 		</MarkerList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="44962,7952615278" DateTimeCompile="0,000513935185153969" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="45003,3422881018" DateTimeCompile="9,61574114626274E-5" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3196,7 +3197,7 @@
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="160" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="174" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="05.02.2023 19:05:55"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="18.03.2023 8:13:02"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

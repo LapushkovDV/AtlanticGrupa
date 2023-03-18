@@ -197,7 +197,7 @@ function CheckCisInCRPT(_cis : string) : string; cacheable;
  for(_nmbTry := 0; _nmbTry <= _nmbTryMax; _nmbTry++)
   {
    result := iCRPT_API_PowerShell.GetRequestToAPIisExistCis(_cis);
-   if result <> '' then break;
+   if result = '0' then break; // удачно отработал
   }
 }
 Procedure Write_Mess(w:string);
