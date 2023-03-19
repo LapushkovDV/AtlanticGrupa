@@ -267,14 +267,15 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="21" PosY="204" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="44" PosY="186" OpenEditor="True"/>
 			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="16" PosY="33" OpenEditor="True"/>
 			<File Name="Source\LOADORDER\LoadOrder_CRPT.vip" PosX="62" PosY="11" OpenEditor="True"/>
-			<File Name="Source\MERCURYPRJ\PickingReport_Import.vip" PosX="48" PosY="252" OpenEditor="True" Active="True"/>
+			<File Name="Source\MERCURYPRJ\PickingReport_Import.vip" PosX="57" PosY="201" OpenEditor="True" Active="True"/>
 			<File Name="Source\loadorder\LoadOrder_tune.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="Source\sale_user.vip" PosX="35" PosY="9" OpenEditor="True"/>
 			<File Name="Source\sale_sale.vip" PosX="12" PosY="288" OpenEditor="True"/>
 			<File Name="Source\sale_func.vpp" PosX="62" PosY="9" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="60" PosY="328" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -301,7 +302,7 @@
 			<Marker FileName="Source\EMAIL\ATL_EmailRun.Vip" Caption="Нумерованная закладка 1" Line="293" NumIndex="1" MarkerType="mtNumBookmark" Comment="deletefile(email_body_Win)"/>
 			<Marker FileName="alter\alter_l_basedoc_vschet.vip" Caption="Нумерованная закладка 1" Line="739" NumIndex="1" MarkerType="mtNumBookmark" Comment="_PickingReport_View.ShowPickingReportData(ifKatSopr.Nrec, BaseDoc.nrec)  ;"/>
 			<Marker FileName="Source\Mailing_PaymentTerm.vip" Caption="Нумерованная закладка 1" Line="387" NumIndex="1" MarkerType="mtNumBookmark" Comment="// тут разрыв сделать дл группировки просроченным в одно письмо"/>
-			<Marker FileName="Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="230" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="238" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" Caption="Нумерованная закладка 1" Line="163" NumIndex="1" MarkerType="mtNumBookmark" Comment="PkRLog_Ins.State    := 0 ; // &quot;0draft,1readyToSend,2send,3NotNeedToSen&quot;"/>
 			<Marker FileName="Source\MercuryPRJ\PickingReport_View.vip" Caption="Нумерованная закладка 1" Line="335" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 1" Line="185" NumIndex="1" MarkerType="mtNumBookmark"/>
@@ -312,7 +313,7 @@
 			<BreakPoint FileName="Source\EMAIL\ATL_EmailRun.Vip" Line="12"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45003,5878201505" DateTimeCompile="0,000721516204066575" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45004,6634712268" DateTimeCompile="0,000406087965529878" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3297,7 +3298,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="18.03.2023 14:07:30"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="19.03.2023 15:55:59"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
