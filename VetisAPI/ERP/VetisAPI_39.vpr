@@ -271,7 +271,8 @@
 			<File Name="VetisAPI.prj" PosX="21" PosY="251" OpenEditor="True"/>
 			<File Name="Source\VetisAPI_Viewer_SpKau.VIP" PosX="1" PosY="191" OpenEditor="True"/>
 			<File Name="Source\VetisAPI_Viewer_STOCK.vip" PosX="36" PosY="191" OpenEditor="True"/>
-			<File Name="Source\VetisAPI_PowerShell.vip" PosX="61" PosY="147" OpenEditor="True" Active="True"/>
+			<File Name="Source\VetisAPI_PowerShell.vip" PosX="39" PosY="314" OpenEditor="True"/>
+			<File Name="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_GetProductType.Vpp" PosX="173" PosY="223" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="VetisAPI.prj" Priority="0">

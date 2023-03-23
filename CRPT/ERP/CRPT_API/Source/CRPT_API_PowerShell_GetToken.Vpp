@@ -10,6 +10,7 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('$dataPath = $scriptPath + ''\doc.txt'';                                                                                                                   ');
     MyWriteLN('$signedDocPath = $scriptPath + ''\signed_doc.txt'';                                                                                                       ');
     MyWriteLN('$tokenPath = '''+GetTokenPath+''';                                                                                    ');
+    MyWriteLN('$fileLog =    "'+_logFile+'" ');
     MyWriteLN('Function tokenValid () {                                                                                                                                  ');
     MyWriteLN('    $result = $true                                                                                                                                       ');
     MyWriteLN('    try {                                                                                                                                                 ');
@@ -24,6 +25,7 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('                                                                                                                                                          ');
     MyWriteLN('       }                                                                                                                                                  ');
     MyWriteLN('       Write-Host $_ -Fore Yellow                                                                                                                         ');
+    MyWriteLN('       Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + "Function tokenValid. " + $_ ) -Encoding Oem');
     MyWriteLN('    }                                                                                                                                                     ');
     MyWriteLN('    return $result                                                                                                                                        ');
     MyWriteLN('}                                                                                                                                                         ');
@@ -32,6 +34,7 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('        GetToken;                                                                                                                                         ');
     MyWriteLN('    }                                                                                                                                                     ');
     MyWriteLN('    catch {                                                                                                                                               ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + "Function requestNewToken. " + $_ ) -Encoding Oem');
     MyWriteLN('        Write-Host $_ -Fore Yellow                                                                                                                        ');
     MyWriteLN('    }                                                                                                                                                     ');
     MyWriteLN('}                                                                                                                                                         ');
@@ -65,21 +68,34 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('                                                                                                                                                           ');
     MyWriteLN('    catch {                                                                                                                                                ');
     MyWriteLN('        Write-Host $_ -Fore Green                                                                                                                          ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. " + $_ ) -Encoding Oem');
     MyWriteLN('   }                                                                                                                                                       ');
     MyWriteLN('}                                                                                                                                                          ');
     MyWriteLN('                                                                                                                                                           ');
     MyWriteLN('if (tokenValid) {                                                                                                                                          ');
     MyWriteLN('    "Token is valid"                                                                                                                                       ');
+    MyWriteLN('    Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Token is valid") -Encoding Oem');
     MyWriteLN('} else {                                                                                                                                                   ');
-    MyWriteLN('    "Token is not valid. Request new Token..."                                                                                                             ');
-    MyWriteLN('    requestNewToken                                                                                                                                        ');
-    MyWriteLN('    if (tokenValid) {                                                                                                                                      ');
-    MyWriteLN('        "Now Token is valid"                                                                                                                               ');
-    MyWriteLN('    }                                                                                                                                                      ');
-    MyWriteLN('    else {                                                                                                                                                 ');
-    MyWriteLN('        "Can''t request new Token"                                                                                                                         ');
-    MyWriteLN('    }                                                                                                                                                      ');
-    MyWriteLN('}                                                                                                                                                          ');
+    MyWriteLN('        for($i=1; $i -le 600; $i++) {                                                                                                                         ');
+    MyWriteLN('              Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Token is not valid. Request new Token...") -Encoding Oem    ');
+    MyWriteLN('              "Token is not valid. Request new Token..."                                                                                                      ');
+    MyWriteLN('              requestNewToken                                                                                                                                 ');
+    MyWriteLN('              if (tokenValid) {                                                                                                                               ');
+    MyWriteLN('                  "Now Token is valid"                                                                                                                        ');
+    MyWriteLN('                  Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Now Token is valid") -Encoding Oem                      ');
+    MyWriteLN('                  break                                                                                                                                       ');
+    MyWriteLN('                }                                                                                                                                             ');
+    MyWriteLN('           sleep 1                                                                                                                                            ');
+    MyWriteLN('          }                                                                                                                                                   ');
+    MyWriteLN('                                                                                                                                                               ');
+    MyWriteLN('          if (tokenValid)  {}                                                                                                                                  ');
+    MyWriteLN('          else {                                                                                                                                               ');
+    MyWriteLN('              "Can''t request new Token"                                                                                                                       ');
+    MyWriteLN('              Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Can''t request new Token") -Encoding Oem                      ');
+    MyWriteLN('          }                                                                                                                                                     ');
+    MyWriteLN('   }                                                                                                                                                     ');
+
+
 //    MyWriteLN('start-sleep 10                                                                                                                                                          ');
 }
 

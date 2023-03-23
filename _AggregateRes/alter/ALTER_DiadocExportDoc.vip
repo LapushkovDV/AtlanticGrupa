@@ -20,8 +20,10 @@ from katmc katmc_check
 , ATL_PickingRep_HEAD
 , katotped katOtpedShtuka
 , kated
+, spsopr korspec
 where ((
       spsopr.cmcusl == katMc_check.nrec
+      and spsopr.cadocsp == korspec.nrec
       ))
 ;
 Procedure Write_Mess(w:string);
@@ -36,7 +38,6 @@ Procedure Write_Mess(w:string);
 
 Procedure MyLog(_Str: string);
 {
- if instr('DEBUG',_Str) <> 0 then exit;
  if _Log = '' then _Log := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'DiadocExportDoc_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
  LogStrtoFile(_log,DateToStr(Cur_date, 'YYYY.MM.DD') + '_' + timetostr(Cur_time, 'HH:MM:SS') + ': ' + _Str);
 }
@@ -76,11 +77,20 @@ procedure Check_TmpSpSopr ;
    if getfirst katsopr = tsOK
    {
   MyLog(' katsopr.nrec ='+katsopr.nrec);
+  MyLog(' katsopr.nsopr ='+katsopr.nsopr);
   if getTypeUchet(katsopr.corg) <> 0 //  т.е. хоть какой то учет (сортовой или поэкземплярный)
    _loop SpSopr
     if getfirst katmc_check = tsOK
     {
-      if getfirst ATL_PickingRep_HEAD where ((katsopr.nrec == ATL_PickingRep_HEAD.cSopr)) = tsOK
+      var _cSopr : comp = katsopr.nrec;
+      if katsopr.wadoc = 23 then _cSopr := katsopr.cAdoc; // в случае корр накладно все данные в основной накладной...
+      mylog('katsopr.wadoc  = ' + katsopr.wadoc );
+      /*
+      попытался у Мартынова узнать все как по осной брать или нет... ответа не полдучил
+
+      так что просто перенаправимся на основную накладную
+      */
+      if getfirst ATL_PickingRep_HEAD where ((_cSopr == ATL_PickingRep_HEAD.cSopr)) = tsOK
       {
         var _SapCode : string = katmc_check.Barkod2;
 
@@ -106,23 +116,23 @@ procedure Check_TmpSpSopr ;
         //        ,TmpSerNom.KM1    := 'CODES1 '+ string(SpSopr.nrec) //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
         //        ,TmpSerNom.KM2    := 'CODES2 '+ string(SpSopr.cSopr) //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
                 TmpSerNom.wTable := coSpSopr;
-                TmpSerNom.cRec   := SpSopr.nrec ;
+                TmpSerNom.cRec   := _CSPSopr;
                insert current TmpSerNom;
-                MyLog(' TmpSerNom.wTable ='+TmpSerNom.wTable );
+              MyLog(' ****');
+              MyLog(' TmpSerNom.wTable ='+TmpSerNom.wTable );
               MyLog(' TmpSerNom.cRec   ='+TmpSerNom.cRec   );
 
                // попробуем еще спец СФ добавить.... где то там на них тожде смотряь
                 TmpSerNom.wTable := coSPSCHF;
-                TmpSerNom.cRec   := SpSopr.CSPSCHF;
+                TmpSerNom.cRec   := _CSPSCHF;
                insert current TmpSerNom;
-
-
-              MyLog(' TmpSerNom.Serial ='+TmpSerNom.Serial );
-              MyLog(' КИЗ            TmpSerNom.KM     ='+TmpSerNom.KM     ); //КИЗ Контрольный идентификационный знак
-              MyLog(' НомУпак        TmpSerNom.KM1    ='+TmpSerNom.KM1    ); //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
-              MyLog(' ИдентТрансУпак TmpSerNom.KM2    ='+TmpSerNom.KM2    ); //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
-              MyLog(' TmpSerNom.wTable ='+TmpSerNom.wTable );
-              MyLog(' TmpSerNom.cRec   ='+TmpSerNom.cRec   );
+              MyLog(' TmpSerNom.wTable = ' + TmpSerNom.wTable);
+              MyLog(' TmpSerNom.cRec   = ' + TmpSerNom.cRec  );
+              MyLog(' TmpSerNom.isPrev = ' + TmpSerNom.isPrev);
+              MyLog(' TmpSerNom.Serial = ' + TmpSerNom.Serial);
+              MyLog(' КИЗ            TmpSerNom.KM  = '+TmpSerNom.KM     ); //КИЗ Контрольный идентификационный знак
+              MyLog(' НомУпак        TmpSerNom.KM1 = '+TmpSerNom.KM1    ); //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+              MyLog(' ИдентТрансУпак TmpSerNom.KM2 = '+TmpSerNom.KM2    ); //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
 #end
 
            if getTypeUchet(katsopr.corg) = 1   // поэкземплярный учет
@@ -137,6 +147,8 @@ procedure Check_TmpSpSopr ;
                       or ATL_PickingRep_SPEC.DataMatrix = ''
                  then TmpSerNom.KM2 := ATL_PickingRep_SPEC.SSCCManuf                     //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
                  else TmpSerNom.KM1 := '<![CDATA['+ATL_PickingRep_SPEC.DataMatrix + ']]>'; //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+                   var _CSPSopr : comp = SpSopr.nrec ;
+                   var _CSPSCHF : comp = SpSopr.CSPSCHF;
                 #insertTmpSerNom
              }
            }
@@ -156,14 +168,40 @@ procedure Check_TmpSpSopr ;
                     ) = tsOK
                      {
                        mylog('if (getfirst fastfirstrow katOtpedShtuka');
-
-                       var _labelKol : string =  doubletostr(spsopr.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
                        var _labelGTIN : string = replace(lpad(katOtpedShtuka.bkod,14),' ','0');
-                       var _number : string = '02'+_labelGTIN+'37'+_labelKol;
-                       mylog('number = ' + _number);
-                       TmpSerNom.KM1 := _number;  //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+                       var _number : string = '';
+                       var _CSPSCHF, _CSPSopr : comp = 0h;
+                       if katsopr.wadoc = 23 { // корр документ
+                          if getfirst korspec = tsOK
+                           {
+                             mylog('if getfirst korspec = tsOK');
+                             var _labelKol_prev : string =  doubletostr(korspec.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                             var _labelKol_curr : string =  doubletostr((korspec.kolfact + spsopr.kolfact)*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                             _number := '02'+_labelGTIN+'37'+_labelKol_prev;
+                             TmpSerNom.isPrev := 1;
+                             TmpSerNom.KM1 := _number;  //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+                             _CSPSopr := SpSopr.cADocSP;
+                             _CSPSCHF := SpSopr.cADocSP;
+                             #insertTmpSerNom
+                             _number := '02'+_labelGTIN+'37'+_labelKol_curr;
+                             TmpSerNom.isPrev := 0;
+                             TmpSerNom.KM1 := _number;  //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+                              _CSPSopr := SpSopr.nrec ;
+                              _CSPSCHF := SpSopr.CSPSCHF
+                             #insertTmpSerNom
+                           }
+                           else { mylog('if getfirst korspec <> tsOK');}
+                        }
+                         else {
+                             var _labelKol : string =  doubletostr(spsopr.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                             _number := '02'+_labelGTIN+'37'+_labelKol;
+                             mylog('number = ' + _number);
+                             TmpSerNom.KM1 := _number;  //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+                             _CSPSopr := SpSopr.nrec ;
+                             _CSPSCHF := SpSopr.CSPSCHF
+                             #insertTmpSerNom
+                        }
                      }
-                #insertTmpSerNom
              }
          }
          else {

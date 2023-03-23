@@ -263,9 +263,9 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="xml.prj" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\expImpScript.vip" PosX="54" PosY="20" OpenEditor="True"/>
+			<File Name="ExpImpScript\expImpScript.vip" PosX="39" PosY="195" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_func.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="56" PosY="19" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="58" PosY="539" OpenEditor="True" Active="True"/>
 			<File Name="ExpImpScript\ecod_imp.vip" PosX="24" PosY="667" OpenEditor="True"/>
 			<File Name="ExpImpScript\sts_doc.vpp" PosX="51" PosY="50" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_user.vip" PosX="51" PosY="12" OpenEditor="True"/>
