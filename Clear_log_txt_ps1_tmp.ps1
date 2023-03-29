@@ -1,4 +1,4 @@
-﻿$limit = (Get-Date).AddDays(-30)
+﻿$limit = (Get-Date).AddDays(-10)
 $paths = @("C:\Gal_ABM_tmp\"
 ,"C:\Galaktika\_CRPT"
 ,"C:\Galaktika\_CRPT_API_InfoToolsLoader"

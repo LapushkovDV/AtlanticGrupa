@@ -266,8 +266,8 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="CRPT_API.prj" PosX="58" PosY="97" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell.vip" PosX="14" PosY="64" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="19" PosY="96" OpenEditor="True" Active="True"/>
+			<File Name="Source\CRPT_API_PowerShell.vip" PosX="51" PosY="215" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="1" PosY="47" OpenEditor="True" Active="True"/>
 			<File Name="Source\CRPT_API_Viewer_InfoTools.VIP" PosX="78" PosY="95" OpenEditor="True"/>
 			<File Name="..\..\..\_AggregateRes\alter\ALTER_DiadocExportDoc.vip" PosX="48" PosY="29" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_AggrDocsList.VIP" PosX="40" PosY="336" OpenEditor="True"/>
@@ -310,7 +310,7 @@
 			<BreakPoint FileName="Source\CRPT_API_ImportDocs.VIP" Line="26"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45008,436320625" DateTimeCompile="6,82638928992674E-5" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45014,7228347569" DateTimeCompile="0,000359687495802063" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" SourceLine="7" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetKituStatus входящий параметр: _OleGenerateGUID:String не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetKituStatus.Vpp" SourceLine="61" SourceColumn="1">
@@ -410,7 +410,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="395" SourceColumn="144"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="383" SourceColumn="139"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="23.03.2023 10:28:24"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="29.03.2023 17:21:24"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

@@ -1,14 +1,15 @@
 Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     _empty := '';
-    _OleGenerateGUID := ''; // Заглушки пока не исп
+    _OleGenerateGUID := OleGenerateGUID; // Заглушки пока не исп
+
     MyLog(sGetTune('USERTUNE.CRPT_PRJ.CryptoCrtf'));
     MyLog(GetTokenPath);
 
     MyWriteLN('[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12');
     MyWriteLN('$scriptPath = $MyInvocation.MyCommand.Path | Split-Path -Parent                                                                                           ');
     MyWriteLN('$crtf = "'+sGetTune('USERTUNE.CRPT_PRJ.CryptoCrtf')+'";                                                                                                     ');
-    MyWriteLN('$dataPath = $scriptPath + ''\doc.txt'';                                                                                                                   ');
-    MyWriteLN('$signedDocPath = $scriptPath + ''\signed_doc.txt'';                                                                                                       ');
+    MyWriteLN('$dataPath = $scriptPath + ''\doc'+_OleGenerateGUID+'.txt'';                                                                                                                   ');
+    MyWriteLN('$signedDocPath = $scriptPath + ''\signed_doc'+_OleGenerateGUID+'.txt'';                                                                                                       ');
     MyWriteLN('$tokenPath = '''+GetTokenPath+''';                                                                                    ');
     MyWriteLN('$fileLog =    "'+_logFile+'" ');
     MyWriteLN('Function tokenValid () {                                                                                                                                  ');
@@ -42,15 +43,20 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('    try {                                                                                                                                                 ');
     MyWriteLN('                                                                                                                                                          ');
     MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/auth/cert/key" | ConvertFrom-Json                                                ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! Invoke-WebRequest  -Uri https://ismp.crpt.ru/api/v3/auth/cert/key") -Encoding Oem');
+    MyWriteLN('        Remove-Item $dataPath -Force                                                                                                                       ');
+    MyWriteLN('        Remove-Item $signedDocPath -Force                                                                                                                  ');
     MyWriteLN('                                                                                                                                                          ');
     MyWriteLN('        $uuid = $response.uuid                                                                                                                            ');
     MyWriteLN('        $data = $response.data                                                                                                                            ');
     MyWriteLN('                                                                                                                                                          ');
     MyWriteLN('        New-Item $dataPath -Force                                                                                                                         ');
     MyWriteLN('        Set-Content -Path $dataPath -Value $data -Force -NoNewline                                                                                        ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! Set-Content -Path dataPath -Value data -Force -NoNewline") -Encoding Oem');
     MyWriteLN('                                                                                                                                                          ');
     MyWriteLN('        csptest -sfsign -sign -in $dataPath -out $signedDocPath -MY $crtf -base64 -add                                                                    ');
     MyWriteLN('        [string]$signedDoc = (Get-Content -Path $signedDocPath).Replace("`n`r","")                                                                        ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! csptest -sfsign -sign -in $dataPath -out signedDocPath -MY crtf -base64 -add") -Encoding Oem');
     MyWriteLN('                                                                                                                                                          ');
     MyWriteLN('        $Body = @{                                                                                                                                        ');
     MyWriteLN('            data = $signedDoc;                                                                                                                            ');
@@ -58,11 +64,11 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('        } | ConvertTo-Json                                                                                                                                ');
     MyWriteLN('                                                                                                                                                          ');
     MyWriteLN('        $responseGetToken = Invoke-RestMethod -Uri https://ismp.crpt.ru/api/v3/auth/cert/ -ContentType "application/json;charset=UTF-8" -Method Post -Body $Body  ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! Invoke-RestMethod -Uri https://ismp.crpt.ru/api/v3/auth/cert/ -ContentType application/json;charset=UTF-8") -Encoding Oem');
     MyWriteLN('        Set-Content -Path $tokenPath -Value $responseGetToken.token -Force                                                                                 ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! Set-Content -Path $tokenPath -Value responseGetToken.token -Force") -Encoding Oem');
     MyWriteLN('                                                                                                                                                           ');
     MyWriteLN('                                                                                                                                                           ');
-    MyWriteLN('        Remove-Item $dataPath -Force                                                                                                                       ');
-    MyWriteLN('        Remove-Item $signedDocPath -Force                                                                                                                  ');
     MyWriteLN('        #Remove-Item $tokenPath -Force                                                                                                                     ');
     MyWriteLN('    }                                                                                                                                                      ');
     MyWriteLN('                                                                                                                                                           ');

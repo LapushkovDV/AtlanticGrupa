@@ -66,6 +66,18 @@ object 'L_SOPRDOC::SOPRDOC' : InterfaceWindow {
       DefaultWidth = 26;
     } // STEPDOC.NKONT : Column
 
+     object 'katpodr.name' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Склад отгрузки';
+      HelpLine = 'Склад отгрузки';
+      FieldName = 'katpodr.name';
+      Index = 9;
+      DefaultWidth = 26;
+    } // basedoc.nodoc : Column
     object 'Field: STEPDOC.KONTPRI' : Column {
       Original = False;
       Visible = True;
