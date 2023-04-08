@@ -239,7 +239,7 @@ _nppSPSOPR++;
           createEcodCell(ChildTwo, 'DespatchedQuantity', string(_qty/AmountInPack, 0, 2)); //spsopr.KolFact
           createEcodCell(ChildTwo, 'OrderedQuantity', string(_skl/AmountInPack, 0, 2));
           if (_coAttr_EdiDesadvBox = 1 and not(_isInvoice))
-          then createEcodCell(ChildTwo, 'UnitOfMeasure', 'CU')
+          then createEcodCell(ChildTwo, 'UnitOfMeasure', if(instr('МЕТРО',upcase(katorg_1.name)) <> 0,'EA','CU'))  // Товарищщ Анатолий.. мудак он
           else createEcodCell(ChildTwo, 'UnitOfMeasure', 'CT');
         }else{
           createEcodCell(ChildTwo, 'DespatchedQuantity', string(_qty, 0, 3)); //spsopr.KolFact

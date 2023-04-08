@@ -54,6 +54,11 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('        Set-Content -Path $dataPath -Value $data -Force -NoNewline                                                                                        ');
     MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! Set-Content -Path dataPath -Value data -Force -NoNewline") -Encoding Oem');
     MyWriteLN('                                                                                                                                                          ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. dataPath = $dataPath") -Encoding Oem        ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. signedDocPath = $signedDocPath") -Encoding Oem   ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. crtf= $crtf") -Encoding Oem                          ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. try csptest -sfsign -sign -in $dataPath -out $signedDocPath -MY $crtf -base64 -add") -Encoding Oem  ');
+
     MyWriteLN('        csptest -sfsign -sign -in $dataPath -out $signedDocPath -MY $crtf -base64 -add                                                                    ');
     MyWriteLN('        [string]$signedDoc = (Get-Content -Path $signedDocPath).Replace("`n`r","")                                                                        ');
     MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! csptest -sfsign -sign -in $dataPath -out signedDocPath -MY crtf -base64 -add") -Encoding Oem');
@@ -82,7 +87,7 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('    "Token is valid"                                                                                                                                       ');
     MyWriteLN('    Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Token is valid") -Encoding Oem');
     MyWriteLN('} else {                                                                                                                                                   ');
-    MyWriteLN('        for($i=1; $i -le 600; $i++) {                                                                                                                         ');
+    MyWriteLN('        for($i=1; $i -le 50; $i++) {                                                                                                                         ');
     MyWriteLN('              Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Token is not valid. Request new Token...") -Encoding Oem    ');
     MyWriteLN('              "Token is not valid. Request new Token..."                                                                                                      ');
     MyWriteLN('              requestNewToken                                                                                                                                 ');

@@ -118,6 +118,7 @@ interface expImpScript_droga;
     _isInvoice : boolean = false;
   as select * from  ieHead, AttrVal atrGLN
   , katOrg
+  , katorg katorg_1
   , katOtpEd
   , katOtpEd katOtpEdAkt
   , katOtpEd katOtpEdUch
@@ -175,9 +176,13 @@ interface expImpScript_droga;
   //  and  tEcOrder.BItemCode == AtrCodeMC.vString (noindex)
 
     and katSopr.nRec == spSopr.cSopr
+
+    and katsopr.corg == katorg_1.nrec
+
     and katSopr.nRec == ATL_MERCURY_HEAD.cSopr
     and spSopr.nrec == ATL_MERCURY_SPEC.cSpSopr
     and spSopr.nrec == ATL_MERCURY_SPEC_2.cSpSopr
+
 
     and 1 == KatOtpEdUch.prMC and katMc.nRec == katOtpEdUch.cMcUsl and 1 == katOtpEdUch.koef    //Учетная Ед.Изм
   //and SpSopr.cSpStep==SpStep.nRec

@@ -262,11 +262,11 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="xml.prj" PosX="32" PosY="35" OpenEditor="True"/>
-			<File Name="ExpImpScript\expImpScript.vip" PosX="35" PosY="113" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_func.vip" PosX="62" PosY="988" OpenEditor="True" Active="True"/>
-			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="141" PosY="364" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_imp.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="xml.prj" PosX="21" PosY="33" OpenEditor="True"/>
+			<File Name="ExpImpScript\expImpScript.vip" PosX="12" PosY="121" OpenEditor="True"/>
+			<File Name="ExpImpScript\ecod_func.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="102" PosY="244" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\ecod_imp.vip" PosX="150" PosY="980" OpenEditor="True"/>
 			<File Name="ExpImpScript\common_func.vpp" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="ExpImpScript\sts_doc.vpp" PosX="1" PosY="54" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_user.vip" PosX="28" PosY="18" OpenEditor="True"/>
@@ -283,141 +283,11 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\xml\xml.prj" DateTimeStart="44901,384579838" DateTimeCompile="9,60879624472E-5" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="45024,41554625" DateTimeCompile="0,000344953703461215" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="70" SourceColumn="2"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\ecod_func.vip" SourceLine="378" SourceColumn="69">
-						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="253" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\ecod_func.vip" SourceLine="379" SourceColumn="68">
-						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="253" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\ecod_func.vip" SourceLine="380" SourceColumn="68">
-						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="253" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\ecod_func.vip" SourceLine="381" SourceColumn="68">
-						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="253" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\ecod_func.vip" SourceLine="522" SourceColumn="83">
-						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="253" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\ecod_func.vip" SourceLine="603" SourceColumn="81">
-						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="253" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="23" SourceColumn="58">
-						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\ecod_func.vip" Line="764" Column="1"/>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="253" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="231" SourceColumn="40">
-						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\ecod_func.vip" Line="764" Column="1"/>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="253" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="265" SourceColumn="55">
-						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\ecod_func.vip" Line="764" Column="1"/>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="253" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) makeLine локальная переменная _ReleaseDatePeriod:String, объявленная в C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\MAKELINEPROC.VPP(338), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="355" SourceColumn="11">
-						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\ecod_func.vip" Line="764" Column="1"/>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="253" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\ecod_func.vip" SourceLine="913" SourceColumn="66">
-						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="253" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\sts_imp.vip" SourceLine="84" SourceColumn="63">
-						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="354" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\sts_imp.vip" SourceLine="141" SourceColumn="85">
-						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="354" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\sts_rct.vip" SourceLine="137" SourceColumn="79">
-						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="358" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\sts_rct.vip" SourceLine="138" SourceColumn="81">
-						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" Line="358" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="386" SourceColumn="32"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная hAttrDoc:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(207), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная hValueDoc:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(207), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная nodeList:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(208), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная nodeListLen:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(208), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная partDoc:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(208), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная partDocLen:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(208), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная attrDoc:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(208), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная attrDocLen:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(208), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная valueDoc:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(208), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная valueDocLen:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(208), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная j:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(209), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная k:LongInt интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(209), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная posExt:Byte интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(212), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная sFileErr:String интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(213), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная sFileArh:String интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(213), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная _descr:String интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(213), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная dat:Date интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(220), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная num:String интерфейса DROGA::EXPIMPSCRIPT_DROGA, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/expImpScript.vip(222), не была использована" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;EXPIMPSCRIPT_DROGA.getNextNum&quot;, объявленный в C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\COMMON_FUNC.VPP(2), не был использован" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;EXPIMPSCRIPT_DROGA.getNrecByParam&quot;, объявленный в C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\COMMON_FUNC.VPP(47), не был использован" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;EXPIMPSCRIPT_DROGA.getTextValue&quot;, объявленный в C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\COMMON_FUNC.VPP(94), не был использован" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;EXPIMPSCRIPT_DROGA.findFirstChild&quot;, объявленный в C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\COMMON_FUNC.VPP(111), не был использован" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="391" SourceColumn="5"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_intr.vip" SourceLine="22" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="45" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="196" SourceColumn="19"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="219" SourceColumn="19"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="238" SourceColumn="73"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="363" SourceColumn="72"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="591" SourceColumn="19"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="651" SourceColumn="17"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) load_xml локальная переменная nodeListLen:LongInt, объявленная в C:\Galaktika\res\src\xml\EXPIMPSCRIPT/ecod_imp.vip(598), не используется." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="865" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="894" SourceColumn="71"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="972" SourceColumn="13"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="976" SourceColumn="71"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1103" SourceColumn="62"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1114" SourceColumn="58"/>
-					<CompileMessage MessageType="mtWarning" MessageText="При формальном описании интерфейса DROGA::ECOD_IMPORT пропущено описание параметров" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1294" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;ECOD_IMPORT.chkEcodEAN&quot;, объявленный в C:\GALAKTIKA\RES\SRC\XML\EXPIMPSCRIPT\COMMON_FUNC.VPP(130), не был использован" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1294" SourceColumn="5"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="14" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_ORDER_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="34" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_ORDER_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="55" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="61" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_ORDER_SFERAEDI_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="81" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_ORDER_SFERAEDI_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="102" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="109" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="124" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="138" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="145" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="160" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="174" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="06.12.2022 9:13:56"/>
+					<CompileMessage MessageType="mtError" MessageText="е найден файл лицензий C:\Galaktika\res\Sup910\exe\License.lic Обратитесь к дилеру за копией лицензионного файла.241, korspec.sumNDS, 0) ));" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtError" MessageText="Ошибка при открытии include файла GALNET.INC" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" SourceLine="6" SourceColumn="20"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="08.04.2023 9:58:53"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
@@ -426,14 +296,14 @@
 			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 2" Line="65" NumIndex="2" MarkerType="mtNumBookmark"/>
 			<Marker FileName="ExpImpScript\sts_doc.vpp" Caption="Нумерованная закладка 1" Line="63" NumIndex="1" MarkerType="mtNumBookmark" Comment="fDst.writeLn(str+ ';'+ getOrderNo(str));//getOrderNo(ansi2oem(str))); //шапка - без изменений"/>
 			<Marker FileName="xml.prj" Caption="Нумерованная закладка 1" Line="30" NumIndex="1" MarkerType="mtNumBookmark" Comment="coAttr_EDIInvoicLen  = 'EDI-Invoic-Len';"/>
-			<Marker FileName="ExpImpScript\expImpScript.vip" Caption="Нумерованная закладка 1" Line="224" NumIndex="1" MarkerType="mtNumBookmark" Comment="logstrtofile('ExportXML.log',DateToStr(Cur_date,'YYYY.MM.DD')+' '+timetostr(Cur_time,'HH:MM:SS')+':'+ _mylog);"/>
+			<Marker FileName="ExpImpScript\expImpScript.vip" Caption="Нумерованная закладка 1" Line="229" NumIndex="1" MarkerType="mtNumBookmark" Comment="logstrtofile('ExportXML.log',DateToStr(Cur_date,'YYYY.MM.DD')+' '+timetostr(Cur_time,'HH:MM:SS')+':'+ _mylog);"/>
 			<Marker FileName="..\_AggregateRes\Source\MercuryPRJ\MercuryPRJ_Import.vip" Caption="Нумерованная закладка 1" Line="255" NumIndex="1" MarkerType="mtNumBookmark" Comment="}"/>
 			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 2" Line="644" NumIndex="2" MarkerType="mtNumBookmark" Comment="// то 2.	После /Consignor выгружать GLN конечного покупателя из внешнего атрибута ДО"/>
 			<Marker FileName="EXPIMPSCRIPT\ecod_func.vip" Caption="Нумерованная закладка 3" Line="1133" NumIndex="3" MarkerType="mtNumBookmark" Comment="makePriCatHeader;"/>
 			<Marker FileName="ExpImpScript\ecod_imp.vip" Caption="Нумерованная закладка 1" Line="589" NumIndex="1" MarkerType="mtNumBookmark" Comment="and upper(koe.name) = 'УПАКОВКА'"/>
 			<Marker FileName="ExpImpScript\ecod_imp.vip" Caption="Нумерованная закладка 2" Line="790" NumIndex="2" MarkerType="mtNumBookmark" Comment="GetKoeffForUpakovkaByGLNandCOdeMC(buyerILN, _CodeMCByPost"/>
 			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 1" Line="909" NumIndex="1" MarkerType="mtNumBookmark" Comment="if"/>
-			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="462" NumIndex="1" MarkerType="mtNumBookmark" Comment="{"/>
+			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="241" NumIndex="1" MarkerType="mtNumBookmark" Comment="if (_coAttr_EdiDesadvBox = 1 and not(_isInvoice))"/>
 		</MarkerList>
 	</ProjectManager>
 </Viper>
