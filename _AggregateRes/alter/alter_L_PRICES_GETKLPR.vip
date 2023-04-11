@@ -1,0 +1,13 @@
+////////////// подменяем обработчик событий 
+#component "L_PRICES"
+alter interface GETKLPR;
+overload
+ Procedure SetSelectable;
+end;
+Procedure SetSelectable;
+{
+  Inherited::SetSelectable;
+  ToggleFieldSelectable(#wFlt_Status    , True);
+}
+
+end. // interface

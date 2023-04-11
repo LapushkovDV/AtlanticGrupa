@@ -267,7 +267,7 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="27" PosY="143" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="29" PosY="107" OpenEditor="True"/>
 			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="40" PosY="151" OpenEditor="True"/>
 			<File Name="Source\loadorder\LoadOrder_tune.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="Source\sale_user.vip" PosX="35" PosY="9" OpenEditor="True"/>
@@ -277,7 +277,8 @@
 			<File Name="alter\Alter_iDiaDocSend.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="cnf\L_SOPRDOC_SOPRDOCB.cnf" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="alter\alter_SoprDoc.vip" PosX="24" PosY="3" OpenEditor="True"/>
-			<File Name="cnf\L_SOPRDOC_SOPRDOC.cnf" PosX="16" PosY="78" OpenEditor="True" Active="True"/>
+			<File Name="cnf\L_SOPRDOC_SOPRDOC.cnf" PosX="16" PosY="78" OpenEditor="True"/>
+			<File Name="alter\alter_L_PRICES_GETKLPR.vip" PosX="1" PosY="1" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -292,7 +293,7 @@
 		<MarkerList>
 			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
 			<Marker FileName="alter\alter_l_basedoc_vschetB.vip" Caption="Нумерованная закладка 1" Line="22" NumIndex="1" MarkerType="mtNumBookmark" Comment="DO_ZAKLYUCHENIE : ;"/>
-			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="162" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="165" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\ReportSumDeclarationToDO.vip" Caption="Нумерованная закладка 1" Line="113" NumIndex="1" MarkerType="mtNumBookmark" Comment="xlStWriteToMatrix(nrow, 1, 'Отчет о предполагаемый'); column++;"/>
 			<Marker FileName="Source\Report_Org_VetisGUIDS.vip" Caption="Нумерованная закладка 1" Line="70" NumIndex="1" MarkerType="mtNumBookmark" Comment="exit"/>
 			<Marker FileName="Source\sale_func.vpp" Caption="Нумерованная закладка 1" Line="86" NumIndex="1" MarkerType="mtNumBookmark" Comment="if bDetail {"/>
@@ -315,7 +316,7 @@
 			<BreakPoint FileName="Source\EMAIL\ATL_EmailRun.Vip" Line="12"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45014,3452461574" DateTimeCompile="0,000737638889404479" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45027,6035856713" DateTimeCompile="0,000708310180925764" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3111,6 +3112,7 @@
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;GONEWMON.Start_GoNewMon&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\Alter_GoNewMon.vip(10), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\Alter_GoNewMon.vip" SourceLine="58" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;SOPINMOV.getMercuryField&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(1), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_SKLAD_SOPINMOV.vip" SourceLine="28" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;SOPINMOV.getMercuryFieldColor&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(32), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_SKLAD_SOPINMOV.vip" SourceLine="28" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;GETKLPR.SetSelectable&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_PRICES_GETKLPR.vip(7), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_PRICES_GETKLPR.vip" SourceLine="13" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - getTypeUchet входящий параметр: _cOrg:Comp не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="59" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="191" SourceColumn="30"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="202" SourceColumn="30"/>
@@ -3302,7 +3304,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="29.03.2023 8:18:13"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="11.04.2023 14:30:11"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
