@@ -247,13 +247,14 @@ _nppSPSOPR++;
           createEcodCell(ChildTwo, 'UnitOfMeasure', 'PCE');
         }
   }
+  var _InvoiceQuantity : double = 0;
   createEcodCell(ChildTwo, 'ItemDescription', katmc.name);//'<![CDATA['
   if (doc_type = 3) or (doc_type = 31) {//только для СФ и УПД
-    createEcodCell(ChildTwo, 'InvoiceQuantity', if(  _coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice))
-                                                   , string(_qtyLenta, 0, 3)
-                                                   , string(_qty, 0, 3)
-                                                  )
-                  ); //spsopr.KolFact
+   _InvoiceQuantity :=if(  _coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice))
+                           , string(_qtyLenta, 0, 3)
+                           , string(_qty, 0, 3)
+                          )
+    createEcodCell(ChildTwo, 'InvoiceQuantity', _InvoiceQuantity); //spsopr.KolFact
   }
   else
   if (doc_type = 25) // только для договоров
@@ -553,7 +554,7 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
                          releaseDump(ChildTwo);
                       }
                       else {
-                         var _labelKol : string =  doubletostr(spsopr.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                         var _labelKol : string =  doubletostr(if(_InvoiceQuantity <> 0, _InvoiceQuantity, spsopr.kolfact)*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
                          var _labelGTIN : string = replace(lpad(katOtpedShtuka.bkod,14),' ','0');
 
                          node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');

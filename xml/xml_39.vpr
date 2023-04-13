@@ -265,7 +265,7 @@
 			<File Name="xml.prj" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="ExpImpScript\expImpScript.vip" PosX="39" PosY="195" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_func.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="45" PosY="268" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="1" PosY="557" OpenEditor="True" Active="True"/>
 			<File Name="ExpImpScript\ecod_imp.vip" PosX="24" PosY="667" OpenEditor="True"/>
 			<File Name="ExpImpScript\sts_doc.vpp" PosX="51" PosY="50" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_user.vip" PosX="51" PosY="12" OpenEditor="True"/>
@@ -289,12 +289,12 @@
 			<Marker FileName="ExpImpScript\expImpScript.vip" Caption="Нумерованная закладка 1" Line="283" NumIndex="1" MarkerType="mtNumBookmark" Comment="case ieHead.tipDoc of"/>
 			<Marker FileName="ExpImpScript\sts_doc.vpp" Caption="Нумерованная закладка 1" Line="31" NumIndex="1" MarkerType="mtNumBookmark" Comment="_SSCCCodes := getsscc"/>
 			<Marker FileName="xml.prj" Caption="Нумерованная закладка 1" Line="33" NumIndex="1" MarkerType="mtNumBookmark" Comment="coAttr_EdiDesadvBox  = 'EDI-DESADV(box)';"/>
-			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="531" NumIndex="1" MarkerType="mtNumBookmark" Comment="{"/>
 			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 2" Line="179" NumIndex="2" MarkerType="mtNumBookmark" Comment="_qty += round(korspec.kolfact*_koef);"/>
 			<Marker FileName="..\_AggregateRes\Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="199" NumIndex="1" MarkerType="mtNumBookmark" Comment="result := iCRPT_API_PowerShell.GetRequestToAPIisExistCis(_cis);"/>
 			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 1" Line="958" NumIndex="1" MarkerType="mtNumBookmark" Comment="_varAttr_EDI_Invoic_Metro"/>
 			<Marker FileName="EXPIMPSCRIPT\ecod_func.vip" Caption="Нумерованная закладка 3" Line="1147" NumIndex="3" MarkerType="mtNumBookmark" Comment="makePriCatHeader;"/>
 			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 2" Line="650" NumIndex="2" MarkerType="mtNumBookmark" Comment="// то 2.	После /Consignor выгружать GLN конечного покупателя из внешнего атрибута ДО"/>
+			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="562" NumIndex="1" MarkerType="mtNumBookmark"/>
 		</MarkerList>
 		<CompileMessengerList>
 			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="45024,4166322338" DateTimeCompile="0,000127025457913987" StateHistory="False">
