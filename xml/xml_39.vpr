@@ -262,11 +262,11 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="xml.prj" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="xml.prj" PosX="24" PosY="76" OpenEditor="True"/>
 			<File Name="ExpImpScript\expImpScript.vip" PosX="39" PosY="195" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_func.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="55" PosY="549" OpenEditor="True" Active="True"/>
-			<File Name="ExpImpScript\ecod_imp.vip" PosX="24" PosY="667" OpenEditor="True"/>
+			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="54" PosY="532" OpenEditor="True"/>
+			<File Name="ExpImpScript\ecod_imp.vip" PosX="83" PosY="800" OpenEditor="True" Active="True"/>
 			<File Name="ExpImpScript\sts_doc.vpp" PosX="51" PosY="50" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_user.vip" PosX="51" PosY="12" OpenEditor="True"/>
 			<File Name="ExpImpScript\common_func.vpp" PosX="48" PosY="19" OpenEditor="True"/>
@@ -285,7 +285,7 @@
 			<Marker FileName="ExpImpScript\common_func.vpp" Caption="Нумерованная закладка 1" Line="65" NumIndex="1" MarkerType="mtNumBookmark" Comment="qq.setParam('attribute', coGetTune('EI.Ecod.AttrGLN'));"/>
 			<Marker FileName="..\_AggregateRes\Source\MercuryPRJ\MercuryPRJ_Import.vip" Caption="Нумерованная закладка 1" Line="255" NumIndex="1" MarkerType="mtNumBookmark" Comment="}"/>
 			<Marker FileName="ExpImpScript\ecod_imp.vip" Caption="Нумерованная закладка 1" Line="589" NumIndex="1" MarkerType="mtNumBookmark" Comment="and upper(koe.name) = 'УПАКОВКА'"/>
-			<Marker FileName="ExpImpScript\ecod_imp.vip" Caption="Нумерованная закладка 2" Line="790" NumIndex="2" MarkerType="mtNumBookmark" Comment="GetKoeffForUpakovkaByGLNandCOdeMC(buyerILN, _CodeMCByPost"/>
+			<Marker FileName="ExpImpScript\ecod_imp.vip" Caption="Нумерованная закладка 2" Line="791" NumIndex="2" MarkerType="mtNumBookmark" Comment="GetKoeffForUpakovkaByGLNandCOdeMC(buyerILN, _CodeMCByPost"/>
 			<Marker FileName="ExpImpScript\expImpScript.vip" Caption="Нумерованная закладка 1" Line="283" NumIndex="1" MarkerType="mtNumBookmark" Comment="case ieHead.tipDoc of"/>
 			<Marker FileName="ExpImpScript\sts_doc.vpp" Caption="Нумерованная закладка 1" Line="31" NumIndex="1" MarkerType="mtNumBookmark" Comment="_SSCCCodes := getsscc"/>
 			<Marker FileName="xml.prj" Caption="Нумерованная закладка 1" Line="33" NumIndex="1" MarkerType="mtNumBookmark" Comment="coAttr_EdiDesadvBox  = 'EDI-DESADV(box)';"/>
@@ -297,7 +297,7 @@
 			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="567" NumIndex="1" MarkerType="mtNumBookmark"/>
 		</MarkerList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="45041,4911261227" DateTimeCompile="0,000378506942070089" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="45041,7411528588" DateTimeCompile="9,71412009675987E-5" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3182,14 +3182,14 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="363" SourceColumn="72"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="591" SourceColumn="19"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="651" SourceColumn="17"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) load_xml локальная переменная nodeListLen:LongInt, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT/ecod_imp.vip(598), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="865" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="894" SourceColumn="71"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="972" SourceColumn="13"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="976" SourceColumn="71"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1103" SourceColumn="62"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1114" SourceColumn="58"/>
-					<CompileMessage MessageType="mtWarning" MessageText="При формальном описании интерфейса DROGA::ECOD_IMPORT пропущено описание параметров" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1294" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;ECOD_IMPORT.chkEcodEAN&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\COMMON_FUNC.VPP(130), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1294" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) load_xml локальная переменная nodeListLen:LongInt, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT/ecod_imp.vip(598), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="869" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="898" SourceColumn="71"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="976" SourceColumn="13"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="980" SourceColumn="71"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1107" SourceColumn="62"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1118" SourceColumn="58"/>
+					<CompileMessage MessageType="mtWarning" MessageText="При формальном описании интерфейса DROGA::ECOD_IMPORT пропущено описание параметров" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1298" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;ECOD_IMPORT.chkEcodEAN&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\COMMON_FUNC.VPP(130), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1298" SourceColumn="5"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="14" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_ORDER_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="34" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_ORDER_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="55" SourceColumn="1"/>
@@ -3203,7 +3203,7 @@
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="160" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="174" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="25.04.2023 11:47:46"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="25.04.2023 17:47:24"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

@@ -782,7 +782,8 @@ var
                 //Eugene Semenov 28.11.2017
                 // METRO
                 if (buyerILN = '4607070199991'){
-                  if (line_rec.ItemType = 'CU' and line_rec.UnitOfMeasure = 'PCE' and line_rec.OrderedUnitPacksize > 0){
+                  if (line_rec.ItemType = 'CU' and (line_rec.UnitOfMeasure = 'PCE' or line_rec.UnitOfMeasure = 'CT') // CT добавили 20230425
+                     and line_rec.OrderedUnitPacksize > 0){
                     set line_rec.OrderedQuantity = line_rec.OrderedQuantity * line_rec.OrderedUnitPacksize;
                     set line_rec.OrderedUnitNetPrice = round(line_rec.OrderedUnitNetPrice / line_rec.OrderedUnitPacksize, 4);
                   }
@@ -796,8 +797,11 @@ var
                 }
                 //writeMessageLog(' --- DEBUG (1): '+ string(line_rec.AcceptedQuantity));
                 // GiperGlobus
-                if (buyerILN = '4690202000005'){
-                  if (line_rec.NumberOfPackages > 0 and line_rec.OrderedUnitPacksize > 0){
+                if (buyerILN = '4690202000005') or (buyerILN = '4640113000007'){
+                  if (line_rec.NumberOfPackages > 0 and line_rec.OrderedUnitPacksize > 0)
+                  or (line_rec.ItemType = 'CU' and (line_rec.UnitOfMeasure = 'PCE' or line_rec.UnitOfMeasure = 'CT')
+                     and line_rec.OrderedUnitPacksize > 0) // CT добавили 20230425
+                  {
                     set line_rec.OrderedQuantity = line_rec.OrderedQuantity * line_rec.OrderedUnitPacksize;
                     set line_rec.OrderedUnitNetPrice = round(line_rec.OrderedUnitNetPrice / line_rec.OrderedUnitPacksize, 4);
                   }
