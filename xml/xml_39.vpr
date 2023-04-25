@@ -265,7 +265,7 @@
 			<File Name="xml.prj" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="ExpImpScript\expImpScript.vip" PosX="39" PosY="195" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_func.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="1" PosY="557" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="55" PosY="549" OpenEditor="True" Active="True"/>
 			<File Name="ExpImpScript\ecod_imp.vip" PosX="24" PosY="667" OpenEditor="True"/>
 			<File Name="ExpImpScript\sts_doc.vpp" PosX="51" PosY="50" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_user.vip" PosX="51" PosY="12" OpenEditor="True"/>
@@ -294,10 +294,10 @@
 			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 1" Line="958" NumIndex="1" MarkerType="mtNumBookmark" Comment="_varAttr_EDI_Invoic_Metro"/>
 			<Marker FileName="EXPIMPSCRIPT\ecod_func.vip" Caption="Нумерованная закладка 3" Line="1147" NumIndex="3" MarkerType="mtNumBookmark" Comment="makePriCatHeader;"/>
 			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 2" Line="650" NumIndex="2" MarkerType="mtNumBookmark" Comment="// то 2.	После /Consignor выгружать GLN конечного покупателя из внешнего атрибута ДО"/>
-			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="562" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="567" NumIndex="1" MarkerType="mtNumBookmark"/>
 		</MarkerList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="45024,4166322338" DateTimeCompile="0,000127025457913987" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="45041,4911261227" DateTimeCompile="0,000378506942070089" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3102,19 +3102,25 @@
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" Line="258" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="231" SourceColumn="40">
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="233" SourceColumn="40">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\ecod_func.vip" Line="769" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" Line="258" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="265" SourceColumn="55">
+					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="261" SourceColumn="5">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\ecod_func.vip" Line="769" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" Line="258" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) makeLine локальная переменная _ReleaseDatePeriod:String, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MAKELINEPROC.VPP(338), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="355" SourceColumn="11">
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="271" SourceColumn="55">
+						<StackIncludeList>
+							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\ecod_func.vip" Line="769" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" Line="258" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) makeLine локальная переменная _ReleaseDatePeriod:String, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MAKELINEPROC.VPP(344), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="361" SourceColumn="11">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\ecod_func.vip" Line="769" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" Line="258" Column="1"/>
@@ -3197,7 +3203,7 @@
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="160" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="174" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="08.04.2023 10:00:08"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="25.04.2023 11:47:46"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

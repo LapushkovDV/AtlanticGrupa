@@ -221,6 +221,8 @@ _nppSPSOPR++;
   createEcodCell(ChildTwo, 'EAN',if(_coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice)),_EANLEnta ,_EAN));   // KatOtped.bKod
   createEcodCell(ChildTwo, 'BuyerItemCode', trim(extAttr.sGetAttrID(coKatMC, katMc.nRec, cAtrMc)));
   createEcodCell(ChildTwo, 'SupplierItemCode', katmc.barkod2);
+
+  var _kol_in_pos : double = 0;
   if (doc_type = 201)
   {//только для накладных
 
@@ -238,12 +240,14 @@ _nppSPSOPR++;
         {
           createEcodCell(ChildTwo, 'DespatchedQuantity', string(_qty/AmountInPack, 0, 2)); //spsopr.KolFact
           createEcodCell(ChildTwo, 'OrderedQuantity', string(_skl/AmountInPack, 0, 2));
+          _kol_in_pos := _skl/AmountInPack;
           if (_coAttr_EdiDesadvBox = 1 and not(_isInvoice))
           then createEcodCell(ChildTwo, 'UnitOfMeasure', if(instr('МЕТРО',upcase(katorg_1.name)) <> 0,'EA','CU'))  // Товарищщ Анатолий.. мудак он
           else createEcodCell(ChildTwo, 'UnitOfMeasure', 'CT');
         }else{
           createEcodCell(ChildTwo, 'DespatchedQuantity', string(_qty, 0, 3)); //spsopr.KolFact
           createEcodCell(ChildTwo, 'OrderedQuantity', string(_skl, 0, 3));
+          _kol_in_pos := _skl;
           createEcodCell(ChildTwo, 'UnitOfMeasure', 'PCE');
         }
   }
@@ -255,6 +259,7 @@ _nppSPSOPR++;
                            , string(_qty, 0, 3)
                           )
     createEcodCell(ChildTwo, 'InvoiceQuantity', _InvoiceQuantity); //spsopr.KolFact
+    _kol_in_pos := _InvoiceQuantity;
   }
   else
   if (doc_type = 25) // только для договоров
@@ -554,7 +559,7 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
                          releaseDump(ChildTwo);
                       }
                       else {
-                         var _labelKol : string =  doubletostr(if(_InvoiceQuantity <> 0, _InvoiceQuantity, spsopr.kolfact)*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                         var _labelKol : string =  doubletostr(_kol_in_pos*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
                          var _labelGTIN : string = replace(lpad(katOtpedShtuka.bkod,14),' ','0');
 
                          node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
