@@ -276,9 +276,10 @@
 			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="63" PosY="415" OpenEditor="True"/>
 			<File Name="alter\Alter_iDiaDocSend.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="cnf\L_SOPRDOC_SOPRDOCB.cnf" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="alter\alter_SoprDoc.vip" PosX="24" PosY="3" OpenEditor="True"/>
+			<File Name="alter\alter_SoprDoc.vip" PosX="46" PosY="26" OpenEditor="True"/>
 			<File Name="cnf\L_SOPRDOC_SOPRDOC.cnf" PosX="16" PosY="78" OpenEditor="True"/>
-			<File Name="alter\alter_L_PRICES_GETKLPR.vip" PosX="1" PosY="1" OpenEditor="True" Active="True"/>
+			<File Name="alter\alter_L_PRICES_GETKLPR.vip" PosX="48" PosY="13" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp" PosX="39" PosY="57" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">

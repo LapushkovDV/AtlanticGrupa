@@ -797,7 +797,7 @@ var
                 }
                 //writeMessageLog(' --- DEBUG (1): '+ string(line_rec.AcceptedQuantity));
                 // GiperGlobus
-                if (buyerILN = '4690202000005') or (buyerILN = '4640113000007'){
+                if (buyerILN = '4690202000005'){ // or (buyerILN = '4640113000007'){
                   if (line_rec.NumberOfPackages > 0 and line_rec.OrderedUnitPacksize > 0)
                   or (line_rec.ItemType = 'CU' and (line_rec.UnitOfMeasure = 'PCE' or line_rec.UnitOfMeasure = 'CT')
                      and line_rec.OrderedUnitPacksize > 0) // CT добавили 20230425
