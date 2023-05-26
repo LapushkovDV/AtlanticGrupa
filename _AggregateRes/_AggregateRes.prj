@@ -187,6 +187,7 @@ end;
 #make "Source\MercuryPRJ\PickingReport_tune.vip"
 #make "Source\MercuryPRJ\PickingReport_Import.vip"
 #make "Source\MercuryPRJ\PickingReport_View.vip"
+#make "Source\MercuryPRJ\PickingReport_View_all.vip"
 
 
 #make "Source\ReportMassa_DO_NAKL.vip"

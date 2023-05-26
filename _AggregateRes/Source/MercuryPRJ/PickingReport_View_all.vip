@@ -1,0 +1,117 @@
+Interface PickingReport_View_all 'Просмотр всех загруженных данных PickingReport';
+  show at (,, 91, 23);
+function getNameDoc(_viddoc : word) : string; forward;
+create view
+var  _cSoprMain
+   , _cBasedocMain : comp;
+as select
+   if(isvalidall(tnKS_BD), KS_BD.Nsopr
+    ,if(isValidall(tnKS_PR), KS_PR.nsopr,'')) (FieldName = ksnsopr)
+ , if(isvalidall(tnKS_BD), KS_BD.dsopr
+    ,if(isValidall(tnKS_PR), KS_PR.dsopr,'')) (FieldName = ksdsopr)
+ , if(isvalidall(tnKS_BD), KS_BD.vidsopr
+    ,if(isValidall(tnKS_PR), KS_PR.vidsopr,'')) (FieldName = ksvidsopr)
+
+
+from
+
+   KatSopr KS_PR
+ , KatSopr KS_BD
+ , BaseDoc
+ , STepDoc
+ , ATL_PickingRep_HEAD PkRH
+ , ATL_PICKINGREP_Spec PkRS
+ , KatMc
+ , KatDoc
+ where ((       root == PkRS.nrec
+      and PkRS.CHEAD == PkRH.nrec
+      and PkRH.cSopr == KS_PR.nrec
+
+   and PkRH.cBaseDoc == BaseDoc.Nrec
+    and BaseDoc.Nrec == STepDoc.cBasedoc
+    and StepDoc.Nrec == KS_BD.cStepDoc
+ ))
+;
+function getNameDoc(_viddoc : word) : string; cacheable;
+{
+  result := '';
+  if getfirst katDoc where ((_viddoc == katdoc.tidkgal)) = tsOK
+   result := katdoc.name;
+}
+
+Browse brShowPickingRepDataPkRSp2(,,sci18Esc);
+table PkRS;
+ fields
+  if(PkRS.IsManual,'+','')   'ручн.'    ('добавлено вручную'): [1],protect;
+  PkRS.SapCode    'SAP Code'    ('SAP Code'): [5],protect;
+  PkRS.DateSborka 'Дата сборки' ('Дата сборки'): [5],protect;
+  PkRS.Nsopr      'Nsopr'       ('Nsopr'): [5],protect;
+  PkRS.SSCCWMS    'SSCCWMS'     ('SSCCWMS'): [10],protect;
+  PkRS.DataMatrix 'DataMatrix'  ('DataMatrix'): [10],protect;
+  PkRS.SSCCManuf  'SSCCManuf'   ('SSCCManuf'): [10],protect;
+  PkRS.ErrDescr   'ErrDescr  ОпиErrDescr описание ошибки'('Описание ошибки, если пусто, значит все ОК'): [20],protect;
+  ksnsopr   'Накладная','номер'   ('Накладная номер'): [10],protect;
+  ksdsopr   'Накладная','дата'   ('Накладная дата'): [10],protect;
+  getNameDoc(ksvidsopr) 'Типа','документа'    ('Накладная тип'): [10],protect;
+end;  // Browse brShowPickingRepData1SpSopr
+
+End.//Interface
+
+
+//------------------------------------------------------------------------------
+// Отчеты пользователя
+//------------------------------------------------------------------------------
+
+#Component "F_UserReport"
+
+ObjInterface IUserReport;
+  // Запуск отчета на вvполнение при выборе его из списка отчетов
+  procedure Run;
+  // Наименование отчета в списке
+  function GetReportName : String;
+  // Наименования групп, в которvе входит отчет
+  // +Группа n+1 делается подчиненной группе n
+  function GetGroupName (Level : Word) : String;
+  // Приоритет отчета - сортировка внутри группv вvполняется сначала
+  // по приоритету, а затем по наименовани_
+  function GetPriority : Integer;
+  // ModuleID модулей, в которvх будет виден отчет
+  // '*' - отчет будет виден в любом модуле
+  function VisibleInModule (Ind : Byte) : String;
+end;
+
+VipInterface UserReport_PickingReport_View_all Implements IUserReport;
+
+Interface UserReport_PickingReport_View_all
+
+create view;
+function VisibleInModule(Ind : Byte) : String;
+begin
+  VisibleInModule := '';
+  case Ind of
+    1 : VisibleInModule := '*';
+  end;
+end;
+function GetPriority : Integer;
+begin
+  GetPriority := 0;
+end;
+function GetGroupName (Level : Word) : String;
+begin
+  GetGroupName := '';
+  case Level of
+    1 : GetGroupName := '';
+  end;
+end;
+
+function GetReportName: String;
+begin
+  GetReportName := 'Просмотр всех данных по маркировке'
+end;
+!-------------------------------------------------------------------------------
+procedure Run;
+begin
+  runinterface(ATLANTIC::PICKINGREPORT_VIEW_ALL);
+end;
+!-------------------------------------------------------------------------------
+end.

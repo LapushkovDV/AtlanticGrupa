@@ -267,19 +267,18 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="29" PosY="107" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="48" PosY="190" OpenEditor="True"/>
 			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="40" PosY="151" OpenEditor="True"/>
 			<File Name="Source\loadorder\LoadOrder_tune.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="Source\sale_user.vip" PosX="35" PosY="9" OpenEditor="True"/>
 			<File Name="Source\sale_sale.vip" PosX="12" PosY="288" OpenEditor="True"/>
 			<File Name="Source\sale_func.vpp" PosX="62" PosY="9" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="63" PosY="415" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="44" PosY="431" OpenEditor="True"/>
 			<File Name="alter\Alter_iDiaDocSend.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="cnf\L_SOPRDOC_SOPRDOCB.cnf" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="alter\alter_SoprDoc.vip" PosX="46" PosY="26" OpenEditor="True"/>
-			<File Name="cnf\L_SOPRDOC_SOPRDOC.cnf" PosX="16" PosY="78" OpenEditor="True"/>
-			<File Name="alter\alter_L_PRICES_GETKLPR.vip" PosX="48" PosY="13" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp" PosX="39" PosY="57" OpenEditor="True" Active="True"/>
+			<File Name="alter\alter_SoprDoc.vip" PosX="24" PosY="37" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp" PosX="8" PosY="55" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_View_all.vip" PosX="48" PosY="108" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -317,7 +316,7 @@
 			<BreakPoint FileName="Source\EMAIL\ATL_EmailRun.Vip" Line="12"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45027,6035856713" DateTimeCompile="0,000708310180925764" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45063,4021509143" DateTimeCompile="0,000395381946873385" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3167,6 +3166,8 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Кнопка &quot;Добавить ручные данные&quot; будет в одну строку высотой !" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="280" SourceColumn="3"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="300" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="335" SourceColumn="31"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View_all.vip" SourceLine="3" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Таблица &quot;KATMC&quot;, включенная в главную логическую таблицу интерфейса &quot;PICKINGREPORT_VIEW_ALL&quot;, не была явно использована" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View_all.vip" SourceLine="58" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportMassa_DO_NAKL.vip" SourceLine="7" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) PrintReport_Matrix локальная переменная Nrow0:LongInt, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportMassa_DO_NAKL.vip(193), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportMassa_DO_NAKL.vip" SourceLine="242" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSumDeclarationToDO.vip" SourceLine="4" SourceColumn="1"/>
@@ -3305,7 +3306,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="11.04.2023 14:30:11"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="17.05.2023 9:39:40"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
