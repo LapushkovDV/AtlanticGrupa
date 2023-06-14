@@ -19,6 +19,7 @@ end;
 #include query.vih
 #include nalogfun.vih
 #include posMarker.vih
+#include AdrFunc.vih
 
 #Component "droga"
  const
@@ -70,7 +71,8 @@ with index (
     i01 = LineNumber,
     i02 = EAN
 );
-    
+
+
 #make "ExpImpScript/ecod_tune.vip";
 #make "ExpImpScript/ecod_intr.vip";
 #make "ExpImpScript/ecod_imp.vip"; // Обработка входящих заказов и подтверждений о приеме товара

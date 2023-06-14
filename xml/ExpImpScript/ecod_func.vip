@@ -660,6 +660,32 @@ var node, childOne, childTwo: longInt;
     releaseDump(childOne); // _ Consignor
   }
 
+ if getfirst ttnDoc where (( 1109 == ttndoc.WTABLE
+                and katSopr.nrec == ttndoc.cdoc)) = tsOK
+ if (getFirst fastfirstrow maravt where ((ttndoc.CMARAVT == Maravt.nrec)) = tsOk) {
+    //Consignor
+    var iAdrFunc   : AddressFunc;            // Переменная типа интерфейс AddressFunc
+     node := XMLDOMDoc_CreateElement(xmlDoc, 'UltimateCustomer');
+     childOne := XMLDOMNode_AppendChild(hPartDoc, Node);
+     ReleaseDump(node);
+     createEcodCell(childOne, 'ILN', extAttr.sGetAttr(12014, maravt.nrec,'GLN'));
+     createEcodCell(childOne, 'TaxID', orgImp.unn);
+     createEcodCell(childOne, 'Name',MARAVT.NMARAVT);     //Имя конечного грузополучателя
+     createEcodCell(childOne, 'StreetAndNumber',substr(maravt.NPADDR, instr(', ул',maravt.NPADDR) + 4, 100));   //Адрес
+     createEcodCell(childOne, 'District','');        //Район
+     createEcodCell(childOne, 'CityName',if(getfirst katcity where ((maravt.cCity == katCity.nrec)) = tsOK, katcity.name, ''));        //Город
+     createEcodCell(childOne, 'TownName','');        //Населенный пункт
+     createEcodCell(childOne, 'HomeNumber',substr(maravt.NPADDR, instr(', д.',maravt.NPADDR) + 4, 100));
+     createEcodCell(childOne, 'BlockNumber','');
+     createEcodCell(childOne, 'FlatNumber','');
+     createEcodCell(childOne, 'ProvinceCode','');
+     createEcodCell(childOne, 'PostalCode',if(longint(substr(maravt.NPADDR,1,6))<>0,substr(maravt.NPADDR,1,6),''));
+     createEcodCell(childOne, 'Country','RU'); // ISO-код страны
+
+
+    releaseDump(childOne); // _ UltimateCustomer
+  }
+
 
 
     if (doc_type = 31)
