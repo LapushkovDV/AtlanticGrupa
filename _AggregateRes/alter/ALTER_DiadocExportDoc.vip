@@ -1,4 +1,5 @@
 #component "C_DIADOC"
+#include ConstExportSF.inc
 alter interface iDiadocExportDoc;
 var _Log : string = '';
 
@@ -21,6 +22,7 @@ from katmc katmc_check
 , katotped katOtpedShtuka
 , kated
 , spsopr korspec
+, spsopr spsopr_forGroup_mc
 where ((
       spsopr.cmcusl == katMc_check.nrec
       and spsopr.cadocsp == korspec.nrec
@@ -64,8 +66,34 @@ function get_cEdShtuka (_name : string): comp; cacheable;
      then result := kated.nrec;
 }
 
+function get_sum_kol_by_mc_and_price(_cSopr, _cmc: comp; _rprice : double) : double;
+{
+  result := 0;
+  var _cEdShtuka :comp = get_cEdShtuka('ШТУКА');
+    _loop spsopr_forGroup_mc where ((_cSopr == spsopr_forGroup_mc.csopr
+                                   and _cmc == spsopr_forGroup_mc.cmcusl
+                                and (spsopr_forGroup_mc.prmc = 1
+                                and _rprice = spsopr_forGroup_mc.rprice)
+     ))
+     {
+         if (GetFirst KatOtpEd where (( spsopr_forGroup_mc.cOtpEd == KatOtpEd.nRec )) = tsOk)
+             if (getfirst fastfirstrow katOtpedShtuka where ((1 == katOtpedShtuka.PrMc
+                                            and KatOtpEd.cMcUsl == katOtpedShtuka.cMcUsl))
+                                      and katOtpedShtuka.ckated = _cEdShtuka
+                ) = tsOK
+                {
+                 result := result + spsopr_forGroup_mc.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF
+                }
+     }
+}
+
 procedure Check_TmpSpSopr ;
 {
+ var _groupMcPrice : boolean = false;
+  if (DiaMessageToSend.wStavNDS and cg_ExpSfGroupPriceMC) != 0 // группировать по цене и МЦ
+  {
+   _groupMcPrice := true;
+  }
   MyLog('procedure Check_TmpSpSopr');
   MyLog('boGetTune(USERTUNE.DIADOC.USEATLANTICTABLE) = ' + string(boGetTune('USERTUNE.DIADOC.USEATLANTICTABLE')));
   MyLog(' DiaDocsToSend.cDoc   ='+DiaDocsToSend.cDoc);
@@ -187,18 +215,21 @@ procedure Check_TmpSpSopr ;
                              TmpSerNom.isPrev := 0;
                              TmpSerNom.KM1 := _number;  //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
                               _CSPSopr := SpSopr.nrec ;
-                              _CSPSCHF := SpSopr.CSPSCHF
+                              _CSPSCHF := SpSopr.CSPSCHF ;
                              #insertTmpSerNom
                            }
                            else { mylog('if getfirst korspec <> tsOK');}
                         }
                          else {
                              var _labelKol : string =  doubletostr(spsopr.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                             if _groupMcPrice {
+                               _labelKol := doubletostr(get_sum_kol_by_mc_and_price(spsopr.cSopr, spsopr.cmcusl, SPSOPR.rprice),'66666666');
+                             }
                              _number := '02'+_labelGTIN+'37'+_labelKol;
                              mylog('number = ' + _number);
                              TmpSerNom.KM1 := _number;  //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
                              _CSPSopr := SpSopr.nrec ;
-                             _CSPSCHF := SpSopr.CSPSCHF
+                             _CSPSCHF := SpSopr.CSPSCHF ;
                              #insertTmpSerNom
                         }
                      }

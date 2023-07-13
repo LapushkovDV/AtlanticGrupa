@@ -1,2 +1,377 @@
 <?xml version="1.0" encoding="windows-1251"?>
-<Viper/>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>PACK</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="c:\Galaktika_stend\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\pack"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.40.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\..\..\..\..\..\Galaktika_stend\FRM\*
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_AlterCumulative.res
+					$[GalExe]\C_CheckKBU.res
+					$[GalExe]\C_CheckOper.res
+					$[GalExe]\C_Common.res
+					$[GalExe]\C_CONST.res
+					$[GalExe]\C_Corpo.res
+					$[GalExe]\C_Denominator.res
+					$[GalExe]\C_ExpImp.res
+					$[GalExe]\C_ExtClass.res
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_GalHelp.res
+					$[GalExe]\C_Gantt.res
+					$[GalExe]\C_Join.res
+					$[GalExe]\C_MAILER.res
+					$[GalExe]\C_OLAP.res
+					$[GalExe]\C_Palette.res
+					$[GalExe]\C_Partner.res
+					$[GalExe]\C_Splash_RU.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\C_TEMPLATE.res
+					$[GalExe]\C_Tree.res
+					$[GalExe]\C_TreeTune.res
+					$[GalExe]\C_Tune.res
+					$[GalExe]\C_UserManual.res
+					$[GalExe]\C_WEBSERVICES.res
+					$[GalExe]\compdata.res
+					$[GalExe]\DictCache.res
+					$[GalExe]\F_Alg.res
+					$[GalExe]\F_An.res
+					$[GalExe]\F_Avizo.res
+					$[GalExe]\F_BackLog.res
+					$[GalExe]\F_BankDocF.res
+					$[GalExe]\F_BuhRep.res
+					$[GalExe]\F_BuhSchet.res
+					$[GalExe]\F_CashBank.res
+					$[GalExe]\F_CLOSCH.res
+					$[GalExe]\F_Common.res
+					$[GalExe]\F_DIFFRATE.res
+					$[GalExe]\F_DistAct.res
+					$[GalExe]\F_DistCred.res
+					$[GalExe]\F_DistPl.res
+					$[GalExe]\F_DragM.res
+					$[GalExe]\F_ExtAn.res
+					$[GalExe]\F_FA.res
+					$[GalExe]\F_Filial.res
+					$[GalExe]\F_FpAbstr.res
+					$[GalExe]\F_FpAddFld.res
+					$[GalExe]\F_FPBUDGET.res
+					$[GalExe]\F_FPCATALOG.res
+					$[GalExe]\F_FpHashAn.res
+					$[GalExe]\F_FpKatH.res
+					$[GalExe]\F_FPOBOROT.res
+					$[GalExe]\F_GetAn.res
+					$[GalExe]\F_Iski.res
+					$[GalExe]\F_KatDoc.res
+					$[GalExe]\F_KatKod.res
+					$[GalExe]\F_MBP.res
+					$[GalExe]\F_MBPPub.res
+					$[GalExe]\F_NalogReg.res
+					$[GalExe]\F_Oborot.res
+					$[GalExe]\F_OFP.res
+					$[GalExe]\F_OFPPR.res
+					$[GalExe]\F_OS.res
+					$[GalExe]\F_OSInvCard.res
+					$[GalExe]\F_OSMOVE.res
+					$[GalExe]\F_OSOper.res
+					$[GalExe]\F_OSRep.res
+					$[GalExe]\F_PAT.res
+					$[GalExe]\F_PlansSch.res
+					$[GalExe]\F_PlPor.res
+					$[GalExe]\F_PlPorRep.res
+					$[GalExe]\F_Podot.res
+					$[GalExe]\F_Post.res
+					$[GalExe]\F_RTXO.res
+					$[GalExe]\F_Saldo.res
+					$[GalExe]\F_SFO.res
+					$[GalExe]\F_Shtraf.res
+					$[GalExe]\F_SoprHoz.res
+					$[GalExe]\F_Taxes.res
+					$[GalExe]\F_TaxReport.res
+					$[GalExe]\F_TBYReport.res
+					$[GalExe]\F_Template.res
+					$[GalExe]\F_TreeNew.res
+					$[GalExe]\F_TXO.res
+					$[GalExe]\F_TXOAPI.res
+					$[GalExe]\F_USERREPORT.res
+					$[GalExe]\F_Utils.res
+					$[GalExe]\F_ValutDoc.res
+					$[GalExe]\F_Vedom.res
+					$[GalExe]\F_Veks.res
+					$[GalExe]\F_VZACHET.res
+					$[GalExe]\F_XlsRep.res
+					$[GalExe]\L_AdvRep.res
+					$[GalExe]\L_BaseDoc.res
+					$[GalExe]\L_Box.res
+					$[GalExe]\L_CalcUsl.res
+					$[GalExe]\L_Cessia.res
+					$[GalExe]\L_Common.res
+					$[GalExe]\L_Consig.res
+					$[GalExe]\L_CRM.res
+					$[GalExe]\L_Dogovor.res
+					$[GalExe]\L_Dover.res
+					$[GalExe]\L_GrPlat.res
+					$[GalExe]\L_GrSch.res
+					$[GalExe]\L_GrSopr.res
+					$[GalExe]\L_Kassa.res
+					$[GalExe]\L_KatNazna.res
+					$[GalExe]\L_KatOrg.res
+					$[GalExe]\L_KatParty.res
+					$[GalExe]\L_KontrBal.res
+					$[GalExe]\L_MakeDO.res
+					$[GalExe]\L_MakeNakl.res
+					$[GalExe]\L_MCU.res
+					$[GalExe]\L_Milk.res
+					$[GalExe]\L_MOL.res
+					$[GalExe]\L_MoveCell.res
+					$[GalExe]\L_NalNakl.res
+					$[GalExe]\L_Nalog.res
+					$[GalExe]\L_NIOKR.res
+					$[GalExe]\L_Ostatki.res
+					$[GalExe]\L_PlanPR.res
+					$[GalExe]\L_Prices.res
+					$[GalExe]\L_PrnSopr.res
+					$[GalExe]\L_Realting.res
+					$[GalExe]\L_RemDoc.res
+					$[GalExe]\L_Remont.res
+					$[GalExe]\L_RemPotr.res
+					$[GalExe]\L_RemRep.res
+					$[GalExe]\L_RepBaseDoc.res
+					$[GalExe]\L_RepOper.res
+					$[GalExe]\L_Reserve.res
+					$[GalExe]\L_RetTara.res
+					$[GalExe]\L_Rozn.res
+					$[GalExe]\L_SaldoMtr.res
+					$[GalExe]\L_SerialN.res
+					$[GalExe]\L_SF.res
+					$[GalExe]\L_Skid.res
+					$[GalExe]\L_Sklad.res
+					$[GalExe]\L_SklRep.res
+					$[GalExe]\L_Smeta.res
+					$[GalExe]\L_SoprBase.res
+					$[GalExe]\L_SoprDoc.res
+					$[GalExe]\L_SpExch.res
+					$[GalExe]\L_TTNdoc.res
+					$[GalExe]\L_Uks.res
+					$[GalExe]\L_UksMTO.res
+					$[GalExe]\L_UksPlans.res
+					$[GalExe]\L_UksRep.res
+					$[GalExe]\L_Val.res
+					$[GalExe]\L_VPr.res
+					$[GalExe]\L_Wood.res
+					$[GalExe]\M_Control.res
+					$[GalExe]\M_DVS.res
+					$[GalExe]\M_EIXML.res
+					$[GalExe]\M_GETPOTR.res
+					$[GalExe]\M_MDADoc.res
+					$[GalExe]\M_MES.res
+					$[GalExe]\M_MnPlan.res
+					$[GalExe]\M_Quality.res
+					$[GalExe]\M_Scripts.res
+					$[GalExe]\M_Serv.res
+					$[GalExe]\M_SklPlan.res
+					$[GalExe]\M_TPP.res
+					$[GalExe]\M_Transp.res
+					$[GalExe]\M_UP.res
+					$[GalExe]\Z_Basement.res
+					$[GalExe]\Z_Calc.res
+					$[GalExe]\Z_Calendar.res
+					$[GalExe]\Z_Chart.res
+					$[GalExe]\Z_Distribute.res
+					$[GalExe]\Z_ExpImp.res
+					$[GalExe]\Z_FIAS.res
+					$[GalExe]\Z_FOT.res
+					$[GalExe]\Z_FSZN.res
+					$[GalExe]\Z_Harm.res
+					$[GalExe]\Z_KatPodr.res
+					$[GalExe]\Z_LSchet.res
+					$[GalExe]\Z_Menu.res
+					$[GalExe]\Z_MP.res
+					$[GalExe]\Z_NDFL.res
+					$[GalExe]\Z_PayFSS.res
+					$[GalExe]\Z_PayRep.res
+					$[GalExe]\Z_PFRep.res
+					$[GalExe]\Z_Pivot.res
+					$[GalExe]\Z_Report.res
+					$[GalExe]\Z_Reserv.res
+					$[GalExe]\Z_RList.res
+					$[GalExe]\Z_Service.res
+					$[GalExe]\Z_Sredn.res
+					$[GalExe]\Z_Staff.res
+					$[GalExe]\Z_StaffBuilder.res
+					$[GalExe]\Z_StaffCat.res
+					$[GalExe]\Z_StaffDopReports.res
+					$[GalExe]\Z_StaffIerRep.res
+					$[GalExe]\Z_StaffIF.res
+					$[GalExe]\Z_StaffMenu.res
+					$[GalExe]\Z_StaffMoves.res
+					$[GalExe]\Z_StaffNastr.res
+					$[GalExe]\Z_StaffOrders.res
+					$[GalExe]\Z_StaffPensioner.res
+					$[GalExe]\Z_StaffRecruiting.res
+					$[GalExe]\Z_StaffRepeat.res
+					$[GalExe]\Z_StaffReports.res
+					$[GalExe]\Z_StaffSHR.res
+					$[GalExe]\Z_StaffTest.res
+					$[GalExe]\Z_Statis.res
+					$[GalExe]\Z_TarStav.res
+					$[GalExe]\Z_WT.res
+					$[GalExe]\Z_Zar.res
+					$[GalExe]\Z_ZarNastr.res
+					$[GalExe]\Z_ZarRep.res
+				</ResourceList>
+				<OutputResource>..\..\..\..\PACK_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+				<LoadIds>True</LoadIds>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm_stend</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
+					<LicFileName>..\..\..\..\..\..\Sup910\exe\License.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<ProjectItems>
+			<ProjectCompileFile FileName="pack.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<FileList>
+			<File Name="pack.prj" PosX="57" PosY="22" OpenEditor="True" Active="True"/>
+			<File Name="DrogaFunc\drogaFunc.vip" PosX="44" PosY="18" OpenEditor="True"/>
+		</FileList>
+		<MarkerList>
+			<Marker FileName="FILLTMPTBL\FillTmpTbl.frm" Caption="Нумерованная закладка 1" Line="143" NumIndex="1" MarkerType="mtNumBookmark" Comment="recNakl.Class_OsnOtp     := substr(recNakl.Class_OsnOtp, 1, pos('ДО ', recNakl.Class_OsnOtp)- 2);"/>
+		</MarkerList>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" DateTimeStart="45109,3632775926" DateTimeCompile="0,000634444440947846" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtWarning" MessageText="Тип &quot;TNAME&quot; уже определен в Випе" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\INC\dictypes.def" SourceLine="227" SourceColumn="33">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="4" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : RepBarCode" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\C\C_COMMON\VIP\WORKARCHIVE\RepBarCode.vih" SourceLine="15" SourceColumn="25">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="9" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iExtAttr" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\C\C_EXTCLASS\VIP\EXTATTR\ExtAttr.Vih" SourceLine="319" SourceColumn="23">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="10" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iExtClass" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\C\C_EXTCLASS\VIP\EXTCLASS\ExtClass.vih" SourceLine="153" SourceColumn="24">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="11" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : MCOriginCountry" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_SF\VIP\SCHSERV\MCOriginCountry.vih" SourceLine="71" SourceColumn="30">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="12" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : Commission" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\F\F_COMMON\VIP\COMMISSION\Commission.vih" SourceLine="408" SourceColumn="3">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="13" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : AddressFunc" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\Z\Z_STAFF\VIP\AdrFunc.vih" SourceLine="749" SourceColumn="3">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="14" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : FeeSigners" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\F\F_COMMON\VIP\FEESIGNERS\FeeSigners.vih" SourceLine="260" SourceColumn="25">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="17" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iPrnSoprFunMem" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\VIP\PrnSoprFun.vih" SourceLine="1039" SourceColumn="29">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="21" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : SDfuns_Release" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_SOPRDOC\VIP\SDFUNS\SDfuns.vih" SourceLine="1099" SourceColumn="31">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="22" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : SDfuns" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_SOPRDOC\VIP\SDFUNS\SDfuns.vih" SourceLine="1106" SourceColumn="22">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="22" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\pack\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\DrogaFunc\drogaFunc.vip" SourceLine="11" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\DrogaFunc\drogaFunc.vip" SourceLine="72" SourceColumn="17"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\DrogaFunc\drogaFunc.vip" SourceLine="73" SourceColumn="19"/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Кораблик (инфо по поставке).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Кораблик (инфо по поставке).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Кораблик (инфо по поставкеNEW).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Кораблик (инфо по поставкеNEW).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Меркурий.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Меркурий.fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (ВАЛ) (c 01.07.2021).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (ВАЛ) (c 01.07.2021).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (ВАЛ).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (ВАЛ).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (Гиперглобус, Лента) (с 01.07.2021).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (Гиперглобус, Лента) (с 01.07.2021).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (Гиперглобус, Лента).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (Гиперглобус, Лента).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (Перекресток)(с 01.07.2021).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (Перекресток)(с 01.07.2021).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (Перекресток).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (Перекресток).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (маршруты экспорт ВАЛ) (с 01.07.2021).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (маршруты экспорт ВАЛ) (с 01.07.2021).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (маршруты экспорт) (с 01.07.2021).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (маршруты экспорт) (с 01.07.2021).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (маршруты экспорт).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (маршруты экспорт).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (маршруты) (с 01.07.2021).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (маршруты) (с 01.07.2021).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (маршруты).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов (маршруты).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов УПД (Метро) (с 01.04.2022).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов УПД (Метро) (с 01.04.2022).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов УПД (Ритейл) (с 01.04.2022).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов УПД (Ритейл) (с 01.04.2022).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов УПД (маршруты) (с 01.07.2021).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов УПД (маршруты) (с 01.07.2021).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов УПД (маршруты).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов УПД (маршруты).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов УПД.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Пакет документов УПД.fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Печать документов (МЕТРО) (с 01.07.2021).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Печать документов (МЕТРО) (с 01.07.2021).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Печать документов (МЕТРО).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Печать документов (МЕТРО).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Счет-фактура (исправление).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Счет-фактура (исправление).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Универсальный передаточный документ.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Универсальный передаточный документ.fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T (маршруты АШАН) new.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T (маршруты АШАН) new.fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T (маршруты АШАН).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T (маршруты АШАН).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T (маршруты).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T (маршруты).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T.fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;."/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="02.07.2023 8:44:02"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+	</ProjectManager>
+</Viper>

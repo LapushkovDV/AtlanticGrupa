@@ -268,17 +268,13 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="_AggregateRes.prj" PosX="48" PosY="190" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="40" PosY="151" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="22" PosY="197" OpenEditor="True" Active="True"/>
 			<File Name="Source\loadorder\LoadOrder_tune.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="Source\sale_user.vip" PosX="35" PosY="9" OpenEditor="True"/>
-			<File Name="Source\sale_sale.vip" PosX="12" PosY="288" OpenEditor="True"/>
-			<File Name="Source\sale_func.vpp" PosX="62" PosY="9" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="44" PosY="431" OpenEditor="True"/>
-			<File Name="alter\Alter_iDiaDocSend.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="cnf\L_SOPRDOC_SOPRDOCB.cnf" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="alter\alter_SoprDoc.vip" PosX="24" PosY="37" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp" PosX="8" PosY="55" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_View_all.vip" PosX="48" PosY="108" OpenEditor="True" Active="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_View_all.vip" PosX="43" PosY="80" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -308,15 +304,16 @@
 			<Marker FileName="Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="238" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" Caption="Нумерованная закладка 1" Line="163" NumIndex="1" MarkerType="mtNumBookmark" Comment="PkRLog_Ins.State    := 0 ; // &quot;0draft,1readyToSend,2send,3NotNeedToSen&quot;"/>
 			<Marker FileName="Source\MercuryPRJ\PickingReport_View.vip" Caption="Нумерованная закладка 1" Line="335" NumIndex="1" MarkerType="mtNumBookmark"/>
-			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 1" Line="223" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\LOADORDER\LoadOrder_CRPT.vip" Caption="Нумерованная закладка 1" Line="257" NumIndex="1" MarkerType="mtNumBookmark" Comment="spstep.CPRICELIST := co_priceList;"/>
+			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 1" Line="226" NumIndex="1" MarkerType="mtNumBookmark" Comment="_labelKol := get_sum_kol_by_mc_and_price(spsopr.cSopr, spsopr.cmcusl, SPSOPR.rprice);"/>
+			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 2" Line="87" NumIndex="2" MarkerType="mtNumBookmark" Comment="spsopr_forGroup_mc"/>
 		</MarkerList>
 		<BreakPointList>
 			<BreakPoint FileName="alter_vschet.prj" Line="78"/>
 			<BreakPoint FileName="Source\EMAIL\ATL_EmailRun.Vip" Line="12"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45063,4021509143" DateTimeCompile="0,000395381946873385" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45098,4241327662" DateTimeCompile="0,000427418985054828" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3113,10 +3110,10 @@
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;SOPINMOV.getMercuryField&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(1), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_SKLAD_SOPINMOV.vip" SourceLine="28" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;SOPINMOV.getMercuryFieldColor&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(32), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_SKLAD_SOPINMOV.vip" SourceLine="28" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;GETKLPR.SetSelectable&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_PRICES_GETKLPR.vip(7), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_PRICES_GETKLPR.vip" SourceLine="13" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - getTypeUchet входящий параметр: _cOrg:Comp не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="59" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="191" SourceColumn="30"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="202" SourceColumn="30"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;IDIADOCEXPORTDOC.Check_TmpSpSopr&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip(67), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="276" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - getTypeUchet входящий параметр: _cOrg:Comp не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="60" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="197" SourceColumn="30"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="208" SourceColumn="30"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;IDIADOCEXPORTDOC.Check_TmpSpSopr&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip(68), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="282" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;IDIADOCSEND.ShowProt&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_iDiadocSend.vip(46), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_iDiadocSend.vip" SourceLine="120" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;DOLGOPL.isDolg&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_DolgOpl.vip(8), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_DolgOpl.vip" SourceLine="74" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;DOLGOPL.PrintKatSopr&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_DolgOpl.vip(16), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_DolgOpl.vip" SourceLine="74" SourceColumn="5"/>
@@ -3168,6 +3165,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="335" SourceColumn="31"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View_all.vip" SourceLine="3" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Таблица &quot;KATMC&quot;, включенная в главную логическую таблицу интерфейса &quot;PICKINGREPORT_VIEW_ALL&quot;, не была явно использована" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View_all.vip" SourceLine="58" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View_all.vip" SourceLine="88" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportMassa_DO_NAKL.vip" SourceLine="7" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) PrintReport_Matrix локальная переменная Nrow0:LongInt, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportMassa_DO_NAKL.vip(193), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportMassa_DO_NAKL.vip" SourceLine="242" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSumDeclarationToDO.vip" SourceLine="4" SourceColumn="1"/>
@@ -3306,7 +3304,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="17.05.2023 9:39:40"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="21.06.2023 10:11:22"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
