@@ -22,6 +22,7 @@ var
  mylog('******');
  mylog('_needPackageReference = ' + _needPackageReference);
  mylog('_ATL_MERCURY_Spec_PALLETSSCC = ' + _ATL_MERCURY_Spec_PALLETSSCC);
+ mylog('SPSOPR.npp  = ' + spsopr.npp);
  mylog('_nppSPSOPR  = ' + _nppSPSOPR);
  if   _needPackageReference  // вот тут выделываемся так... надо запустить цикл по ATL_MERCURY_SPEC, а он внизу... решил рекурсивно запустить эту функцию и выводить по одному
   and _ATL_MERCURY_Spec_PALLETSSCC = ''
@@ -29,6 +30,7 @@ var
     if getfirst ATL_MERCURY_SPEC_2 = tsOK
      {
         _loop ATL_MERCURY_SPEC_2 {
+           if ATL_MERCURY_SPEC_2.cnt = 0 then continue; // откуда то 0 позиции полезли на складе
            if ATL_MERCURY_SPEC_2.PALLETSSCC <> '' then makeLine(doc_type, ATL_MERCURY_SPEC_2.PALLETSSCC);
          }
       exit;
@@ -79,10 +81,10 @@ _nppSPSOPR++;
         _sumNDS    :=spsopr.sumNDS+ if(spsopr.cadocsp > 0 and schfact.tipuser = 7241, korspec.sumNDS, 0);
        if (_sum <> 0) _tax := round(100* spsopr.sumNDS/_sum);
 
-
         _qtyLenta  := spsopr.kolfact;
-
+        mylog('1 _qtyLenta = ' + _qtyLenta);
         _qty       := round(spsopr.kolfact*_koef);
+        mylog('1 _qty = ' + _qty);
         _price     := _sum/_qty;
         _priceLenta     := _sum/_qtyLenta;
         _gross_prc := _gross/ spsopr.kolfact;
@@ -96,6 +98,7 @@ _nppSPSOPR++;
                  _gross   := _gross  * ATL_MERCURY_Spec.CNT/_qtyLenta;
                  _sumNDS  := _sumNDS * ATL_MERCURY_Spec.CNT/_qtyLenta;
                  _qtyLenta := ATL_MERCURY_Spec.CNT;
+                 mylog('2 _qtyLenta = ' + _qtyLenta);
                 }
             }
          }
@@ -140,6 +143,8 @@ _nppSPSOPR++;
                  // _gross_prc := _gross_prc + _gross/ spsopr2.kolfact;
                   _qty       := _qty       + round(spsopr2.kolfact*_koef); //
                   _qtyLenta  := _qtyLenta + spsopr2.kolfact;
+                  mylog('3 _qty = ' + _qty);
+                  mylog('3 _qtyLenta = ' + _qtyLenta);
                   //_price     := _price     + _sum/_qty;
                   _sumNDS    := _sumNDS    + spsopr2.sumNDS ;
 
@@ -284,7 +289,9 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
    if _coAttr_EDIInvoicLen = 1  and  tDoc.wtype <> 201  //для ленты надо, но не для накладных
     {
         createEcodCell(ChildTwo, 'InvoiceMeasurePacksize','PCE');
-        createEcodCell(ChildTwo, 'OrderedUnitPacksize',string(_qty/_qtyLenta, 0, 3));
+        createEcodCell(ChildTwo, 'OrderedUnitPacksize',string(_qty*_qtyLenta/spsopr.kolfact, 0, 3));
+        mylog('4 _qty = '+_qty);
+        mylog('4 _qtyLenta= ' + _qtyLenta);
     }
 
   //createEcodCell(ChildTwo, 'InvoiceUnitPriceBasis', '1');

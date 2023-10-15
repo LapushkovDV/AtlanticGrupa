@@ -18,7 +18,7 @@
 			<VipFiles>
 				<IncludeList>
 					$[AtlPath]\Source\
-					..\..\..\..\..\FRM\SRC\*
+					..\..\..\..\FRM\SRC\*
 					..\inc\*
 					..\..\SourceGal\*
 					vih\*
@@ -262,13 +262,13 @@
 					<SqlServerParameters>ncacn_ip_tcp:10.2.1.151[1997]</SqlServerParameters>
 					<HwKeyTransport>1</HwKeyTransport>
 					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
-					<LicFileName>..\..\..\..\..\..\Sup910\exe\License.lic</LicFileName>
+					<LicFileName>..\..\..\..\Sup910\exe\License.lic</LicFileName>
 				</VipDatabase>
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="48" PosY="190" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="22" PosY="197" OpenEditor="True" Active="True"/>
+			<File Name="_AggregateRes.prj" PosX="48" PosY="190" OpenEditor="True" Active="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="65" PosY="169" OpenEditor="True"/>
 			<File Name="Source\loadorder\LoadOrder_tune.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="Source\sale_user.vip" PosX="35" PosY="9" OpenEditor="True"/>
 			<File Name="cnf\L_SOPRDOC_SOPRDOCB.cnf" PosX="1" PosY="1" OpenEditor="True"/>
