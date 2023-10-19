@@ -263,9 +263,9 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="xml.prj" PosX="1" PosY="75" OpenEditor="True"/>
-			<File Name="ExpImpScript\expImpScript.vip" PosX="16" PosY="238" OpenEditor="True"/>
+			<File Name="ExpImpScript\expImpScript.vip" PosX="42" PosY="184" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_func.vip" PosX="8" PosY="8" OpenEditor="True"/>
-			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="49" PosY="283" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="54" PosY="293" OpenEditor="True" Active="True"/>
 			<File Name="ExpImpScript\ecod_imp.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="ExpImpScript\sts_doc.vpp" PosX="51" PosY="50" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_user.vip" PosX="51" PosY="12" OpenEditor="True"/>
@@ -289,12 +289,12 @@
 			<Marker FileName="ExpImpScript\expImpScript.vip" Caption="Нумерованная закладка 1" Line="283" NumIndex="1" MarkerType="mtNumBookmark" Comment="case ieHead.tipDoc of"/>
 			<Marker FileName="ExpImpScript\sts_doc.vpp" Caption="Нумерованная закладка 1" Line="31" NumIndex="1" MarkerType="mtNumBookmark" Comment="_SSCCCodes := getsscc"/>
 			<Marker FileName="xml.prj" Caption="Нумерованная закладка 1" Line="34" NumIndex="1" MarkerType="mtNumBookmark" Comment="coAttr_EdiDesadvBox  = 'EDI-DESADV(box)';"/>
-			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 2" Line="182" NumIndex="2" MarkerType="mtNumBookmark" Comment="_qty += round(korspec.kolfact*_koef);"/>
+			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 2" Line="184" NumIndex="2" MarkerType="mtNumBookmark" Comment="_qty += round(korspec.kolfact*_koef);"/>
 			<Marker FileName="..\_AggregateRes\Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="199" NumIndex="1" MarkerType="mtNumBookmark" Comment="result := iCRPT_API_PowerShell.GetRequestToAPIisExistCis(_cis);"/>
 			<Marker FileName="EXPIMPSCRIPT\ecod_func.vip" Caption="Нумерованная закладка 3" Line="1174" NumIndex="3" MarkerType="mtNumBookmark" Comment="makePriCatHeader;"/>
-			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="572" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 1" Line="668" NumIndex="1" MarkerType="mtNumBookmark" Comment="if (getFirst fastfirstrow orgImp where ((if(katsopr.cgruzfrom &gt; 0, katsopr.cgruzfrom, coGetTune('myOrg')) == nrec)) = tsOk) {"/>
 			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 2" Line="694" NumIndex="2" MarkerType="mtNumBookmark" Comment="{"/>
+			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="293" NumIndex="1" MarkerType="mtNumBookmark" Comment="createEcodCell(ChildTwo, 'OrderedUnitPacksize',string(_qty*_qtyLenta/spsopr.kolfact, 0, 3));"/>
 		</MarkerList>
 		<CompileMessengerList>
 			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="45093,5635703588" DateTimeCompile="8,70486110216007E-5" StateHistory="False">
