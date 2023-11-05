@@ -4,16 +4,17 @@ alter interface ON_NSCHFDOPPR;
 var _Log : string = '';
 
 overload
-Procedure oExport_base.AttribOptional(_Node: comp; _AttrName, _AttrValue: string);
+Procedure AttribOptional(_Node: comp; _AttrName, _AttrValue: string);
+end;
 
-procedure oExport_base.AttribOptional(_Node: comp; _AttrName, _AttrValue: string);
+procedure AttribOptional(_Node: comp; _AttrName, _AttrValue: string);
 {
  if _AttrName = 'Ž¡áâ”®à¬‘—”' {
     message('Ž¡áâ”®à¬‘—”');
     message('katorg.name = '+katorg.name);
    _AttrValue := '4'
   }
- inherited::oExport_base.AttribOptional(_Node: comp; _AttrName, _AttrValue: string);
+ inherited::AttribOptional(_Node,_AttrName, _AttrValue);
 }
 handleevent
 end;
