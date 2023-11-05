@@ -267,14 +267,14 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="48" PosY="190" OpenEditor="True" Active="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="65" PosY="169" OpenEditor="True"/>
-			<File Name="Source\loadorder\LoadOrder_tune.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="Source\sale_user.vip" PosX="35" PosY="9" OpenEditor="True"/>
-			<File Name="cnf\L_SOPRDOC_SOPRDOCB.cnf" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="alter\alter_SoprDoc.vip" PosX="24" PosY="37" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp" PosX="8" PosY="55" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_View_all.vip" PosX="43" PosY="80" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="27" PosY="109" OpenEditor="True"/>
+			<File Name="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\ON_NSCHFDOPPR_Import.vip" PosX="70" PosY="508" OpenEditor="True"/>
+			<File Name="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\ON_NSCHFDOPPR.vip" PosX="3" PosY="69" OpenEditor="True"/>
+			<File Name="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\Export_base.vip" PosX="70" PosY="196" OpenEditor="True"/>
+			<File Name="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\Export_base.vih" PosX="25" PosY="160" OpenEditor="True"/>
+			<File Name="alter\Alter_iDiaDocSend.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="48" PosY="205" OpenEditor="True"/>
+			<File Name="alter\ALTER_ON_NSCHFDOPPR.vip" PosX="4" PosY="12" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -289,7 +289,7 @@
 		<MarkerList>
 			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
 			<Marker FileName="alter\alter_l_basedoc_vschetB.vip" Caption="Нумерованная закладка 1" Line="22" NumIndex="1" MarkerType="mtNumBookmark" Comment="DO_ZAKLYUCHENIE : ;"/>
-			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="165" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="166" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\ReportSumDeclarationToDO.vip" Caption="Нумерованная закладка 1" Line="113" NumIndex="1" MarkerType="mtNumBookmark" Comment="xlStWriteToMatrix(nrow, 1, 'Отчет о предполагаемый'); column++;"/>
 			<Marker FileName="Source\Report_Org_VetisGUIDS.vip" Caption="Нумерованная закладка 1" Line="70" NumIndex="1" MarkerType="mtNumBookmark" Comment="exit"/>
 			<Marker FileName="Source\sale_func.vpp" Caption="Нумерованная закладка 1" Line="86" NumIndex="1" MarkerType="mtNumBookmark" Comment="if bDetail {"/>
@@ -305,7 +305,7 @@
 			<Marker FileName="Source\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" Caption="Нумерованная закладка 1" Line="163" NumIndex="1" MarkerType="mtNumBookmark" Comment="PkRLog_Ins.State    := 0 ; // &quot;0draft,1readyToSend,2send,3NotNeedToSen&quot;"/>
 			<Marker FileName="Source\MercuryPRJ\PickingReport_View.vip" Caption="Нумерованная закладка 1" Line="335" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\LOADORDER\LoadOrder_CRPT.vip" Caption="Нумерованная закладка 1" Line="257" NumIndex="1" MarkerType="mtNumBookmark" Comment="spstep.CPRICELIST := co_priceList;"/>
-			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 1" Line="226" NumIndex="1" MarkerType="mtNumBookmark" Comment="_labelKol := get_sum_kol_by_mc_and_price(spsopr.cSopr, spsopr.cmcusl, SPSOPR.rprice);"/>
+			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 1" Line="227" NumIndex="1" MarkerType="mtNumBookmark" Comment="_labelKol := get_sum_kol_by_mc_and_price(spsopr.cSopr, spsopr.cmcusl, SPSOPR.rprice);"/>
 			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 2" Line="87" NumIndex="2" MarkerType="mtNumBookmark" Comment="spsopr_forGroup_mc"/>
 		</MarkerList>
 		<BreakPointList>

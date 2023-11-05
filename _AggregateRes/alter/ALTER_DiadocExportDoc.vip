@@ -145,6 +145,7 @@ procedure Check_TmpSpSopr ;
         //        ,TmpSerNom.KM2    := 'CODES2 '+ string(SpSopr.cSopr) //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
                 TmpSerNom.wTable := coSpSopr;
                 TmpSerNom.cRec   := _CSPSopr;
+
                insert current TmpSerNom;
               MyLog(' ****');
               MyLog(' TmpSerNom.wTable ='+TmpSerNom.wTable );

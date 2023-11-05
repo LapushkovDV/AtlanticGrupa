@@ -106,6 +106,7 @@ var     extAttr: iExtAttr;
 
 #make "alter\alter_L_PRICES_GETKLPR.vip"
 
+#make "alter\ALTER_ON_NSCHFDOPPR.vip"
 
 #make "alter\ALTER_DiadocExportDoc.vip"
 #make "alter\ALTER_DiadocExportDoc_tune.vip"
