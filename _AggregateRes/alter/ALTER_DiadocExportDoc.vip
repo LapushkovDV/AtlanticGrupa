@@ -192,14 +192,14 @@ procedure Check_TmpSpSopr ;
                var _cEdShtuka :comp = get_cEdShtuka('ШТУКА');
 
 /*изменения для вайлдберриз*/
-               message('Check_TmpSpSopr TmpKatOrg.Unn = ' + TmpKatOrg.Unn)
+//               message('Check_TmpSpSopr TmpKatOrg.Unn = ' + TmpKatOrg.Unn)
                 if TmpKatOrg.Unn = '7721546864' // вайлдберриз
                  {
                   _cEdShtuka := get_cEdShtuka('УПАКОВКА');
                   update current TmpKatSopr
                    set TmpKatSopr.NameDO[1] := 'Акт приемки товара'
                   ;
-                   message('Check_TmpSpSopr TmpKatSopr.NameDO[1] = ' +TmpKatSopr.NameDO[1]);
+//                   message('Check_TmpSpSopr TmpKatSopr.NameDO[1] = ' +TmpKatSopr.NameDO[1]);
                  }
 /*end изменения для вайлдберриз*/
 
@@ -212,7 +212,7 @@ procedure Check_TmpSpSopr ;
 
 /*изменения для вайлдберриз*/
                       if TmpKatOrg.Unn = '7721546864' { // вайлдберриз
-                       message('Check_TmpSpSopr TmpSpSopr.BarKod = ' + katOtpedShtuka.BKOD)
+//                       message('Check_TmpSpSopr TmpSpSopr.BarKod = ' + katOtpedShtuka.BKOD)
                        update current TmpSpSopr
                          set TmpSpSopr.BarKod := katOtpedShtuka.BKOD;
                        ;
