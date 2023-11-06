@@ -4,18 +4,51 @@ alter interface ON_NSCHFDOPPR;
 var _Log : string = '';
 
 overload
-Procedure AttribOptional(_Node: comp; _AttrName, _AttrValue: string);
+ Function DopSvFHJ1(_Node: comp; _NodeName: string): comp;
 end;
 
-procedure AttribOptional(_Node: comp; _AttrName, _AttrValue: string);
+//ДопСвФХЖ1 Дополнительные сведения об участниках факта хозяйственной жизни, основаниях и обстоятельствах его проведения
+Function DopSvFHJ1(_Node: comp; _NodeName: string): comp;
 {
- if _AttrName = 'ОбстФормСЧФ' {
-    message('ОбстФормСЧФ');
-    message('katorg.name = '+katorg.name);
-   _AttrValue := '4'
+  result := AddNode(_Node, _NodeName);
+  //ИнфПродГосЗакКазн
+  var _pDogovor : comp = if(IsExistSF, TmpSchFact.cDogovor, TmpKatSopr.cDogovor);
+  var _sIGK : string = oIGK_Dog.GetIGK(_pDogovor);
+  if _sIGK<>''
+  { //Информация продавца об обстоятельствах закупок для государственных и муниципальных нужд (для учета Федеральным казначейством денежных обязательств) (ИнфПродГосЗакКазн)
+    IGKProd(result,'ИнфПродГосЗакКазн',_pDogovor  )
   }
- inherited::AttribOptional(_Node,_AttrName, _AttrValue);
-}
+  AttribOptional(result, 'ИдГосКон', _sIGK); // Идентификатор государственного контракта
+  AttribOptional(result, 'НаимОКВ' , GetValName(if(IsExistSF, TmpSchFact.cVal, TmpKatSopr.cVal)));              // Валюта: Наименование
+  AttribOptional(result, 'КурсВал' , '');                                                                       // Курс валюты
+  //ERP-638  Обстоятельства формирования счета-фактуры, применяемого при расчетах по налогу на добавленную стоимость
+  //Формируется при Функция=СЧФ и принимает следующие значения:
+  //1 - счет-фактура, выставляемый при реализации товаров (работ, услуг), передаче имущественных прав |
+  //2 - счет-фактура, выставляемый при получении оплаты, частичной оплаты в счет предстоящих поставок товаров (выполнения работ, оказания услуг), передачи имущественных прав |
+  //3 - счет-фактура, применяемый в случае реализации комиссионером (агентом, экспедитором, застройщиком или заказчиком, выполняющим функции застройщика) двум и более покупателям (приобретения у двух и более продавцов) товаров (работ, услуг), имущественных прав от своего имени
+  if FuncDoc='СЧФ'
+  { var _str:string='1';
+    case TmpSchFact.TipUser of
+     7216 // Счет-фактура, аванс
+    ,7218 // Счет-фактура, оплата, предоплата
+    ,7209 //Возврат оплаты, предоплаты от поставщика
+    ,7208 //Возврат платежа покупателю
+    :  _str:='2';
+    end;
+    AttribOptional(result, 'ОбстФормСЧФ ' , _str);
+  }
+/*изменения для вайлдберриз*/
+  message('katorg.name =' + katorg.name)
+  if FuncDoc='ДОП' {
+    if katorg.unn = '7721546864' // вайлдберриз
+     then AttribOptional(result, 'ОбстФормСЧФ ' , '4');
+   }
+/*END изменения для вайлдберриз*/
+
+  AttribOptional(result, 'СвФактор','');
+  //ОснУстДенТреб Типовой элемент <ОснованиеТип>. Состав элемента представлен в таблице 5.48
+  OsnUstDenTreb(result,'ОснУстДенТреб');
+} //Function DopSvFHJ1(_Node: comp; _NodeName: string): comp;
 handleevent
 end;
 end.
