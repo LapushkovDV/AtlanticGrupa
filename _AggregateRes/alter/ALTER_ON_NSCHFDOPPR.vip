@@ -38,10 +38,6 @@ Function DopSvFHJ1(_Node: comp; _NodeName: string): comp;
     AttribOptional(result, 'ОбстФормСЧФ ' , _str);
   }
 /*изменения для вайлдберриз*/
-  message('katorg.name =' + katorg.name)
-  message(' TmpKatOrg.Name ' + TmpKatOrg.Name +
-    + ''#13''+' TmpKatOrg.Unn '+ TmpKatOrg.Unn);
-
   if FuncDoc='ДОП' {
     if TmpKatOrg.Unn = '7721546864' // вайлдберриз
      then AttribOptional(result, 'ОбстФормСЧФ ' , '4');
