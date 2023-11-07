@@ -967,8 +967,8 @@ var qty: double;
         join StepDoc on KatSopr.cstepDoc = StepDoc.Nrec
         join BaseDoc on BaseDoc.Nrec = StepDoc.cBaseDoc
         where
-         BaseDoc.dDoc = :(order_dat) // #date(22,02,2018)
-         and  STEPDOC.NKONT =  :(order_num)//'4516814111'
+         //BaseDoc.dDoc = :(order_dat) and // #date(22,02,2018) МАртынов сказал убрать ограничение на дату.., считаю, что это неправильно.. но кто я такой
+         STEPDOC.NKONT =  :(order_num)//'4516814111'
          and  KatSopr.vidsopr =201
          into (_cSopr)
      }
