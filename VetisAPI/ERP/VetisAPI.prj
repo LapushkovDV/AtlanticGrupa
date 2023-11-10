@@ -199,7 +199,8 @@ coCircuit_endpointUrlResolveDiscrepancy = 'https://api2.vetrf.ru:8002/platform/s
 */
 
 //#prod
-coCircuit_serviceID          = 'mercury-g2b.service';
+//coCircuit_serviceID          = 'mercury-g2b.service';
+coCircuit_serviceID          = 'mercury-g2b.service:2.1';
 coCircuit_login              = 'atlanticgrupa-180410';
 coCircuit_password           = 'F5jD7gn4Z';
 coCircuit_apiKey             = 'N2ZhYTYxOTktMTJjZi00Yzc3LWE4OTAtODcxOWJlYmFmZTg2ZmRiYTdhZWYtMjE4YS0xMWUyLWE2OWItYjQ5OWJhYmFlN2Vh';
