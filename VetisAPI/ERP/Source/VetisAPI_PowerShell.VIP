@@ -138,7 +138,7 @@ Function GetNrecATL_VETISRQST(_APPLICATIONID,_REQUESTSTATUS : string): comp;
   if getfirst ATL_VETIS_REQUEST where (( _APPLICATIONID ==ATL_VETIS_REQUEST.APPLICATIONID)) <> tsOk
    {
     Insert ATL_VETIS_REQUEST set
-     ATL_VETIS_REQUEST.name          := 'mercury-g2b.service'
+     ATL_VETIS_REQUEST.name          := coCircuit_serviceID
      ,ATL_VETIS_REQUEST.REQUESTDATE   := cur_date
      ,ATL_VETIS_REQUEST.REQUESTTIME   := Cur_time
      ,ATL_VETIS_REQUEST.APPLICATIONID := _APPLICATIONID

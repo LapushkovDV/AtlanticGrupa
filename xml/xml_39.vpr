@@ -266,7 +266,7 @@
 			<File Name="ExpImpScript\expImpScript.vip" PosX="42" PosY="184" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_func.vip" PosX="8" PosY="8" OpenEditor="True"/>
 			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="47" PosY="228" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_imp.vip" PosX="144" PosY="970" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\ecod_imp.vip" PosX="7" PosY="974" OpenEditor="True" Active="True"/>
 			<File Name="ExpImpScript\sts_doc.vpp" PosX="51" PosY="50" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_user.vip" PosX="51" PosY="12" OpenEditor="True"/>
 			<File Name="ExpImpScript\common_func.vpp" PosX="26" PosY="82" OpenEditor="True"/>
