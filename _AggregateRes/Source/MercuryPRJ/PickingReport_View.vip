@@ -58,6 +58,7 @@ from
   and tmpPkRSp2.GTIN == KatOtpEd.BKOD
    and (tmpPkRSp2.GTIN <> '' and KatOtpEd.PrMc = 1)
    and KatOtpEd.cMcUsl == KatMc3.Nrec
+    and (KatMc3.ISARCH = 0)
  ))
 bounds byKatSopr KatSopr.Nrec == PkRH.cSopr
 
