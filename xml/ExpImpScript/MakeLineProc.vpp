@@ -290,7 +290,7 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
     {
         createEcodCell(ChildTwo, 'InvoiceMeasurePacksize','PCE');
 //        createEcodCell(ChildTwo, 'OrderedUnitPacksize',string(_qty*_qtyLenta/spsopr.kolfact, 0, 3));
-        createEcodCell(ChildTwo, 'OrderedUnitPacksize',string(_koef), 0, 3));
+        createEcodCell(ChildTwo, 'OrderedUnitPacksize',string(_koef, 0, 3));
         mylog('4 _qty = '+_qty);
         mylog('4 _qtyLenta= ' + _qtyLenta);
     }

@@ -264,8 +264,8 @@
 		<FileList>
 			<File Name="xml.prj" PosX="21" PosY="33" OpenEditor="True"/>
 			<File Name="ExpImpScript\expImpScript.vip" PosX="12" PosY="121" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_func.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="103" PosY="220" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\ecod_func.vip" PosX="43" PosY="13" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="52" PosY="293" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_imp.vip" PosX="150" PosY="980" OpenEditor="True"/>
 			<File Name="ExpImpScript\common_func.vpp" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="ExpImpScript\sts_doc.vpp" PosX="1" PosY="54" OpenEditor="True"/>
@@ -283,7 +283,7 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="45109,393256331" DateTimeCompile="0,000377928241505288" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="45237,4166370949" DateTimeCompile="0,000110590277472511" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="70" SourceColumn="2"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\ecod_func.vip" SourceLine="378" SourceColumn="69">
@@ -342,25 +342,25 @@
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" Line="258" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="233" SourceColumn="40">
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="238" SourceColumn="40">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\ecod_func.vip" Line="796" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" Line="258" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="261" SourceColumn="5">
+					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="266" SourceColumn="5">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\ecod_func.vip" Line="796" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" Line="258" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="271" SourceColumn="55">
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="276" SourceColumn="55">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\ecod_func.vip" Line="796" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" Line="258" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) makeLine локальная переменная _ReleaseDatePeriod:String, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MAKELINEPROC.VPP(344), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="361" SourceColumn="11">
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) makeLine локальная переменная _ReleaseDatePeriod:String, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MAKELINEPROC.VPP(352), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\MakeLineProc.vpp" SourceLine="369" SourceColumn="11">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\ecod_func.vip" Line="796" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" Line="258" Column="1"/>
@@ -414,6 +414,7 @@
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;EXPIMPSCRIPT_DROGA.getNrecByParam&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\COMMON_FUNC.VPP(47), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="396" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;EXPIMPSCRIPT_DROGA.getTextValue&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\COMMON_FUNC.VPP(94), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="396" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;EXPIMPSCRIPT_DROGA.findFirstChild&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\COMMON_FUNC.VPP(111), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\expImpScript.vip" SourceLine="396" SourceColumn="5"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_intr.vip" SourceLine="22" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="45" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="196" SourceColumn="19"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="219" SourceColumn="19"/>
@@ -429,7 +430,20 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1118" SourceColumn="58"/>
 					<CompileMessage MessageType="mtWarning" MessageText="При формальном описании интерфейса DROGA::ECOD_IMPORT пропущено описание параметров" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1298" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;ECOD_IMPORT.chkEcodEAN&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\XML\EXPIMPSCRIPT\COMMON_FUNC.VPP(130), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_imp.vip" SourceLine="1298" SourceColumn="5"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="02.07.2023 9:26:50"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="14" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_ORDER_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="34" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_ORDER_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="55" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="61" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_ORDER_SFERAEDI_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="81" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_ORDER_SFERAEDI_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="102" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="109" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="124" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="138" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден файл контроля лицензий &quot;C:\Temp\Viper\xml\autoexec.vpp&quot; ! Без него не будет проверяться дата окончания абонентского обслуживания!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="145" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="160" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="174" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="07.11.2023 10:00:07"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
