@@ -5,7 +5,7 @@ $Path = @("C:\Galaktika\_CRPT_API_InfoToolsLoader\GALAKTIKATASKS\out\" # Path wh
 , "C:\Galaktika\_ImportWMS\dmitry.lapushkov\out\"
 , "C:\Galaktika\_RecalcSaldoMC\dmitry.lapushkov\out\"
 )
-$Days = "7" # Number of days before current date
+$Days = "3" # Number of days before current date
  
 #Calculate Cutoff date
 $CutoffDate = (Get-Date).AddDays(-$Days)

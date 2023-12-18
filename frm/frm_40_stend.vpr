@@ -263,7 +263,7 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="frm.prj" PosX="69" PosY="107" OpenEditor="True" Active="True"/>
+			<File Name="frm.prj" PosX="76" PosY="88" OpenEditor="True" Active="True"/>
 			<File Name="torg12\metro_fld.frn" PosX="63" PosY="16" OpenEditor="True"/>
 			<File Name="s4fact\sign_vip.frn" PosX="30" PosY="14" OpenEditor="True"/>
 			<File Name="torg12\atl_fld.frn" PosX="45" PosY="11" OpenEditor="True"/>
@@ -280,7 +280,7 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="45109,3898754861" DateTimeCompile="0,000795810192357749" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="45248,4579264815" DateTimeCompile="0,000823518515971955" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : EanBarCode" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\C\C_COMMON\VIP\WORKARCHIVE\EanBarCode.vih" SourceLine="17" SourceColumn="25">
 						<StackIncludeList>
@@ -312,7 +312,7 @@
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="26" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : AddressFunc" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\Z\Z_STAFF\VIP\AdrFunc.vih" SourceLine="749" SourceColumn="3">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : AddressFunc" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\Z\Z_STAFF\VIP\AdrFunc.vih" SourceLine="766" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="27" Column="1"/>
 						</StackIncludeList>
@@ -674,7 +674,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GAL" SourceLine="99" SourceColumn="87"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GA" SourceLine="101" SourceColumn="87"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="02.07.2023 9:22:34"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="18.11.2023 11:00:36"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

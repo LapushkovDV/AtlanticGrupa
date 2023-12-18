@@ -262,21 +262,16 @@
 					<SqlServerParameters>ncacn_ip_tcp:10.2.1.151[1997]</SqlServerParameters>
 					<HwKeyTransport>1</HwKeyTransport>
 					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
-					<LicFileName>..\..\..\..\Sup910\exe\License.lic</LicFileName>
+					<LicFileName>..\..\..\..\..\..\Sup910\exe\License.lic</LicFileName>
 				</VipDatabase>
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="27" PosY="109" OpenEditor="True"/>
-			<File Name="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\ON_NSCHFDOPPR_Import.vip" PosX="70" PosY="508" OpenEditor="True"/>
-			<File Name="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\ON_NSCHFDOPPR.vip" PosX="52" PosY="1532" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="42" PosY="190" OpenEditor="True"/>
 			<File Name="alter\Alter_iDiaDocSend.vip" PosX="49" PosY="56" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="67" PosY="200" OpenEditor="True" Active="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="78" PosY="171" OpenEditor="True"/>
 			<File Name="alter\ALTER_ON_NSCHFDOPPR.vip" PosX="88" PosY="36" OpenEditor="True"/>
-			<File Name="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\DP_IAKTPRM.vip" PosX="66" PosY="11" OpenEditor="True"/>
-			<File Name="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\DP_REZRUISP_Import.vip" PosX="19" PosY="23" OpenEditor="True"/>
-			<File Name="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\ExportSopr_base.vip" PosX="107" PosY="277" OpenEditor="True"/>
-			<File Name="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\C\C_Diadoc\vip\DiadocExportDoc.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="41" PosY="65" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -317,9 +312,11 @@
 			<BreakPoint FileName="alter\ALTER_DiadocExportDoc.vip" Line="1"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\_git\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45235,4506527315" DateTimeCompile="-4,58332942798734E-6" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45278,7152652662" DateTimeCompile="0,000394456015783362" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtEndCompile" MessageText="05.11.2023 10:48:56"/>
+					<CompileMessage MessageType="mtError" MessageText="Ошибка при открытии include файла STATDEFS.INC" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" SourceLine="23" SourceColumn="22"/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="18.12.2023 17:10:33"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

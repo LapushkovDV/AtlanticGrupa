@@ -272,14 +272,14 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<FileList>
-			<File Name="pack.prj" PosX="57" PosY="22" OpenEditor="True" Active="True"/>
+			<File Name="pack.prj" PosX="80" PosY="20" OpenEditor="True" Active="True"/>
 			<File Name="DrogaFunc\drogaFunc.vip" PosX="44" PosY="18" OpenEditor="True"/>
 		</FileList>
 		<MarkerList>
 			<Marker FileName="FILLTMPTBL\FillTmpTbl.frm" Caption="Нумерованная закладка 1" Line="143" NumIndex="1" MarkerType="mtNumBookmark" Comment="recNakl.Class_OsnOtp     := substr(recNakl.Class_OsnOtp, 1, pos('ДО ', recNakl.Class_OsnOtp)- 2);"/>
 		</MarkerList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" DateTimeStart="45109,3632775926" DateTimeCompile="0,000634444440947846" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" DateTimeStart="45248,4592690625" DateTimeCompile="0,000661493053485174" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Тип &quot;TNAME&quot; уже определен в Випе" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\INC\dictypes.def" SourceLine="227" SourceColumn="33">
 						<StackIncludeList>
@@ -311,7 +311,7 @@
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="13" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : AddressFunc" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\Z\Z_STAFF\VIP\AdrFunc.vih" SourceLine="749" SourceColumn="3">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : AddressFunc" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\Z\Z_STAFF\VIP\AdrFunc.vih" SourceLine="766" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="14" Column="1"/>
 						</StackIncludeList>
@@ -369,7 +369,7 @@
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="02.07.2023 8:44:02"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="18.11.2023 11:02:18"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
