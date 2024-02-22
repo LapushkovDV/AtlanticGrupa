@@ -211,6 +211,35 @@ _nppSPSOPR++;
   node     := XMLDOMDoc_CreateElement(xmlDoc, 'Line-Item');
   ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
   ReleaseDump(node);
+  var ChildProductsExpiry, ChildProductExpiry : longint;
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'ProductsExpiry');
+  ChildProductsExpiry := XMLDOMNode_AppendChild(ChildTwo, node);
+  ReleaseDump(node);
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'ProductExpiry');
+  ChildProductExpiry  := XMLDOMNode_AppendChild(ChildProductsExpiry, node);
+  ReleaseDump(node);
+
+
+  var ChildlineParties, childManufacturer : longint;
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'Line-Parties');
+  ChildlineParties := XMLDOMNode_AppendChild(ChildOne, node);
+  ReleaseDump(node);
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'Manufacturer');
+  childManufacturer  := XMLDOMNode_AppendChild(ChildlineParties, node);
+  ReleaseDump(node);
+
+
+  var childLineMeasurements, childLinePackages, childPackage : longint;
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'Line-Measurements');
+  childLineMeasurements := XMLDOMNode_AppendChild(ChildOne, node);
+  ReleaseDump(node);
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'Line-Packages');
+  childLinePackages  := XMLDOMNode_AppendChild(ChildOne, node);
+  ReleaseDump(node);
+  node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package');
+  childPackage := XMLDOMNode_AppendChild(childLinePackages, node);
+  ReleaseDump(node);
+
 
   createEcodCell(ChildTwo, 'LineNumber', _nppSPSOPR ); // 20221126 все изза разбиения позиций по серийникам для Ленты spsopr.npp);
   if (doc_type = 201) {//только для накладных
@@ -338,38 +367,61 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
   <ProductionDate>2021-05-14</ProductionDate>
 <CountryOfOriginCode>SI</CountryOfOriginCode>
 */
-     if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedDesscc) = '1'
-     {
-         IF Getfirst ATL_MERCURY_SPEC = tsOK
-         {
-           createEcodCell(ChildTwo, 'ExpiryDate',datetostr(strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD'),'YYYY-MM-DD'));
-           createEcodCell(ChildTwo, 'ProductionDate',datetostr(strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD'),'YYYY-MM-DD'));
-         }
-     }
-      else {
-         if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedDESMER) = '1'
-          {
-            var _ReleaseDatePeriod : string = '';
-            IF Getfirst ATL_MERCURY_SPEC = tsOK
-             {
-    /* 20200627 был период... теперь делаем одну дату
-            if ATL_MERCURY_SPEC.UUID <> ''
-             {
+      if katorg_1.unn = '2310031475' { //тандер
+              var _ReleaseDatePeriod : string = '';
+         IF Getfirst ATL_MERCURY_SPEC = tsOK then {
+             if ATL_MERCURY_SPEC.UUID <> '' {
                _ReleaseDatePeriod := datetostr(strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD'),'YYYY-MM-DD')+'-'+datetostr(strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD'),'YYYY-MM-DD');
                 createEcodCell(ChildTwo, 'ReleaseDatePeriod',_ReleaseDatePeriod);
                 createEcodCell(ChildTwo, 'BestBeforeDatePeriod',_ReleaseDatePeriod)
-             }
-    */
-              if ATL_MERCURY_SPEC.UUID <> ''
-               {
-                createEcodCell(ChildTwo, 'ReleaseDatePeriod',datetostr(strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD'),'YYYY-MM-DD'));
-                createEcodCell(ChildTwo, 'BestBeforeDatePeriod',datetostr(strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD'),'YYYY-MM-DD'))
-               }
-             }
+
+                createEcodCell(ChildProductExpiry, 'ProductPackageId', 1);
+                var _DATECREATE : date = strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD');
+                var _DATEEXPIRE : date = strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD')
+                createEcodCell(ChildProductExpiry, 'ProductExpiryDate',datetostr(_DATEEXPIRE,'YYYY-MM-DD'));
+                createEcodCell(ChildProductExpiry, 'ProductionDate'   ,datetostr(_DATECREATE,'YYYY-MM-DD'));
+                createEcodCell(ChildProductExpiry, 'TotalShelfLifePeriod',abs(calcdaysbetweendates(_DATEEXPIRE,_DATECREATE,true)));
+                createEcodCell(ChildProductExpiry, 'ProductQuantity',_qty);
+                releaseDump(ChildProductExpiry);
+                releaseDump(ChildProductsExpiry);
+              }
+            }
           }
+         else {
+               if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedDesscc) = '1'
+               {
+                   IF Getfirst ATL_MERCURY_SPEC = tsOK
+                   {
+                     createEcodCell(ChildTwo, 'ExpiryDate',datetostr(strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD'),'YYYY-MM-DD'));
+                     createEcodCell(ChildTwo, 'ProductionDate',datetostr(strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD'),'YYYY-MM-DD'));
+                   }
+               }
+                else {
+                   if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedDESMER) = '1'
+                    {
+
+                      IF Getfirst ATL_MERCURY_SPEC = tsOK
+                       {
+              /* 20200627 был период... теперь делаем одну дату
+                      if ATL_MERCURY_SPEC.UUID <> ''
+                       {
+                         _ReleaseDatePeriod := datetostr(strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD'),'YYYY-MM-DD')+'-'+datetostr(strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD'),'YYYY-MM-DD');
+                          createEcodCell(ChildTwo, 'ReleaseDatePeriod',_ReleaseDatePeriod);
+                          createEcodCell(ChildTwo, 'BestBeforeDatePeriod',_ReleaseDatePeriod)
+                       }
+              */
+
+                         if ATL_MERCURY_SPEC.UUID <> ''
+                         {
+                          createEcodCell(ChildTwo, 'ReleaseDatePeriod',datetostr(strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD'),'YYYY-MM-DD'));
+                          createEcodCell(ChildTwo, 'BestBeforeDatePeriod',datetostr(strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD'),'YYYY-MM-DD'))
+                         }
+                        }
+                    }
+                 }
        }
       createEcodCell(ChildTwo, 'CountryOfOriginCode', _country); //GetEcodCountry(_Country)
-  }
+     }
   if (doc_type = 3 or doc_type = 31) and (katsopr.cadoc > 0)   // та же фигня: непонятно что делать с группируемыми позициями
     and schfact.tipuser =  7241  // 20190303 - только для корректировочныъх
    {//только для корр. СФ
@@ -430,20 +482,49 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
          }
       }
   releaseDump(ChildTwo); // _ Line-Item
-   if (tDoc.wtype = 201)
-     if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedDesscc) = '1'
-      {
-        _loop ATL_MERCURY_SPEC
-         {
-            node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
-            ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
-            ReleaseDump(node);
-              createEcodCell(ChildTwo, 'PackageId',if(getfirst tmpTableSSCCP where ((ATL_MERCURY_Spec.PALLETSSCC  == tmpTableSSCCP.PALLETSSCC  )) = tsOK,  tmpTableSSCCP.nppSSCC,''));
-              createEcodCell(ChildTwo, 'Quantity',string(ATL_MERCURY_SPEC.CNT));
-           releaseDump(ChildTwo);
-         }
+   if (tDoc.wtype = 201) {
+      if katorg_1.unn = '2310031475' { //тандер
+          createEcodCell(childManufacturer, 'Name','');
+          releaseDump(childManufacturer);
+          releaseDump(ChildlineParties);
+
+          createEcodCell(childLineMeasurements,'GrossWeight',doubletostr(KatMC.Massa+KatMC.mTara,'66666666.89999'));
+          createEcodCell(childLineMeasurements,'NetVolume',doubletostr(KatMC.Massa,'66666666.89999'));
+          createEcodCell(childLineMeasurements,'StorageTemperature','');
+          releaseDump(childLineMeasurements);
+
+          node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
+          ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+          ReleaseDump(node);
+           createEcodCell(ChildTwo, 'PackageId',if(getfirst tmpTableSSCCP where ((ATL_MERCURY_Spec.PALLETSSCC  == tmpTableSSCCP.PALLETSSCC  )) = tsOK,  tmpTableSSCCP.nppSSCC,''));
+           createEcodCell(ChildTwo, 'Quantity',string(ATL_MERCURY_SPEC.CNT));
+           createEcodCell(ChildTwo, 'NumberOfUnitsInPackage','');
+          releaseDump(ChildTwo);
+
+           createEcodCell(childPackage,'PackageType','PA');
+           createEcodCell(childPackage,'PackageQuantity','');
+           createEcodCell(childPackage,'PackageUnitOfMeasure','');
+          releaseDump(childPackage);
+          releaseDump(childLinePackages);
+       }
+      else {
+       if extAttr.sGetAttr(coKatOrg, katsopr.corg , coAttr_NeedDesscc) = '1'
+        {
+          _loop ATL_MERCURY_SPEC
+           {
+              node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
+              ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+              ReleaseDump(node);
+                createEcodCell(ChildTwo, 'PackageId',if(getfirst tmpTableSSCCP where ((ATL_MERCURY_Spec.PALLETSSCC  == tmpTableSSCCP.PALLETSSCC  )) = tsOK,  tmpTableSSCCP.nppSSCC,''));
+                createEcodCell(ChildTwo, 'Quantity',string(ATL_MERCURY_SPEC.CNT));
+             releaseDump(ChildTwo);
+           }
+        }
       }
 
+
+
+    }
      /* Если у контрагента значения внешних атрибутов EDI-Invoic=False и EDI-Invoic-Len=True, посмотреть у Грузополучателя значение внешнего атрибута  EDI-Invoic-SSCC
         Если EDI-Invoic-SSCC = false или неопределено
       3.	Для каждой товарной строки между /Line-Item и /Line

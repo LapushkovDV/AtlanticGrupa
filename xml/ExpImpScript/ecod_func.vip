@@ -177,14 +177,39 @@ var node, childOne: longint;
   ReleaseDump(Node);
   createEcodCell(hPartDoc, 'DespatchAdviceNumber', katSopr.nSopr);
   createEcodCell(hPartDoc, 'DespatchAdviceDate', datetostr(katsopr.dsopr, ieHead.dFormat));
+  // DespatchAdviceTime - опциально и не будем указывать
   createEcodCell(hPartDoc, 'EstimatedDeliveryDate', datetostr(stepDoc.dOtgr, ieHead.dFormat));    //or STEPDOC.DOPLMAX
   createEcodCell(hPartDoc, 'EstimatedDeliveryTime', '12:00');
   createEcodCell(hPartDoc, 'BuyerOrderNumber', stepdoc.nkont);
   if longInt(StepDoc.DizvMAX) != 0
     createEcodCell(hPartDoc, 'BuyerOrderDate', datetostr(stepDoc.dizvMAX, ieHead.dFormat));
+    // BuyerOrderTime - опциально и не будем указывать
+
+  if katorg_1.unn = '2310031475' { //тандер
+      if getfirst Sf_katsopr = tsOK {
+        createEcodCell(hPartDoc, 'InvoiceNumber',  Sf_katsopr.num);
+        createEcodCell(hPartDoc, 'InvoiceDate'  ,  datetostr(Sf_katsopr.dFact,'YYYY-MM-DD'));
+      }
+    createEcodCell(hPartDoc, 'ContractNumber',dog_katsopr.nodoc);
+    createEcodCell(hPartDoc, 'DocumentFunctionCode','O');
+   }
+
   createEcodCell(hPartDoc, 'DespatchNumber', katsopr.nsopr);
   createEcodCell(hPartDoc, 'DespatchDate', datetostr(katsopr.dsopr , ieHead.dFormat));
   createEcodCell(hPartDoc, 'Currency', 'RUB');
+  if katorg_1.unn = '2310031475' { //тандер
+    var node_transport, child_transport  : longint;
+     node_transport := XMLDOMDoc_CreateElement(xmlDoc, 'TransportDetails');
+     child_transport := XMLDOMNode_AppendChild(hPartDoc, node_transport);
+     ReleaseDump(node_transport);
+     createEcodCell(child_transport, 'CarrierName', ''); // фо водителя
+     createEcodCell(child_transport, 'LicencePlate',''); // номер авто
+     createEcodCell(child_transport, 'ShipmentIdentifier',''); // номер прицепа
+     createEcodCell(child_transport, 'CarrierPhoneNumber',''); // телефон водителя
+     ReleaseDump(child_transport);
+
+  }
+
   releaseDump(hPartDoc); // _ header
 
   //parties
@@ -276,6 +301,16 @@ var node, childOne: longint;
                  createEcodCell(childOne, 'PackageNumber',string(_npp-1));
                  createEcodCell(childOne, 'PackageType','09');
                  createEcodCell(childOne, 'SerialNumber', ATL_MERCURY_Spec.PALLETSSCC);
+
+                 if katorg_1.unn = '2310031475' { //тандер
+                   // откуда брать непонятно
+                     createEcodCell(childOne, 'PackageWeight','1.000');
+                     createEcodCell(childOne, 'PackageGrossWeight','1.000');
+                     createEcodCell(childOne, 'PackageHeight','1.000');
+                     createEcodCell(childOne, 'PackageLength','1.000');
+                     createEcodCell(childOne, 'PackageWidth','1.000');
+                  }
+
                  var _cBaseDoc : comp = 0h;
                  if getFirst fastfirstRow stepDoc where ((katsopr.cstepdoc==nRec)) = tsOk
                    if getFirst fastfirstRow baseDoc where ((stepDoc.cbasedoc==nRec)) = tsOk { _cBaseDoc := basedoc.nrec}
@@ -1186,6 +1221,11 @@ var
           createEcodCell(hPartDoc, 'TotalGrossAmount', string(grossSum));
           createEcodCell(hPartDoc, 'TotalTaxAmount', string(totalTax));
         }
+          if katorg_1.unn = '2310031475' { //тандер
+             createEcodCell(hPartDoc, 'TotalDiscountAmount', ''); //	Сумма скидки
+             createEcodCell(hPartDoc, 'TotalFinalAmount',string(grossSum)); //	Конечная сумма к оплате (с учетом скидки)
+          }
+
         releaseDump(hPartDoc); // _ DespatchAdvice-Summary
       }
       // сохраняем XML

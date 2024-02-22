@@ -134,6 +134,7 @@ interface expImpScript_droga;
   , basedoc base_num
   , tDoc
   , schfact
+  , schfact Sf_katsopr
   , katsopr
   , SpSopr
   , SpSopr SpSopr2
@@ -144,6 +145,7 @@ interface expImpScript_droga;
   , katpodr
   , katparty
   , dogovor
+  , dogovor dog_katsopr
   , dogovor contract
   , spdocs
   , katpayment
@@ -176,6 +178,8 @@ interface expImpScript_droga;
   //  and  tEcOrder.BItemCode == AtrCodeMC.vString (noindex)
 
     and katSopr.nRec == spSopr.cSopr
+    and katSopr.cschfact == Sf_katsopr.nrec
+    and katSopr.cDogovor == dog_katsopr.nrec
 
     and katsopr.corg == katorg_1.nrec
 
