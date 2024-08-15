@@ -336,7 +336,7 @@ object 'L_BASEDOC::VSCHET' : InterfaceWindow {
         FieldName = 'OrgAddInfoGrPol'; //,0,0,0,0,Доп. информация';
         DefaultValue = '';
         Origin_X = 908;
-        Origin_Y = 100;
+        Origin_Y = 250;
         Size_X = 631;
         Size_Y = 14;
       } // ExtAttr: KATORG,281474976710733622 : PanelInputLine

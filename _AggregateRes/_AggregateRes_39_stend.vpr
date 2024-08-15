@@ -18,7 +18,7 @@
 			<VipFiles>
 				<IncludeList>
 					$[AtlPath]\Source\
-					..\..\..\..\Galaktika_stend\FRM\*
+					..\..\..\..\..\..\Galaktika_stend\FRM\*
 					..\inc\*
 					..\..\SourceGal\*
 					vih\*
@@ -262,14 +262,13 @@
 					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
 					<HwKeyTransport>1</HwKeyTransport>
 					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
-					<LicFileName>..\..\..\..\Galaktika_stend\Sup910\exe\License.lic</LicFileName>
+					<LicFileName>..\..\..\..\..\..\Galaktika_stend\Sup910\exe\License.lic</LicFileName>
 				</VipDatabase>
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="35" PosY="93" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="61" PosY="111" OpenEditor="True"/>
-			<File Name="Source\Mailing_PaymentTerm_tune.vip" PosX="71" PosY="20" OpenEditor="True" Active="True"/>
+			<File Name="_AggregateRes.prj" PosX="54" PosY="23" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="44" PosY="21" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -303,7 +302,7 @@
 			<BreakPoint FileName="Source\EMAIL\ATL_EmailRun.Vip" Line="12"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45278,7158805556" DateTimeCompile="0,000705092592397705" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45519,4474988079" DateTimeCompile="0,000892395830305759" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" SourceLine="7" SourceColumn="1">
 						<StackIncludeList>
@@ -528,7 +527,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="18.12.2023 17:11:53"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="15.08.2024 10:45:41"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

@@ -56,12 +56,9 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="alter\alter_l_basedoc_vschet.vip" PosX="30" PosY="261" OpenEditor="True" Active="True"/>
+			<File Name="alter\alter_l_basedoc_vschet.vip" PosX="42" PosY="237" OpenEditor="True" Active="True"/>
 			<File Name="cnf\L_BASEDOC_VSCHET.cnf" PosX="34" PosY="285" OpenEditor="True"/>
 			<File Name="cnf\L_BASEDOC_VSCHETB.cnf" PosX="32" PosY="5" OpenEditor="True"/>
-			<File Name="..\..\SourceGal\5.5.31\L\L_BaseDoc\vip\vschet.vip" PosX="36" PosY="17" OpenEditor="True"/>
-			<File Name="..\..\SourceGal\5.5.31\L\L_BaseDoc\vip\vschet_release.vip" PosX="6" PosY="956" OpenEditor="True"/>
-			<File Name="..\..\SourceGal\5.5.31\L\L_BaseDoc\vip\BaseStep\BaseStep.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="alter\alter_l_basedoc_vschetB.vip" PosX="65" PosY="61" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
