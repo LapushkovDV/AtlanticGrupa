@@ -325,6 +325,21 @@ object 'L_BASEDOC::VSCHET' : InterfaceWindow {
         Size_X = 631;
         Size_Y = 14;
       } // ExtAttr: KATORG,281474976710733622 : PanelInputLine
+       object OrgAddInfoGrPol : PanelInputLine {
+        Original = False;
+        Visible = True;
+        Hidden = False;
+        Protect = True;
+        Skip = True;
+        StatusCtx = 150;
+        HelpLine = 'Доп. информация';
+        FieldName = 'OrgAddInfoGrPol'; //,0,0,0,0,Доп. информация';
+        DefaultValue = '';
+        Origin_X = 908;
+        Origin_Y = 100;
+        Size_X = 631;
+        Size_Y = 14;
+      } // ExtAttr: KATORG,281474976710733622 : PanelInputLine
     } // SCVSCHET : Screen
 
 

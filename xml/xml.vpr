@@ -265,13 +265,11 @@
 			<File Name="ExpImpScript\common_func.vpp" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="ExpImpScript\expImpScript.vip" PosX="52" PosY="279" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_order.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_func.vip" PosX="27" PosY="225" OpenEditor="True"/>
+			<File Name="ExpImpScript\ecod_func.vip" PosX="79" PosY="992" OpenEditor="True" Active="True"/>
 			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="111" PosY="225" OpenEditor="True"/>
 			<File Name="ExpImpScript\sts_func.vpp" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="ExpImpScript\sts_doc.vpp" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_intr.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="..\..\..\FRM\SRC\Inc\GloFuncs.inc" PosX="122" PosY="41" OpenEditor="True"/>
-			<File Name="..\..\..\FRM\SRC\Inc\GalNet.inc" PosX="22" PosY="28" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\ecod_intr.vip" PosX="60" PosY="16" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="xml.prj" Priority="0">

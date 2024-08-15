@@ -49,6 +49,7 @@ as select GetNameSkidkaWrapper(0) (fieldname=NameSkidka0),
          , getPickingReportFieldColor() (Fieldname = PickingReportFieldColor)
 
          ,extAttr.sgetAttr( coKatOrg,baseDoc.cOrg,'Доп. информация') (fieldname=OrgAddInfo)
+         ,extAttr.sgetAttr( coKatOrg,baseDoc.CGRPOL,'Доп. информация') (fieldname=OrgAddInfoGrPol)
 
          , if( (KatOrg.Unn = '3123302222' or KatOrg.Unn = '7804146186' )
                   and
