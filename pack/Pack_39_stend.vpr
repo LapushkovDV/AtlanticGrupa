@@ -272,16 +272,16 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<FileList>
-			<File Name="pack.prj" PosX="80" PosY="20" OpenEditor="True" Active="True"/>
+			<File Name="pack.prj" PosX="35" PosY="14" OpenEditor="True" Active="True"/>
 			<File Name="DrogaFunc\drogaFunc.vip" PosX="44" PosY="18" OpenEditor="True"/>
 		</FileList>
 		<MarkerList>
 			<Marker FileName="FILLTMPTBL\FillTmpTbl.frm" Caption="Нумерованная закладка 1" Line="143" NumIndex="1" MarkerType="mtNumBookmark" Comment="recNakl.Class_OsnOtp     := substr(recNakl.Class_OsnOtp, 1, pos('ДО ', recNakl.Class_OsnOtp)- 2);"/>
 		</MarkerList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" DateTimeStart="45248,4592690625" DateTimeCompile="0,000661493053485174" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" DateTimeStart="45527,3688688426" DateTimeCompile="0,000506157412019093" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Тип &quot;TNAME&quot; уже определен в Випе" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\INC\dictypes.def" SourceLine="227" SourceColumn="33">
+					<CompileMessage MessageType="mtWarning" MessageText="Тип &quot;TNAME&quot; уже определен в Випе" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\INC\dictypes.def" SourceLine="228" SourceColumn="33">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="4" Column="1"/>
 						</StackIncludeList>
@@ -291,7 +291,7 @@
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="9" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iExtAttr" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\C\C_EXTCLASS\VIP\EXTATTR\ExtAttr.Vih" SourceLine="319" SourceColumn="23">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iExtAttr" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\C\C_EXTCLASS\VIP\EXTATTR\ExtAttr.Vih" SourceLine="356" SourceColumn="23">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="10" Column="1"/>
 						</StackIncludeList>
@@ -316,7 +316,7 @@
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="14" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : FeeSigners" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\F\F_COMMON\VIP\FEESIGNERS\FeeSigners.vih" SourceLine="260" SourceColumn="25">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : FeeSigners" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\F\F_COMMON\VIP\FEESIGNERS\FeeSigners.vih" SourceLine="272" SourceColumn="25">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="17" Column="1"/>
 						</StackIncludeList>
@@ -369,7 +369,7 @@
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="18.11.2023 11:02:18"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="23.08.2024 8:51:54"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

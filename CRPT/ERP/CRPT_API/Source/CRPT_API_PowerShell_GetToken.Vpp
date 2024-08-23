@@ -87,7 +87,7 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('    "Token is valid"                                                                                                                                       ');
     MyWriteLN('    Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Token is valid") -Encoding Oem');
     MyWriteLN('} else {                                                                                                                                                   ');
-    MyWriteLN('        for($i=1; $i -le 50; $i++) {                                                                                                                         ');
+    MyWriteLN('        for($i=1; $i -le 3; $i++) {                                                                                                                         ');
     MyWriteLN('              Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Token is not valid. Request new Token...") -Encoding Oem    ');
     MyWriteLN('              "Token is not valid. Request new Token..."                                                                                                      ');
     MyWriteLN('              requestNewToken                                                                                                                                 ');
