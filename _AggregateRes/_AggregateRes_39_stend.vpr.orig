@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>_AggregateRes</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika_stend\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.40.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\Source\
+					..\..\..\..\Galaktika_stend\FRM\*
+					..\inc\*
+					..\..\SourceGal\*
+					vih\*
+					..\CRPT\ERP\CRPT_API\*
+					..\VetisAPI\ERP\Source\
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_AlterCumulative.res
+					$[GalExe]\C_CheckKBU.res
+					$[GalExe]\C_CheckOper.res
+					$[GalExe]\C_Common.res
+					$[GalExe]\C_CONST.res
+					$[GalExe]\C_Corpo.res
+					$[GalExe]\C_Denominator.res
+					$[GalExe]\C_ExpImp.res
+					$[GalExe]\C_ExtClass.res
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_GalHelp.res
+					$[GalExe]\C_Gantt.res
+					$[GalExe]\C_Join.res
+					$[GalExe]\C_MAILER.res
+					$[GalExe]\C_OLAP.res
+					$[GalExe]\C_Palette.res
+					$[GalExe]\C_Partner.res
+					$[GalExe]\C_Splash_RU.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\C_TEMPLATE.res
+					$[GalExe]\C_Tree.res
+					$[GalExe]\C_TreeTune.res
+					$[GalExe]\C_Tune.res
+					$[GalExe]\C_UserManual.res
+					$[GalExe]\C_WEBSERVICES.res
+					$[GalExe]\compdata.res
+					$[GalExe]\DictCache.res
+					$[GalExe]\F_Alg.res
+					$[GalExe]\F_An.res
+					$[GalExe]\F_Avizo.res
+					$[GalExe]\F_BackLog.res
+					$[GalExe]\F_BankDocF.res
+					$[GalExe]\F_BuhRep.res
+					$[GalExe]\F_BuhSchet.res
+					$[GalExe]\F_CashBank.res
+					$[GalExe]\F_CLOSCH.res
+					$[GalExe]\F_Common.res
+					$[GalExe]\F_DIFFRATE.res
+					$[GalExe]\F_DistAct.res
+					$[GalExe]\F_DistCred.res
+					$[GalExe]\F_DistPl.res
+					$[GalExe]\F_DragM.res
+					$[GalExe]\F_ExtAn.res
+					$[GalExe]\F_FA.res
+					$[GalExe]\F_Filial.res
+					$[GalExe]\F_FpAbstr.res
+					$[GalExe]\F_FpAddFld.res
+					$[GalExe]\F_FPBUDGET.res
+					$[GalExe]\F_FPCATALOG.res
+					$[GalExe]\F_FpHashAn.res
+					$[GalExe]\F_FpKatH.res
+					$[GalExe]\F_FPOBOROT.res
+					$[GalExe]\F_GetAn.res
+					$[GalExe]\F_Iski.res
+					$[GalExe]\F_KatDoc.res
+					$[GalExe]\F_KatKod.res
+					$[GalExe]\F_MBP.res
+					$[GalExe]\F_MBPPub.res
+					$[GalExe]\F_NalogReg.res
+					$[GalExe]\F_Oborot.res
+					$[GalExe]\F_OFP.res
+					$[GalExe]\F_OFPPR.res
+					$[GalExe]\F_OS.res
+					$[GalExe]\F_OSInvCard.res
+					$[GalExe]\F_OSMOVE.res
+					$[GalExe]\F_OSOper.res
+					$[GalExe]\F_OSRep.res
+					$[GalExe]\F_PAT.res
+					$[GalExe]\F_PlansSch.res
+					$[GalExe]\F_PlPor.res
+					$[GalExe]\F_PlPorRep.res
+					$[GalExe]\F_Podot.res
+					$[GalExe]\F_Post.res
+					$[GalExe]\F_RTXO.res
+					$[GalExe]\F_Saldo.res
+					$[GalExe]\F_SFO.res
+					$[GalExe]\F_Shtraf.res
+					$[GalExe]\F_SoprHoz.res
+					$[GalExe]\F_Taxes.res
+					$[GalExe]\F_TaxReport.res
+					$[GalExe]\F_TBYReport.res
+					$[GalExe]\F_Template.res
+					$[GalExe]\F_TreeNew.res
+					$[GalExe]\F_TXO.res
+					$[GalExe]\F_TXOAPI.res
+					$[GalExe]\F_USERREPORT.res
+					$[GalExe]\F_Utils.res
+					$[GalExe]\F_ValutDoc.res
+					$[GalExe]\F_Vedom.res
+					$[GalExe]\F_Veks.res
+					$[GalExe]\F_VZACHET.res
+					$[GalExe]\F_XlsRep.res
+					$[GalExe]\L_AdvRep.res
+					$[GalExe]\L_BaseDoc.res
+					$[GalExe]\L_Box.res
+					$[GalExe]\L_CalcUsl.res
+					$[GalExe]\L_Cessia.res
+					$[GalExe]\L_Common.res
+					$[GalExe]\L_Consig.res
+					$[GalExe]\L_CRM.res
+					$[GalExe]\L_Dogovor.res
+					$[GalExe]\L_Dover.res
+					$[GalExe]\L_GrPlat.res
+					$[GalExe]\L_GrSch.res
+					$[GalExe]\L_GrSopr.res
+					$[GalExe]\L_Kassa.res
+					$[GalExe]\L_KatNazna.res
+					$[GalExe]\L_KatOrg.res
+					$[GalExe]\L_KatParty.res
+					$[GalExe]\L_KontrBal.res
+					$[GalExe]\L_MakeDO.res
+					$[GalExe]\L_MakeNakl.res
+					$[GalExe]\L_MCU.res
+					$[GalExe]\L_Milk.res
+					$[GalExe]\L_MOL.res
+					$[GalExe]\L_MoveCell.res
+					$[GalExe]\L_NalNakl.res
+					$[GalExe]\L_Nalog.res
+					$[GalExe]\L_NIOKR.res
+					$[GalExe]\L_Ostatki.res
+					$[GalExe]\L_PlanPR.res
+					$[GalExe]\L_Prices.res
+					$[GalExe]\L_PrnSopr.res
+					$[GalExe]\L_Realting.res
+					$[GalExe]\L_RemDoc.res
+					$[GalExe]\L_Remont.res
+					$[GalExe]\L_RemPotr.res
+					$[GalExe]\L_RemRep.res
+					$[GalExe]\L_RepBaseDoc.res
+					$[GalExe]\L_RepOper.res
+					$[GalExe]\L_Reserve.res
+					$[GalExe]\L_RetTara.res
+					$[GalExe]\L_Rozn.res
+					$[GalExe]\L_SaldoMtr.res
+					$[GalExe]\L_SerialN.res
+					$[GalExe]\L_SF.res
+					$[GalExe]\L_Skid.res
+					$[GalExe]\L_Sklad.res
+					$[GalExe]\L_SklRep.res
+					$[GalExe]\L_Smeta.res
+					$[GalExe]\L_SoprBase.res
+					$[GalExe]\L_SoprDoc.res
+					$[GalExe]\L_SpExch.res
+					$[GalExe]\L_TTNdoc.res
+					$[GalExe]\L_Uks.res
+					$[GalExe]\L_UksMTO.res
+					$[GalExe]\L_UksPlans.res
+					$[GalExe]\L_UksRep.res
+					$[GalExe]\L_Val.res
+					$[GalExe]\L_VPr.res
+					$[GalExe]\L_Wood.res
+					$[GalExe]\M_Control.res
+					$[GalExe]\M_DVS.res
+					$[GalExe]\M_EIXML.res
+					$[GalExe]\M_GETPOTR.res
+					$[GalExe]\M_MDADoc.res
+					$[GalExe]\M_MES.res
+					$[GalExe]\M_MnPlan.res
+					$[GalExe]\M_Quality.res
+					$[GalExe]\M_Scripts.res
+					$[GalExe]\M_Serv.res
+					$[GalExe]\M_SklPlan.res
+					$[GalExe]\M_TPP.res
+					$[GalExe]\M_Transp.res
+					$[GalExe]\M_UP.res
+					$[GalExe]\Z_Basement.res
+					$[GalExe]\Z_Calc.res
+					$[GalExe]\Z_Calendar.res
+					$[GalExe]\Z_Chart.res
+					$[GalExe]\Z_Distribute.res
+					$[GalExe]\Z_ExpImp.res
+					$[GalExe]\Z_FIAS.res
+					$[GalExe]\Z_FOT.res
+					$[GalExe]\Z_FSZN.res
+					$[GalExe]\Z_Harm.res
+					$[GalExe]\Z_KatPodr.res
+					$[GalExe]\Z_LSchet.res
+					$[GalExe]\Z_Menu.res
+					$[GalExe]\Z_MP.res
+					$[GalExe]\Z_NDFL.res
+					$[GalExe]\Z_PayFSS.res
+					$[GalExe]\Z_PayRep.res
+					$[GalExe]\Z_PFRep.res
+					$[GalExe]\Z_Pivot.res
+					$[GalExe]\Z_Report.res
+					$[GalExe]\Z_Reserv.res
+					$[GalExe]\Z_RList.res
+					$[GalExe]\Z_Service.res
+					$[GalExe]\Z_Sredn.res
+					$[GalExe]\Z_Staff.res
+					$[GalExe]\Z_StaffBuilder.res
+					$[GalExe]\Z_StaffCat.res
+					$[GalExe]\Z_StaffDopReports.res
+					$[GalExe]\Z_StaffIerRep.res
+					$[GalExe]\Z_StaffIF.res
+					$[GalExe]\Z_StaffMenu.res
+					$[GalExe]\Z_StaffMoves.res
+					$[GalExe]\Z_StaffNastr.res
+					$[GalExe]\Z_StaffOrders.res
+					$[GalExe]\Z_StaffPensioner.res
+					$[GalExe]\Z_StaffRecruiting.res
+					$[GalExe]\Z_StaffRepeat.res
+					$[GalExe]\Z_StaffReports.res
+					$[GalExe]\Z_StaffSHR.res
+					$[GalExe]\Z_StaffTest.res
+					$[GalExe]\Z_Statis.res
+					$[GalExe]\Z_TarStav.res
+					$[GalExe]\Z_WT.res
+					$[GalExe]\Z_Zar.res
+					$[GalExe]\Z_ZarNastr.res
+					$[GalExe]\Z_ZarRep.res
+					$[GalExe]\c_diadoc.res
+				</ResourceList>
+				<OutputResource>..\..\..\..\_AggregateRes_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>gal_abm_stend</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
+					<LicFileName>..\..\..\..\Galaktika_stend\Sup910\exe\License.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+<<<<<<< HEAD
+			<File Name="_AggregateRes.prj" PosX="32" PosY="185" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\MercuryPRJ_Import.vip" PosX="29" PosY="331" OpenEditor="True" Active="True"/>
+=======
+			<File Name="_AggregateRes.prj" PosX="54" PosY="23" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="39" PosY="20" OpenEditor="True" Active="True"/>
+>>>>>>> 626b3afde29acb351c5263e7f5b64f2a08f62e94
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<MarkerList>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
+			<Marker FileName="alter\alter_l_basedoc_vschetB.vip" Caption="Нумерованная закладка 1" Line="22" NumIndex="1" MarkerType="mtNumBookmark" Comment="DO_ZAKLYUCHENIE : ;"/>
+			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="163" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="Source\ReportSumDeclarationToDO.vip" Caption="Нумерованная закладка 1" Line="113" NumIndex="1" MarkerType="mtNumBookmark" Comment="xlStWriteToMatrix(nrow, 1, 'Отчет о предполагаемый'); column++;"/>
+			<Marker FileName="Source\Report_Org_VetisGUIDS.vip" Caption="Нумерованная закладка 1" Line="70" NumIndex="1" MarkerType="mtNumBookmark" Comment="exit"/>
+			<Marker FileName="Source\sale_func.vpp" Caption="Нумерованная закладка 1" Line="86" NumIndex="1" MarkerType="mtNumBookmark" Comment="if bDetail {"/>
+			<Marker FileName="Source\sale_sale.vip" Caption="Нумерованная закладка 1" Line="509" NumIndex="1" MarkerType="mtNumBookmark" Comment="tData.cMC     := spSopr.cMcUsl,"/>
+			<Marker FileName="Source\debitor\DEBITOR.VIP" Caption="Нумерованная закладка 1" Line="510" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="Source\MercuryPRJ\MercuryPRJ_Import.vip" Caption="Нумерованная закладка 1" Line="252" NumIndex="1" MarkerType="mtNumBookmark" Comment="if _ExpImpScript_Droga.doc2xml(31);"/>
+			<Marker FileName="Source\loadorder\LoadOrder.vip" Caption="Нумерованная закладка 1" Line="740" NumIndex="1" MarkerType="mtNumBookmark" Comment="basedoc.NAME    := if(isvalidall(tnDogovor_ins),'Договор ',''); // 'Загружено автоматически';"/>
+			<Marker FileName="alter\Alter_CalcDolgDG.vip" Caption="Нумерованная закладка 1" Line="170" NumIndex="1" MarkerType="mtNumBookmark" Comment=",t.DayAfterSchet"/>
+			<Marker FileName="Source\EMAIL\ATL_EmailRun.Vip" Caption="Нумерованная закладка 1" Line="293" NumIndex="1" MarkerType="mtNumBookmark" Comment="deletefile(email_body_Win)"/>
+			<Marker FileName="Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="150" NumIndex="1" MarkerType="mtNumBookmark" Comment="if _line = 1 then InsertTmpHead(_line,_filename);"/>
+			<Marker FileName="alter\alter_l_basedoc_vschet.vip" Caption="Нумерованная закладка 1" Line="731" NumIndex="1" MarkerType="mtNumBookmark" Comment="_MercuryPRJ_View.ShowMercuryData(KatSopr.Nrec)  ;"/>
+			<Marker FileName="Source\loadorder\LoadOrder_CRPT.vip" Caption="Нумерованная закладка 1" Line="133" NumIndex="1" MarkerType="mtNumBookmark" Comment="mylog()"/>
+		</MarkerList>
+		<BreakPointList>
+			<BreakPoint FileName="alter_vschet.prj" Line="78"/>
+			<BreakPoint FileName="Source\EMAIL\ATL_EmailRun.Vip" Line="12"/>
+		</BreakPointList>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45527,3684077546" DateTimeCompile="0,000828356482088566" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" SourceLine="7" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" Line="85" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" SourceLine="273" SourceColumn="27">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" Line="85" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;PICKINGREPORT_COPYBETWEENDOCS.getMercuryField&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(1), не был использован" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" SourceLine="306" SourceColumn="5">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" Line="85" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;PICKINGREPORT_COPYBETWEENDOCS.getMercuryFieldColor&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(32), не был использован" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" SourceLine="306" SourceColumn="5">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" Line="85" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\EMAIL\ATL_EmailRun.Vip" SourceLine="82" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Переменная email_addr_temp:String интерфейса ATLANTIC::ATL_EMAILRUN, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\EMAIL\ATL_EmailRun.Vip(40), не была использована" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\EMAIL\ATL_EmailRun.Vip" SourceLine="355" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Переменная MAPIMessage:LongInt интерфейса ATLANTIC::ATL_EMAILRUN, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\EMAIL\ATL_EmailRun.Vip(54), не была использована" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\EMAIL\ATL_EmailRun.Vip" SourceLine="355" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;ATL_EMAILRUN.GetDBName&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\EMAIL\ATL_EmailRun.Vip(136), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\EMAIL\ATL_EmailRun.Vip" SourceLine="355" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\Mailing_PaymentTerm.vip" SourceLine="7" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;GONEWMON.Start_GoNewMon&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\Alter_GoNewMon.vip(10), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\Alter_GoNewMon.vip" SourceLine="58" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;SOPINMOV.getMercuryField&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(1), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_SKLAD_SOPINMOV.vip" SourceLine="28" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;SOPINMOV.getMercuryFieldColor&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\MERCURYPRJ_PICKINGREPORT_FUN.VPP(32), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_SKLAD_SOPINMOV.vip" SourceLine="28" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;GETKLPR.SetSelectable&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_PRICES_GETKLPR.vip(7), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_L_PRICES_GETKLPR.vip" SourceLine="13" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Переменная _Log:String интерфейса L_SOPRDOC::ON_NSCHFDOPPR, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_ON_NSCHFDOPPR.vip(4), не была использована" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_ON_NSCHFDOPPR.vip" SourceLine="53" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;ON_NSCHFDOPPR.DopSvFHJ1&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_ON_NSCHFDOPPR.vip(11), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_ON_NSCHFDOPPR.vip" SourceLine="53" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - getTypeUchet входящий параметр: _cOrg:Comp не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="61" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;IDIADOCEXPORTDOC.Check_TmpSpSopr&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip(90), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_DiadocExportDoc.vip" SourceLine="331" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;IDIADOCSEND.ShowProt&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_iDiadocSend.vip(46), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\ALTER_iDiadocSend.vip" SourceLine="120" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;DOLGOPL.isDolg&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_DolgOpl.vip(8), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_DolgOpl.vip" SourceLine="74" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;DOLGOPL.PrintKatSopr&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_DolgOpl.vip(16), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_DolgOpl.vip" SourceLine="74" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;BOOKPRZKPRINT.SvPokProd&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\Alter_BookPrZkPrint.vip(8), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\Alter_BookPrZkPrint.vip" SourceLine="154" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;DOGOVOR.setDefaultSpDog&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\Alter_l_dogovor.vip(17), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\Alter_l_dogovor.vip" SourceLine="125" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;ATTRIBUTE.doInit&quot;, объявленный в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_Attribute.vip(7), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\ALTER\alter_Attribute.vip" SourceLine="12" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\My_iDiadocSend.vip" SourceLine="19" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\DEBITOR\DEBITOR.VIP" SourceLine="72" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;DEBITOR.PutMes&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\DEBITOR\FUNC.VPP(202), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\DEBITOR\DEBITOR.VIP" SourceLine="575" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\Report_Org_VetisGUIDS.vip" SourceLine="3" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\Report_Org_VetisGUIDS.vip" SourceLine="157" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\Export_SKIF-KARGO.vip" SourceLine="4" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ExportReestrCertifPDF.vip" SourceLine="7" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\LOADORDER\VarsTypes.var" SourceLine="1" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder.vip" Line="12" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : _RECARRAY" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\LOADORDER\VarsTypes.var" SourceLine="16" SourceColumn="12">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder.vip" Line="12" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="48" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="150" SourceColumn="62"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - InsertATL_PickingRep_Spec входящий параметр: _Prod_date:Date не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="397" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="430" SourceColumn="29"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="431" SourceColumn="28"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="432" SourceColumn="34"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) m_LOADORDER_CRPT_ObjLoadOrder_CRPT_InsertSpec локальная переменная _cSoprHoz:Comp, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip(417), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="436" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_LOADORDER_CRPT_ObjLoadOrder_CRPT_InsertSpec входящий параметр: _EAN:String не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder_CRPT.vip" SourceLine="436" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\LOADORDER\LoadOrder_tune.vip" SourceLine="80" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\Marshruts.vip" SourceLine="20" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\Marshruts.vip" SourceLine="252" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\Atlantic_MenuDynamic.vip" SourceLine="20" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\MercuryPRJ_Import.vip" SourceLine="26" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) GetMCBySapCode локальная переменная _empty:Boolean, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\MercuryPRJ_Import.vip(75), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\MercuryPRJ_Import.vip" SourceLine="75" SourceColumn="47"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) getKatSoprByBaseDocNumber локальная переменная _empty:Boolean, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\MercuryPRJ_Import.vip(94), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\MercuryPRJ_Import.vip" SourceLine="94" SourceColumn="47"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\MercuryPRJ_Import.vip" SourceLine="305" SourceColumn="61"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\MercuryPRJ_tune.vip" SourceLine="82" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\MercuryPRJ_View.vip" SourceLine="43" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_tune.vip" SourceLine="83" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="14" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) GetMCBySapCode локальная переменная _empty:Boolean, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip(68), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="68" SourceColumn="47"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) getKatSoprByDocNumber локальная переменная _empty:Boolean, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip(85), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="85" SourceColumn="47"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="5" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Кнопка &quot;Добавить ручные данные&quot; будет в одну строку высотой !" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="281" SourceColumn="3"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="301" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="336" SourceColumn="31"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View_all.vip" SourceLine="3" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Таблица &quot;KATMC&quot;, включенная в главную логическую таблицу интерфейса &quot;PICKINGREPORT_VIEW_ALL&quot;, не была явно использована" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View_all.vip" SourceLine="58" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View_all.vip" SourceLine="88" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportMassa_DO_NAKL.vip" SourceLine="7" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) PrintReport_Matrix локальная переменная Nrow0:LongInt, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportMassa_DO_NAKL.vip(193), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportMassa_DO_NAKL.vip" SourceLine="242" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSumDeclarationToDO.vip" SourceLine="4" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Сортировка реализуется на внешней выгрузке" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSumDeclarationToDO.vip" SourceLine="34" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) PrintReport_Matrix локальная переменная Nrow0:LongInt, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSumDeclarationToDO.vip(101), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSumDeclarationToDO.vip" SourceLine="156" SourceColumn="1"/>
+					<CompileMessage MessageType="mtHint" MessageText="С ограничением RELATION Порядок STANDARD Реализуется на внешней выгрузке" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSumDeclarationToDO.vip" SourceLine="254" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSaleByMC.vip" SourceLine="7" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) PrintReport_Matrix локальная переменная Nrow0:LongInt, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSaleByMC.vip(98), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSaleByMC.vip" SourceLine="192" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) Filltable локальная переменная _empty:Boolean, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSaleByMC.vip(259), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSaleByMC.vip" SourceLine="259" SourceColumn="38"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSaleByMC.vip" SourceLine="300" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_REPORTSALEBYMC_IUserReport_GetGroupName входящий параметр: Level:Word не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\ReportSaleByMC.vip" SourceLine="311" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\CountSalMC_LAPUS.vip" SourceLine="13" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Локальная переменная _empty:Boolean, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\CountSalMC_LAPUS.vip(66), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\CountSalMC_LAPUS.vip" SourceLine="68" SourceColumn="6"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" SourceLine="46" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - PutHeder входящий параметр: Clr:LongInt не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="29" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outHeder локальная переменная s:String, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(32), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="54" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outHeder локальная переменная f:String, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(32), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="54" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outHeder локальная переменная nR:LongInt, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(33), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="54" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outHeder локальная переменная kR:LongInt, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(33), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="54" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outHeder локальная переменная nC:LongInt, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(33), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="54" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outHeder локальная переменная kC:LongInt, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(33), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="54" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outHeder локальная переменная d:Double, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(34), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="54" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - outHeder входящий параметр: xRow:LongInt не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="54" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - outHeder входящий параметр: yCol:LongInt не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="54" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outData локальная переменная s:String, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(59), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="110" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outData локальная переменная f:String, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(59), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="110" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outData локальная переменная nR:LongInt, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(60), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="110" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outData локальная переменная kR:LongInt, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(60), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="110" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outData локальная переменная nC:LongInt, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(60), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="110" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outData локальная переменная kC:LongInt, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(60), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="110" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outData локальная переменная j:LongInt, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(60), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="110" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outData локальная переменная j1:LongInt, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(60), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="110" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outData локальная переменная d:Double, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(61), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="110" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) outData локальная переменная res:Boolean, объявленная в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(62), не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\real_func.vpp" SourceLine="110" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" Line="290" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;REAL.PutMes&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\REAL_FUNC.VPP(173), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\real.vip" SourceLine="492" SourceColumn="5"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Модификатор GetFirst выполняется для всей логической таблицы." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_barcode.slk" SourceLine="63" SourceColumn="31"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_barcode.slk" SourceLine="63" SourceColumn="29"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Модификатор GetFirst выполняется для всей логической таблицы." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_barcode.slk" SourceLine="90" SourceColumn="31"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_barcode.slk" SourceLine="90" SourceColumn="29"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Модификатор GetFirst выполняется для всей логической таблицы." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_SapCode.slk" SourceLine="65" SourceColumn="31"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_SapCode.slk" SourceLine="65" SourceColumn="29"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Модификатор GetFirst выполняется для всей логической таблицы." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_SapCode.slk" SourceLine="92" SourceColumn="31"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_SapCode.slk" SourceLine="92" SourceColumn="29"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="21" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Локальная переменная pickedKol:Integer, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip(861), не используется." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="929" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Переменная iSumVozvr:Double интерфейса DROGA::SALESREPORT, объявленная в C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip(138), не была использована" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="986" SourceColumn="5"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Таблица &quot;ATTRPRICE&quot;, включенная в логическую таблицу &quot;V01&quot; интерфейса &quot;SALESREPORT&quot;, не была явно использована" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="986" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_check.vip" SourceLine="38" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_user.vip" SourceLine="7" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_user.vip" SourceLine="46" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Не совпадает тип" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="23.08.2024 8:51:42"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+	</ProjectManager>
+</Viper>
