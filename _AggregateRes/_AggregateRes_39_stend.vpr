@@ -18,7 +18,7 @@
 			<VipFiles>
 				<IncludeList>
 					$[AtlPath]\Source\
-					..\..\..\..\..\..\Galaktika_stend\FRM\*
+					..\..\..\..\Galaktika_stend\FRM\*
 					..\inc\*
 					..\..\SourceGal\*
 					vih\*
@@ -262,13 +262,14 @@
 					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
 					<HwKeyTransport>1</HwKeyTransport>
 					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
-					<LicFileName>..\..\..\..\..\..\Galaktika_stend\Sup910\exe\License.lic</LicFileName>
+					<LicFileName>..\..\..\..\Galaktika_stend\Sup910\exe\License.lic</LicFileName>
 				</VipDatabase>
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="54" PosY="23" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="44" PosY="21" OpenEditor="True" Active="True"/>
+			<File Name="_AggregateRes.prj" PosX="32" PosY="185" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\MercuryPRJ_Import.vip" PosX="29" PosY="331" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
