@@ -42,8 +42,9 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('Function GetToken() {                                                                                                                                     ');
     MyWriteLN('    try {                                                                                                                                                 ');
     MyWriteLN('                                                                                                                                                          ');
-    MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/auth/cert/key" | ConvertFrom-Json                                                ');
-    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! Invoke-WebRequest  -Uri https://ismp.crpt.ru/api/v3/auth/cert/key") -Encoding Oem');
+    MyWriteLN('        #$response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/auth/cert/key" | ConvertFrom-Json                                                ');
+    MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://markirovka.crpt.ru/api/v3/auth/cert/key" | ConvertFrom-Json                                           ');
+    MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! Invoke-WebRequest  -Uri https://markirovka.crpt.ru/api/v3/auth/cert/key") -Encoding Oem');
     MyWriteLN('        Remove-Item $dataPath -Force                                                                                                                       ');
     MyWriteLN('        Remove-Item $signedDocPath -Force                                                                                                                  ');
     MyWriteLN('                                                                                                                                                          ');
@@ -68,7 +69,8 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('            uuid = $uuid;                                                                                                                                 ');
     MyWriteLN('        } | ConvertTo-Json                                                                                                                                ');
     MyWriteLN('                                                                                                                                                          ');
-    MyWriteLN('        $responseGetToken = Invoke-RestMethod -Uri https://ismp.crpt.ru/api/v3/auth/cert/ -ContentType "application/json;charset=UTF-8" -Method Post -Body $Body  ');
+    MyWriteLN('        #$responseGetToken = Invoke-RestMethod -Uri https://ismp.crpt.ru/api/v3/auth/cert/ -ContentType "application/json;charset=UTF-8" -Method Post -Body $Body  ');
+    MyWriteLN('        $responseGetToken = Invoke-RestMethod -Uri https://markirovka.crpt.ru/api/v3/true-api/auth/simpleSignIn -ContentType "application/json;charset=UTF-8" -Method Post -Body $Body ');
     MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! Invoke-RestMethod -Uri https://ismp.crpt.ru/api/v3/auth/cert/ -ContentType application/json;charset=UTF-8") -Encoding Oem');
     MyWriteLN('        Set-Content -Path $tokenPath -Value $responseGetToken.token -Force                                                                                 ');
     MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! Set-Content -Path $tokenPath -Value responseGetToken.token -Force") -Encoding Oem');
@@ -87,7 +89,7 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('    "Token is valid"                                                                                                                                       ');
     MyWriteLN('    Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Token is valid") -Encoding Oem');
     MyWriteLN('} else {                                                                                                                                                   ');
-    MyWriteLN('        for($i=1; $i -le 50; $i++) {                                                                                                                         ');
+    MyWriteLN('        for($i=1; $i -le 3; $i++) {                                                                                                                         ');
     MyWriteLN('              Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Token is not valid. Request new Token...") -Encoding Oem    ');
     MyWriteLN('              "Token is not valid. Request new Token..."                                                                                                      ');
     MyWriteLN('              requestNewToken                                                                                                                                 ');

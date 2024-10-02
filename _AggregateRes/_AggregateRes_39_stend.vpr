@@ -268,7 +268,7 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="_AggregateRes.prj" PosX="32" PosY="185" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="44" PosY="21" OpenEditor="True" Active="True"/>
 			<File Name="Source\MercuryPRJ\MercuryPRJ_Import.vip" PosX="29" PosY="331" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
@@ -303,7 +303,7 @@
 			<BreakPoint FileName="Source\EMAIL\ATL_EmailRun.Vip" Line="12"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45519,4474988079" DateTimeCompile="0,000892395830305759" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45527,3684077546" DateTimeCompile="0,000828356482088566" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" SourceLine="7" SourceColumn="1">
 						<StackIncludeList>
@@ -528,7 +528,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="15.08.2024 10:45:41"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="23.08.2024 8:51:42"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

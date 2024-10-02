@@ -263,7 +263,7 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="frm.prj" PosX="76" PosY="88" OpenEditor="True" Active="True"/>
+			<File Name="frm.prj" PosX="69" PosY="81" OpenEditor="True" Active="True"/>
 			<File Name="torg12\metro_fld.frn" PosX="63" PosY="16" OpenEditor="True"/>
 			<File Name="s4fact\sign_vip.frn" PosX="30" PosY="14" OpenEditor="True"/>
 			<File Name="torg12\atl_fld.frn" PosX="45" PosY="11" OpenEditor="True"/>
@@ -280,19 +280,21 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="45248,4579264815" DateTimeCompile="0,000823518515971955" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="45527,3687043981" DateTimeCompile="0,000797916669398546" StateHistory="False">
 				<CompileMessageList>
+					<CompileMessage MessageType="mtError" MessageText="шибка открытия (создания) компонента C:\Temp\Viper\Atlantis.res Процесс не может получить доступ к файлу, так как этот файл занят другим проце" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtError" MessageText="шибка открытия (создания) компонента C:\Temp\Viper\Viper.crf Процесс не может получить доступ к файлу, так как этот файл занят другим процессо" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : EanBarCode" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\C\C_COMMON\VIP\WORKARCHIVE\EanBarCode.vih" SourceLine="17" SourceColumn="25">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="4" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Тип &quot;TNAME&quot; уже определен в Випе" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\INC\dictypes.def" SourceLine="227" SourceColumn="33">
+					<CompileMessage MessageType="mtWarning" MessageText="Тип &quot;TNAME&quot; уже определен в Випе" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\INC\dictypes.def" SourceLine="228" SourceColumn="33">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="10" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iExtAttr" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\C\C_EXTCLASS\VIP\EXTATTR\ExtAttr.Vih" SourceLine="319" SourceColumn="23">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iExtAttr" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\C\C_EXTCLASS\VIP\EXTATTR\ExtAttr.Vih" SourceLine="356" SourceColumn="23">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="23" Column="1"/>
 						</StackIncludeList>
@@ -317,7 +319,7 @@
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="27" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : FeeSigners" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\F\F_COMMON\VIP\FEESIGNERS\FeeSigners.vih" SourceLine="260" SourceColumn="25">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : FeeSigners" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\F\F_COMMON\VIP\FEESIGNERS\FeeSigners.vih" SourceLine="272" SourceColumn="25">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="31" Column="1"/>
 						</StackIncludeList>
@@ -674,7 +676,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GAL" SourceLine="99" SourceColumn="87"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GA" SourceLine="101" SourceColumn="87"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="18.11.2023 11:00:36"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="23.08.2024 8:52:05"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
