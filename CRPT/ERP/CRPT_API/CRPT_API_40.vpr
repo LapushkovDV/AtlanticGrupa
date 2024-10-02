@@ -267,7 +267,7 @@
 		<FileList>
 			<File Name="CRPT_API.prj" PosX="58" PosY="97" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_PowerShell.vip" PosX="51" PosY="215" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="43" PosY="90" OpenEditor="True" Active="True"/>
+			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="38" PosY="70" OpenEditor="True" Active="True"/>
 			<File Name="Source\CRPT_API_Viewer_InfoTools.VIP" PosX="78" PosY="95" OpenEditor="True"/>
 			<File Name="..\..\..\_AggregateRes\alter\ALTER_DiadocExportDoc.vip" PosX="48" PosY="29" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_AggrDocsList.VIP" PosX="40" PosY="336" OpenEditor="True"/>

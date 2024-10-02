@@ -263,7 +263,7 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="frm.prj" PosX="69" PosY="81" OpenEditor="True" Active="True"/>
+			<File Name="frm.prj" PosX="76" PosY="61" OpenEditor="True" Active="True"/>
 			<File Name="torg12\metro_fld.frn" PosX="63" PosY="16" OpenEditor="True"/>
 			<File Name="s4fact\sign_vip.frn" PosX="30" PosY="14" OpenEditor="True"/>
 			<File Name="torg12\atl_fld.frn" PosX="45" PosY="11" OpenEditor="True"/>
@@ -280,10 +280,8 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="45527,3687043981" DateTimeCompile="0,000797916669398546" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="45549,3918541204" DateTimeCompile="0,000715324080374558" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtError" MessageText="шибка открытия (создания) компонента C:\Temp\Viper\Atlantis.res Процесс не может получить доступ к файлу, так как этот файл занят другим проце" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtError" MessageText="шибка открытия (создания) компонента C:\Temp\Viper\Viper.crf Процесс не может получить доступ к файлу, так как этот файл занят другим процессо" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : EanBarCode" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\C\C_COMMON\VIP\WORKARCHIVE\EanBarCode.vih" SourceLine="17" SourceColumn="25">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="4" Column="1"/>
@@ -676,7 +674,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GAL" SourceLine="99" SourceColumn="87"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GA" SourceLine="101" SourceColumn="87"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="23.08.2024 8:52:05"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="14.09.2024 9:25:18"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
