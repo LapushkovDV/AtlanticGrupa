@@ -1,0 +1,33 @@
+object 'L_TTNDOC::TTNDOC' : InterfaceWindow {
+  object SCTTNDOC01 : Screen {
+    // Информация: объект "'ExtAttr: BASEDOC,281474976710745879'" типа PanelInputLine не найден в базовой конфигурации!
+    object 'ExtAttr: BASEDOC,281474976710745879' : PanelInputLine {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 150;
+      StringsNull = 0;
+      HelpLine = 'Пуллинг. ФРЦ доставки';
+      FieldName = 'ExtAttr: BASEDOC,281474976710745879,5,1418,1,0,Пуллинг. ФРЦ доставки';
+      DefaultValue = '';
+      Origin_X = 136;
+      Origin_Y = 83;
+      Size_X = 248;
+      Size_Y = 14;
+      ButtonType = 16;
+    } // ExtAttr: BASEDOC,281474976710745879 : PanelInputLine
+    // Информация: объект "'LbExtAttr: BASEDOC,281474976710745879'" типа Label не найден в базовой конфигурации!
+    object 'LbExtAttr: BASEDOC,281474976710745879' : Label {
+      Original = False;
+      Title = 'ПУЛЛИНГ. ФРЦ';
+      Visible = True;
+      Hidden = False;
+      Origin_X = 14;
+      Origin_Y = 85;
+      Size_X = 77;
+      Size_Y = 14;
+    } // LbExtAttr: BASEDOC,281474976710745879 : Label
+  } // SCTTNDOC01 : Screen
+} // L_TTNDOC::TTNDOC : InterfaceWindow
+//-----------------------------------------------------------------------------

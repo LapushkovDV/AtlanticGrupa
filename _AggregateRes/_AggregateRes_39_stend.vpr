@@ -18,7 +18,7 @@
 			<VipFiles>
 				<IncludeList>
 					$[AtlPath]\Source\
-					..\..\..\..\Galaktika_stend\FRM\*
+					..\..\..\..\..\..\Galaktika_stend\FRM\*
 					..\inc\*
 					..\..\SourceGal\*
 					vih\*
@@ -262,16 +262,16 @@
 					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
 					<HwKeyTransport>1</HwKeyTransport>
 					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
-					<LicFileName>..\..\..\..\Galaktika_stend\Sup910\exe\License.lic</LicFileName>
+					<LicFileName>..\..\..\..\..\..\Galaktika_stend\Sup910\exe\License.lic</LicFileName>
 				</VipDatabase>
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="27" PosY="189" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="44" PosY="21" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\MercuryPRJ_Import.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="25" PosY="329" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="35" PosY="199" OpenEditor="True" Active="True"/>
+			<File Name="_AggregateRes.prj" PosX="23" PosY="222" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="52" PosY="29" OpenEditor="True"/>
+			<File Name="alter\Alter_TTNDOC.vip" PosX="5" PosY="17" OpenEditor="True"/>
+			<File Name="cnf\L_TTNDOC.cnf" PosX="59" PosY="7" OpenEditor="True" Active="True"/>
+			<File Name="cnf\L_SKLAD_RASHORD.cnf" PosX="1" PosY="1" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -305,7 +305,7 @@
 			<BreakPoint FileName="Source\EMAIL\ATL_EmailRun.Vip" Line="12"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45527,3684077546" DateTimeCompile="0,000828356482088566" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45621,9052120255" DateTimeCompile="0,000447696758783422" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\_AGGREGATERES\SOURCE\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" SourceLine="7" SourceColumn="1">
 						<StackIncludeList>
@@ -522,15 +522,12 @@
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_check.vip" SourceLine="38" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_user.vip" SourceLine="7" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_user.vip" SourceLine="46" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Не найден объект" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Не совпадает тип" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtError" MessageText="Ошибка интерпретации имени поля: &quot;ExtAttr: BASEDOC,281474976710745879&quot;" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\CNF\L_TTNDOC.cnf" SourceLine="24" SourceColumn="56"/>
+					<CompileMessage MessageType="mtError" MessageText="Ошибка интерпретации имени поля: &quot;ExtAttr: BASEDOC,281474976710745879&quot; объекта &quot;ExtAttr: BASEDOC,281474976710745879&quot;" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\CNF\L_TTNDOC.cnf" SourceLine="24" SourceColumn="56"/>
+					<CompileMessage MessageType="mtError" MessageText="Удален объект &quot;ExtAttr: BASEDOC,281474976710745879&quot;" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\CNF\L_TTNDOC.cnf" SourceLine="24" SourceColumn="56"/>
+					<CompileMessage MessageType="mtWarning" MessageText="нельзя редактировать указанное свойство Объект: 'ExtAttr: BASEDOC,281474976710745879'; свойство: 'FieldName'; значение: 'ExtAttr: BASEDOC,281474976710745879'" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\CNF\L_TTNDOC.cnf" SourceLine="24" SourceColumn="56"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="23.08.2024 8:51:42"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="25.11.2024 21:44:09"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

@@ -220,7 +220,7 @@ end;
 #make "cnf\L_PRICES_PRICELS.cnf"
 #make "cnf\L_SKLAD_PRIHORD.cnf"
 #make "cnf\L_SKLAD_RASHORD.cnf"
-
+#make "cnf\L_TTNDOC.cnf"
 /* пока уберем.. шняга при компиляции какая то
 
 #make "cnf\l_dogovor_dogovor.cnf"
