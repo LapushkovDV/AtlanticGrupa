@@ -267,9 +267,11 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="32" PosY="185" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="44" PosY="21" OpenEditor="True" Active="True"/>
-			<File Name="Source\MercuryPRJ\MercuryPRJ_Import.vip" PosX="29" PosY="331" OpenEditor="True" Active="True"/>
+			<File Name="_AggregateRes.prj" PosX="27" PosY="189" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="44" PosY="21" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\MercuryPRJ_Import.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="25" PosY="329" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="35" PosY="199" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">

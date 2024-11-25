@@ -58,6 +58,7 @@
       else {
      //   message('comp(parseWord(str, 5, ;)) = '+comp(parseWord(str, 5, ';')));
         var _stsAddStr : string = '';
+        var _stsAddStr2 : string = '';
          if (ieHead.subTipDoc = 201) {
          //    message('(ieHead.subTipDoc = 201');
             baseDocnrec :=  comp(parseWord(str, 5, ';'));
@@ -72,6 +73,21 @@
             }
           //  message(_stsAddStr);
 
+        // пуллинг
+
+            _stsAddStr2 := ';' + if(StepDocSTS.DOTGR <> 0 ,datetostr(StepDocSTS.DOTGR,'YYYYMMDD'),'');
+            _stsAddStr2 := _stsAddStr2 + ';';
+            if getfirst ttndoc_sts where ((1102 == ttndoc_sts.wtable and baseDocnrec == ttndoc_sts.cDoc)) = tsOK {
+             if getfirst Shipment where ((ttndoc_sts.CSHIPMENT == Shipment.nrec)) = tsOK {
+                _stsAddStr2 := _stsAddStr2 + Shipment.NAME;
+             }
+            }
+            _stsAddStr2 := _stsAddStr2 + ';';
+
+            var _cOrg : comp = cogetattr(coBaseDoc, baseDocnrec,'Пуллинг. ФРЦ доставки');
+             if getfirst katorg_pulling where ((_cOrg == katorg_pulling.nrec)) = tsOK {
+              _stsAddStr2 := _stsAddStr2 + katorg_pulling.name + ', ' + katorg_pulling.ADDR
+             }
          }
         if (ieHead.subTipDoc = 600) { //накладная на внутреннее перемещение
           code := comp(parseWord(str, 5, ';')); //nrec накладной
@@ -82,7 +98,11 @@
                 str := replace(str, tmp+ ';', tmp+ string(katpodr.corg)+ ';');
               }
         }
-        fDst.writeLn(str+ ';'+ SHORTSTRTOWIN(getOrderNo(ansi2oem(str)))+_stsAddStr); //шапка - без изменений
+
+
+        var widestr : widestring = str+ ';'+ SHORTSTRTOWIN(getOrderNo(ansi2oem(str)))+_stsAddStr + _stsAddStr2;
+        //fDst.writeLn(str+ ';'+ SHORTSTRTOWIN(getOrderNo(ansi2oem(str)))+_stsAddStr); //шапка - без изменений
+        fDst.writeLn(widestr);
         nTmc++;
       }
     }

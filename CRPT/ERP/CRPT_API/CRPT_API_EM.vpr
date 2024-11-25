@@ -271,11 +271,13 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="CRPT_API.prj" PosX="19" PosY="72" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell.vip" PosX="39" PosY="230" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell.vip" PosX="25" PosY="243" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_PowerShell_IdentifyToolsInfo.Vpp" PosX="34" PosY="261" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="45" PosY="17" OpenEditor="True"/>
 			<File Name="Source\CRPT_PRJ_tune.vip" PosX="32" PosY="38" OpenEditor="True"/>
-			<File Name="..\..\..\_AggregateRes\alter\ALTER_DiadocExportDoc.vip" PosX="53" PosY="95" OpenEditor="True" Active="True"/>
+			<File Name="..\..\..\_AggregateRes\alter\ALTER_DiadocExportDoc.vip" PosX="53" PosY="95" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell_isExistCis.Vpp" PosX="11" PosY="97" OpenEditor="True" Active="True"/>
+			<File Name="Source\CRPT_API_PowerShellPost.VIP" PosX="1" PosY="119" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="CRPT_API.prj" Priority="0">

@@ -160,7 +160,9 @@ interface expImpScript_droga;
   , SpSoprWasInGroupPos
   , SpStepWasInGroupPos
   , StepDoc StepDocSTS
-
+  , ttndoc ttndoc_sts
+  , katorg katorg_pulling
+  , Shipment
   , ATL_PickingRep_HEAD
   , ATL_PickingRep_Spec
 
