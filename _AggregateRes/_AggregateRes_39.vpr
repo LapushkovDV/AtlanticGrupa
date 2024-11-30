@@ -18,7 +18,7 @@
 			<VipFiles>
 				<IncludeList>
 					$[AtlPath]\Source\
-					..\..\..\..\..\FRM\SRC\*
+					..\..\..\..\FRM\SRC\*
 					..\inc\*
 					..\..\SourceGal\*
 					vih\*
@@ -262,18 +262,19 @@
 					<SqlServerParameters>ncacn_ip_tcp:10.2.1.151[1997]</SqlServerParameters>
 					<HwKeyTransport>1</HwKeyTransport>
 					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
-					<LicFileName>..\..\..\..\..\..\Sup910\exe\License.lic</LicFileName>
+					<LicFileName>..\..\..\..\Sup910\exe\License.lic</LicFileName>
 				</VipDatabase>
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="22" PosY="122" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="17" PosY="223" OpenEditor="True"/>
 			<File Name="alter\Alter_iDiaDocSend.vip" PosX="49" PosY="56" OpenEditor="True"/>
 			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="78" PosY="171" OpenEditor="True"/>
 			<File Name="alter\ALTER_ON_NSCHFDOPPR.vip" PosX="88" PosY="36" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="57" PosY="45" OpenEditor="True"/>
 			<File Name="alter\alter_l_basedoc_vschet.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="cnf\L_BASEDOC_VSCHET.cnf" PosX="50" PosY="340" OpenEditor="True" Active="True"/>
+			<File Name="cnf\L_BASEDOC_VSCHET.cnf" PosX="104" PosY="298" OpenEditor="True"/>
+			<File Name="cnf\L_TTNDOC.cnf" PosX="21" PosY="11" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">

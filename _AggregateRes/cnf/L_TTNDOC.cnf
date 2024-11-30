@@ -8,8 +8,8 @@ object 'L_TTNDOC::TTNDOC' : InterfaceWindow {
       Protect = True;
       StatusCtx = 150;
       StringsNull = 0;
-      HelpLine = 'Пуллинг. ФРЦ доставки';
-      FieldName = 'ExtAttr: BASEDOC,281474976710745879,5,1418,1,0,Пуллинг. ФРЦ доставки';
+      HelpLine = 'Пулинг. ФРЦ доставки';
+      FieldName = 'ExtAttr: BASEDOC,281474976710745879,5,1418,1,0,Пулинг. ФРЦ доставки';
       DefaultValue = '';
       Origin_X = 136;
       Origin_Y = 83;
@@ -20,7 +20,7 @@ object 'L_TTNDOC::TTNDOC' : InterfaceWindow {
     // Информация: объект "'LbExtAttr: BASEDOC,281474976710745879'" типа Label не найден в базовой конфигурации!
     object 'LbExtAttr: BASEDOC,281474976710745879' : Label {
       Original = False;
-      Title = 'ПУЛЛИНГ. ФРЦ';
+      Title = 'ПУЛИНГ. ФРЦ';
       Visible = True;
       Hidden = False;
       Origin_X = 14;
