@@ -267,13 +267,15 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="23" PosY="151" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="1" PosY="177" OpenEditor="True"/>
 			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="44" PosY="21" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\MercuryPRJ_Import.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\MercuryPRJ_Import.vip" PosX="11" PosY="223" OpenEditor="True" Active="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="25" PosY="329" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="35" PosY="199" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="43" PosY="277" OpenEditor="True"/>
 			<File Name="alter\Alter_TTNDOC.vip" PosX="11" PosY="16" OpenEditor="True"/>
-			<File Name="..\..\erp91\CompSrc\L\L_TTNdoc\vip\ttndoc_release.vip" PosX="44" PosY="3762" OpenEditor="True" Active="True"/>
+			<File Name="..\..\erp91\CompSrc\L\L_TTNdoc\vip\ttndoc_release.vip" PosX="121" PosY="3767" OpenEditor="True"/>
+			<File Name="alter\alter_l_basedoc_vschet.vip" PosX="46" PosY="131" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp" PosX="25" PosY="7" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -300,7 +302,7 @@
 			<Marker FileName="Source\loadorder\LoadOrder_CRPT.vip" Caption="Нумерованная закладка 1" Line="133" NumIndex="1" MarkerType="mtNumBookmark" Comment="mylog()"/>
 			<Marker FileName="alter\Alter_TTNDOC.vip" Caption="Нумерованная закладка 1" Line="105" NumIndex="1" MarkerType="mtNumBookmark" Comment="var _org : comp = cogetattr(coBaseDoc, baseDocnrec,'Пуллинг. ФРЦ доставки') (fieldname = pullingOrg)"/>
 			<Marker FileName="Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="150" NumIndex="1" MarkerType="mtNumBookmark" Comment="if _line = 1 then InsertTmpHead(_line,_filename);"/>
-			<Marker FileName="Source\MercuryPRJ\MercuryPRJ_Import.vip" Caption="Нумерованная закладка 1" Line="252" NumIndex="1" MarkerType="mtNumBookmark" Comment="if _ExpImpScript_Droga.doc2xml(31);"/>
+			<Marker FileName="Source\MercuryPRJ\MercuryPRJ_Import.vip" Caption="Нумерованная закладка 1" Line="265" NumIndex="1" MarkerType="mtNumBookmark" Comment="if _ExpImpScript_Droga.doc2xml(31);"/>
 			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="163" NumIndex="1" MarkerType="mtNumBookmark"/>
 		</MarkerList>
 		<BreakPointList>

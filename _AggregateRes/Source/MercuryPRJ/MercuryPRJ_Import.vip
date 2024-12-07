@@ -100,6 +100,7 @@ function getValueByNumberCol(_line: string; _col : word): string;
 }
 procedure InsertTmpHead(_line,_filename: string);
 {
+   mylog(' _filename = ' + _filename);
    clearbuffer(tntmpMercury_Head);
   tmpMercury_Head.DO_Num    := getValueByNumberCol(_line,coFileH_Col_DO_Num);
   tmpMercury_Head.Relevant  := getValueByNumberCol(_line,coFileH_Col_Relevant);
@@ -114,6 +115,7 @@ procedure InsertTmpHead(_line,_filename: string);
       set tmpMercury_Head.isOK := false;
       set tmpMercury_Head.ErrDescr := tmpMercury_Head.ErrDescr + '|'+ ' ERROR!! не нашли накладную к ДО "' +tmpMercury_Head.DO_Num+ '"' ;
      update current tmpMercury_Head;
+    mylog(' ERROR!! ' + tmpMercury_Head.DO_Num + '+не нашли накладную к ДО')  ;
   }
 }
 procedure InsertTmpSpec(_line : string);
@@ -145,14 +147,15 @@ procedure InsertTmpSpec(_line : string);
       set tmpMercury_SP.ErrDescr := tmpMercury_SP.ErrDescr + '|'+ ' ERROR!! пустой SAP_CODE' ;
       }
    if tmpMercury_SP.CNT = 0       {
-       mylog(' ERROR!! нулевое количество');
+
+       mylog(' ERROR!! нулевое количество ');
        set tmpMercury_Head.isOK := false;
        set tmpMercury_SP.ErrDescr := tmpMercury_SP.ErrDescr + '|'+ ' ERROR!! нулевое количество';
       }
    if tmpMercury_SP.cMC = 0h and tmpMercury_SP.SAP_CODE  <> ''  {
-       mylog(' ERROR!! не найдена МЦ по SAP_CODE = "'+tmpMercury_SP.SAP_CODE+'"');
+       mylog(' ERROR!! не найдена МЦ по SAP_CODE = "'+tmpMercury_SP.SAP_CODE+'" ');
        set tmpMercury_Head.isOK := false;
-       set tmpMercury_SP.ErrDescr := tmpMercury_SP.ErrDescr + '|'+ ' ERROR!! не найдена МЦ по SAP_CODE = "'+tmpMercury_SP.SAP_CODE+'"';
+       set tmpMercury_SP.ErrDescr := tmpMercury_SP.ErrDescr + '|'+ ' ERROR!! не найдена МЦ по SAP_CODE = "'+tmpMercury_SP.SAP_CODE+'" ';
      }
     update current tmpMercury_Head;
     update current tmpMercury_SP;
@@ -170,11 +173,13 @@ procedure CheckFileFillValues(_FilePath, _filename : string);
  if existFile(_FilePath+_filename) { //try discover file
         _try {
           fSrc.openFile(_FilePath + _filename, stOpenRead);
+          mylog('***start _filename = ' + _filename);
           while not fSrc.eof() do {
             fSrc.readLn(_fileLine);
             _fileLine := replace( replace(_fileLine,';;','; ;'),';;','; ;'); //крутит крушу у функции extractdelimitedword иначе 0_0
             InsertTmpTables(_fileLine, _filename);
            }
+          mylog('***end _filename = ' + _filename);
         }
         _finally {
           fSrc.close;
@@ -208,6 +213,14 @@ procedure RasprPalletesBySpSopr;
      Insert Current ATL_MERCURY_HEAD;
       _loop tmpMercury_sp where ((tmpMercury_Head.nrec == tmpMercury_sp.cHead))
        {
+         if getfirst SpSopr where ((tmpMercury_Head.cSopr == spsopr.cSopr
+                                    and tmpMercury_sp.cmc == spsopr.cmcusl)) <> tsOK {
+             ATL_MERCURY_Spec.buffer   := type$ATL_MERCURY_Spec(tmpMercury_sp.buffer);
+             ATL_MERCURY_Spec.nrec     := 0h;
+             ATL_MERCURY_Spec.cHead    := ATL_MERCURY_HEAD.nrec;
+             ATL_MERCURY_Spec.ERRDESCR := ATL_MERCURY_Spec.ERRDESCR + '| нет в позиции накладной';
+            Insert Current ATL_MERCURY_Spec;
+         }
          _loop SpSopr where ((tmpMercury_Head.cSopr == spsopr.cSopr
                                     and tmpMercury_sp.cmc == spsopr.cmcusl))
            {
