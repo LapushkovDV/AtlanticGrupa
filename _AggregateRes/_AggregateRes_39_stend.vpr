@@ -267,15 +267,16 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="1" PosY="177" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="44" PosY="21" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\MercuryPRJ_Import.vip" PosX="11" PosY="223" OpenEditor="True" Active="True"/>
+			<File Name="_AggregateRes.prj" PosX="26" PosY="111" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="44" PosY="21" OpenEditor="True" Active="True"/>
+			<File Name="Source\MercuryPRJ\MercuryPRJ_Import.vip" PosX="45" PosY="176" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="25" PosY="329" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="43" PosY="277" OpenEditor="True"/>
 			<File Name="alter\Alter_TTNDOC.vip" PosX="11" PosY="16" OpenEditor="True"/>
 			<File Name="..\..\erp91\CompSrc\L\L_TTNdoc\vip\ttndoc_release.vip" PosX="121" PosY="3767" OpenEditor="True"/>
 			<File Name="alter\alter_l_basedoc_vschet.vip" PosX="46" PosY="131" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp" PosX="25" PosY="7" OpenEditor="True"/>
+			<File Name="Source\My_iDiadocSend.vip" PosX="1" PosY="1" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">

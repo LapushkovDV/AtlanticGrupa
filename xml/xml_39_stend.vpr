@@ -263,12 +263,12 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="xml.prj" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\expImpScript.vip" PosX="26" PosY="164" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_func.vip" PosX="87" PosY="1177" OpenEditor="True"/>
-			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="48" PosY="370" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_imp.vip" PosX="150" PosY="980" OpenEditor="True"/>
+			<File Name="ExpImpScript\expImpScript.vip" PosX="15" PosY="118" OpenEditor="True"/>
+			<File Name="ExpImpScript\ecod_func.vip" PosX="120" PosY="26" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="ExpImpScript\ecod_imp.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="ExpImpScript\common_func.vpp" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="ExpImpScript\sts_doc.vpp" PosX="39" PosY="85" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\sts_doc.vpp" PosX="139" PosY="58" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_user.vip" PosX="28" PosY="18" OpenEditor="True"/>
 			<File Name="..\_AggregateRes\Source\MercuryPRJ\MercuryPRJ_Import.vip" PosX="1" PosY="1" OpenEditor="True"/>
 		</FileList>
@@ -460,12 +460,12 @@
 			<Marker FileName="ExpImpScript\common_func.vpp" Caption="Нумерованная закладка 1" Line="65" NumIndex="1" MarkerType="mtNumBookmark" Comment="qq.setParam('attribute', coGetTune('EI.Ecod.AttrGLN'));"/>
 			<Marker FileName="ExpImpScript\ecod_imp.vip" Caption="Нумерованная закладка 2" Line="790" NumIndex="2" MarkerType="mtNumBookmark" Comment="GetKoeffForUpakovkaByGLNandCOdeMC(buyerILN, _CodeMCByPost"/>
 			<Marker FileName="ExpImpScript\ecod_imp.vip" Caption="Нумерованная закладка 1" Line="589" NumIndex="1" MarkerType="mtNumBookmark" Comment="and upper(koe.name) = 'УПАКОВКА'"/>
-			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 2" Line="509" NumIndex="2" MarkerType="mtNumBookmark"/>
-			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="413" NumIndex="1" MarkerType="mtNumBookmark" Comment="createEcodCell(ChildProductsExpiry, 'ProductQuantity',);"/>
-			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 1" Line="1228" NumIndex="1" MarkerType="mtNumBookmark" Comment="}"/>
-			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 2" Line="307" NumIndex="2" MarkerType="mtNumBookmark" Comment="createEcodCell(childOne, 'PackageWeight','1.000');"/>
-			<Marker FileName="EXPIMPSCRIPT\ecod_func.vip" Caption="Нумерованная закладка 3" Line="1168" NumIndex="3" MarkerType="mtNumBookmark" Comment="makePriCatHeader;"/>
 			<Marker FileName="xml.prj" Caption="Нумерованная закладка 1" Line="30" NumIndex="1" MarkerType="mtNumBookmark" Comment="coAttr_EDIInvoicLen  = 'EDI-Invoic-Len';"/>
+			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="294" NumIndex="1" MarkerType="mtNumBookmark" Comment="createEcodCell(ChildTwo, 'ItemDescription', katmc.name);//'&lt;![CDATA['"/>
+			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 2" Line="515" NumIndex="2" MarkerType="mtNumBookmark"/>
+			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 2" Line="605" NumIndex="2" MarkerType="mtNumBookmark" Comment="createEcodCell(childOne, 'TaxID', orgImp.unn);"/>
+			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 1" Line="22" NumIndex="1" MarkerType="mtNumBookmark" Comment="5074053542"/>
+			<Marker FileName="EXPIMPSCRIPT\ecod_func.vip" Caption="Нумерованная закладка 3" Line="1241" NumIndex="3" MarkerType="mtNumBookmark" Comment="makePriCatHeader;"/>
 		</MarkerList>
 	</ProjectManager>
 </Viper>
