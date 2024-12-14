@@ -1,6 +1,27 @@
 #include common_func.vpp
 
 //write string to log-file
+function isneedCData(_iln : string) : boolean; {
+  // лично мое мнение - делать эту CDATA не надо вообще было все и так работает, у нас же нет спец символов в названиях
+  result := false;
+  if _iln = '4680555944415' {  //КиБ Абсолют ООО
+    result := true;
+    exit;
+  }
+  if _iln = '4680555944422' { // КиБ Прометей Новоселки
+    result := true;
+    exit;
+  }
+  if _iln = '4680555943838' { // КиБ Прометей ООО
+    result := true;
+    exit;
+  }
+  if _iln = '' { // оазис - огонь аналитик! если прелдыдущие я нашел по наименованию... то этого вообще нет в БД ну и х с ним
+    result := true;
+    exit;
+  }
+}
+
 procedure writelog(logStr: string; isLine: byte);
 var log_size: longint;
 {
@@ -137,7 +158,7 @@ var node, childOne: longint;
 
     createEcodCell(childOne, 'ILN', buyerILN);
 
-    createEcodCell(childOne, 'Name', trim(replace(orgImp.name, '  ', ''))); //'<![CDATA['+
+    createEcodCell(childOne, 'Name', trim(replace(orgImp.name, '  ', ''))); //'<!![CDATA['+
     releaseDump(childOne);
   }
   if (getFirst fastfirstrow orgImp where ((coGetTune('myOrg') == nrec)) = tsOk) {
@@ -185,7 +206,11 @@ var node, childOne: longint;
     createEcodCell(hPartDoc, 'BuyerOrderDate', datetostr(stepDoc.dizvMAX, ieHead.dFormat));
     // BuyerOrderTime - опциально и не будем указывать
 
-  if katorg_1.unn = '2310031475' { //тандер
+  if   katorg_1.unn = '2310031475' //тандер
+    or katorg_1.unn = '5074053542' // КиБ Прометей ООО 20241214 Владислав Юрченко
+    //or katorg_1.unn = '' // 20241214 Владислав Юрченко
+    //or katorg_1.unn = '' // 20241214 Владислав Юрченко
+    {
       if getfirst Sf_katsopr = tsOK {
         createEcodCell(hPartDoc, 'InvoiceNumber',  Sf_katsopr.num);
         createEcodCell(hPartDoc, 'InvoiceDate'  ,  datetostr(Sf_katsopr.dFact,'YYYY-MM-DD'));
@@ -556,13 +581,16 @@ var node, childOne, childTwo: longInt;
       createEcodCell(childOne, 'ILN', deliveryILN);
       createEcodCell(childOne, 'TaxID', orgImp.unn);
       createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
+
       createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
       if (getFirst fastfirstRow addressN != tsOk) { //адрес доставки
         writelog('--- WARNING: delivery point has no address! Used buyer address', 1);
         if (getFirst fastfirstrow orgImp where ((katsopr.corg == nrec)) != tsOk) {}
       }
+
       createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
       createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
+
       createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
       createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
       createEcodCell(childOne, 'Country', 'RU');
@@ -576,9 +604,15 @@ var node, childOne, childTwo: longInt;
       createEcodCell(childOne, 'ILN', buyerILN);
       createEcodCell(childOne, 'TaxID', orgImp.unn);
       createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
-      createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(replace(orgImp.name, '  ', ''))); //'<![CDATA['+
-      createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);//'<![CDATA['+
-      createEcodCell(childOne, 'CityName', sterr.sname); //'<![CDATA['+ orgImp.ccity->name
+        createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(replace(orgImp.name, '  ', ''))); //'<!![CDATA['+
+      if not isneedCData(buyerILN) then {
+        createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);//'<!![CDATA['+
+        createEcodCell(childOne, 'CityName', sterr.sname); //'<!![CDATA['+ orgImp.ccity->name
+       } else {
+        createEcodCell(childOne, 'StreetAndNumber', '![CDATA[' + addressN.saddress1 + ']]');//'<!![CDATA['+
+        createEcodCell(childOne, 'CityName', '![CDATA[' + sterr.sname + ']]'); //'<!![CDATA['+ orgImp.ccity->name
+       }
+
       createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
       createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
       createEcodCell(childOne, 'Country', 'RU');
@@ -595,12 +629,23 @@ var node, childOne, childTwo: longInt;
     createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
     if (doc_type = 31 and CodeByBuyer <> '' )
       createEcodCell(childOne, 'CodeByBuyer', CodeByBuyer);
-    createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
+    if not isneedCData(buyerILN) then {
+      createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
+     } else {
+      createEcodCell(childOne, 'Name', '![CDATA[' + trim(orgImp.tiporg) + ' ' + trim(orgImp.name) + ']]');
+     }
+
     createEcodCell(childOne, 'ManagingPerson', 'Лалетина Елена');//sGetTune('BOSS')
     createEcodCell(childOne, 'ManagingPersonFather', 'Викторовна');//'-'
     if (doc_type = 31)
       createEcodCell(childOne, 'ContactFunction', 'Менеджер по логистике');//'Генеральный директор'
-    createEcodCell(childOne, 'AccountingContact', sGetTune('MAINBUH'));
+
+    if not isneedCData(buyerILN) then {
+      createEcodCell(childOne, 'AccountingContact', sGetTune('MAINBUH'));
+     } else {
+      createEcodCell(childOne, 'AccountingContact', '![CDATA[' + sGetTune('MAINBUH') + ']]');
+     }
+
     if (doc_type = 31) {
       // 4607164999995 - AO Tander
 /*
@@ -620,8 +665,13 @@ var node, childOne, childTwo: longInt;
       createEcodCell(childOne, 'AuthorityContact', 'Доверенность');//'Устав'
       createEcodCell(childOne, 'AcceptionContact', 'б/н от 13.07.2016');
     }
-    createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
-    createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
+    if not isneedCData(buyerILN) then {
+      createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
+      createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
+      } else {
+      createEcodCell(childOne, 'StreetAndNumber', '![CDATA[' + addressN.saddress1 + ']]');
+      createEcodCell(childOne, 'CityName', '![CDATA[' + sterr.sname +']]'); //orgImp.ccity->name
+     }
     createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
     createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
     createEcodCell(childOne, 'Country', 'RU');
@@ -637,13 +687,24 @@ var node, childOne, childTwo: longInt;
       createEcodCell(childOne, 'TaxID', orgImp.unn);
       createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
     //}
-    createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
+
+    if not isneedCData(buyerILN) then {
+      createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
+     } else {
+      createEcodCell(childOne, 'Name',  '![CDATA['+trim(orgImp.tiporg) + ' ' + trim(orgImp.name)+ ']]');
+     }
+
     if (getFirst fastfirstRow addressN != tsOk) { //адрес доставки
       writelog('--- WARNING: delivery point has no address! Used buyer address', 1);
       if (getFirst fastfirstrow orgImp where ((katsopr.corg == nrec)) != tsOk) {}
     }
-    createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
-    createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
+    if not isneedCData(buyerILN) then {
+      createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
+      createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
+     } else {
+      createEcodCell(childOne, 'StreetAndNumber', '![CDATA['+addressN.saddress1 + ']]');
+      createEcodCell(childOne, 'CityName', '![CDATA['+sterr.sname+ ']]'); //orgImp.ccity->name
+     }
     createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
     createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
     createEcodCell(childOne, 'Country', 'RU');
@@ -658,9 +719,9 @@ var node, childOne, childTwo: longInt;
       createEcodCell(childOne, 'ILN', buyerILN);
       createEcodCell(childOne, 'TaxID', orgImp.unn);
       createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
-      createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(replace(orgImp.name, '  ', ''))); //'<![CDATA['+
-      createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);//'<![CDATA['+
-      createEcodCell(childOne, 'CityName', sterr.sname); //'<![CDATA['+ orgImp.ccity->name
+      createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(replace(orgImp.name, '  ', ''))); //'<!![CDATA['+
+      createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);//'<!![CDATA['+
+      createEcodCell(childOne, 'CityName', sterr.sname); //'<!![CDATA['+ orgImp.ccity->name
       createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
       createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
       createEcodCell(childOne, 'Country', 'RU');
@@ -677,7 +738,12 @@ var node, childOne, childTwo: longInt;
       createEcodCell(childOne, 'TaxID', orgImp.unn);
       createEcodCell(childOne, 'UtilizationRegisterNumber', orgImp.kodPlatNDS);
     //}
-    createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
+    if not isneedCData(buyerILN) then {
+       createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(orgImp.name));
+     } else {
+       createEcodCell(childOne, 'Name', '![CDATA['+trim(orgImp.tiporg) + ' ' + trim(orgImp.name) + ']]');
+     }
+
 
 #ifdef _NewTypeInvoice_2020_
     if _needConsignor
@@ -686,9 +752,14 @@ var node, childOne, childTwo: longInt;
       createEcodCell(childOne, 'ManagingPersonFather','Викторовна');
     }
 #end
+    if not isneedCData(buyerILN) then {
+      createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
+      createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
+     } else {
+      createEcodCell(childOne, 'StreetAndNumber', '![CDATA['+addressN.saddress1+']]');
+      createEcodCell(childOne, 'CityName', '![CDATA['+sterr.sname+']]'); //orgImp.ccity->name
+     }
 
-    createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
-    createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
     createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
     createEcodCell(childOne, 'PostalCode', addressN.spostInd); //orgImp.indexK
     createEcodCell(childOne, 'Country', 'RU');
