@@ -208,8 +208,8 @@ var node, childOne: longint;
 
   if   katorg_1.unn = '2310031475' //тандер
     or katorg_1.unn = '5074053542' // КиБ Прометей ООО 20241214 Владислав Юрченко
-    //or katorg_1.unn = '' // 20241214 Владислав Юрченко
-    //or katorg_1.unn = '' // 20241214 Владислав Юрченко
+    or katorg_1.unn = '0274192135' // КиБ Оазис ООО 20241214 Владислав Юрченко
+    or katorg_1.unn = '7451279527' // КиБ Абсолют ООО 20241214 Владислав Юрченко
     {
       if getfirst Sf_katsopr = tsOK {
         createEcodCell(hPartDoc, 'InvoiceNumber',  Sf_katsopr.num);
