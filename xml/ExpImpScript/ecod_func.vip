@@ -590,6 +590,7 @@ var node, childOne, childTwo: longInt;
       }
 
       createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
+
       createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
 
       createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
@@ -608,9 +609,17 @@ var node, childOne, childTwo: longInt;
         createEcodCell(childOne, 'Name', trim(orgImp.tiporg) + ' ' + trim(replace(orgImp.name, '  ', ''))); //'<!![CDATA['+
       if not isneedCData(buyerILN) then {
         createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);//'<!![CDATA['+
+      if getfirst sterrup = tsOK {
+        createEcodCell(childOne, 'District', sterrup.sname); //выводим район orgImp.ccity->name
+      }
+
         createEcodCell(childOne, 'CityName', sterr.sname); //'<!![CDATA['+ orgImp.ccity->name
        } else {
         createEcodCell(childOne, 'StreetAndNumber', '![CDATA[' + addressN.saddress1 + ']]');//'<!![CDATA['+
+      if getfirst sterrup = tsOK {
+        createEcodCell(childOne, 'District', '![CDATA[' +sterrup.sname +']]'); //выводим район orgImp.ccity->name
+      }
+
         createEcodCell(childOne, 'CityName', '![CDATA[' + sterr.sname + ']]'); //'<!![CDATA['+ orgImp.ccity->name
        }
 
@@ -668,9 +677,17 @@ var node, childOne, childTwo: longInt;
     }
     if not isneedCData(buyerILN) then {
       createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
+      if getfirst sterrup = tsOK {
+        createEcodCell(childOne, 'District', sterrup.sname); //выводим район orgImp.ccity->name
+      }
+
       createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
       } else {
       createEcodCell(childOne, 'StreetAndNumber', '![CDATA[' + addressN.saddress1 + ']]');
+      if getfirst sterrup = tsOK {
+        createEcodCell(childOne, 'District', '![CDATA[' +sterrup.sname + ']]'); //выводим район orgImp.ccity->name
+      }
+
       createEcodCell(childOne, 'CityName', '![CDATA[' + sterr.sname +']]'); //orgImp.ccity->name
      }
     createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
@@ -701,9 +718,15 @@ var node, childOne, childTwo: longInt;
     }
     if not isneedCData(buyerILN) then {
       createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
+      if getfirst sterrup = tsOK {
+        createEcodCell(childOne, 'District', sterrup.sname); //выводим район orgImp.ccity->name
+      }
       createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
      } else {
       createEcodCell(childOne, 'StreetAndNumber', '![CDATA['+addressN.saddress1 + ']]');
+      if getfirst sterrup = tsOK {
+        createEcodCell(childOne, 'District', '![CDATA['+sterrup.sname + ']]'); //выводим район orgImp.ccity->name
+      }
       createEcodCell(childOne, 'CityName', '![CDATA['+sterr.sname+ ']]'); //orgImp.ccity->name
      }
     createEcodCell(childOne, 'ProvinceCode', substr(sterr.sgni_code, 1, 2));
@@ -755,9 +778,17 @@ var node, childOne, childTwo: longInt;
 #end
     if not isneedCData(buyerILN) then {
       createEcodCell(childOne, 'StreetAndNumber', addressN.saddress1);
+      if getfirst sterrup = tsOK {
+        createEcodCell(childOne, 'District', sterrup.sname); //выводим район orgImp.ccity->name
+      }
+
       createEcodCell(childOne, 'CityName', sterr.sname); //orgImp.ccity->name
      } else {
       createEcodCell(childOne, 'StreetAndNumber', '![CDATA['+addressN.saddress1+']]');
+      if getfirst sterrup = tsOK {
+        createEcodCell(childOne, 'District', '![CDATA['+sterrup.sname + ']]'); //выводим район orgImp.ccity->name
+      }
+
       createEcodCell(childOne, 'CityName', '![CDATA['+sterr.sname+']]'); //orgImp.ccity->name
      }
 

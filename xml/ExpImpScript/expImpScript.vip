@@ -128,6 +128,7 @@ interface expImpScript_droga;
   , katOrg orgImp
   , addressN
   , sterr
+  , sterr sterrup
   , basedoc
   , stepdoc
   , spstep
@@ -198,6 +199,8 @@ interface expImpScript_droga;
 
     and if(orgImp.cjuridicaladdr > 0, orgImp.cjuridicaladdr, orgImp.cpostaddr) == addressN.nrec
     and addressN.csterr == sterr.nrec
+    and sterr.CPARENT == sterrup.nrec
+    and (sterrup.wtype = 3) //район
 
     and dogovor.cdogovor == contract.nrec
     and dogovor.tidk == spdocs.tidk
