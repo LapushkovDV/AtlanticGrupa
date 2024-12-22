@@ -123,6 +123,22 @@ object 'L_BASEDOC::VSCHET' : InterfaceWindow {
       ButtonType = 0;
     } // TOORG.NAME : Column
 
+    object 'TOORG.SHORTNAME' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      Skip = True;
+      StatusCtx = 0;
+      Title = 'Грузополучатель альтер. наимен';
+      HelpLine = 'Грузополучатель альтернативное наименование';
+      FieldName = 'TOORG.SHORTNAME';
+      Index = 10;
+      DefaultWidth = 26;
+      ButtonType = 0;
+    } // TOORG.NAME : Column
+
+
     object 'MaravtName' : Column {
       Original = False;
       Visible = True;
@@ -132,7 +148,7 @@ object 'L_BASEDOC::VSCHET' : InterfaceWindow {
       Title = 'Маршрут';
       HelpLine = 'Маршрут';
       FieldName = 'MaravtName';
-      Index = 10;
+      Index = 11;
       DefaultWidth = 26;
       ButtonType = 0;
     } // GetNameMaravt(ttndoc1.cMarAvt) : Column
@@ -146,7 +162,7 @@ object 'L_BASEDOC::VSCHET' : InterfaceWindow {
       Title = 'EDI: Order';
       HelpLine = 'EDI: Order';
       FieldName = 'STEPDOC.NKONT';
-      Index = 11;
+      Index = 12;
       DefaultWidth = 12;
     } // STEPDOC.NKONT : Column
 
@@ -159,7 +175,7 @@ object 'L_BASEDOC::VSCHET' : InterfaceWindow {
       Title = 'EDI: RecAdv';
       HelpLine = 'EDI: RecAdv';
       FieldName = 'STEPDOC.KONTPRI';
-      Index = 12;
+      Index = 13;
       DefaultWidth = 10;
       ButtonType = 0;
       MaxLen = 80;
@@ -176,7 +192,7 @@ object 'L_BASEDOC::VSCHET' : InterfaceWindow {
       HelpLine = 'Номер'^M+
                  'для Склада';
       FieldName = 'string(basedoc.nrec)';
-      Index = 15;
+      Index = 14;
       DefaultWidth = 12;
       ButtonType = 0;
     } // string(basedoc.nrec) : Column
@@ -191,7 +207,7 @@ object 'L_BASEDOC::VSCHET' : InterfaceWindow {
               'cписания';
       HelpLine = 'Дата Списания';
       FieldName = 'KATSOPR.DOPR';
-      Index = 20;
+      Index = 15;
       DefaultWidth = 7;
       ButtonType = 256;
       MaxLen = 10;

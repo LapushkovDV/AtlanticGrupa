@@ -264,7 +264,7 @@
 		<FileList>
 			<File Name="xml.prj" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="ExpImpScript\expImpScript.vip" PosX="15" PosY="118" OpenEditor="True"/>
-			<File Name="ExpImpScript\ecod_func.vip" PosX="120" PosY="26" OpenEditor="True" Active="True"/>
+			<File Name="ExpImpScript\ecod_func.vip" PosX="48" PosY="623" OpenEditor="True" Active="True"/>
 			<File Name="ExpImpScript\MakeLineProc.vpp" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="ExpImpScript\ecod_imp.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="ExpImpScript\common_func.vpp" PosX="1" PosY="1" OpenEditor="True"/>
@@ -454,18 +454,18 @@
 			</CompileMessenger>
 		</CompileMessengerList>
 		<MarkerList>
-			<Marker FileName="ExpImpScript\expImpScript.vip" Caption="Нумерованная закладка 1" Line="235" NumIndex="1" MarkerType="mtNumBookmark" Comment="logstrtofile('ExportXML.log',DateToStr(Cur_date,'YYYY.MM.DD')+' '+timetostr(Cur_time,'HH:MM:SS')+':'+ _mylog);"/>
 			<Marker FileName="..\_AggregateRes\Source\MercuryPRJ\MercuryPRJ_Import.vip" Caption="Нумерованная закладка 1" Line="255" NumIndex="1" MarkerType="mtNumBookmark" Comment="}"/>
+			<Marker FileName="xml.prj" Caption="Нумерованная закладка 1" Line="30" NumIndex="1" MarkerType="mtNumBookmark" Comment="coAttr_EDIInvoicLen  = 'EDI-Invoic-Len';"/>
 			<Marker FileName="ExpImpScript\sts_doc.vpp" Caption="Нумерованная закладка 1" Line="102" NumIndex="1" MarkerType="mtNumBookmark" Comment="if getfirst"/>
 			<Marker FileName="ExpImpScript\common_func.vpp" Caption="Нумерованная закладка 1" Line="65" NumIndex="1" MarkerType="mtNumBookmark" Comment="qq.setParam('attribute', coGetTune('EI.Ecod.AttrGLN'));"/>
-			<Marker FileName="ExpImpScript\ecod_imp.vip" Caption="Нумерованная закладка 2" Line="790" NumIndex="2" MarkerType="mtNumBookmark" Comment="GetKoeffForUpakovkaByGLNandCOdeMC(buyerILN, _CodeMCByPost"/>
 			<Marker FileName="ExpImpScript\ecod_imp.vip" Caption="Нумерованная закладка 1" Line="589" NumIndex="1" MarkerType="mtNumBookmark" Comment="and upper(koe.name) = 'УПАКОВКА'"/>
-			<Marker FileName="xml.prj" Caption="Нумерованная закладка 1" Line="30" NumIndex="1" MarkerType="mtNumBookmark" Comment="coAttr_EDIInvoicLen  = 'EDI-Invoic-Len';"/>
-			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="294" NumIndex="1" MarkerType="mtNumBookmark" Comment="createEcodCell(ChildTwo, 'ItemDescription', katmc.name);//'&lt;![CDATA['"/>
+			<Marker FileName="ExpImpScript\ecod_imp.vip" Caption="Нумерованная закладка 2" Line="790" NumIndex="2" MarkerType="mtNumBookmark" Comment="GetKoeffForUpakovkaByGLNandCOdeMC(buyerILN, _CodeMCByPost"/>
 			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 2" Line="515" NumIndex="2" MarkerType="mtNumBookmark"/>
-			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 2" Line="605" NumIndex="2" MarkerType="mtNumBookmark" Comment="createEcodCell(childOne, 'TaxID', orgImp.unn);"/>
-			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 1" Line="22" NumIndex="1" MarkerType="mtNumBookmark" Comment="5074053542"/>
-			<Marker FileName="EXPIMPSCRIPT\ecod_func.vip" Caption="Нумерованная закладка 3" Line="1241" NumIndex="3" MarkerType="mtNumBookmark" Comment="makePriCatHeader;"/>
+			<Marker FileName="ExpImpScript\MakeLineProc.vpp" Caption="Нумерованная закладка 1" Line="294" NumIndex="1" MarkerType="mtNumBookmark" Comment="createEcodCell(ChildTwo, 'ItemDescription', katmc.name);//'&lt;![CDATA['"/>
+			<Marker FileName="EXPIMPSCRIPT\ecod_func.vip" Caption="Нумерованная закладка 3" Line="1242" NumIndex="3" MarkerType="mtNumBookmark" Comment="makePriCatHeader;"/>
+			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 1" Line="23" NumIndex="1" MarkerType="mtNumBookmark" Comment="5074053542"/>
+			<Marker FileName="ExpImpScript\ecod_func.vip" Caption="Нумерованная закладка 2" Line="606" NumIndex="2" MarkerType="mtNumBookmark" Comment="createEcodCell(childOne, 'TaxID', orgImp.unn);"/>
+			<Marker FileName="ExpImpScript\expImpScript.vip" Caption="Нумерованная закладка 1" Line="235" NumIndex="1" MarkerType="mtNumBookmark" Comment="logstrtofile('ExportXML.log',DateToStr(Cur_date,'YYYY.MM.DD')+' '+timetostr(Cur_time,'HH:MM:SS')+':'+ _mylog);"/>
 		</MarkerList>
 	</ProjectManager>
 </Viper>
