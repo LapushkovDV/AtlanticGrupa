@@ -20,6 +20,7 @@ var
   , tmp
   , UltimateCustomerILN
   , buyerILN
+  , PayerILN
   , _CodeByBuyer
   , deliverILN
   , code_attr: string;
@@ -689,6 +690,12 @@ var
                   XMLDOMNode_Release(childNode);
                   childNode := 0;
                 }
+                'Payer': { // для КИБ надо организацию брать отсюда
+                  childNode := FindFirstChild(hAttrDoc);
+                  PayerILN := trim(GetTextValue(childNode));
+                  XMLDOMNode_Release(childNode);
+                  childNode := 0;
+                }
                 'Seller': {
                   #Loop_oXML_chNodes(hAttrDoc, valueDoc, valueDocLen, k, hValueDoc)   //цикл по дочерним узлам DeliveryNote
                     case XMLDOMNode_get_NodeName(hValueDoc) of
@@ -725,6 +732,9 @@ var
             //Eugene Semenov 29.11.2017 КОСТЫЛЬ ДЛЯ МЕТРО.
               if (buyerILN = '4607070198888' )
                 buyerILN := '4607070199991';
+
+              if (buyerILN = '4680555944415') //lapushkov_dv для КИБ надо организацию брать из плательщика
+                 buyerILN := PayerILN;
             // -------------
             #EndLoop_oXML_chNodes(attrDoc, hAttrDoc)
           } //'ReceivingAdvice-Parties'
