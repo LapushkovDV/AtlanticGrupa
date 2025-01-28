@@ -689,12 +689,14 @@ var
                   buyerILN := trim(GetTextValue(childNode));
                   XMLDOMNode_Release(childNode);
                   childNode := 0;
+                  writeMessageLog('read from XML BuyerILN = ' + buyerILN);
                 }
                 'Payer': { // для КИБ надо организацию брать отсюда
                   childNode := FindFirstChild(hAttrDoc);
                   PayerILN := trim(GetTextValue(childNode));
                   XMLDOMNode_Release(childNode);
                   childNode := 0;
+                  writeMessageLog('read from XML PayerILN = ' + PayerILN);
                 }
                 'Seller': {
                   #Loop_oXML_chNodes(hAttrDoc, valueDoc, valueDocLen, k, hValueDoc)   //цикл по дочерним узлам DeliveryNote
@@ -730,13 +732,15 @@ var
                 }
               end; //case hAttrDoc
             //Eugene Semenov 29.11.2017 КОСТЫЛЬ ДЛЯ МЕТРО.
+            // -------------
+            #EndLoop_oXML_chNodes(attrDoc, hAttrDoc)
               if (buyerILN = '4607070198888' )
                 buyerILN := '4607070199991';
 
               if (buyerILN = '4680555944415') //lapushkov_dv для КИБ надо организацию брать из плательщика
                  buyerILN := PayerILN;
-            // -------------
-            #EndLoop_oXML_chNodes(attrDoc, hAttrDoc)
+
+            writeMessageLog('after loop XML node buyerILN = ' + buyerILN);
           } //'ReceivingAdvice-Parties'
           'Order-Lines', 'ReceivingAdvice-Lines': {
             #Loop_oXML_chNodes(hPartDoc, attrDoc, attrDocLen, j, hAttrDoc) //цикл по дочерним узлам Order-Lines
