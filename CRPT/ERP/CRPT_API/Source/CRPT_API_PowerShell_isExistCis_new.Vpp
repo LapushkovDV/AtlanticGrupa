@@ -1,0 +1,118 @@
+procedure fillrecArray_isExistCis; {
+
+  var _npp: byte;
+  _npp := 1;
+
+  SetLimit(_recArray, 0);
+  SetLimit(_recArray, 1);
+  _recArray[_npp].def := 'CIS'                  ; SetLimit(_recArray, GetLimit(_recArray) + 1); _npp++;
+  _recArray[_npp].def := 'STATUS'
+}
+
+Procedure FillPS1_CrptAPI_isExistCis(_OleGenerateGUID: string; _cis : string); {
+    MyWriteLN('[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12');
+    MyWriteLN('$circuitserviceID= "isExistCis"                                                        ');
+    MyWriteLN('$RQST_GUID = "'+_OleGenerateGUID+'"                                                     ');
+    MyWriteLN('$scriptPath = $MyInvocation.MyCommand.Path | Split-Path -Parent                         ');
+    MyWriteLN('$tokenPath = '''+GetTokenPath+''';                 ');
+    MyWriteLN('$conStrinGal  = '''+GetConnString+'''                                                   ');
+    MyWriteLN('$cis = "'+    _cis +  '"                                                                ');
+    MyWriteLN('function Invoke-DatabaseQuery {                                                         ');
+    MyWriteLN('        [CmdletBinding()]                                                               ');
+    MyWriteLN('        param (                                                                         ');
+    MyWriteLN('                [string]$connectionString,                                              ');
+    MyWriteLN('                [string]$query,                                                         ');
+    MyWriteLN('                [switch]$isSQLServer                                                    ');
+    MyWriteLN('        )                                                                               ');
+    MyWriteLN('        if ($isSQLServer) {                                                             ');
+    MyWriteLN('                Write-Verbose ''in SQL Server mode''                                    ');
+    MyWriteLN('                $connection = New-Object -TypeName System.Data.SqlClient.SqlConnection  ');
+    MyWriteLN('        } else {                                                                        ');
+    MyWriteLN('                Write-Verbose ''in OleDB mode''                                         ');
+    MyWriteLN('                $connection = New-Object -TypeName System.Data.OleDb.OleDbConnection    ');
+    MyWriteLN('        }                                                                               ');
+    MyWriteLN('        $connection.ConnectionString = $connectionString                                ');
+    MyWriteLN('        $command = $connection.CreateCommand()                                          ');
+    MyWriteLN('        $command.CommandText = $query                                                   ');
+    MyWriteLN('        $connection.Open()                                                              ');
+    MyWriteLN('        $command.ExecuteNonQuery()                                                      ');
+    MyWriteLN('        $connection.close()                                                             ');
+    MyWriteLN('}                                                                                       ');
+    MyWriteLN('Function GetResponse() {                                                                ');
+    MyWriteLN('$Errcode = 0                                                                            ');
+    MyWriteLN(' try {                                                                                  ');
+    MyWriteLN('    $token = Get-Content -Path $tokenPath                                               ');
+    MyWriteLN('    $headers = @{ Authorization = "Bearer " + $token}                                   ');
+    MyWriteLN('    $body = "[$cis]"                                                                    ');
+    MyWriteLN('    $response = Invoke-WebRequest  -Uri "https://markirovka.crpt.ru/api/v3/true-api/cises/short/list?pg=water" -Headers $headers -Body $body -Method Post -ContentType "application/json;charset=UTF-8" | ConvertFrom-Json');
+    MyWriteLN('   } catch {                                                                                                                ');
+    MyWriteLN('     $errJSON = $error[0].ErrorDetails.Message | ConvertFrom-Json                                                ');
+    MyWriteLN('     $Errcode = $errJSON.code                                                                                    ');
+    MyWriteLN('     Write-Host $_ -Fore Yellow                                                                                       ');
+    MyWriteLN('}                                                                                                                    ');
+    MyWriteLN('   $npp = 1                                                   ');
+    MyWriteLN('                                                              ');
+    MyWriteLN('   foreach($row in $response.result) {                        ');
+    MyWriteLN('   #write-host $row                                           ');
+    MyWriteLN('    if ($row.status -ne $null) {                              ');
+    MyWriteLN('     $cis = $row.cis                                          ');
+    MyWriteLN('     $status = $row.status                                    ');
+    MyWriteLN('    }                                                         ');
+    MyWriteLN('    else {                                                    ');
+    MyWriteLN('     $cis = $row.cis                                          ');
+    MyWriteLN('     $status = ""                                             ');
+    MyWriteLN('    }                                                         ');
+
+
+    MyWriteLN('                $item = New-Object psobject                                                           ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "CIS"  -Value $cis                   ');
+    MyWriteLN('                $item | Add-Member -type NoteProperty -Name "STATUS"  -Value $status             ');
+    MyWriteLN('                $npp = 1                                                                             ');
+
+    MyWriteLN('  foreach( $property in $item.psObject.Properties.name ) {                                                          ');
+    MyWriteLN('    if ($item.$property -eq $null) {                                                                                ');
+    MyWriteLN('        $itemProperty = "";                                                                                         ');
+    MyWriteLN('    } else {                                                                                                        ');
+    MyWriteLN('        $itemProperty = $item.$property.ToString();                                                                 ');
+    MyWriteLN('    }                                                                                                               ');
+    MyWriteLN('   $sqlQuery = ''Insert t$ATL_RQSTAPIVALUES (f$RQST_GUID, f$RSQT_PROVIDER, f$NROW, f$COLUMNNAME, f$VALUE)    ');
+    MyWriteLN('   values (''''''+$RQST_GUID+'''''',''''''+$circuitserviceID+'''''',''+$npp.tostring()+'',''''''+$property.Replace("''","''''")+'''''',''''''+$itemproperty.Replace("''","''''")+'''''')'' ');
+    MyWriteLN('                                                                                                ');
+    MyWriteLN('   $res = Invoke-DatabaseQuery -connectionString $conStrinGal -query $sqlQuery -isSQLServer     ');
+    MyWriteLN('     }                                                                                           ');
+    MyWriteLN('     }                                                                                           ');
+    MyWriteLN('}                                                                                                                    ');
+    MyWriteLN('GetResponse;              ');
+
+}
+
+
+Function GetRequestToAPIisExistCis(_cis: string) : string;
+{
+//   GetRequestToAPIGetToken;
+set  _parameter = 'isExistCis';
+ mylog(' ') ;
+ mylog(' Function GetRequestToAPIisExistCis _cis = ' + _cis) ;
+ result := '';
+  #BodyProcedureGetRqst(isExistCis,_cis)
+
+  var _i : byte = 0;
+  var _pcis : string ='';
+  var _pStatus : string='';
+
+  for( _i:= 1; _i <= getLimit(_recArray); _i++) {
+    mylog(' Function GetRequestToAPIisExistCis _recArray['+_i+'].def = ' + _recArray[_i].def) ;
+    mylog(' Function GetRequestToAPIisExistCis _recArray['+_i+'].value = ' + Trim(_recArray[_i].value) );
+    case upcase(_recArray[_i].def) of
+      upcase('CIS'             ) : _pcis      := Trim(_recArray[_i].value);
+      upcase('STATUS'          ) : _pStatus := Trim(_recArray[_i].value);
+    end;
+  }
+ mylog(' Function GetRequestToAPIisExistCis _pcis = ' + _pcis) ;
+ mylog(' Function GetRequestToAPIisExistCis _pStatus = ' + _pStatus);
+  if _pcis = _cis  and _pStatus = 'INTRODUCED'
+    then result := '0';
+    else result := 'ERR STATUS = ' + _pStatus;
+ mylog(' Function GetRequestToAPIisExistCis result = ' + result)
+
+}

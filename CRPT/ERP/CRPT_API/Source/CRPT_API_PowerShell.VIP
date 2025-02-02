@@ -250,7 +250,8 @@ procedure MyWriteLN(_s: string);
 #include source\CRPT_API_PowerShell_GetToken.Vpp
 #include source\CRPT_API_PowerShell_GetKituStatus.Vpp
 #include source\CRPT_API_PowerShell_KituInfo.Vpp
-#include source\CRPT_API_PowerShell_isExistCis.Vpp
+#include source\CRPT_API_PowerShell_isExistCis_new.Vpp
+//#include source\CRPT_API_PowerShell_isExiCheckListCises.Vpp
 #include source\CRPT_API_PowerShell_GetHistoryCIS.Vpp
 
 Procedure fillrecArrayByTypeTable;
