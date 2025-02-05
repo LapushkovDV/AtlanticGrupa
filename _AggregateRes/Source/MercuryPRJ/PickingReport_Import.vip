@@ -192,7 +192,7 @@ procedure CheckFileFillValues(_FilePath, _filename : string);
 
 function CheckCisInCRPT(_cis : string) : string; cacheable;
 {
-  var _nmbTryMax : byte = 10;  // если на той стороне лежит апи... сделам несколько попыток
+  var _nmbTryMax : byte = 2;  // если на той стороне лежит апи... сделам несколько попыток
   var _nmbTry : byte = 0;
  for(_nmbTry := 0; _nmbTry <= _nmbTryMax; _nmbTry++)
   {

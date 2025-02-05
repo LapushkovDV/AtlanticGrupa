@@ -43,7 +43,8 @@ Procedure FillPS1_CrptAPI_isExistCis(_OleGenerateGUID: string; _cis : string); {
     MyWriteLN(' try {                                                                                  ');
     MyWriteLN('    $token = Get-Content -Path $tokenPath                                               ');
     MyWriteLN('    $headers = @{ Authorization = "Bearer " + $token}                                   ');
-    MyWriteLN('    $body = "[$cis]"                                                                    ');
+//    MyWriteLN('    $body = ''["'+$cis'"]'                                                                    ');
+    MyWriteLN('$body = ''["''    +$cis +  ''"]'' ' );
     MyWriteLN('    $response = Invoke-WebRequest  -Uri "https://markirovka.crpt.ru/api/v3/true-api/cises/short/list?pg=water" -Headers $headers -Body $body -Method Post -ContentType "application/json;charset=UTF-8" | ConvertFrom-Json');
     MyWriteLN('   } catch {                                                                                                                ');
     MyWriteLN('     $errJSON = $error[0].ErrorDetails.Message | ConvertFrom-Json                                                ');

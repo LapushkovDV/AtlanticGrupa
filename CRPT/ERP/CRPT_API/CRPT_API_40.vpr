@@ -17,7 +17,7 @@
 			</VipParameters>
 			<VipFiles>
 				<IncludeList>
-					..\..\..\..\..\..\..\FRM\*
+					..\..\..\..\..\..\FRM\*
 					..\..\..\inc\*
 					$[AtlPath]\Source\
 					..\..\..\SourceGal\*
@@ -260,18 +260,16 @@
 					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
 					<HwKeyTransport>1</HwKeyTransport>
 					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
-					<LicFileName>..\..\..\..\..\..\..\..\Sup910\exe\License.lic</LicFileName>
+					<LicFileName>..\..\..\..\..\..\Sup910\exe\License.lic</LicFileName>
 				</VipDatabase>
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="CRPT_API.prj" PosX="58" PosY="97" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell.vip" PosX="51" PosY="215" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="43" PosY="90" OpenEditor="True" Active="True"/>
-			<File Name="Source\CRPT_API_Viewer_InfoTools.VIP" PosX="78" PosY="95" OpenEditor="True"/>
-			<File Name="..\..\..\_AggregateRes\alter\ALTER_DiadocExportDoc.vip" PosX="48" PosY="29" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_AggrDocsList.VIP" PosX="40" PosY="336" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_isExistCis.Vpp" PosX="43" PosY="76" OpenEditor="True"/>
+			<File Name="CRPT_API.prj" PosX="33" PosY="95" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell.vip" PosX="1" PosY="1" OpenEditor="True" Active="True"/>
+			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="43" PosY="90" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell_isExistCis.Vpp" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell_isExistCis_new.Vpp" PosX="51" PosY="29" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="CRPT_API.prj" Priority="0">
@@ -299,8 +297,8 @@
 			<Marker FileName="Source\CRPT_API_ImportDocs.VIP" Caption="Нумерованная закладка 2" Line="118" NumIndex="2" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\CRPT_API_ImportDocs.VIP" Caption="Нумерованная закладка 1" Line="237" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\CRPT_API_InfoToolsLoader.vip" Caption="Нумерованная закладка 1" Line="130" NumIndex="1" MarkerType="mtNumBookmark" Comment="}"/>
-			<Marker FileName="Source\CRPT_API_PowerShell.vip" Caption="Нумерованная закладка 1" Line="173" NumIndex="1" MarkerType="mtNumBookmark" Comment="_loop tCurRQSTAPI"/>
 			<Marker FileName="..\..\..\_AggregateRes\alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 1" Line="96" NumIndex="1" MarkerType="mtNumBookmark" Comment="{"/>
+			<Marker FileName="Source\CRPT_API_PowerShell.vip" Caption="Нумерованная закладка 1" Line="173" NumIndex="1" MarkerType="mtNumBookmark" Comment="_loop tCurRQSTAPI"/>
 		</MarkerList>
 		<BreakPointList>
 			<BreakPoint FileName="alter_vschet.prj" Line="78"/>
@@ -414,5 +412,8 @@
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
+		<Watches>
+			<Watch Expression="',,;"/>
+		</Watches>
 	</ProjectManager>
 </Viper>

@@ -267,11 +267,13 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="21" PosY="148" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="36" PosY="189" OpenEditor="True"/>
 			<File Name="alter\alter_l_basedoc_vschet.vip" PosX="46" PosY="14" OpenEditor="True"/>
 			<File Name="cnf\L_BASEDOC_VSCHET.cnf" PosX="121" PosY="179" OpenEditor="True"/>
-			<File Name="alter\alter_SoprDoc.vip" PosX="3" PosY="16" OpenEditor="True" Active="True"/>
+			<File Name="alter\alter_SoprDoc.vip" PosX="3" PosY="16" OpenEditor="True"/>
 			<File Name="cnf\L_SOPRDOC_SOPRDOC.cnf" PosX="37" PosY="24" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="11" PosY="329" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="28" PosY="195" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
