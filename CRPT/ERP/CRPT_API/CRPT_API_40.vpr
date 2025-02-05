@@ -266,10 +266,10 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="CRPT_API.prj" PosX="33" PosY="95" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell.vip" PosX="1" PosY="1" OpenEditor="True" Active="True"/>
+			<File Name="Source\CRPT_API_PowerShell.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="43" PosY="90" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_PowerShell_isExistCis.Vpp" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_isExistCis_new.Vpp" PosX="51" PosY="29" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell_isExistCis_new.Vpp" PosX="75" PosY="45" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="CRPT_API.prj" Priority="0">
