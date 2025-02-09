@@ -253,6 +253,7 @@ procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
 /* не заюбыть вернуть!!! на проде11!
 на локале убираем iCRPT_API_PowerShell.GetRequestToAPIGetToken ;
 */
+  startnewvisual(vtRotateVisual,vftimer+vfbreak+vfconfirm,'CheckCisInCRPTbyATL_PickingRep_HEAD',0);
   if getfirst ATL_PickingRep_HEAD_chk where ((_cATL_PickingRep_HEAD == ATL_PickingRep_HEAD_chk.nrec)) <> tsOK then exit;
 
   update current ATL_PickingRep_HEAD_chk set ATL_PickingRep_HEAD_chk.wStatus := 1;
@@ -283,7 +284,7 @@ procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
   }
   */
   var iCRPT_API_Native : CRPT_API_Native new;
-  if not iCRPT_API_Native.InitCisesList then exit;
+  iCRPT_API_Native.ClearCisesList;
 
  _loop ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead)) {
 
@@ -292,27 +293,21 @@ procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
          , ATL_PickingRep_Spec_chk.wStatus  := 1
         ;
 
-   var _cis: string = if(upcase(ATL_PickingRep_Spec_chk.DataMatrix) = 'FULL'
+     var _cis: string = if(upcase(ATL_PickingRep_Spec_chk.DataMatrix) = 'FULL'
                                            ,ATL_PickingRep_Spec_chk.SSCCManuf
                                            ,if(trim(ATL_PickingRep_Spec_chk.DataMatrix) <> ''
                                              ,ATL_PickingRep_Spec_chk.DataMatrix
                                              ,ATL_PickingRep_Spec_chk.SSCCManuf
                                               )
                                            );
-   var _err : string = '';
-   if not iCRPT_API_Native.AddCisToList(_cis, _err) then {
-              update current ATL_PickingRep_Spec_chk set
-                 ATL_PickingRep_Spec_chk.ErrDescr := 'Ошибка '+ _err
-               , ATL_PickingRep_Spec_chk.wStatus  := 2
-              ;
-              update current ATL_PickingRep_HEAD_chk set ATL_PickingRep_HEAD_chk.wStatus := 2;
-            }
+     var _err : string = '';
+     iCRPT_API_Native.AddCisToList(_cis);
    }
-
-   if not iCRPT_API_Native.GetCisesListInfo then {
+   var _err : string = '';
+   if not iCRPT_API_Native.GetCisesListInfo(_err) then {
      _loop ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead)) {
          update current ATL_PickingRep_Spec_chk set
-                 ATL_PickingRep_Spec_chk.ErrDescr := 'Ошибка: при работе с API'
+                 ATL_PickingRep_Spec_chk.ErrDescr := 'Ошибка: ' + _err
                , ATL_PickingRep_Spec_chk.wStatus  := 2
               ;
          update current ATL_PickingRep_HEAD_chk set ATL_PickingRep_HEAD_chk.wStatus := 2;
@@ -321,6 +316,7 @@ procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
 
 
   SendMailErrorCodes(_cATL_PickingRep_HEAD);
+  stopvisual;
 }
 
 

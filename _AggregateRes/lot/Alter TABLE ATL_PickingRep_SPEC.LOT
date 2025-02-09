@@ -1,0 +1,7 @@
+Alter table ::ATL_PickingRep_SPEC
+Add
+(
+  count     : longint "Количество в ЧЗ"
+  ,StatusPos : String "Статус позиции в ЧЗ"
+)
+;

@@ -4,14 +4,30 @@ CRPT_API используя функции Галактики
 #end
 #include CRPT_API_Native.vih
 
+const
+ coReadyToRequest = ' --ReadyToRequest--';
+end;
 Interface CRPT_API_Native 'CRPT_API' doaccept, Gray;
 
-
+table struct tCisesList (
+   requestedCis        : string
+ , parent              : string
+ , status              : string
+ , extendedPackageType : string
+)
+with index (
+   index0 = requestedCis
+ , index1 = parent
+ , index2 = status
+)
+;
 Create view
  var
-    _JSONBODY_CISESLIST
-  , CisesListHTTP : tptr;
+
+
   _logFile : string;
+from
+  tCisesList
 ;
 
 Function GenerateNewFile: string; {
@@ -37,41 +53,30 @@ Procedure MyLog(_str : string); {
 }
 
 
-Function InitCisesList : boolean; {
-  MyLog('InitCisesList start');
- HttpConnect_Free(CisesListHTTP);
- CisesListHTTP := HttpConnect_CreateEx('ya.ru', '', '', True);
- HttpConnect_JSONObjectDestroy(CisesListHTTP, _JSONBODY_CISESLIST);
- _JSONBODY_CISESLIST := HttpConnect_JsonArrayCreate(CisesListHTTP);
-  HttpConnect_JsonArrayAddString(CisesListHTTP, _JSONBODY_CISESLIST, ' ');
-  result := true;
-    MyLog('InitCisesList end');
+Procedure ClearCisesList; {
+  delete all tCisesList;
 }
 
-Function AddCisToList(_Cis : string; var _err : string) : boolean; {
- _try {
-   HttpConnect_JsonArrayAddString(CisesListHTTP, _JSONBODY_CISESLIST, _Cis);
-   MyLog('AddCisToList : ' + _Cis + ' OK');
-   _err := '';
-   result :=true;
- }
- _except
-  else {
-    _err := ExploreException;
-   MyLog('AddCisToList: '+_Cis+' ERROR' + _err);
-    result := false;
-  }
+Procedure AddCisToList(_Cis : string); {
+   if getfirst tCisesList where ((_Cis == tCisesList.requestedCis)) <> tsOK {
+     insert tCisesList set
+        tCisesList.requestedCis := _Cis
+      , tCisesList.status       := coReadyToRequest
+     ;
+   }
 }
 
-Function GetCisesListInfo : boolean; {
+Function RequestCisesListInfo(_CISESLIST: tptr;var _err : string) : tptr; {
    MyLog('GetCisesListInfo start');
-   result := false;
 
+   result := 0;
   var address : string = 'https://markirovka.crpt.ru';
 
   var httpCon: TPtr = HttpConnect_CreateEx(address, '', '', True);
   var lAddUrl: TPtr = HttpConnect_CreateLongString(httpCon);
   var lHeader: TPtr = HttpConnect_CreateLongString(httpCon);
+
+
 
   HttpConnect_AddValueToLongString(httpCon, '/api/v3/true-api/cises/short/list?pg=water', lAddUrl);
 
@@ -104,7 +109,7 @@ Function GetCisesListInfo : boolean; {
     MyLog('GetCisesListInfo HttpConnect_AddLongValueToLongString(httpCon, lToken, lHeader); OK');
 
 
-    var _JSONBODY_CISESLISTSTRING : tptr = HttpConnect_JSONObjectToString(httpCon, _JSONBODY_CISESLIST);
+    var _JSONBODY_CISESLISTSTRING : tptr = HttpConnect_JSONObjectToString(httpCon, _CISESLIST);
 
 /*
     HttpConnect_SaveToFileEx(httpCon, _JSONBODY_CISESLISTSTRING, GetErrFile, cpUTF8, false);
@@ -119,12 +124,13 @@ Function GetCisesListInfo : boolean; {
 
          lResponse:= HttpConnect_SendRequestPostJSON(httpCon, lAddUrl, lHeader, _JSONBODY_CISESLISTSTRING, false);
          MyLog('GetCisesListInfo HttpConnect_SendRequestPostJSON OK');
-         HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false);
+         //HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false);
          //MyLog('GetCisesListInfo HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false); OK');
-        result := true;
       }
       _except else {
-        MyLog('GetCisesListInfo HttpConnect_SendRequestPostJSON ERROR');
+        _err := 'GetCisesListInfo HttpConnect_SendRequestPostJSON ERROR' ;
+        MyLog(_err);
+        exit;
       }
       _finally {
         //HttpConnect_DestroyLongString(httpCon, lResponse);
@@ -138,29 +144,95 @@ Function GetCisesListInfo : boolean; {
     }
 
    if HttpConnect_LastError(httpCon) <> 0 then  {
-      mylog('ERROR Response ' + HttpConnect_LastErrorText(httpCon));
+     _err := 'ERROR Response ' + HttpConnect_LastErrorText(httpCon);
+      mylog(_err);
       var _fileErr : string = GetErrFile;
       HttpConnect_ResponseLogToFile(httpCon, _fileErr);
       exit;
     }
+  result := lResponse;
+}
 
+Function GetCisesListInfo(var _err : string) : boolean; {
+  result := true;
+  if(getfirst tCisesList where ((coReadyToRequest == tCisesList.status (noindex) ))) <> tsOK then exit;
 
+  var httpCon : tptr= HttpConnect_CreateEx('ya.ru', '', '', True);
+
+  result := false;
+   var _CISESLIST : tptr = HttpConnect_JsonArrayCreate(httpCon);
+   HttpConnect_JsonArrayAddString(httpCon, _CISESLIST, ' ');
+   var _cisCount : word = 0;
+    _loop tCisesList where ((coReadyToRequest == tCisesList.status)) {
+       HttpConnect_JsonArrayAddString(httpCon, _CISESLIST, tCisesList.requestedCis);
+       _cisCount++;
+       if _cisCount > 999 then break;
+     }
+
+  var lResponse : tptr = RequestCisesListInfo(_CISESLIST, _err );
+  HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false);
   var _responseJSON : tptr = HttpConnect_JSONObjectByLongString(httpCon, lResponse);
 
+   mylog('HttpConnect_JSONObjectByLongString(httpCon, lResponse);');
   if _responseJSON = 0 {
-      mylog('не смогли преобразовать ответ в JSON');
+      _err := 'не смогли преобразовать ответ в JSON';
+      mylog(_err);
       exit;
     }
 
+  var _responseJSONStringAgain : tptr = HttpConnect_JSONObjectToJSON(httpCon, _responseJSON);
+    HttpConnect_SaveToFileEx(httpCon, _responseJSONStringAgain, GetErrFile, cpUTF8, false);
 
-/*
-  var JSON_MESSAGE : TPTr = HttpConnect_JSONObjectByName(m_service,_responseJSON,'requestedCis');
-    if JSON_MESSAGE = 0 {
-      _answer := 'Ошибка в структуре сообщения. Не найден объект MESSAGE';
-       HttpConnect_AddValueToLongString (m_service, _answer,_answerLong);
+
+  var JSON_resultArray : TPTr = HttpConnect_JSONArrayByName(httpCon, _responseJSON,'Array');
+    if JSON_resultArray = 0 {
+      _err := 'Ошибка в структуре сообщения. Не найден объект Array';
+       HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false);
+       mylog(_err);
       exit;
     }
-*/
+
+   var JSON_resultArrayCount : longint = HttpConnect_JsonCount(httpCon, JSON_resultArray);
+     if JSON_resultArrayCount =  0 {
+       _err := 'Ошибка в структуре сообщения. пустой массив возвращенных значений Array';
+       HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false);
+       mylog(_err);
+      exit;
+
+     }
+    var i_JSON_resultArray : longint = 0;
+    for (i_JSON_resultArray:= 0; i_JSON_resultArray <= JSON_resultArrayCount - 1; i_JSON_resultArray++) {
+    //     MyLog('Идем по массиву QRY_TEMPLATE');
+         var _JSON_ArrElement : TPtr = HttpConnect_JSONObjectByIndexOfArray(httpCon, JSON_resultArray, i_JSON_resultArray);
+         var _JSON_ResultElement : TPTr = HttpConnect_JSONObjectByName(httpCon, _JSON_ArrElement,'result');
+         clearbuffer(tntCisesList);
+          var _requestedCis : string = HttpConnect_JsonObjectValueByName(httpCon, _JSON_ResultElement,'requestedCis');
+          if trim(_requestedCis) = '' then continue;
+          if getfirst tCisesList where ((_requestedCis == tCisesList.requestedCis)) = tsOK {
+            tCisesList.status              := HttpConnect_JsonObjectValueByName(httpCon, _JSON_ResultElement,'status');
+            tCisesList.extendedPackageType := HttpConnect_JsonObjectValueByName(httpCon, _JSON_ResultElement,'extendedPackageType');
+            tCisesList.parent              := HttpConnect_JsonObjectValueByName(httpCon, _JSON_ResultElement,'parent');
+            update current tCisesList;
+          }
+         //if tCisesList.extendedPackageType = 'BOX' or tCisesList.extendedPackageType = 'GROUP' {
+           var _ChildrenArray : tptr = HttpConnect_JSONArrayByName(httpCon, _responseJSON,'children');
+
+               if _ChildrenArray <> 0 {
+                 var _ChildrenArrayCount : longint = HttpConnect_JsonCount(httpCon, _ChildrenArray);
+                   if _ChildrenArrayCount <>  0 {
+                      var i_ChildrenArray : longint = 0;
+                      for (i_ChildrenArray:= 0; i_ChildrenArray <= _ChildrenArrayCount - 1; i_ChildrenArray++) {
+                        var _cisChildren : string = HttpConnect_StringByIndexOfArray(httpCon, _ChildrenArray, i_ChildrenArray);
+                         AddCisToList(_cisChildren);
+                      }
+                  }
+               }
+
+         mylog('_requestedCis = '  + tCisesList.requestedCis +' _status = ' + tCisesList.status + ' _extendedPackageType ' + tCisesList.extendedPackageType + ' parent = ' + tCisesList.parent);
+    }
+
+
+  result := GetCisesListInfo(_err);
 }
 
 Function GetCisStatus (_Cis : string) : string; {
