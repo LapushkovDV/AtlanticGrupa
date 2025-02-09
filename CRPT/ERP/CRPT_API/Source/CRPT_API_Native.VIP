@@ -31,11 +31,11 @@ from
 ;
 
 Function GenerateNewFile: string; {
- result := GetStringParameter('Files','OutputFilesDirectory',0)+ '\CISESLIST_'+olegenerateguid+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS-SSS');
+ result := GetStringParameter('Files','OutputFilesDirectory',0)+ '\CISESLIST_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS-SSS')+olegenerateguid;
 }
 
-function GetErrFile : string; {
-  result := GenerateNewFile+'_ERROR.log';;
+function GetErrFile(subname : string = '') : string; {
+  result := GenerateNewFile+if(subname = '','_ERROR','_'+subname)+'.log';
 }
 
 function GetLogFile : string; {
@@ -63,6 +63,7 @@ Procedure AddCisToList(_Cis : string); {
         tCisesList.requestedCis := _Cis
       , tCisesList.status       := coReadyToRequest
      ;
+//     mylog('AddCisToList ' + tCisesList.requestedCis)
    }
 }
 
@@ -111,11 +112,11 @@ Function RequestCisesListInfo(_CISESLIST: tptr;var _err : string) : tptr; {
 
     var _JSONBODY_CISESLISTSTRING : tptr = HttpConnect_JSONObjectToString(httpCon, _CISESLIST);
 
-/*
-    HttpConnect_SaveToFileEx(httpCon, _JSONBODY_CISESLISTSTRING, GetErrFile, cpUTF8, false);
-    HttpConnect_SaveToFileEx(httpCon, lAddUrl, GetErrFile, cpUTF8, false);
-    HttpConnect_SaveToFileEx(httpCon, lHeader, GetErrFile, cpUTF8, false);
-*/
+
+//    HttpConnect_SaveToFileEx(httpCon, _JSONBODY_CISESLISTSTRING, GetErrFile('JSONBODY_CISESLISTSTRING'), cpUTF8, false);
+//    HttpConnect_SaveToFileEx(httpCon, lAddUrl, GetErrFile('lAddUrl'), cpUTF8, false);
+//    HttpConnect_SaveToFileEx(httpCon, lHeader, GetErrFile('lHeader'), cpUTF8, false);
+
    var lResponse: TPtr;
     _try
     {
@@ -146,7 +147,7 @@ Function RequestCisesListInfo(_CISESLIST: tptr;var _err : string) : tptr; {
    if HttpConnect_LastError(httpCon) <> 0 then  {
      _err := 'ERROR Response ' + HttpConnect_LastErrorText(httpCon);
       mylog(_err);
-      var _fileErr : string = GetErrFile;
+      var _fileErr : string = GetErrFile('errResponse');
       HttpConnect_ResponseLogToFile(httpCon, _fileErr);
       exit;
     }
@@ -155,6 +156,8 @@ Function RequestCisesListInfo(_CISESLIST: tptr;var _err : string) : tptr; {
 
 Function GetCisesListInfo(var _err : string) : boolean; {
   result := true;
+//  putTableToDBF(#tCisesList, GenerateNewFile+'_tCisesList.dbf', ptfFullTable);
+
   if(getfirst tCisesList where ((coReadyToRequest == tCisesList.status (noindex) ))) <> tsOK then exit;
 
   var httpCon : tptr= HttpConnect_CreateEx('ya.ru', '', '', True);
@@ -166,11 +169,11 @@ Function GetCisesListInfo(var _err : string) : boolean; {
     _loop tCisesList where ((coReadyToRequest == tCisesList.status)) {
        HttpConnect_JsonArrayAddString(httpCon, _CISESLIST, tCisesList.requestedCis);
        _cisCount++;
-       if _cisCount > 999 then break;
+       if _cisCount > 900 then break;
      }
 
   var lResponse : tptr = RequestCisesListInfo(_CISESLIST, _err );
-  HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false);
+  HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile('lResponse'), cpUTF8, false);
   var _responseJSON : tptr = HttpConnect_JSONObjectByLongString(httpCon, lResponse);
 
    mylog('HttpConnect_JSONObjectByLongString(httpCon, lResponse);');
@@ -180,8 +183,8 @@ Function GetCisesListInfo(var _err : string) : boolean; {
       exit;
     }
 
-  var _responseJSONStringAgain : tptr = HttpConnect_JSONObjectToJSON(httpCon, _responseJSON);
-    HttpConnect_SaveToFileEx(httpCon, _responseJSONStringAgain, GetErrFile, cpUTF8, false);
+//  var _responseJSONStringAgain : tptr = HttpConnect_JSONObjectToJSON(httpCon, _responseJSON);
+//    HttpConnect_SaveToFileEx(httpCon, _responseJSONStringAgain, GetErrFile, cpUTF8, false);
 
 
   var JSON_resultArray : TPTr = HttpConnect_JSONArrayByName(httpCon, _responseJSON,'Array');
@@ -214,33 +217,58 @@ Function GetCisesListInfo(var _err : string) : boolean; {
             tCisesList.parent              := HttpConnect_JsonObjectValueByName(httpCon, _JSON_ResultElement,'parent');
             update current tCisesList;
           }
+         // mylog('_requestedCis = '  + tCisesList.requestedCis +' _status = ' + tCisesList.status + ' _extendedPackageType ' + tCisesList.extendedPackageType + ' parent = ' + tCisesList.parent);
          //if tCisesList.extendedPackageType = 'BOX' or tCisesList.extendedPackageType = 'GROUP' {
-           var _ChildrenArray : tptr = HttpConnect_JSONArrayByName(httpCon, _responseJSON,'children');
+           var _ChildrenArray : tptr = HttpConnect_JSONArrayByName(httpCon, _JSON_ResultElement,'children');
 
                if _ChildrenArray <> 0 {
                  var _ChildrenArrayCount : longint = HttpConnect_JsonCount(httpCon, _ChildrenArray);
                    if _ChildrenArrayCount <>  0 {
+
                       var i_ChildrenArray : longint = 0;
                       for (i_ChildrenArray:= 0; i_ChildrenArray <= _ChildrenArrayCount - 1; i_ChildrenArray++) {
                         var _cisChildren : string = HttpConnect_StringByIndexOfArray(httpCon, _ChildrenArray, i_ChildrenArray);
-                         AddCisToList(_cisChildren);
+                         AddCisToList(replace(_cisChildren,'"',''));
                       }
                   }
                }
 
-         mylog('_requestedCis = '  + tCisesList.requestedCis +' _status = ' + tCisesList.status + ' _extendedPackageType ' + tCisesList.extendedPackageType + ' parent = ' + tCisesList.parent);
     }
 
-
   result := GetCisesListInfo(_err);
+  putTableToDBF(#tCisesList, GenerateNewFile+'_tCisesList.dbf', ptfFullTable);
 }
 
 Function GetCisStatus (_Cis : string) : string; {
-
+   result := 'NOT FOUND';
+  if getfirst tCisesList where ((_Cis == tCisesList.requestedCis)) = tsOK {
+    result := tCisesList.status
+  }
 }
 
 Function GetCisUtitCounts (_Cis : string) : longint; {
 
+  var _result : longint = 0;
+  if getfirst tCisesList where ((_Cis == tCisesList.requestedCis)) = tsOK {
+    if tCisesList.extendedPackageType = 'UNIT' then  {
+      _result := 1;
+//        mylog('GetCisUtitCounts _Cis is UNIT');
+      }
+     else {
+       _loop tCisesList where ((_Cis == tCisesList.parent)) {
+         if tCisesList.extendedPackageType = 'UNIT' then {
+           _result := _result + 1;
+//            mylog('GetCisUtitCounts parent = _Cis, and under it cis ' + tCisesList.requestedCis  + 'is UNIT');
+         } else {
+           pushpos(tntCisesList);
+           _result := _result + GetCisUtitCounts(tCisesList.requestedCis);
+           poppos(tntCisesList);
+         }
+       }
+     }
+  }
+//  mylog('_result = ' + _result) ;
+ result := _result;
 }
 
 

@@ -273,9 +273,9 @@
 		<FileList>
 			<File Name="CRPT_API.prj" PosX="34" PosY="105" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_PowerShell.vip" PosX="31" PosY="117" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_isExistCis_new.Vpp" PosX="90" PosY="98" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_Native.vip" PosX="18" PosY="21" OpenEditor="True" Active="True"/>
-			<File Name="Source\CRPT_API_Native.vih" PosX="9" PosY="53" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell_isExistCis_new.Vpp" PosX="33" PosY="103" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_Native.vip" PosX="3" PosY="255" OpenEditor="True" Active="True"/>
+			<File Name="Source\CRPT_API_Native.vih" PosX="23" PosY="83" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="45" PosY="13" OpenEditor="True"/>
 			<File Name="..\..\..\..\..\GAL\Frm\SRC\CompSrc\F\F_Common\Vip\ExcelFormat.vih" PosX="77" PosY="227" OpenEditor="True"/>
 			<File Name="..\..\..\..\..\GAL\Frm\SRC\Inc\dictypes.def" PosX="14" PosY="10" OpenEditor="True"/>
@@ -310,14 +310,14 @@
 			<Marker FileName="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_getDocumentList.Vpp" Caption="Нумерованная закладка 1" Line="229" NumIndex="1" MarkerType="mtNumBookmark" Comment="MyWriteLN('                                        &lt;bs:beginDate&gt;2020-09-01T00:00:00+03:00&lt;/bs:beginDate&gt;                                                                                                       ');"/>
 			<Marker FileName="Source\VetisAPI_Viewer_DocList.vip" Caption="Нумерованная закладка 1" Line="52" NumIndex="1" MarkerType="mtNumBookmark" Comment=", SpKau tVETIS_DocumentType"/>
 			<Marker FileName="Source\VetisAPI_Viewer_DocList.vip" Caption="Нумерованная закладка 2" Line="253" NumIndex="2" MarkerType="mtNumBookmark" Comment="ATL_Vetis_DocSpRefStat.Status          'Статус'    ('',,): [3], Protect;"/>
-			<Marker FileName="Source\CRPT_API_Native.vip" Caption="Нумерованная закладка 1" Line="79" NumIndex="1" MarkerType="mtNumBookmark" Comment="HttpConnect_JsonArrayAddString(CisesListHTTP, _JSONBODY_CISESLIST, _Cis);"/>
+			<Marker FileName="Source\CRPT_API_Native.vip" Caption="Нумерованная закладка 1" Line="160" NumIndex="1" MarkerType="mtNumBookmark"/>
 		</MarkerList>
 		<BreakPointList>
 			<BreakPoint FileName="alter_vschet.prj" Line="78"/>
 			<BreakPoint FileName="Source\CRPT_API_PowerShell_GetToken.Vpp" Line="75"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45697,5746423032" DateTimeCompile="9,14930569706485E-5" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45697,6129560301" DateTimeCompile="8,79513900144957E-5" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" SourceLine="7" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetKituStatus входящий параметр: _OleGenerateGUID:String не используется." SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetKituStatus.Vpp" SourceLine="61" SourceColumn="1">
@@ -405,14 +405,21 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="442" SourceColumn="63"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="447" SourceColumn="63"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="12" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="136" SourceColumn="7"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_CRPT_API_NATIVE_objCRPT_API_Native_GetCisStatus входящий параметр: _Cis:String не используется." SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="239" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Не было присвоения значения результату функции GetCisStatus" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="239" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_CRPT_API_NATIVE_objCRPT_API_Native_GetCisUtitCounts входящий параметр: _Cis:String не используется." SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="243" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Не было присвоения значения результату функции GetCisUtitCounts" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="243" SourceColumn="1"/>
-					<CompileMessage MessageType="mtError" MessageText="Нужен ключ STATUS для TCISESLIST" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="246" SourceColumn="5"/>
-					<CompileMessage MessageType="mtError" MessageText="Ошибка создания логической таблицы" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="246" SourceColumn="5"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="09.02.2025 13:47:37"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="138" SourceColumn="7"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="220" SourceColumn="142"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="211" SourceColumn="131"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="345" SourceColumn="140"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="395" SourceColumn="144"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="383" SourceColumn="139"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="09.02.2025 14:42:47"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
