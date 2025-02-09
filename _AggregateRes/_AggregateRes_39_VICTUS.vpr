@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="windows-1251"?>
 <Viper Version="5005020000">
 	<ProjectManager>
-		<ProjectName>CRPT_API</ProjectName>
+		<ProjectName>_AggregateRes</ProjectName>
 		<ActiveIndex>1</ActiveIndex>
 		<ProjectVarList>
-			<ProjectVar Name="$[GalExe]" Value="D:\GAL9\Gal\exe\"/>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika\GAL\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
-			<ProjectVar Name="$[GalSrc]" Value="D:\GAL9\Gal\FRM\SRC\"/>
-			<ProjectVar Name="$[AtlPath]" Value="C:\GAL\Viper 5.5\Sources\"/>
 		</ProjectVarList>
 		<CoreVip>
 			<VipParameters>
-				<AtlDir>C:\GAL\Viper 5.5\bin\5.5.38.0\Exe</AtlDir>
+				<AtlDir>C:\Galaktika\Viper\bin\5.5.40.0\Exe</AtlDir>
 				<ComponentName>$[FileName]</ComponentName>
 				<StrictVip>True</StrictVip>
 				<EmptyBlockWarnings>True</EmptyBlockWarnings>
@@ -19,11 +17,13 @@
 			</VipParameters>
 			<VipFiles>
 				<IncludeList>
-					$[AtlPath]\*
-					$[ProjectPath]\*
-					$[GalSrc]\INC\*
-					$[GalSrc]\Components\lih
-					$[GalSrc]\CompSrc\*
+					$[AtlPath]\Source\
+					..\..\..\GAL\Frm\SRC\*
+					..\inc\*
+					..\..\SourceGal\*
+					vih\*
+					..\VetisAPI\ERP\Source\
+					..\CRPT\ERP\CRPT_API\*
 				</IncludeList>
 				<ResourceList>
 					$[GalExe]\C_AlterCumulative.res
@@ -237,8 +237,9 @@
 					$[GalExe]\Z_Zar.res
 					$[GalExe]\Z_ZarNastr.res
 					$[GalExe]\Z_ZarRep.res
+					$[GalExe]\c_diadoc.res
 				</ResourceList>
-				<OutputResource>$[ProjectPath]\CRPT_.res</OutputResource>
+				<OutputResource>..\..\..\GAL\exe\_res\_AggregateRes_.res</OutputResource>
 				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
 				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
 				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
@@ -257,30 +258,32 @@
 				<VipDatabase>
 					<Name>по умолчанию</Name>
 					<DatabaseDriver>1</DatabaseDriver>
-					<DatabaseID>ERPDB_stend</DatabaseID>
-					<SqlServerParameters>ncacn_ip_tcp:STEND-ERPDB[33778]</SqlServerParameters>
+					<DatabaseID>RUSSIA</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:localhost[32777]</SqlServerParameters>
 					<FullLoginName>True</FullLoginName>
-					<UserOffice>1000</UserOffice>
-					<UserName>dmitry.lapushkov</UserName>
-					<Password>Zraeqw123</Password>
 					<HwKeyTransport>1</HwKeyTransport>
-					<HwKeyDirectory>dep968-gal-share:44444</HwKeyDirectory>
-					<LicFileName>..\..\..\GAL9\SUP\exe\LICENSE.lic</LicFileName>
+					<HwKeyDirectory>LOCALHOST:55555</HwKeyDirectory>
+					<LicFileName>..\..\..\sup\exe\License.lic</LicFileName>
 				</VipDatabase>
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="CRPT_API.prj" PosX="19" PosY="72" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell.vip" PosX="25" PosY="243" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_IdentifyToolsInfo.Vpp" PosX="34" PosY="261" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="45" PosY="17" OpenEditor="True"/>
-			<File Name="Source\CRPT_PRJ_tune.vip" PosX="32" PosY="38" OpenEditor="True"/>
-			<File Name="..\..\..\_AggregateRes\alter\ALTER_DiadocExportDoc.vip" PosX="53" PosY="95" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_isExistCis.Vpp" PosX="11" PosY="97" OpenEditor="True" Active="True"/>
-			<File Name="Source\CRPT_API_PowerShellPost.VIP" PosX="1" PosY="119" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="39" PosY="191" OpenEditor="True"/>
+			<File Name="alter\Alter_iDiaDocSend.vip" PosX="49" PosY="56" OpenEditor="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="78" PosY="171" OpenEditor="True"/>
+			<File Name="alter\ALTER_ON_NSCHFDOPPR.vip" PosX="88" PosY="36" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="60" PosY="329" OpenEditor="True"/>
+			<File Name="alter\alter_l_basedoc_vschet.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="cnf\L_BASEDOC_VSCHET.cnf" PosX="100" PosY="270" OpenEditor="True"/>
+			<File Name="cnf\L_TTNDOC.cnf" PosX="85" PosY="33" OpenEditor="True"/>
+			<File Name="Source\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" PosX="56" PosY="22" OpenEditor="True"/>
+			<File Name="Source\MERCURYPRJ\MercuryPRJ_PickingReport_fun.vpp" PosX="55" PosY="11" OpenEditor="True"/>
+			<File Name="Source\EMAIL\ATL_EmailRun.Vip" PosX="50" PosY="45" OpenEditor="True"/>
+			<File Name="Source\debitor\DEBITOR.VIP" PosX="54" PosY="417" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="67" PosY="252" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
-			<ProjectCompileFile FileName="CRPT_API.prj" Priority="0">
+			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
 				<CoreVip>
 					<VipParameters>
 						<StrictVip>True</StrictVip>
@@ -292,41 +295,30 @@
 		<MarkerList>
 			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
 			<Marker FileName="alter\alter_l_basedoc_vschetB.vip" Caption="Нумерованная закладка 1" Line="22" NumIndex="1" MarkerType="mtNumBookmark" Comment="DO_ZAKLYUCHENIE : ;"/>
-			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="130" NumIndex="1" MarkerType="mtNumBookmark"/>
-			<Marker FileName="Source\loadorder\LoadOrder.vip" Caption="Нумерованная закладка 1" Line="780" NumIndex="1" MarkerType="mtNumBookmark"/>
-			<Marker FileName="alter\alter_l_basedoc_vschet.vip" Caption="Нумерованная закладка 1" Line="569" NumIndex="1" MarkerType="mtNumBookmark"/>
-			<Marker FileName="alter\Alter_CalcDolgDG.vip" Caption="Нумерованная закладка 1" Line="517" NumIndex="1" MarkerType="mtNumBookmark" Comment="if Getfirst fastfirstrow KatOrgAtl where (( BDbuf.cOrg == KatOrgAtl.nrec)) = tsOK"/>
+			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="166" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\ReportSumDeclarationToDO.vip" Caption="Нумерованная закладка 1" Line="113" NumIndex="1" MarkerType="mtNumBookmark" Comment="xlStWriteToMatrix(nrow, 1, 'Отчет о предполагаемый'); column++;"/>
-			<Marker FileName="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_GetUnitList.Vpp" Caption="Нумерованная закладка 1" Line="96" NumIndex="1" MarkerType="mtNumBookmark" Comment="Procedure FillPS1_VetisAPI_GetProductList(_ExcelFileOut: string; _empty : string);"/>
-			<Marker FileName="Source\VetisAPI_Viewer_SpKau.VIP" Caption="Нумерованная закладка 1" Line="184" NumIndex="1" MarkerType="mtNumBookmark" Comment="coVETIS_ProductType     : { // VETIS.ProductType"/>
-			<Marker FileName="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_GETSTOCK_UUID_By_GUID.Vpp" Caption="Нумерованная закладка 1" Line="51" NumIndex="1" MarkerType="mtNumBookmark" Comment="MyWriteLN('$StockGUID = &quot;'++'&quot;');"/>
-			<Marker FileName="Source\VetisAPI_Viewer_STOCK.vip" Caption="Нумерованная закладка 2" Line="436" NumIndex="2" MarkerType="mtNumBookmark" Comment="_VetisDiscrepancy.batchID               :="/>
-			<Marker FileName="Source\VetisAPI_Viewer_STOCK.vip" Caption="Нумерованная закладка 1" Line="443" NumIndex="1" MarkerType="mtNumBookmark" Comment="_VetisDiscrepancy.packingTypeGUID4      := tVETIS_PackingCodeType2New.nrec,coAttrNam_GUID);"/>
-			<Marker FileName="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_getStockEntryVersionListRequest.Vpp" Caption="Нумерованная закладка 1" Line="329" NumIndex="1" MarkerType="mtNumBookmark" Comment="_ExcelFileOut"/>
-			<Marker FileName="VetisAPI.prj" Caption="Нумерованная закладка 1" Line="151" NumIndex="1" MarkerType="mtNumBookmark" Comment="coPS1_GetDocList = 'Идентификатор упаковки(2)'"/>
-			<Marker FileName="Source\VetisAPI_PowerShell.vip" Caption="Нумерованная закладка 1" Line="341" NumIndex="1" MarkerType="mtNumBookmark"/>
-			<Marker FileName="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_getDocumentList.Vpp" Caption="Нумерованная закладка 1" Line="229" NumIndex="1" MarkerType="mtNumBookmark" Comment="MyWriteLN('                                        &lt;bs:beginDate&gt;2020-09-01T00:00:00+03:00&lt;/bs:beginDate&gt;                                                                                                       ');"/>
-			<Marker FileName="Source\VetisAPI_Viewer_DocList.vip" Caption="Нумерованная закладка 1" Line="52" NumIndex="1" MarkerType="mtNumBookmark" Comment=", SpKau tVETIS_DocumentType"/>
-			<Marker FileName="Source\VetisAPI_Viewer_DocList.vip" Caption="Нумерованная закладка 2" Line="253" NumIndex="2" MarkerType="mtNumBookmark" Comment="ATL_Vetis_DocSpRefStat.Status          'Статус'    ('',,): [3], Protect;"/>
+			<Marker FileName="Source\Report_Org_VetisGUIDS.vip" Caption="Нумерованная закладка 1" Line="70" NumIndex="1" MarkerType="mtNumBookmark" Comment="exit"/>
+			<Marker FileName="Source\sale_func.vpp" Caption="Нумерованная закладка 1" Line="86" NumIndex="1" MarkerType="mtNumBookmark" Comment="if bDetail {"/>
+			<Marker FileName="Source\sale_sale.vip" Caption="Нумерованная закладка 1" Line="509" NumIndex="1" MarkerType="mtNumBookmark" Comment="tData.cMC     := spSopr.cMcUsl,"/>
+			<Marker FileName="Source\MercuryPRJ\MercuryPRJ_Import.vip" Caption="Нумерованная закладка 1" Line="252" NumIndex="1" MarkerType="mtNumBookmark" Comment="if _ExpImpScript_Droga.doc2xml(31);"/>
+			<Marker FileName="Source\loadorder\LoadOrder.vip" Caption="Нумерованная закладка 1" Line="740" NumIndex="1" MarkerType="mtNumBookmark" Comment="basedoc.NAME    := if(isvalidall(tnDogovor_ins),'Договор ',''); // 'Загружено автоматически';"/>
+			<Marker FileName="alter\Alter_CalcDolgDG.vip" Caption="Нумерованная закладка 1" Line="170" NumIndex="1" MarkerType="mtNumBookmark" Comment=",t.DayAfterSchet"/>
+			<Marker FileName="Source\EMAIL\ATL_EmailRun.Vip" Caption="Нумерованная закладка 1" Line="293" NumIndex="1" MarkerType="mtNumBookmark" Comment="deletefile(email_body_Win)"/>
+			<Marker FileName="alter\alter_l_basedoc_vschet.vip" Caption="Нумерованная закладка 1" Line="739" NumIndex="1" MarkerType="mtNumBookmark" Comment="_PickingReport_View.ShowPickingReportData(ifKatSopr.Nrec, BaseDoc.nrec)  ;"/>
+			<Marker FileName="Source\Mailing_PaymentTerm.vip" Caption="Нумерованная закладка 1" Line="387" NumIndex="1" MarkerType="mtNumBookmark" Comment="// тут разрыв сделать дл группировки просроченным в одно письмо"/>
+			<Marker FileName="Source\MERCURYPRJ\PickingReport_CopyBetweenDocs.vip" Caption="Нумерованная закладка 1" Line="163" NumIndex="1" MarkerType="mtNumBookmark" Comment="PkRLog_Ins.State    := 0 ; // &quot;0draft,1readyToSend,2send,3NotNeedToSen&quot;"/>
+			<Marker FileName="Source\MercuryPRJ\PickingReport_View.vip" Caption="Нумерованная закладка 1" Line="335" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="Source\LOADORDER\LoadOrder_CRPT.vip" Caption="Нумерованная закладка 1" Line="257" NumIndex="1" MarkerType="mtNumBookmark" Comment="spstep.CPRICELIST := co_priceList;"/>
+			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 2" Line="87" NumIndex="2" MarkerType="mtNumBookmark" Comment="spsopr_forGroup_mc"/>
+			<Marker FileName="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\ON_NSCHFDOPPR.vip" Caption="Нумерованная закладка 1" Line="899" NumIndex="1" MarkerType="mtNumBookmark" Comment="case TmpSchFact.TipUser of"/>
+			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 1" Line="196" NumIndex="1" MarkerType="mtNumBookmark" Comment="if TmpKatOrg.Unn = '7721546864' // вайлдберриз"/>
+			<Marker FileName="Source\debitor\DEBITOR.VIP" Caption="Нумерованная закладка 1" Line="421" NumIndex="1" MarkerType="mtNumBookmark" Comment="if sgetattr(1418,KATORG.Nrec,'ОДЗ') = '1' then {"/>
+			<Marker FileName="Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="323" NumIndex="1" MarkerType="mtNumBookmark" Comment="SendMailErrorCodes(_cATL_PickingRep_HEAD);"/>
 		</MarkerList>
 		<BreakPointList>
 			<BreakPoint FileName="alter_vschet.prj" Line="78"/>
-			<BreakPoint FileName="Source\CRPT_API_PowerShell_GetToken.Vpp" Line="75"/>
+			<BreakPoint FileName="Source\EMAIL\ATL_EmailRun.Vip" Line="12"/>
+			<BreakPoint FileName="alter\ALTER_DiadocExportDoc.vip" Line="1"/>
 		</BreakPointList>
-		<CompileMessengerList>
-			<CompileMessenger Name="D:\GAL_DEV\Projects\CRPT_API\CRPT_API.prj" DateTimeStart="44244,8326771065" DateTimeCompile="6,59490760881454E-5" StateHistory="False">
-				<CompileMessageList>
-					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="D:\GAL_DEV\Projects\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" SourceLine="6" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetToken входящий параметр: _OleGenerateGUID:String не используется." SourceFileName="D:\GAL_DEV\PROJECTS\CRPT_API\SOURCE\CRPT_API_PowerShell_GetToken.Vpp" SourceLine="87" SourceColumn="1">
-						<StackIncludeList>
-							<StackInclude FileName="D:\GAL_DEV\Projects\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" Line="218" Column="1"/>
-						</StackIncludeList>
-					</CompileMessage>
-					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_API_POWERSHELL.CheckFileFillValues&quot;, объявленный в D:\GAL_DEV\PROJECTS\CRPT_API\SOURCE\VETISAPI_POWERSHELL_OPENFILEEXCELSEARCHCELLS.VPP(72), не был использован" SourceFileName="D:\GAL_DEV\Projects\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" SourceLine="247" SourceColumn="5"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="D:\GAL_DEV\Projects\CRPT_API\SOURCE\CRPT_PRJ_tune.vip" SourceLine="73" SourceColumn="1"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="17.02.2021 19:59:09"/>
-				</CompileMessageList>
-			</CompileMessenger>
-		</CompileMessengerList>
 	</ProjectManager>
 </Viper>

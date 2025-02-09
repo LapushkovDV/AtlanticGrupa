@@ -418,7 +418,7 @@ handleEvent
     }
 // добавляем поиск по ВА ОДЗ = ДА, т.к. много дублей по наименованию появилось
    _loop KATORG Where((tmpForSelect.name==KATORG.NAME)) {
-     if sgetattr(1418,KATORG.Nrec,'ОДЗ') = '1' then {
+     if extAttr.sgetattr(1418,KATORG.Nrec,'ОДЗ') = '1' then {
       _cOrgTmp := KATORG.nrec;
       break;
      }

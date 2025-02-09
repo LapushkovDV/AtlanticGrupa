@@ -182,6 +182,8 @@ var  AF: AddressFunc;
  coAttr_EDIInvoicLen  = 'EDI-Invoic-Len';
  coAttr_EDOUTDAUTO    = 'EDO-UTD-auto';
 end;
+
+#include CRPT_API_Native.vih
 #make "Source\MercuryPRJ\MercuryPRJ_Import.vip"
 #make "Source\MercuryPRJ\MercuryPRJ_tune.vip"
 #make "Source\MercuryPRJ\MercuryPRJ_View.vip"

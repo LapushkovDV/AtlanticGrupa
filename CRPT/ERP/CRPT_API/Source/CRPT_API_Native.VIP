@@ -1,0 +1,175 @@
+#component "ATLANTIC"
+#doc
+CRPT_API используя функции Галактики
+#end
+#include CRPT_API_Native.vih
+
+Interface CRPT_API_Native 'CRPT_API' doaccept, Gray;
+
+
+Create view
+ var
+    _JSONBODY_CISESLIST
+  , CisesListHTTP : tptr;
+  _logFile : string;
+;
+
+Function GenerateNewFile: string; {
+ result := GetStringParameter('Files','OutputFilesDirectory',0)+ '\CISESLIST_'+olegenerateguid+'_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS-SSS');
+}
+
+function GetErrFile : string; {
+  result := GenerateNewFile+'_ERROR.log';;
+}
+
+function GetLogFile : string; {
+  if _logFile = '' then _logFile := GenerateNewFile+'.log';
+  result := _logFile;
+}
+
+function curdatetimestr: string; {
+  result := datetostr(Cur_date,'YYYY-MM-DD') + ' ' + timeToStr(Cur_time,'HH:MM:SS') + ' ';
+}
+
+Procedure MyLog(_str : string); {
+   if _logFile = '' then _logFile := GetLogFile;
+  logstrtofile(_logFile,curdatetimestr + _str)
+}
+
+
+Function InitCisesList : boolean; {
+  MyLog('InitCisesList start');
+ HttpConnect_Free(CisesListHTTP);
+ CisesListHTTP := HttpConnect_CreateEx('ya.ru', '', '', True);
+ HttpConnect_JSONObjectDestroy(CisesListHTTP, _JSONBODY_CISESLIST);
+ _JSONBODY_CISESLIST := HttpConnect_JsonArrayCreate(CisesListHTTP);
+  HttpConnect_JsonArrayAddString(CisesListHTTP, _JSONBODY_CISESLIST, ' ');
+  result := true;
+    MyLog('InitCisesList end');
+}
+
+Function AddCisToList(_Cis : string; var _err : string) : boolean; {
+ _try {
+   HttpConnect_JsonArrayAddString(CisesListHTTP, _JSONBODY_CISESLIST, _Cis);
+   MyLog('AddCisToList : ' + _Cis + ' OK');
+   _err := '';
+   result :=true;
+ }
+ _except
+  else {
+    _err := ExploreException;
+   MyLog('AddCisToList: '+_Cis+' ERROR' + _err);
+    result := false;
+  }
+}
+
+Function GetCisesListInfo : boolean; {
+   MyLog('GetCisesListInfo start');
+   result := false;
+
+  var address : string = 'https://markirovka.crpt.ru';
+
+  var httpCon: TPtr = HttpConnect_CreateEx(address, '', '', True);
+  var lAddUrl: TPtr = HttpConnect_CreateLongString(httpCon);
+  var lHeader: TPtr = HttpConnect_CreateLongString(httpCon);
+
+  HttpConnect_AddValueToLongString(httpCon, '/api/v3/true-api/cises/short/list?pg=water', lAddUrl);
+
+    HttpConnect_ResponseLogEnable(httpCon);
+    HttpConnect_SetUserAgent(httpCon, 'Mozilla/5.0');
+
+    HttpConnect_ResponseLogEnable(httpCon);
+
+
+    HttpConnect_AddValueToLongString(httpCon, 'Content-Type: application/json' + chr(13), lHeader);
+    HttpConnect_AddValueToLongString(httpCon, 'Accept: application/json' + chr(13), lHeader);
+
+    var lToken: TPtr = HttpConnect_CreateLongString(httpCon);
+
+    var _TokenFilePath : string = iCRPT_API_PowerShell.GetTokenPath;
+
+    MyLog('GetCisesListInfo GetTokenPath OK');
+
+    var lTokenValue : tptr = HttpConnect_LoadFromFile (httpCon, _TokenFilePath, cpUTF8);
+    MyLog('GetCisesListInfo HttpConnect_LoadFromFile OK');
+
+    HttpConnect_AddValueToLongString(httpCon, 'Authorization: Bearer ', lToken);
+    HttpConnect_AddLongValueToLongString(httpCon, lTokenValue, lToken);
+    MyLog('GetCisesListInfo HttpConnect_AddLongValueToLongString(httpCon, lTokenValue, lToken); OK');
+
+    HttpConnect_SolidStringInLongString(httpCon, lToken);
+    MyLog('GetCisesListInfo HttpConnect_SolidStringInLongString OK');
+
+    HttpConnect_AddLongValueToLongString(httpCon, lToken, lHeader);
+    MyLog('GetCisesListInfo HttpConnect_AddLongValueToLongString(httpCon, lToken, lHeader); OK');
+
+
+    var _JSONBODY_CISESLISTSTRING : tptr = HttpConnect_JSONObjectToString(httpCon, _JSONBODY_CISESLIST);
+
+/*
+    HttpConnect_SaveToFileEx(httpCon, _JSONBODY_CISESLISTSTRING, GetErrFile, cpUTF8, false);
+    HttpConnect_SaveToFileEx(httpCon, lAddUrl, GetErrFile, cpUTF8, false);
+    HttpConnect_SaveToFileEx(httpCon, lHeader, GetErrFile, cpUTF8, false);
+*/
+   var lResponse: TPtr;
+    _try
+    {
+      _try
+      {
+
+         lResponse:= HttpConnect_SendRequestPostJSON(httpCon, lAddUrl, lHeader, _JSONBODY_CISESLISTSTRING, false);
+         MyLog('GetCisesListInfo HttpConnect_SendRequestPostJSON OK');
+         HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false);
+         //MyLog('GetCisesListInfo HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false); OK');
+        result := true;
+      }
+      _except else {
+        MyLog('GetCisesListInfo HttpConnect_SendRequestPostJSON ERROR');
+      }
+      _finally {
+        //HttpConnect_DestroyLongString(httpCon, lResponse);
+      }
+    }
+    _finally
+    {
+      HttpConnect_DestroyLongString(httpCon, lHeader);
+      HttpConnect_DestroyLongString(httpCon, lToken);
+      HttpConnect_DestroyLongString(httpCon, lAddUrl);
+    }
+
+   if HttpConnect_LastError(httpCon) <> 0 then  {
+      mylog('ERROR Response ' + HttpConnect_LastErrorText(httpCon));
+      var _fileErr : string = GetErrFile;
+      HttpConnect_ResponseLogToFile(httpCon, _fileErr);
+      exit;
+    }
+
+
+  var _responseJSON : tptr = HttpConnect_JSONObjectByLongString(httpCon, lResponse);
+
+  if _responseJSON = 0 {
+      mylog('не смогли преобразовать ответ в JSON');
+      exit;
+    }
+
+
+/*
+  var JSON_MESSAGE : TPTr = HttpConnect_JSONObjectByName(m_service,_responseJSON,'requestedCis');
+    if JSON_MESSAGE = 0 {
+      _answer := 'Ошибка в структуре сообщения. Не найден объект MESSAGE';
+       HttpConnect_AddValueToLongString (m_service, _answer,_answerLong);
+      exit;
+    }
+*/
+}
+
+Function GetCisStatus (_Cis : string) : string; {
+
+}
+
+Function GetCisUtitCounts (_Cis : string) : longint; {
+
+}
+
+
+End. // Interface

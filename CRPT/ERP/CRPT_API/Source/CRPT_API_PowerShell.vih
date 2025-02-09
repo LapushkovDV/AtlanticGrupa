@@ -6,6 +6,7 @@ objInterface objCRPT_API_PowerShell;
   Function GetRequestToAPIInfoList(_cis: string) : boolean;
   Function GetRequestToAPIGetToken : boolean;
   Function GetRequestToAPIisExistCis(_Cis: string) : string;
+  Function GetTokenPath: string;
 end;
 
 vipInterface CRPT_API_PowerShell implements objCRPT_API_PowerShell

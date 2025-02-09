@@ -114,8 +114,7 @@ var _trustedConn : boolean = false;
   then result := 'Trusted_Connection=True'
   else result := /*'persist security info=True; Integrated Security=SSPI;'*/'User Id='+_SQLUserName+';Password='+_SQLPassword;
 }
-Function GetTokenPath: string;
-{
+Function GetTokenPath: string; {
    result := replace(sGetTune('USERTUNE.CRPT_PRJ.tokenPath')+'\','\\','\') + 'token.txt'
 }
 
