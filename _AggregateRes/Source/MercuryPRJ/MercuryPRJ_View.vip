@@ -1,10 +1,13 @@
 //#include MercuryPRJ_View.vih
+//#component "ATLANTIC"
 Interface MercuryPRJ_View 'Просмотр загруженных данных от Меркурия по накладной';
   show at (,, 91, 23);
 create view
 var _cSoprMain : comp;
 as select
   KatSopr.nrec
+, MercLog.nrec
+, ddd.state
 , if(MercLog.State = 0, 'Черновик'
      ,If(MercLog.State = 1,'Готово к отправке на E-MAIL'
         ,if(MercLog.State = 2,'Отправлено на E-MAIL'
@@ -17,13 +20,14 @@ as select
 from
    KatSopr
  , ATL_MERCURY_HEAD MercH
- , ATL_MERCURY_LOG MercLog
+ , ATL_MERCURY_LOG_new MercLog//ATL_MERCURY_LOG MercLog
  , SpSopr SpSopr1
  , ATL_MERCURY_Spec MercSp1
  , KatMc KatMC1
  , SpSopr SpSopr2
  , ATL_MERCURY_Spec MercSp2
  , KatMc KatMc2
+ , ATL_PICKINGREP_LOG ddd
 
  where ((
        _cSoprMain == KatSopr.Nrec

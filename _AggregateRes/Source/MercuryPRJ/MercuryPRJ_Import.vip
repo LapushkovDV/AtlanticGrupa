@@ -37,7 +37,8 @@ var
  ,_curLineType : string;
 
 as select katmc.nrec
-
+, ATL_MERCURY_LOG1.State
+// , ATL_MERCURY_LOG1.LogDate
 from
    KatMC
  , SpSopr
@@ -47,7 +48,7 @@ from
  , ATL_MERCURY_HEAD
  , ATL_MERCURY_Spec
  , ATL_MERCURY_Spec ATL_MERCURY_Spec_1
- , ATL_MERCURY_LOG
+ , ATL_MERCURY_LOG_new ATL_MERCURY_LOG1
 ;
 file fSrc;
 
@@ -209,7 +210,7 @@ procedure RasprPalletesBySpSopr;
      MyLog('Обрабатываем Файл '+tmpMercury_Head.filename);
      ATL_MERCURY_HEAD.buffer := type$ATL_MERCURY_HEAD(tmpMercury_Head.buffer);
      ATL_MERCURY_HEAD.nrec := 0h;
-     ATL_MERCURY_HEAD.cMercuryLog := ATL_MERCURY_LOG.nrec;
+     ATL_MERCURY_HEAD.cMercuryLog := ATL_MERCURY_LOG1.nrec;
      Insert Current ATL_MERCURY_HEAD;
       _loop tmpMercury_sp where ((tmpMercury_Head.nrec == tmpMercury_sp.cHead))
        {
@@ -332,12 +333,12 @@ HandleEvent
    Folder_input := Folder_To := _MaskFileName := '';
     _logFile := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'Import_Mercury_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
    deletefile(_logFile);
-      Insert ATL_MERCURY_LOG set
-         ATL_MERCURY_LOG.LogDate  := _curDateTime //"Дата-время запуска задания"
-       , ATL_MERCURY_LOG.State    := 0 // "0draft,1readyToSend,2send,3NotNeedToSen"
-       , ATL_MERCURY_LOG.Email    := sGetTune('USERTUNE.MercuryPRJ.E-MAILS') //String "E-Mails"
-       , ATL_MERCURY_LOG.cEmail   := sGetTune('USERTUNE.MercuryPRJ.copyE-MAILS') //String "Copy Emails"
-      ;
+      clearbuffer(tnATL_MERCURY_LOG1);
+        ATL_MERCURY_LOG1.LogDate  := _curDateTime; //"Дата-время запуска задания"
+        ATL_MERCURY_LOG1.State    := 0 ;// "0draft,1readyToSend,2send,3NotNeedToSen"
+        ATL_MERCURY_LOG1.Email    := sGetTune('USERTUNE.MercuryPRJ.E-MAILS'); //String "E-Mails"
+        ATL_MERCURY_LOG1.cEmail   := sGetTune('USERTUNE.MercuryPRJ.copyE-MAILS'); //String "Copy Emails"
+      Insert current ATL_MERCURY_LOG1;
 
    Folder_input   := sgettune('USERTUNE.MercuryPRJ.pathfrom');
    Folder_To      := sgettune('USERTUNE.MercuryPRJ.pathto');
@@ -380,9 +381,9 @@ HandleEvent
           MyLog('***');
     if _globalErr
      then {
-           ImportFileToMemo(ATL_MERCURY_LOG.Log, _logFile, false);
-           ATL_MERCURY_LOG.State    := 1; // "0draft,1readyToSend,2send,3NotNeedToSen"
-           Update current ATL_MERCURY_LOG;
+           ImportFileToMemo(ATL_MERCURY_LOG1.Log, _logFile, false);
+           ATL_MERCURY_LOG1.State    := 1; // "0draft,1readyToSend,2send,3NotNeedToSen"
+           Update current ATL_MERCURY_LOG1;
            stop; abort; exit;
           }
 
@@ -413,10 +414,10 @@ HandleEvent
      }
     RasprPalletesBySpSopr;
 
-     ImportFileToMemo(ATL_MERCURY_LOG.Log, _logFile, false);
-    update current ATL_MERCURY_LOG;
-      ATL_MERCURY_LOG.State := if(Getfirst fastfirstrow ATL_MERCURY_HEAD where ((ATL_MERCURY_LOG.nrec == ATL_MERCURY_HEAD.cMercuryLog)) = tsOK,1,3); // // "0draft,1readyToSend,2send,3NotNeedToSen"
-    update current ATL_MERCURY_LOG;
+     ImportFileToMemo(ATL_MERCURY_LOG1.Log, _logFile, false);
+    update current ATL_MERCURY_LOG1;
+      ATL_MERCURY_LOG1.State := if(Getfirst fastfirstrow ATL_MERCURY_HEAD where ((ATL_MERCURY_LOG1.nrec == ATL_MERCURY_HEAD.cMercuryLog)) = tsOK,1,3); // // "0draft,1readyToSend,2send,3NotNeedToSen"
+    update current ATL_MERCURY_LOG1;
 
     StopVisual('', 0);
   } // cmOK
