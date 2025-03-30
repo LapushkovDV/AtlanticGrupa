@@ -475,6 +475,8 @@ var node, childOne, childTwo: longInt;
   else
     createEcodCell(hPartDoc, 'DocumentFunctionCode', 'O');
   createEcodCell(hPartDoc, 'MessageType', if(doc_type = 31, UPD_type , 'SF'));
+  createEcodCell(hPartDoc, 'InvoiceFormatVersion', '2');
+
   if (doc_type = 31) {
     //Documents
     node := XMLDOMDoc_CreateElement(xmlDoc, 'Documents');
@@ -545,6 +547,7 @@ var node, childOne, childTwo: longInt;
     }
     createEcodCell(childOne, 'DeliveryNoteNumber', KsSrc1.nsopr);
     createEcodCell(childOne, 'DeliveryNoteDate', datetostr(KsSrc1.dsopr, ieHead.dFormat));
+    createEcodCell(childOne, 'DespatchDate', datetostr(katsopr.dsopr, ieHead.dFormat));
     createEcodCell(childOne, 'ReceivingAdviceNumber', stepdoc.kontpri); //???
     createEcodCell(childOne, 'ReceivingAdviceDate', datetostr(KsSrc1.dsopr, ieHead.dFormat)); //???
   }
@@ -561,6 +564,7 @@ var node, childOne, childTwo: longInt;
 
     createEcodCell(childOne, 'DeliveryNoteNumber', katsopr.nsopr);
     createEcodCell(childOne, 'DeliveryNoteDate', datetostr(katsopr.dsopr, ieHead.dFormat));
+    createEcodCell(childOne, 'DespatchDate', datetostr(katsopr.dsopr, ieHead.dFormat));
     createEcodCell(childOne, 'ReceivingAdviceNumber', stepdoc.kontpri);
     if longInt(stepdoc.dizvFact) != 0 {
       createEcodCell(childOne, 'ReceivingAdviceDate', datetostr(stepdoc.dizvFact, ieHead.dFormat));
@@ -647,9 +651,10 @@ var node, childOne, childTwo: longInt;
 
     createEcodCell(childOne, 'ManagingPerson', 'Лалетина Елена');//sGetTune('BOSS')
     createEcodCell(childOne, 'ManagingPersonFather', 'Викторовна');//'-'
-    if (doc_type = 31)
+    if (doc_type = 31)  {
       createEcodCell(childOne, 'ContactFunction', 'Менеджер по логистике');//'Генеральный директор'
-
+      createEcodCell(childOne, 'TypeAcceptionContact', '2');
+     }
     if not isneedCData(buyerILN) then {
       createEcodCell(childOne, 'AccountingContact', sGetTune('MAINBUH'));
      } else {
