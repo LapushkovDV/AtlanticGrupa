@@ -9,7 +9,7 @@
 		</ProjectVarList>
 		<CoreVip>
 			<VipParameters>
-				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.40.0\Exe</AtlDir>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.41.0\Exe</AtlDir>
 				<ComponentName>$[FileName]</ComponentName>
 				<StrictVip>True</StrictVip>
 				<EmptyBlockWarnings>True</EmptyBlockWarnings>
@@ -263,7 +263,7 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="frm.prj" PosX="69" PosY="81" OpenEditor="True" Active="True"/>
+			<File Name="frm.prj" PosX="48" PosY="74" OpenEditor="True" Active="True"/>
 			<File Name="torg12\metro_fld.frn" PosX="63" PosY="16" OpenEditor="True"/>
 			<File Name="s4fact\sign_vip.frn" PosX="30" PosY="14" OpenEditor="True"/>
 			<File Name="torg12\atl_fld.frn" PosX="45" PosY="11" OpenEditor="True"/>
@@ -280,16 +280,14 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="45527,3687043981" DateTimeCompile="0,000797916669398546" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="45703,5095141898" DateTimeCompile="0,000890902781975456" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtError" MessageText="шибка открытия (создания) компонента C:\Temp\Viper\Atlantis.res Процесс не может получить доступ к файлу, так как этот файл занят другим проце" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtError" MessageText="шибка открытия (создания) компонента C:\Temp\Viper\Viper.crf Процесс не может получить доступ к файлу, так как этот файл занят другим процессо" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : EanBarCode" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\C\C_COMMON\VIP\WORKARCHIVE\EanBarCode.vih" SourceLine="17" SourceColumn="25">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="4" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Тип &quot;TNAME&quot; уже определен в Випе" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\INC\dictypes.def" SourceLine="228" SourceColumn="33">
+					<CompileMessage MessageType="mtWarning" MessageText="Тип &quot;TNAME&quot; уже определен в Випе" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\INC\dictypes.def" SourceLine="231" SourceColumn="33">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="10" Column="1"/>
 						</StackIncludeList>
@@ -324,7 +322,7 @@
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="31" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iPrnSoprFunMem" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\VIP\PrnSoprFun.vih" SourceLine="1039" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iPrnSoprFunMem" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\VIP\PrnSoprFun.vih" SourceLine="1050" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="35" Column="1"/>
 						</StackIncludeList>
@@ -351,42 +349,42 @@
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationTaxationInfo" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="35" SourceColumn="3">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationTaxationInfo" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="36" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationAccountsInfo" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="47" SourceColumn="3">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationAccountsInfo" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="48" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationBanksList" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="58" SourceColumn="3">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationBanksList" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="59" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationDefaultBank" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="71" SourceColumn="3">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationDefaultBank" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="72" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : HistoryNameInfo" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="78" SourceColumn="3">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : HistoryNameInfo" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="79" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationIndividualInfo" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="84" SourceColumn="3">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationIndividualInfo" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="85" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
@@ -400,9 +398,8 @@
 					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="При формальном описании интерфейса L_BASEDOC::GETPOSMASSVOLDO пропущено описание параметров" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\ETC\GetPosMassVol.vip" SourceLine="68" SourceColumn="5"/>
 					<CompileMessage MessageType="mtWarning" MessageText="При формальном описании интерфейса L_SOPRDOC::GETPOSMASSVOLSOPR пропущено описание параметров" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\frm\ETC\GetPosMassVol.vip" SourceLine="130" SourceColumn="5"/>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="80" Column="1"/>
 						</StackIncludeList>
@@ -412,9 +409,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="87" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="80" Column="1"/>
 						</StackIncludeList>
@@ -424,9 +420,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="87" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="80" Column="1"/>
 						</StackIncludeList>
@@ -436,9 +431,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="87" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="80" Column="1"/>
 						</StackIncludeList>
@@ -448,9 +442,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="87" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="80" Column="1"/>
 						</StackIncludeList>
@@ -460,9 +453,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="87" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="80" Column="1"/>
 						</StackIncludeList>
@@ -472,9 +464,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="87" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="80" Column="1"/>
 						</StackIncludeList>
@@ -484,9 +475,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="87" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="80" Column="1"/>
 						</StackIncludeList>
@@ -496,9 +486,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="87" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="80" Column="1"/>
 						</StackIncludeList>
@@ -508,9 +497,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="87" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="80" Column="1"/>
 						</StackIncludeList>
@@ -520,9 +508,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="87" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="80" Column="1"/>
 						</StackIncludeList>
@@ -532,9 +519,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_droga.rtf" Line="87" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_metro.rtf" Line="82" Column="1"/>
 						</StackIncludeList>
@@ -544,9 +530,8 @@
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_metro.rtf" Line="89" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\GetPersSign.vpp" SourceLine="12" SourceColumn="18">
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" SourceLine="19" SourceColumn="18">
 						<StackIncludeList>
-							<StackInclude FileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\FRM\GetPersSign.frn" Line="8" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12var.frn" Line="77" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\FRM\TORG12\torg12_val.rtf" Line="92" Column="1"/>
 						</StackIncludeList>
@@ -676,7 +661,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GAL" SourceLine="99" SourceColumn="87"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GA" SourceLine="101" SourceColumn="87"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="23.08.2024 8:52:05"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="15.02.2025 12:14:59"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

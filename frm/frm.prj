@@ -102,6 +102,7 @@ var TOA   : TotalOrganizationAttributes;
 //TTN01new
 #make "ttnnew\p4_ttn_droga.rtf"
 #make "ttnnew\RTF4_TTN_ALL_20220301_TOVN_atlantic.rtf"
+#make "ttnnew\RTF4_TTN_ALL_20220301_TOVN_tander_puling.rtf"
 
 //Реестр сертификатов для Ленты и Метро
 #define RNum 'Номер'
@@ -156,4 +157,3 @@ var TOA   : TotalOrganizationAttributes;
 // добавляем текст снизу в счет на оплату
 //#make "order\PRBDOC_1010_RTF_PRBDOC.rtf"
 #make "order\PRBDOC_1010_RTF_PRBDOC_portrait.rtf"
-
