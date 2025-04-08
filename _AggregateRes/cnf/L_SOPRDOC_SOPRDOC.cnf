@@ -75,7 +75,7 @@ object 'L_SOPRDOC::SOPRDOC' : InterfaceWindow {
       Title = 'Грузополучатель';
       HelpLine = 'Грузополучатель';
       FieldName = 'GruzToAtl.Shortname';
-      Index = 8;
+      Index = 9;
       DefaultWidth = 26;
     } // basedoc.nodoc : Column
 

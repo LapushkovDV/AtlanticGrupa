@@ -1,34 +1,15 @@
 #statusline "statgal"
-//#include PreDefs.inc;
-#include galnet.inc end;
-
-const
-#include GloConst.inc;
-#include Galnet.csc;
-#include Galnet.ccm;
-#include Money.ccm
-#include Money.csc //без Galnet.inc надо
-#include fldcolor.inc
-#include TUNES.INC
-
-end;
+#include GalNet.inc end;
+#include GloVars.inc
 type TPtr = longint;
 #params
 [vip]
 LicenseControlInclude=""
 #end
 
-#include DicTypes.def
-#include GloDefs.inc
-#include StatDefs.inc
-
-#define ComponentVersion  
-#include ExtAttr.vih
 #include DocProtector.vih
-
-#include ExtClass.vih
-#include ExtClass.var  // piExtClass
-#include countsal.vih
+#include AdrFunc.vih         // Функции работы с адресами
+#include marker.vih
 #include NalogFun.vih
 #include DOfuns.vih
 #include DOfuns.var
@@ -37,12 +18,27 @@ LicenseControlInclude=""
 #include GetKau.vih
 #include GetKau.var
 #include CreateTune.vih
-#include marker.vih
+#include ExtClass.vih
+#include ExtClass.var  // piExtClass
+#include countsal.vih
+/*
+#include DicTypes.def
+#include GloDefs.inc
+#include StatDefs.inc
+
+#define ComponentVersion  
+#include ExtAttr.vih
+
+
+
+
+
 #include UKSfuns.VIH
 #include SDfuns.VIH
 #include MSview.VIH
-#include AdrFunc.vih         // Функции работы с адресами
 
+
+*/
 #include DiadocFuncsExt.vih
 #include DiadocFuncsExt.var
 
@@ -106,7 +102,7 @@ var     extAttr: iExtAttr;
 
 #make "alter\alter_L_PRICES_GETKLPR.vip"
 
-#make "alter\ALTER_ON_NSCHFDOPPR.vip"
+// тут косяк с вайлдберис... наши исправления ломают стандарт, исходноки надо свежие #make "alter\ALTER_ON_NSCHFDOPPR.vip"
 
 #make "alter\ALTER_DiadocExportDoc.vip"
 #make "alter\ALTER_DiadocExportDoc_tune.vip"
@@ -182,11 +178,11 @@ var  AF: AddressFunc;
  coAttr_EDIInvoicLen  = 'EDI-Invoic-Len';
  coAttr_EDOUTDAUTO    = 'EDO-UTD-auto';
 end;
-
 #include CRPT_API_Native.vih
+#make "Source\MercuryPRJ\MercuryPRJ_View.vip"
 #make "Source\MercuryPRJ\MercuryPRJ_Import.vip"
 #make "Source\MercuryPRJ\MercuryPRJ_tune.vip"
-#make "Source\MercuryPRJ\MercuryPRJ_View.vip"
+
 #make "Source\MercuryPRJ\PickingReport_tune.vip"
 #make "Source\MercuryPRJ\PickingReport_Import.vip"
 #make "Source\MercuryPRJ\PickingReport_View.vip"

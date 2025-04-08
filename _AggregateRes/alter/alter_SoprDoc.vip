@@ -13,7 +13,7 @@ create view
  , getMercuryFieldColor() (Fieldname = MercuryFieldColor)
  , GetPickingReportField() (Fieldname = PickingReportField)
  , getPickingReportFieldColor() (Fieldname = PickingReportFieldColor)
- , GruzToAtl.shortname
+
 from
  ATL_MERCURY_HEAD
  , ATL_PickingRep_HEAD
