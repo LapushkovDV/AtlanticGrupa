@@ -236,7 +236,7 @@ Function GetCisesListInfo(var _err : string) : boolean; {
     }
 
   result := GetCisesListInfo(_err);
-  putTableToDBF(#tCisesList, GenerateNewFile+'_tCisesList.dbf', ptfFullTable);
+  //putTableToDBF(#tCisesList, GenerateNewFile+'_tCisesList.dbf', ptfFullTable);
 }
 
 Function GetCisStatus (_Cis : string) : string; {
