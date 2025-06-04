@@ -690,7 +690,9 @@ ATL_PickingRep_Spec.DATAMATRIX = 'FULL'
              _loop ATL_PickingRep_Spec where ((ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec.cHead))
                                            and ATL_PickingRep_Spec.sapCode = _sapCode
                                            and ATL_PickingRep_Spec.SSCCMANUF <> ''
-                                           and ATL_PickingRep_Spec.DATAMATRIX = 'FULL'
+                                           and (ATL_PickingRep_Spec.DATAMATRIX = 'FULL'
+                                             or ATL_PickingRep_Spec.DATAMATRIX = ''   // в диадок так делаем...
+                                               )
                {
 
                  mylog('ATL_PickingRep_Spec.DATAMATRIX = FULL ATL_PickingRep_Spec.SSCCMANUF='+ATL_PickingRep_Spec.SSCCMANUF);

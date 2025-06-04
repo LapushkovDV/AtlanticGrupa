@@ -268,12 +268,12 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="28" PosY="91" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="31" PosY="58" OpenEditor="True"/>
 			<File Name="alter\Alter_iDiaDocSend.vip" PosX="49" PosY="56" OpenEditor="True"/>
 			<File Name="alter\ALTER_ON_NSCHFDOPPR.vip" PosX="88" PosY="36" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="19" PosY="370" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="2" PosY="67" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="68" PosY="281" OpenEditor="True" Active="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="69" PosY="177" OpenEditor="True" Active="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="68" PosY="281" OpenEditor="True"/>
 			<File Name="alter\alter_l_basedoc_vschet.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="Source\EMAIL\ATL_EmailRun.Vip" PosX="20" PosY="157" OpenEditor="True"/>
 		</FileList>
