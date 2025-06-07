@@ -17,7 +17,7 @@ Procedure FillPS1_CrptAPI_GetHistoryCIS(_OleGenerateGUID, _CIS : string); {
     MyWriteLN(' $response = $null                                                                  ');
     MyWriteLN(' try                                                                                ');
     MyWriteLN(' {                                                                                  ');
-    MyWriteLN('  $response = Invoke-WebRequest  -Uri "https://markirovka.crpt.ru/api/v3/true-api/cises/history?cis=$CIS" -Method post -Headers $headers -ContentType "application/json"');
+    MyWriteLN('  $response = Invoke-WebRequest  -Uri "https://markirovka.crpt.ru/api/v3/true-api/cises/history?cis=$CIS" -Method post -Headers $headers -ContentType "application/json"  -UseBasicParsing ');
     MyWriteLN('                                                                                                                           ');
     MyWriteLN('  $responseObject = ConvertFrom-Json $response.Content                                                                     ');
     MyWriteLN(' }                                                                                                                         ');

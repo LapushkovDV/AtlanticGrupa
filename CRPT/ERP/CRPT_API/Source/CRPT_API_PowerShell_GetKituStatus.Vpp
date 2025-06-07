@@ -32,7 +32,7 @@ MyWriteLN('Function GetResponse() {                                             
 MyWriteLN('    try {                                                                                                    ');
 MyWriteLN('        $token = Get-Content -Path $tokenPath                                                                ');
 MyWriteLN('        $headers = @{Authorization = "Bearer " + $token}                                                     ');
-MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/doc/$docOid/body?pg=water" -Headers $headers -ContentType "application/json;charset=UTF-8" -Method Get ');
+MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/doc/$docOid/body?pg=water" -Headers $headers -ContentType "application/json;charset=UTF-8" -Method Get  -UseBasicParsing ');
 MyWriteLN('                                                                                                              ');
 MyWriteLN('        If ( $response.StatusCode -eq 200) {                                                                  ');
 MyWriteLN('          $responseObj = ConvertFrom-Json $response.Content;                                                  ');

@@ -255,7 +255,7 @@ Procedure FillPS1_CrptAPI_GetInformation(_OleGenerateGUID: string; _cis : string
     MyWriteLN('    $headers = @{ Authorization = "Bearer " + $token}                                   ');
 
     if (_cis = ''){
-      MyWriteLN('    $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/listV2?pg=water&packs=PACK&packageTypes=LEVEL2" -Headers $headers | ConvertFrom-Json ');
+      MyWriteLN('    $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/listV2?pg=water&packs=PACK&packageTypes=LEVEL2" -Headers $headers  -UseBasicParsing  | ConvertFrom-Json ');
     } else {
       MyWriteLN('    $_cis = "'+_cis+'";                                                               ');
       MyWriteLN('    $body = "[$_cis]" ');

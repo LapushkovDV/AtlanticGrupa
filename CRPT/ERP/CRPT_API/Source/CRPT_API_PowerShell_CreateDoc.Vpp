@@ -73,7 +73,7 @@ MyWriteLN('            signature = $signedDoc;                                  
 MyWriteLN('        } | ConvertTo-Json                                                                                   ');
 MyWriteLN('                                                                                                             ');
 MyWriteLN('                                                                                                             ');
-MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/lk/documents/create?pg=water" -Headers $headers -Body $Body -ContentType "application/json;charset=UTF-8" -Method Post ');
+MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/lk/documents/create?pg=water" -Headers $headers  -UseBasicParsing  -Body $Body -ContentType "application/json;charset=UTF-8" -Method Post ');
 MyWriteLN('                                                                                                             ');
 MyWriteLN('        #$response                                                                                           ');
 MyWriteLN('                                                                                                             ');
