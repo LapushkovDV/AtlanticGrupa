@@ -17,7 +17,7 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('    try {                                                                                                                                                 ');
     MyWriteLN('        $token = Get-Content -Path $tokenPath -ErrorAction SilentlyContinue                                                                               ');
     MyWriteLN('        $headers = @{ Authorization = "Bearer " + $token}                                                                                                 ');
-    MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/product/search?limit=100&offset=0&page=0&" -Headers $headers | ConvertFrom-Json  ');
+    MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/product/search?limit=100&offset=0&page=0&" -Headers $headers  -UseBasicParsing  | ConvertFrom-Json  ');
     MyWriteLN('                                                                                                                                                          ');
     MyWriteLN('    }                                                                                                                                                     ');
     MyWriteLN('    catch {                                                                                                                                               ');
@@ -42,8 +42,8 @@ Procedure FillPS1_CrptAPI_GetToken(_OleGenerateGUID: string; _empty : string); {
     MyWriteLN('Function GetToken() {                                                                                                                                     ');
     MyWriteLN('    try {                                                                                                                                                 ');
     MyWriteLN('                                                                                                                                                          ');
-    MyWriteLN('        #$response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/auth/cert/key" | ConvertFrom-Json                                                ');
-    MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://markirovka.crpt.ru/api/v3/auth/cert/key" | ConvertFrom-Json                                           ');
+    MyWriteLN('        #$response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v3/auth/cert/key"  -UseBasicParsing | ConvertFrom-Json                                                ');
+    MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://markirovka.crpt.ru/api/v3/auth/cert/key"  -UseBasicParsing  | ConvertFrom-Json                                           ');
     MyWriteLN('        Add-Content -Path $fileLog -Value $($(Get-Date).ToString("yyyy-MM-dd HH:mm:ss") + " Function GetToken. OK! Invoke-WebRequest  -Uri https://markirovka.crpt.ru/api/v3/auth/cert/key") -Encoding Oem');
     MyWriteLN('        Remove-Item $dataPath -Force                                                                                                                       ');
     MyWriteLN('        Remove-Item $signedDocPath -Force                                                                                                                  ');
