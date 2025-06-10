@@ -9,7 +9,7 @@
 		</ProjectVarList>
 		<CoreVip>
 			<VipParameters>
-				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.40.0\Exe</AtlDir>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.41.0\Exe</AtlDir>
 				<ComponentName>$[FileName]</ComponentName>
 				<StrictVip>True</StrictVip>
 				<EmptyBlockWarnings>True</EmptyBlockWarnings>
@@ -265,13 +265,14 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="CRPT_API.prj" PosX="58" PosY="97" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell.vip" PosX="51" PosY="215" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="86" PosY="35" OpenEditor="True" Active="True"/>
+			<File Name="CRPT_API.prj" PosX="11" PosY="96" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell.vip" PosX="62" PosY="230" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_Viewer_InfoTools.VIP" PosX="78" PosY="95" OpenEditor="True"/>
 			<File Name="..\..\..\_AggregateRes\alter\ALTER_DiadocExportDoc.vip" PosX="48" PosY="29" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_AggrDocsList.VIP" PosX="40" PosY="336" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_PowerShell_isExistCis.Vpp" PosX="43" PosY="76" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell_isExistCis_new.Vpp" PosX="46" PosY="46" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell_IdentifyToolsInfo.Vpp" PosX="149" PosY="259" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_Native.vip" PosX="53" PosY="250" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="CRPT_API.prj" Priority="0">
@@ -310,22 +311,22 @@
 			<BreakPoint FileName="Source\CRPT_API_ImportDocs.VIP" Line="26"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45549,3904075" DateTimeCompile="0,000391111105273012" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45763,2788043981" DateTimeCompile="0,000431712964200415" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" SourceLine="7" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetKituStatus входящий параметр: _OleGenerateGUID:String не используется." SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetKituStatus.Vpp" SourceLine="61" SourceColumn="1">
 						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" Line="251" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" Line="250" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_isExistCis.Vpp" SourceLine="81" SourceColumn="3">
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_isExistCis_new.Vpp" SourceLine="98" SourceColumn="3">
 						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" Line="253" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" Line="252" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_isExistCis.Vpp" SourceLine="81" SourceColumn="90">
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_isExistCis_new.Vpp" SourceLine="98" SourceColumn="90">
 						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" Line="253" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" Line="252" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_API_POWERSHELL.CheckFileFillValues&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\VETISAPI_POWERSHELL_OPENFILEEXCELSEARCHCELLS.VPP(72), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" SourceLine="289" SourceColumn="5"/>
@@ -397,6 +398,8 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="165" SourceColumn="17"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="442" SourceColumn="63"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="447" SourceColumn="63"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="12" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="138" SourceColumn="7"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
@@ -410,7 +413,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="395" SourceColumn="144"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="383" SourceColumn="139"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="14.09.2024 9:22:45"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="16.04.2025 6:42:06"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

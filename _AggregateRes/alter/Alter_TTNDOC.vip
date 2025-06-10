@@ -1,20 +1,23 @@
 ////////////// подменяем обработчик событий 
 #component "L_TTNDOC"
 alter interface TTNDOC;
+/*
+create view
+ as select
+  extAttr.sgetattr(coBaseDoc, BaseDoc.nRec,'Пуллинг. ФРЦ доставки') (fieldname = pullingOrg)
+;
+*/
 
 Panel paTTNDoc
   Table TTNDoc;
 Handleevent
 cmPick:
 {
-
- if Inherited::handleevent(cmPick) = heAbort
-  {
+ if Inherited::handleevent(cmPick) = heAbort  {
     stop;abort;exit;
   }
   case curfield of
-   #MARAVT.NMARAVT:
-   {
+   #MARAVT.NMARAVT: {
      case pTable of
        coBaseDoc:
         if ExtTTNInNakl AND IsValid(#TTNDoc) // пир 102.39722
@@ -25,10 +28,127 @@ cmPick:
         }
         end;
    }
+/*
+ #pullingOrg: {
+     var _cOrg : comp = extAttr.cogetattr(coBaseDoc, BaseDoc.nRec,'Пуллинг. ФРЦ доставки');
+       RunInterface(L_KATORG::GETKATOR
+               ,_cOrg         // код организации
+               , 0  // код верхнего уровня (пока невозвращаемый из-за ошибки тлантиса)
+               , False     // true - позволяет выбрать группу, а не только контрагента
+               , 0           // код группы
+               , 0
+              );          // код банка
+        if getFirst KatOrg Where ((_cOrg == KatOrg.nrec)) = tsOK {
+         extAttr.cosetattr(coBaseDoc, BaseDoc.nRec,'Пуллинг. ФРЦ доставки',KatOrg.nrec,KatOrg.name);
+        }
+   }
+*/
+   end;
+}
+/*
+cmdelonprotect:
+{
+ if Inherited::handleevent(cmdelonprotect) = heAbort
+  {
+    stop;abort;exit;
+  }
+  case curfield of
+   #pullingOrg: {
+     extAttr.cosetattr(coBaseDoc, BaseDoc.nRec,'Пуллинг. ФРЦ доставки',0h,'')
+   }
    end;
    rereadrecord;
 }
+*/
 end;  // HandleEvent Panel paTTNDoc
 end;  // Panel paTTNDoc
+/*
+ExtendFormats SCTTNDOC01;
 
+screen SCTTNDOC01;
+Fields
+ pullingOrg : PickButton, protect;
+<<
+
+
+
+
+`ПУЛЛИНГ ФРЦ` .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>
+end;
+
+
+
+
+Handleevent  // uinterafse
+cmPick:
+{
+  message('0-2');
+ if Inherited::handleevent(cmPick) = heAbort  {
+    //stop;abort;exit;
+  }
+  message('0-3');
+  case curfield of
+  #pullingOrg: {
+     var _cOrg : comp = extAttr.cogetattr(coBaseDoc, BaseDoc.nRec,'Пуллинг. ФРЦ доставки');
+       RunInterface(L_KATORG::GETKATOR
+               ,_cOrg         // код организации
+               , 0  // код верхнего уровня (пока невозвращаемый из-за ошибки тлантиса)
+               , False     // true - позволяет выбрать группу, а не только контрагента
+               , 0           // код группы
+               , 0
+              );          // код банка
+        if getFirst KatOrg Where ((_cOrg == KatOrg.nrec)) = tsOK {
+         extAttr.cosetattr(coBaseDoc, BaseDoc.nRec,'Пуллинг. ФРЦ доставки',KatOrg.nrec,KatOrg.name);
+        }
+   }
+   else {
+     message('PutCommand');
+     PutCommand(cmpick);
+     message('processcommand');
+     processcommand(cmpick)
+   }
+   end;
+}
+cmdelonprotect:
+{
+ if Inherited::handleevent(cmdelonprotect) = heAbort
+  {
+    stop;abort;exit;
+  }
+  case curfield of
+   #pullingOrg: {
+     extAttr.cosetattr(coBaseDoc, BaseDoc.nRec,'Пуллинг. ФРЦ доставки',0h,'')
+   }
+   end;
+   rereadrecord;
+}
+end;
+*/
 end. // interface

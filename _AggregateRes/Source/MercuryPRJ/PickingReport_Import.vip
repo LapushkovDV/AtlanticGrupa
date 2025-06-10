@@ -38,9 +38,15 @@ from
  , ATL_PickingRep_Spec
  , ATL_PickingRep_HEAD ATL_PickingRep_HEAD_chk
  , ATL_PickingRep_Spec ATL_PickingRep_Spec_chk
+ , ATL_PickingRep_Spec ATL_PickingRep_Spec_chk2
  , katsopr katsopr_Chk
+ , SpSopr SpSopr_Chk
 // , ATL_PickingRep_Spec ATL_PickingRep_Spec_1
  , ATL_PickingRep_LOG
+ , kated
+ , katOtped katOtpedShtuka
+ , katOtped
+ , katmc katmc_chk
 ;
 file fSrc;
 
@@ -192,7 +198,7 @@ procedure CheckFileFillValues(_FilePath, _filename : string);
 
 function CheckCisInCRPT(_cis : string) : string; cacheable;
 {
-  var _nmbTryMax : byte = 10;  // если на той стороне лежит апи... сделам несколько попыток
+  var _nmbTryMax : byte = 2;  // если на той стороне лежит апи... сделам несколько попыток
   var _nmbTry : byte = 0;
  for(_nmbTry := 0; _nmbTry <= _nmbTryMax; _nmbTry++)
   {
@@ -237,7 +243,7 @@ procedure SendMailErrorCodes(_cATL_PickingRep_HEAD : comp);
 
       pATL_EmailRun.EmailSend(
                                  _Email // _email_addr :string ;
-                                ,'! Ошибка при обработке данных ГИС МТ по документу ' +katsopr_Chk.nSopr
+                                ,'! Ошибка при обработке данных ЧЗ по документу ' +katsopr_Chk.nSopr
                                 ,'' //_email_attach1 :string ;
                                 ,'' //_email_attach2 :string ;
                                 ,'' //_email_attach3 :string ;
@@ -247,14 +253,51 @@ procedure SendMailErrorCodes(_cATL_PickingRep_HEAD : comp);
                                 ,'' //_email_addr_from :string=''
                              );
 }
+function get_cEdShtuka (_name : string): comp; cacheable; {
+  result := 0h;
+  if( getfirst kated where upcase(kated.name) = _name) = tsOK
+     then result := kated.nrec;
+}
+
+Function checkCount(_cATL_PickingRep_HEAD : comp; _SapCode : string; var _countSpSopr, _countPicking : double) : boolean; {
+  result := false;
+
+  var _cEdShtuka :comp = get_cEdShtuka('ШТУКА');
+   _countSpSopr := _countPicking := 0;
+  if getfirst ATL_PickingRep_HEAD_chk where ((_cATL_PickingRep_HEAD == ATL_PickingRep_HEAD_chk.nrec)) <> tsOK then exit;
+  if getfirst katsopr_Chk where ((ATL_PickingRep_HEAD_chk.cSopr == katsopr_Chk.nrec)) <> tsok then exit;
+
+  _loop spsopr_chk where ((katsopr_Chk.nrec == spsopr_chk.cSopr)) {
+    if spsopr_chk.prmc <> 1 then continue;
+    if getfirst katmc_chk where ((spsopr_chk.cmcusl == katmc_chk.nrec)) = tsOK {
+      if katmc_chk.barkod2 = _SapCode or  katmc_chk.barkod = _SapCode {
+         if (GetFirst KatOtpEd where (( spsopr_chk.cOtpEd == KatOtpEd.nRec )) = tsOk)
+             if (getfirst fastfirstrow katOtpedShtuka where ((1 == katOtpedShtuka.PrMc
+                                            and KatOtpEd.cMcUsl == katOtpedShtuka.cMcUsl))
+                                      and katOtpedShtuka.ckated = _cEdShtuka
+                ) = tsOK {
+                 _countSpSopr := _countSpSopr + spsopr_chk.kolfact*KATOTPED.KOEF/katOtpedShtuka.KOEF
+                }
+      }
+    }
+  }
+  _loop ATL_PickingRep_Spec_chk2 where ((_cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk2.cHead)) {
+    if ATL_PickingRep_Spec_chk2.SapCode = _SapCode then _countPicking := _countPicking + ATL_PickingRep_Spec_chk2.count
+  }
+  if _countSpSopr = _countPicking then result := true;
+
+}
 
 procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
 {
- iCRPT_API_PowerShell.GetRequestToAPIGetToken ;
+
+  iCRPT_API_PowerShell.GetRequestToAPIGetToken ;
+
+  startnewvisual(vtRotateVisual,vftimer+vfbreak+vfconfirm,'CheckCisInCRPTbyATL_PickingRep_HEAD',0);
   if getfirst ATL_PickingRep_HEAD_chk where ((_cATL_PickingRep_HEAD == ATL_PickingRep_HEAD_chk.nrec)) <> tsOK then exit;
 
   update current ATL_PickingRep_HEAD_chk set ATL_PickingRep_HEAD_chk.wStatus := 1;
-
+/*
  _loop ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead))
   {
         update current ATL_PickingRep_Spec_chk set
@@ -279,7 +322,72 @@ procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
        update current ATL_PickingRep_HEAD_chk set ATL_PickingRep_HEAD_chk.wStatus := 2;
      }
   }
+  */
+   setvisualheader('Обращение к API ЧЗ');
+  var iCRPT_API_Native : CRPT_API_Native new;
+  iCRPT_API_Native.ClearCisesList;
+
+ _loop ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead)) {
+
+        update current ATL_PickingRep_Spec_chk set
+           ATL_PickingRep_Spec_chk.ErrDescr := ''
+         , ATL_PickingRep_Spec_chk.wStatus  := 1
+        ;
+
+     var _cis: string = if(upcase(ATL_PickingRep_Spec_chk.DataMatrix) = 'FULL'
+                                           ,ATL_PickingRep_Spec_chk.SSCCManuf
+                                           ,if(trim(ATL_PickingRep_Spec_chk.DataMatrix) <> ''
+                                             ,ATL_PickingRep_Spec_chk.DataMatrix
+                                             ,ATL_PickingRep_Spec_chk.SSCCManuf
+                                              )
+                                           );
+     var _err : string = '';
+     iCRPT_API_Native.AddCisToList(_cis);
+   }
+   var _err : string = '';
+   if not iCRPT_API_Native.GetCisesListInfo(_err) then {
+     _loop ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead)) {
+         update current ATL_PickingRep_Spec_chk set
+                 ATL_PickingRep_Spec_chk.ErrDescr := 'Ошибка: ' + _err
+               , ATL_PickingRep_Spec_chk.wStatus  := 2
+              ;
+         update current ATL_PickingRep_HEAD_chk set ATL_PickingRep_HEAD_chk.wStatus := 2;
+     }
+   }
+   setvisualheader('Просмотр статусов и подсчет количества по позициям');
+   _loop ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead)) {
+           var _cis: string = if(upcase(ATL_PickingRep_Spec_chk.DataMatrix) = 'FULL'
+                                           ,ATL_PickingRep_Spec_chk.SSCCManuf
+                                           ,if(trim(ATL_PickingRep_Spec_chk.DataMatrix) <> ''
+                                             ,ATL_PickingRep_Spec_chk.DataMatrix
+                                             ,ATL_PickingRep_Spec_chk.SSCCManuf
+                                              )
+                                           );
+
+      var _status : string = iCRPT_API_Native.GetCisStatus(_cis);
+      var _count  : longint = iCRPT_API_Native.GetCisUtitCounts(_cis);
+       ATL_PickingRep_Spec_chk.STATUSPOS := _status ;
+       ATL_PickingRep_Spec_chk.count     := _count ;
+       if _status <> 'INTRODUCED' {
+         ATL_PickingRep_Spec_chk.ErrDescr := 'Ошибка: status <> INTRODUCED ';
+         ATL_PickingRep_Spec_chk.wStatus  := 2 ;
+         update current ATL_PickingRep_HEAD_chk set ATL_PickingRep_HEAD_chk.wStatus := 2;
+       }
+       update current ATL_PickingRep_Spec_chk;
+    }
+   _loop ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead)) {
+       var _countSpSopr, _countPicking :double= 0;
+       if not checkCount(_cATL_PickingRep_HEAD, ATL_PickingRep_Spec_chk.SapCode,  _countSpSopr, _countPicking) {
+         ATL_PickingRep_Spec_chk.ErrDescr := 'Ошибка: количество по позиции в Галактике "'+_countSpSopr+'" не равно в ЧЗ "'+_countPicking+'" | '+ATL_PickingRep_Spec_chk.ErrDescr;
+         ATL_PickingRep_Spec_chk.wStatus  := 2 ;
+         update current ATL_PickingRep_HEAD_chk set ATL_PickingRep_HEAD_chk.wStatus := 2;
+         update current ATL_PickingRep_Spec_chk;
+      }
+
+    }
+
   SendMailErrorCodes(_cATL_PickingRep_HEAD);
+  stopvisual;
 }
 
 

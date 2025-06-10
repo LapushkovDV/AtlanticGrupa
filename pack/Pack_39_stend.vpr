@@ -9,7 +9,7 @@
 		</ProjectVarList>
 		<CoreVip>
 			<VipParameters>
-				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.40.0\Exe</AtlDir>
+				<AtlDir>C:\Galaktika\res\src\Viper 5.5\bin\5.5.41.0\Exe</AtlDir>
 				<ComponentName>$[FileName]</ComponentName>
 				<StrictVip>True</StrictVip>
 				<EmptyBlockWarnings>True</EmptyBlockWarnings>
@@ -272,16 +272,16 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<FileList>
-			<File Name="pack.prj" PosX="58" PosY="23" OpenEditor="True" Active="True"/>
+			<File Name="pack.prj" PosX="53" PosY="23" OpenEditor="True" Active="True"/>
 			<File Name="DrogaFunc\drogaFunc.vip" PosX="44" PosY="18" OpenEditor="True"/>
 		</FileList>
 		<MarkerList>
 			<Marker FileName="FILLTMPTBL\FillTmpTbl.frm" Caption="Нумерованная закладка 1" Line="143" NumIndex="1" MarkerType="mtNumBookmark" Comment="recNakl.Class_OsnOtp     := substr(recNakl.Class_OsnOtp, 1, pos('ДО ', recNakl.Class_OsnOtp)- 2);"/>
 		</MarkerList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" DateTimeStart="45567,5067886458" DateTimeCompile="0,000422002311097458" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" DateTimeStart="45703,510876794" DateTimeCompile="0,000593113421928138" StateHistory="False">
 				<CompileMessageList>
-					<CompileMessage MessageType="mtWarning" MessageText="Тип &quot;TNAME&quot; уже определен в Випе" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\INC\dictypes.def" SourceLine="228" SourceColumn="33">
+					<CompileMessage MessageType="mtWarning" MessageText="Тип &quot;TNAME&quot; уже определен в Випе" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\INC\dictypes.def" SourceLine="231" SourceColumn="33">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="4" Column="1"/>
 						</StackIncludeList>
@@ -321,7 +321,7 @@
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="17" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iPrnSoprFunMem" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\VIP\PrnSoprFun.vih" SourceLine="1039" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iPrnSoprFunMem" SourceFileName="C:\GALAKTIKA_STEND\FRM\SRC\COMPSRC\L\L_PRNSOPR\VIP\PrnSoprFun.vih" SourceLine="1050" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\pack.prj" Line="21" Column="1"/>
 						</StackIncludeList>
@@ -369,7 +369,7 @@
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;." SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="02.10.2024 12:10:23"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="15.02.2025 12:16:31"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

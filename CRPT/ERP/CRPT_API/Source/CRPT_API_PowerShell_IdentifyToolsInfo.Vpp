@@ -258,7 +258,9 @@ Procedure FillPS1_CrptAPI_GetInformation(_OleGenerateGUID: string; _cis : string
       MyWriteLN('    $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/listV2?pg=water&packs=PACK&packageTypes=LEVEL2" -Headers $headers | ConvertFrom-Json ');
     } else {
       MyWriteLN('    $_cis = "'+_cis+'";                                                               ');
-      MyWriteLN('    $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/info?cis=$_cis&pg=water" -Headers $headers | ConvertFrom-Json ');
+      MyWriteLN('    $body = "[$_cis]" ');
+      //M y W r i t e L N('    $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/info?cis=$_cis&pg=water" -Headers $headers | ConvertFrom-Json ');
+      MyWriteLN('    $response = Invoke-WebRequest  -Uri "https://markirovka.crpt.ru/api/v3/true-api/cises/short/list?pg=water" -Headers $headers -Body $body -Method Post -ContentType "application/json;charset=UTF-8" ' );
     }
 
     MyWriteLN('    If ( $response -ne $null) {                                                                ');
@@ -336,7 +338,7 @@ Procedure FillPS1_CrptAPI_GetInformation(_OleGenerateGUID: string; _cis : string
     MyWriteLN('                $npp = $npp + 1                                                                          ');
     MyWriteLN('                Write-Host "Запрос информации о КИ(Child1). Запись в буферную таблицу";   ');
     MyWriteLN('                                                                                                           ');
-    MyWriteLN('                #$ch =  Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/info?cis=$child&pg=water" -Headers $headers | ConvertFrom-Json   ');
+//    MyWriteLN('                #$ch =  Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/info?cis=$child&pg=water" -Headers $headers | ConvertFrom-Json   ');
     MyWriteLN('                                                                                                      ');
     MyWriteLN('                $item = New-Object psobject                                                           ');
     MyWriteLN('                $item | Add-Member -type NoteProperty -Name "'+coPS1_IdntToolsInf_cis+                  '" -Value $ch.cis                   ');

@@ -4,7 +4,7 @@
 		<ProjectName>VetisAPI</ProjectName>
 		<ActiveIndex>1</ActiveIndex>
 		<ProjectVarList>
-			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika\exe\"/>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika_stend\exe\"/>
 			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\vetis\"/>
 		</ProjectVarList>
 		<CoreVip>
@@ -20,7 +20,7 @@
 					$[AtlPath]\Source\
 					..\..\inc\*
 					..\..\..\SourceGal\*
-					..\..\..\..\..\..\FRM\*
+					..\..\..\..\..\..\..\Galaktika_stend\FRM\*
 					..\*
 				</IncludeList>
 				<ResourceList>
@@ -255,8 +255,8 @@
 				<VipDatabase>
 					<Name>по умолчанию</Name>
 					<DatabaseDriver>1</DatabaseDriver>
-					<DatabaseID>gal_abm</DatabaseID>
-					<SqlServerParameters>ncacn_ip_tcp:RUMOW-VMGAL01.atlantic.grupa[1997]</SqlServerParameters>
+					<DatabaseID>gal_abm_stend</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:10.2.1.142[1998]</SqlServerParameters>
 					<LogPas>True</LogPas>
 					<UserOffice>1000</UserOffice>
 					<UserName>dmitry.lapushkov</UserName>
@@ -273,7 +273,7 @@
 			<File Name="Source\VetisAPI_Viewer_STOCK.vip" PosX="69" PosY="166" OpenEditor="True"/>
 			<File Name="Source\VetisAPI_PowerShell.VIP" PosX="73" PosY="143" OpenEditor="True"/>
 			<File Name="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_GetStockList.Vpp" PosX="61" PosY="196" OpenEditor="True"/>
-			<File Name="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_getDocumentList.Vpp" PosX="60" PosY="273" OpenEditor="True" Active="True"/>
+			<File Name="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_getDocumentList.Vpp" PosX="60" PosY="274" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="VetisAPI.prj" Priority="0">
@@ -303,7 +303,7 @@
 			<BreakPoint FileName="alter_vschet.prj" Line="78"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\VetisAPI\ERP\VetisAPI.prj" DateTimeStart="45717,4255796528" DateTimeCompile="0,000323125001159497" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\res\src\_GIT\AtlanticGrupa\VetisAPI\ERP\VetisAPI.prj" DateTimeStart="45703,5187989468" DateTimeCompile="0,000321423613058869" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\VetisAPI\ERP\SOURCE\VetisAPI_PowerShell.VIP" SourceLine="6" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;VETISAPI_POWERSHELL.CheckFileFillValues&quot;, объявленный в C:\GALAKTIKA\RES\SRC\_GIT\ATLANTICGRUPA\VETISAPI\ERP\SOURCE\VETISAPI_POWERSHELL_OPENFILEEXCELSEARCHCELLS.VPP(72), не был использован" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\VetisAPI\ERP\SOURCE\VetisAPI_PowerShell.VIP" SourceLine="369" SourceColumn="5"/>
@@ -315,7 +315,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Не указан порядок округления. Автоматическое округление до 4 символов" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\VetisAPI\ERP\SOURCE\VetisAPI_Viewer_STOCK.VIP" SourceLine="286" SourceColumn="85"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\VetisAPI\ERP\SOURCE\VetisAPI_Viewer_Product.VIP" SourceLine="71" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\res\src\_GIT\AtlanticGrupa\VetisAPI\ERP\SOURCE\VetisAPI_Viewer_SpKau.VIP" SourceLine="69" SourceColumn="1"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="01.03.2025 10:13:18"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="15.02.2025 12:27:32"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

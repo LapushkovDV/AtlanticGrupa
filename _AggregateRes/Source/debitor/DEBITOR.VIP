@@ -411,7 +411,19 @@ handleEvent
 
 
     PutData(1,1,p.cauntRows[1],1,tmpForSelect.name,0,'string',0h);
-   if(getfirst KATORG Where((tmpForSelect.name==KATORG.NAME)))=tsOk
+
+    var _cOrgTmp : comp = 0h;
+    if(getfirst KATORG Where((tmpForSelect.name==KATORG.NAME)))=tsOk {
+      _cOrgTmp := KATORG.nrec;
+    }
+// добавляем поиск по ВА ОДЗ = ДА, т.к. много дублей по наименованию появилось
+   _loop KATORG Where((tmpForSelect.name==KATORG.NAME)) {
+     if extAttr.sgetattr(1418,KATORG.Nrec,'ОДЗ') = '1' then {
+      _cOrgTmp := KATORG.nrec;
+      break;
+     }
+   }
+   if(getfirst KATORG Where((_cOrgTmp==KATORG.nrec)))=tsOk
     {
       var MaxDaysDolg: double = 0;
 

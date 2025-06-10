@@ -373,6 +373,8 @@ end;
     PkRSp2.SSCCWMS    'SSCCWMS'     ('SSCCWMS'): [10],protect;
     PkRSp2.DataMatrix 'DataMatrix'  ('DataMatrix'): [10],protect;
     PkRSp2.SSCCManuf  'SSCCManuf'   ('SSCCManuf'): [10],protect;
+    PkRSp2.count      'кол-во UNIT' ('количество позиций UNIT'): [3],protect;
+    PkRSp2.StatusPos  'Статус в ЧЗ' ('Статус позиции в ЦЗ'): [8],protect,   {Font = {backcolor = if(PkRSp2.StatusPos <> 'INTRODUCED', colorerror,0);} };
     PkRSp2.ErrDescr   'ErrDescr  ОпиErrDescr описание ошибки'('Описание ошибки, если пусто, значит все ОК'): [20],protect;
   end;  // Browse brShowPickingRepData1SpSopr
 tableevent table PkRSp2 ;

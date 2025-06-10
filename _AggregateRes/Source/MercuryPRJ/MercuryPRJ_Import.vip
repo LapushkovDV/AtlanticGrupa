@@ -37,7 +37,8 @@ var
  ,_curLineType : string;
 
 as select katmc.nrec
-
+, ATL_MERCURY_LOG1.State
+// , ATL_MERCURY_LOG1.LogDate
 from
    KatMC
  , SpSopr
@@ -47,7 +48,7 @@ from
  , ATL_MERCURY_HEAD
  , ATL_MERCURY_Spec
  , ATL_MERCURY_Spec ATL_MERCURY_Spec_1
- , ATL_MERCURY_LOG
+ , ATL_MERCURY_LOG_new ATL_MERCURY_LOG1
 ;
 file fSrc;
 
@@ -100,6 +101,7 @@ function getValueByNumberCol(_line: string; _col : word): string;
 }
 procedure InsertTmpHead(_line,_filename: string);
 {
+   mylog(' _filename = ' + _filename);
    clearbuffer(tntmpMercury_Head);
   tmpMercury_Head.DO_Num    := getValueByNumberCol(_line,coFileH_Col_DO_Num);
   tmpMercury_Head.Relevant  := getValueByNumberCol(_line,coFileH_Col_Relevant);
@@ -114,6 +116,7 @@ procedure InsertTmpHead(_line,_filename: string);
       set tmpMercury_Head.isOK := false;
       set tmpMercury_Head.ErrDescr := tmpMercury_Head.ErrDescr + '|'+ ' ERROR!! не нашли накладную к ДО "' +tmpMercury_Head.DO_Num+ '"' ;
      update current tmpMercury_Head;
+    mylog(' ERROR!! ' + tmpMercury_Head.DO_Num + '+не нашли накладную к ДО')  ;
   }
 }
 procedure InsertTmpSpec(_line : string);
@@ -145,14 +148,15 @@ procedure InsertTmpSpec(_line : string);
       set tmpMercury_SP.ErrDescr := tmpMercury_SP.ErrDescr + '|'+ ' ERROR!! пустой SAP_CODE' ;
       }
    if tmpMercury_SP.CNT = 0       {
-       mylog(' ERROR!! нулевое количество');
+
+       mylog(' ERROR!! нулевое количество ');
        set tmpMercury_Head.isOK := false;
        set tmpMercury_SP.ErrDescr := tmpMercury_SP.ErrDescr + '|'+ ' ERROR!! нулевое количество';
       }
    if tmpMercury_SP.cMC = 0h and tmpMercury_SP.SAP_CODE  <> ''  {
-       mylog(' ERROR!! не найдена МЦ по SAP_CODE = "'+tmpMercury_SP.SAP_CODE+'"');
+       mylog(' ERROR!! не найдена МЦ по SAP_CODE = "'+tmpMercury_SP.SAP_CODE+'" ');
        set tmpMercury_Head.isOK := false;
-       set tmpMercury_SP.ErrDescr := tmpMercury_SP.ErrDescr + '|'+ ' ERROR!! не найдена МЦ по SAP_CODE = "'+tmpMercury_SP.SAP_CODE+'"';
+       set tmpMercury_SP.ErrDescr := tmpMercury_SP.ErrDescr + '|'+ ' ERROR!! не найдена МЦ по SAP_CODE = "'+tmpMercury_SP.SAP_CODE+'" ';
      }
     update current tmpMercury_Head;
     update current tmpMercury_SP;
@@ -170,11 +174,13 @@ procedure CheckFileFillValues(_FilePath, _filename : string);
  if existFile(_FilePath+_filename) { //try discover file
         _try {
           fSrc.openFile(_FilePath + _filename, stOpenRead);
+          mylog('***start _filename = ' + _filename);
           while not fSrc.eof() do {
             fSrc.readLn(_fileLine);
             _fileLine := replace( replace(_fileLine,';;','; ;'),';;','; ;'); //крутит крушу у функции extractdelimitedword иначе 0_0
             InsertTmpTables(_fileLine, _filename);
            }
+          mylog('***end _filename = ' + _filename);
         }
         _finally {
           fSrc.close;
@@ -204,10 +210,18 @@ procedure RasprPalletesBySpSopr;
      MyLog('Обрабатываем Файл '+tmpMercury_Head.filename);
      ATL_MERCURY_HEAD.buffer := type$ATL_MERCURY_HEAD(tmpMercury_Head.buffer);
      ATL_MERCURY_HEAD.nrec := 0h;
-     ATL_MERCURY_HEAD.cMercuryLog := ATL_MERCURY_LOG.nrec;
+     ATL_MERCURY_HEAD.cMercuryLog := ATL_MERCURY_LOG1.nrec;
      Insert Current ATL_MERCURY_HEAD;
       _loop tmpMercury_sp where ((tmpMercury_Head.nrec == tmpMercury_sp.cHead))
        {
+         if getfirst SpSopr where ((tmpMercury_Head.cSopr == spsopr.cSopr
+                                    and tmpMercury_sp.cmc == spsopr.cmcusl)) <> tsOK {
+             ATL_MERCURY_Spec.buffer   := type$ATL_MERCURY_Spec(tmpMercury_sp.buffer);
+             ATL_MERCURY_Spec.nrec     := 0h;
+             ATL_MERCURY_Spec.cHead    := ATL_MERCURY_HEAD.nrec;
+             ATL_MERCURY_Spec.ERRDESCR := ATL_MERCURY_Spec.ERRDESCR + '| нет в позиции накладной';
+            Insert Current ATL_MERCURY_Spec;
+         }
          _loop SpSopr where ((tmpMercury_Head.cSopr == spsopr.cSopr
                                     and tmpMercury_sp.cmc == spsopr.cmcusl))
            {
@@ -319,12 +333,12 @@ HandleEvent
    Folder_input := Folder_To := _MaskFileName := '';
     _logFile := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'Import_Mercury_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
    deletefile(_logFile);
-      Insert ATL_MERCURY_LOG set
-         ATL_MERCURY_LOG.LogDate  := _curDateTime //"Дата-время запуска задания"
-       , ATL_MERCURY_LOG.State    := 0 // "0draft,1readyToSend,2send,3NotNeedToSen"
-       , ATL_MERCURY_LOG.Email    := sGetTune('USERTUNE.MercuryPRJ.E-MAILS') //String "E-Mails"
-       , ATL_MERCURY_LOG.cEmail   := sGetTune('USERTUNE.MercuryPRJ.copyE-MAILS') //String "Copy Emails"
-      ;
+      clearbuffer(tnATL_MERCURY_LOG1);
+        ATL_MERCURY_LOG1.LogDate  := _curDateTime; //"Дата-время запуска задания"
+        ATL_MERCURY_LOG1.State    := 0 ;// "0draft,1readyToSend,2send,3NotNeedToSen"
+        ATL_MERCURY_LOG1.Email    := sGetTune('USERTUNE.MercuryPRJ.E-MAILS'); //String "E-Mails"
+        ATL_MERCURY_LOG1.cEmail   := sGetTune('USERTUNE.MercuryPRJ.copyE-MAILS'); //String "Copy Emails"
+      Insert current ATL_MERCURY_LOG1;
 
    Folder_input   := sgettune('USERTUNE.MercuryPRJ.pathfrom');
    Folder_To      := sgettune('USERTUNE.MercuryPRJ.pathto');
@@ -367,9 +381,9 @@ HandleEvent
           MyLog('***');
     if _globalErr
      then {
-           ImportFileToMemo(ATL_MERCURY_LOG.Log, _logFile, false);
-           ATL_MERCURY_LOG.State    := 1; // "0draft,1readyToSend,2send,3NotNeedToSen"
-           Update current ATL_MERCURY_LOG;
+           ImportFileToMemo(ATL_MERCURY_LOG1.Log, _logFile, false);
+           ATL_MERCURY_LOG1.State    := 1; // "0draft,1readyToSend,2send,3NotNeedToSen"
+           Update current ATL_MERCURY_LOG1;
            stop; abort; exit;
           }
 
@@ -400,10 +414,10 @@ HandleEvent
      }
     RasprPalletesBySpSopr;
 
-     ImportFileToMemo(ATL_MERCURY_LOG.Log, _logFile, false);
-    update current ATL_MERCURY_LOG;
-      ATL_MERCURY_LOG.State := if(Getfirst fastfirstrow ATL_MERCURY_HEAD where ((ATL_MERCURY_LOG.nrec == ATL_MERCURY_HEAD.cMercuryLog)) = tsOK,1,3); // // "0draft,1readyToSend,2send,3NotNeedToSen"
-    update current ATL_MERCURY_LOG;
+     ImportFileToMemo(ATL_MERCURY_LOG1.Log, _logFile, false);
+    update current ATL_MERCURY_LOG1;
+      ATL_MERCURY_LOG1.State := if(Getfirst fastfirstrow ATL_MERCURY_HEAD where ((ATL_MERCURY_LOG1.nrec == ATL_MERCURY_HEAD.cMercuryLog)) = tsOK,1,3); // // "0draft,1readyToSend,2send,3NotNeedToSen"
+    update current ATL_MERCURY_LOG1;
 
     StopVisual('', 0);
   } // cmOK

@@ -66,6 +66,19 @@ object 'L_SOPRDOC::SOPRDOC' : InterfaceWindow {
       DefaultWidth = 26;
     } // STEPDOC.NKONT : Column
 
+     object 'GruzToAtl.Shortname' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Грузополучатель';
+      HelpLine = 'Грузополучатель';
+      FieldName = 'GruzToAtl.Shortname';
+      Index = 9;
+      DefaultWidth = 26;
+    } // basedoc.nodoc : Column
+
      object 'katpodr.name' : Column {
       Original = False;
       Visible = True;

@@ -4,8 +4,8 @@ drop table ATL_MERCURY_HEAD;
 drop table ATL_MERCURY_SPEC;
 */
 
-Create table  ATL_MERCURY_LOG "Лог запуска заданий импорта WMS"
-With table_Code = 31599
+Create table  ATL_MERCURY_LOG_new "Лог запуска заданий импорта WMS"
+With table_Code = 31605
 With replace
 with tableoptions Branched
 (

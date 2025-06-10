@@ -1,3 +1,4 @@
+// _isInvoice
 // _coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not _isInvoice) - атрбут коробки в десадве только для десадва, остальные типы документов не должны использоваться
 // XML заполняем спецификацию
 function get_cEdShtuka (_name : string): comp; cacheable;
@@ -286,7 +287,12 @@ _nppSPSOPR++;
         }
   }
   var _InvoiceQuantity : double = 0;
-  createEcodCell(ChildTwo, 'ItemDescription', katmc.name);//'<![CDATA['
+   if not isneedCData(buyerILN) then {
+     createEcodCell(ChildTwo, 'ItemDescription', katmc.name);//'<![CDATA['
+    } else {
+     createEcodCell(ChildTwo, 'ItemDescription', '![CDATA[' +katmc.name + ']]');//'<![CDATA['
+    }
+
   if (doc_type = 3) or (doc_type = 31) {//только для СФ и УПД
    _InvoiceQuantity :=if(  _coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice))
                            , string(_qtyLenta, 0, 3)
@@ -684,7 +690,9 @@ ATL_PickingRep_Spec.DATAMATRIX = 'FULL'
              _loop ATL_PickingRep_Spec where ((ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec.cHead))
                                            and ATL_PickingRep_Spec.sapCode = _sapCode
                                            and ATL_PickingRep_Spec.SSCCMANUF <> ''
-                                           and ATL_PickingRep_Spec.DATAMATRIX = 'FULL'
+                                           and (ATL_PickingRep_Spec.DATAMATRIX = 'FULL'
+                                             or ATL_PickingRep_Spec.DATAMATRIX = ''   // в диадок так делаем...
+                                               )
                {
 
                  mylog('ATL_PickingRep_Spec.DATAMATRIX = FULL ATL_PickingRep_Spec.SSCCMANUF='+ATL_PickingRep_Spec.SSCCMANUF);

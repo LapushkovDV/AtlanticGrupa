@@ -1,4 +1,10 @@
+#statusline "statgal"
+#include GalNet.inc end;
+#include GloVars.inc
+
+/*
 #include PreDefs.inc;
+#include GloVars.inc
 const
 #include GloConst.inc;
 #include TUNES.INC
@@ -9,13 +15,12 @@ const
 #include Money.csc //без Galnet.inc надо
 
 end;
+*/
 #params
 [vip]
 LicenseControlInclude=""
 #end
 
-#include DicTypes.def
-#include GloDefs.inc
 //-----------------------------------
 // Описания объектов
 //-----------------------------------
@@ -92,7 +97,9 @@ with index
 //----------------------------------
 #include Source\CRPT_API_PowerShell_VarsTypes.vpp
 #include Source\CRPT_API_PowerShell.vih
+
 #make "source\CRPT_API_PowerShell.vip"
+
 #make "source\CRPT_API_Viewer_InfoTools.vip"
 #make "source\CRPT_API_InfoToolsLoader.vip"
 #make "source\CRPT_API_PowerShellPost.vip"
@@ -104,6 +111,6 @@ with index
 #make "source\CRPT_API_ShipmentDocsList.vip"
 #make "source\CRPT_API_ReceiptDocsList.vip"
 
-
+#make "source\CRPT_API_Native.vip"
 //-------------------------------------
 // Импорт

@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<Viper Version="5005020000">
+	<ProjectManager>
+		<ProjectName>CRPT_API</ProjectName>
+		<ActiveIndex>1</ActiveIndex>
+		<ProjectVarList>
+			<ProjectVar Name="$[GalExe]" Value="C:\Galaktika\GAL\exe\"/>
+			<ProjectVar Name="$[Tmp]" Value="C:\Temp\Viper\"/>
+			<ProjectVar Name="$[GalSrc]" Value="C:\Galaktika\GAL\Frm\SRC\"/>
+			<ProjectVar Name="$[AtlPath]" Value="C:\Galaktika\Viper\bin\5.5.40.0\Source\"/>
+		</ProjectVarList>
+		<CoreVip>
+			<VipParameters>
+				<AtlDir>C:\Galaktika\Viper\bin\5.5.40.0\Exe</AtlDir>
+				<ComponentName>$[FileName]</ComponentName>
+				<StrictVip>True</StrictVip>
+				<EmptyBlockWarnings>True</EmptyBlockWarnings>
+				<ClearResource>True</ClearResource>
+			</VipParameters>
+			<VipFiles>
+				<IncludeList>
+					$[AtlPath]\*
+					$[ProjectPath]\*
+					$[GalSrc]\INC\*
+					$[GalSrc]\Components\lih
+					$[GalSrc]\CompSrc\*
+					..\..\..\_AggregateRes\Source\Loadorder\
+				</IncludeList>
+				<ResourceList>
+					$[GalExe]\C_AlterCumulative.res
+					$[GalExe]\C_CheckKBU.res
+					$[GalExe]\C_CheckOper.res
+					$[GalExe]\C_Common.res
+					$[GalExe]\C_CONST.res
+					$[GalExe]\C_Corpo.res
+					$[GalExe]\C_Denominator.res
+					$[GalExe]\C_ExpImp.res
+					$[GalExe]\C_ExtClass.res
+					$[GalExe]\C_ExtFun.res
+					$[GalExe]\C_GalHelp.res
+					$[GalExe]\C_Gantt.res
+					$[GalExe]\C_Join.res
+					$[GalExe]\C_MAILER.res
+					$[GalExe]\C_OLAP.res
+					$[GalExe]\C_Palette.res
+					$[GalExe]\C_Partner.res
+					$[GalExe]\C_Splash_RU.res
+					$[GalExe]\C_StatLine.res
+					$[GalExe]\C_TEMPLATE.res
+					$[GalExe]\C_Tree.res
+					$[GalExe]\C_TreeTune.res
+					$[GalExe]\C_Tune.res
+					$[GalExe]\C_UserManual.res
+					$[GalExe]\C_WEBSERVICES.res
+					$[GalExe]\compdata.res
+					$[GalExe]\DictCache.res
+					$[GalExe]\F_Alg.res
+					$[GalExe]\F_An.res
+					$[GalExe]\F_Avizo.res
+					$[GalExe]\F_BackLog.res
+					$[GalExe]\F_BankDocF.res
+					$[GalExe]\F_BuhRep.res
+					$[GalExe]\F_BuhSchet.res
+					$[GalExe]\F_CashBank.res
+					$[GalExe]\F_CLOSCH.res
+					$[GalExe]\F_Common.res
+					$[GalExe]\F_DIFFRATE.res
+					$[GalExe]\F_DistAct.res
+					$[GalExe]\F_DistCred.res
+					$[GalExe]\F_DistPl.res
+					$[GalExe]\F_DragM.res
+					$[GalExe]\F_ExtAn.res
+					$[GalExe]\F_FA.res
+					$[GalExe]\F_Filial.res
+					$[GalExe]\F_FpAbstr.res
+					$[GalExe]\F_FpAddFld.res
+					$[GalExe]\F_FPBUDGET.res
+					$[GalExe]\F_FPCATALOG.res
+					$[GalExe]\F_FpHashAn.res
+					$[GalExe]\F_FpKatH.res
+					$[GalExe]\F_FPOBOROT.res
+					$[GalExe]\F_GetAn.res
+					$[GalExe]\F_Iski.res
+					$[GalExe]\F_KatDoc.res
+					$[GalExe]\F_KatKod.res
+					$[GalExe]\F_MBP.res
+					$[GalExe]\F_MBPPub.res
+					$[GalExe]\F_NalogReg.res
+					$[GalExe]\F_Oborot.res
+					$[GalExe]\F_OFP.res
+					$[GalExe]\F_OFPPR.res
+					$[GalExe]\F_OS.res
+					$[GalExe]\F_OSInvCard.res
+					$[GalExe]\F_OSMOVE.res
+					$[GalExe]\F_OSOper.res
+					$[GalExe]\F_OSRep.res
+					$[GalExe]\F_PAT.res
+					$[GalExe]\F_PlansSch.res
+					$[GalExe]\F_PlPor.res
+					$[GalExe]\F_PlPorRep.res
+					$[GalExe]\F_Podot.res
+					$[GalExe]\F_Post.res
+					$[GalExe]\F_RTXO.res
+					$[GalExe]\F_Saldo.res
+					$[GalExe]\F_SFO.res
+					$[GalExe]\F_Shtraf.res
+					$[GalExe]\F_SoprHoz.res
+					$[GalExe]\F_Taxes.res
+					$[GalExe]\F_TaxReport.res
+					$[GalExe]\F_TBYReport.res
+					$[GalExe]\F_Template.res
+					$[GalExe]\F_TreeNew.res
+					$[GalExe]\F_TXO.res
+					$[GalExe]\F_TXOAPI.res
+					$[GalExe]\F_USERREPORT.res
+					$[GalExe]\F_Utils.res
+					$[GalExe]\F_ValutDoc.res
+					$[GalExe]\F_Vedom.res
+					$[GalExe]\F_Veks.res
+					$[GalExe]\F_VZACHET.res
+					$[GalExe]\F_XlsRep.res
+					$[GalExe]\L_AdvRep.res
+					$[GalExe]\L_BaseDoc.res
+					$[GalExe]\L_Box.res
+					$[GalExe]\L_CalcUsl.res
+					$[GalExe]\L_Cessia.res
+					$[GalExe]\L_Common.res
+					$[GalExe]\L_Consig.res
+					$[GalExe]\L_CRM.res
+					$[GalExe]\L_Dogovor.res
+					$[GalExe]\L_Dover.res
+					$[GalExe]\L_GrPlat.res
+					$[GalExe]\L_GrSch.res
+					$[GalExe]\L_GrSopr.res
+					$[GalExe]\L_Kassa.res
+					$[GalExe]\L_KatNazna.res
+					$[GalExe]\L_KatOrg.res
+					$[GalExe]\L_KatParty.res
+					$[GalExe]\L_KontrBal.res
+					$[GalExe]\L_MakeDO.res
+					$[GalExe]\L_MakeNakl.res
+					$[GalExe]\L_MCU.res
+					$[GalExe]\L_Milk.res
+					$[GalExe]\L_MOL.res
+					$[GalExe]\L_MoveCell.res
+					$[GalExe]\L_NalNakl.res
+					$[GalExe]\L_Nalog.res
+					$[GalExe]\L_NIOKR.res
+					$[GalExe]\L_Ostatki.res
+					$[GalExe]\L_PlanPR.res
+					$[GalExe]\L_Prices.res
+					$[GalExe]\L_PrnSopr.res
+					$[GalExe]\L_Realting.res
+					$[GalExe]\L_RemDoc.res
+					$[GalExe]\L_Remont.res
+					$[GalExe]\L_RemPotr.res
+					$[GalExe]\L_RemRep.res
+					$[GalExe]\L_RepBaseDoc.res
+					$[GalExe]\L_RepOper.res
+					$[GalExe]\L_Reserve.res
+					$[GalExe]\L_RetTara.res
+					$[GalExe]\L_Rozn.res
+					$[GalExe]\L_SaldoMtr.res
+					$[GalExe]\L_SerialN.res
+					$[GalExe]\L_SF.res
+					$[GalExe]\L_Skid.res
+					$[GalExe]\L_Sklad.res
+					$[GalExe]\L_SklRep.res
+					$[GalExe]\L_Smeta.res
+					$[GalExe]\L_SoprBase.res
+					$[GalExe]\L_SoprDoc.res
+					$[GalExe]\L_SpExch.res
+					$[GalExe]\L_TTNdoc.res
+					$[GalExe]\L_Uks.res
+					$[GalExe]\L_UksMTO.res
+					$[GalExe]\L_UksPlans.res
+					$[GalExe]\L_UksRep.res
+					$[GalExe]\L_Val.res
+					$[GalExe]\L_VPr.res
+					$[GalExe]\L_Wood.res
+					$[GalExe]\M_Control.res
+					$[GalExe]\M_DVS.res
+					$[GalExe]\M_EIXML.res
+					$[GalExe]\M_GETPOTR.res
+					$[GalExe]\M_MDADoc.res
+					$[GalExe]\M_MES.res
+					$[GalExe]\M_MnPlan.res
+					$[GalExe]\M_Quality.res
+					$[GalExe]\M_Scripts.res
+					$[GalExe]\M_Serv.res
+					$[GalExe]\M_SklPlan.res
+					$[GalExe]\M_TPP.res
+					$[GalExe]\M_Transp.res
+					$[GalExe]\M_UP.res
+					$[GalExe]\Z_Basement.res
+					$[GalExe]\Z_Calc.res
+					$[GalExe]\Z_Calendar.res
+					$[GalExe]\Z_Chart.res
+					$[GalExe]\Z_Distribute.res
+					$[GalExe]\Z_ExpImp.res
+					$[GalExe]\Z_FIAS.res
+					$[GalExe]\Z_FOT.res
+					$[GalExe]\Z_FSZN.res
+					$[GalExe]\Z_Harm.res
+					$[GalExe]\Z_KatPodr.res
+					$[GalExe]\Z_LSchet.res
+					$[GalExe]\Z_Menu.res
+					$[GalExe]\Z_MP.res
+					$[GalExe]\Z_NDFL.res
+					$[GalExe]\Z_PayFSS.res
+					$[GalExe]\Z_PayRep.res
+					$[GalExe]\Z_PFRep.res
+					$[GalExe]\Z_Pivot.res
+					$[GalExe]\Z_Report.res
+					$[GalExe]\Z_Reserv.res
+					$[GalExe]\Z_RList.res
+					$[GalExe]\Z_Service.res
+					$[GalExe]\Z_Sredn.res
+					$[GalExe]\Z_Staff.res
+					$[GalExe]\Z_StaffBuilder.res
+					$[GalExe]\Z_StaffCat.res
+					$[GalExe]\Z_StaffDopReports.res
+					$[GalExe]\Z_StaffIerRep.res
+					$[GalExe]\Z_StaffIF.res
+					$[GalExe]\Z_StaffMenu.res
+					$[GalExe]\Z_StaffMoves.res
+					$[GalExe]\Z_StaffNastr.res
+					$[GalExe]\Z_StaffOrders.res
+					$[GalExe]\Z_StaffPensioner.res
+					$[GalExe]\Z_StaffRecruiting.res
+					$[GalExe]\Z_StaffRepeat.res
+					$[GalExe]\Z_StaffReports.res
+					$[GalExe]\Z_StaffSHR.res
+					$[GalExe]\Z_StaffTest.res
+					$[GalExe]\Z_Statis.res
+					$[GalExe]\Z_TarStav.res
+					$[GalExe]\Z_WT.res
+					$[GalExe]\Z_Zar.res
+					$[GalExe]\Z_ZarNastr.res
+					$[GalExe]\Z_ZarRep.res
+				</ResourceList>
+				<OutputResource>..\..\..\..\..\GAL\exe\_res\CRPT_.res</OutputResource>
+				<SubServientResource>$[Tmp]\Atlantis.res</SubServientResource>
+				<ConfWorkResource>$[Tmp]\Viper.crf</ConfWorkResource>
+				<OutputDirectory>$[Tmp]\IncVipLo</OutputDirectory>
+				<TemporaryDirectory>$[Tmp]\</TemporaryDirectory>
+			</VipFiles>
+			<VipDatabase>
+				<Name>по умолчанию</Name>
+			</VipDatabase>
+			<VipFR>
+				<PackFR>True</PackFR>
+				<SourceFR>$[FilePath]\Fr3</SourceFR>
+			</VipFR>
+		</CoreVip>
+		<DatabaseConfiguration>
+			<ConfigurationList>
+				<VipDatabase>
+					<Name>по умолчанию</Name>
+					<DatabaseDriver>1</DatabaseDriver>
+					<DatabaseID>RUSSIA</DatabaseID>
+					<SqlServerParameters>ncacn_ip_tcp:localhost[32777]</SqlServerParameters>
+					<FullLoginName>True</FullLoginName>
+					<UserOffice>1000</UserOffice>
+					<UserName>dmitry.lapushkov</UserName>
+					<Password>Zraeqw123</Password>
+					<HwKeyTransport>1</HwKeyTransport>
+					<HwKeyDirectory>LOCALHOST:55555</HwKeyDirectory>
+					<LicFileName>..\..\..\..\..\sup\exe\License.lic</LicFileName>
+				</VipDatabase>
+			</ConfigurationList>
+		</DatabaseConfiguration>
+		<FileList>
+			<File Name="CRPT_API.prj" PosX="34" PosY="105" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell.vip" PosX="31" PosY="117" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell_isExistCis_new.Vpp" PosX="33" PosY="103" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_Native.vip" PosX="3" PosY="255" OpenEditor="True" Active="True"/>
+			<File Name="Source\CRPT_API_Native.vih" PosX="23" PosY="83" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell_GetToken.Vpp" PosX="45" PosY="13" OpenEditor="True"/>
+			<File Name="..\..\..\..\..\GAL\Frm\SRC\CompSrc\F\F_Common\Vip\ExcelFormat.vih" PosX="77" PosY="227" OpenEditor="True"/>
+			<File Name="..\..\..\..\..\GAL\Frm\SRC\Inc\dictypes.def" PosX="14" PosY="10" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell.vih" PosX="33" PosY="9" OpenEditor="True"/>
+		</FileList>
+		<ProjectItems>
+			<ProjectCompileFile FileName="CRPT_API.prj" Priority="0">
+				<CoreVip>
+					<VipParameters>
+						<StrictVip>True</StrictVip>
+						<EmptyBlockWarnings>True</EmptyBlockWarnings>
+					</VipParameters>
+				</CoreVip>
+			</ProjectCompileFile>
+		</ProjectItems>
+		<MarkerList>
+			<Marker FileName="..\..\SourceGal\L\L_BaseDoc\vip\vschetB.vip" Caption="Нумерованная закладка 1" Line="959" NumIndex="1" MarkerType="mtNumBookmark" Comment="ProcessCommand(cmValue39);"/>
+			<Marker FileName="alter\alter_l_basedoc_vschetB.vip" Caption="Нумерованная закладка 1" Line="22" NumIndex="1" MarkerType="mtNumBookmark" Comment="DO_ZAKLYUCHENIE : ;"/>
+			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="130" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="Source\loadorder\LoadOrder.vip" Caption="Нумерованная закладка 1" Line="780" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="alter\alter_l_basedoc_vschet.vip" Caption="Нумерованная закладка 1" Line="569" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="alter\Alter_CalcDolgDG.vip" Caption="Нумерованная закладка 1" Line="517" NumIndex="1" MarkerType="mtNumBookmark" Comment="if Getfirst fastfirstrow KatOrgAtl where (( BDbuf.cOrg == KatOrgAtl.nrec)) = tsOK"/>
+			<Marker FileName="Source\ReportSumDeclarationToDO.vip" Caption="Нумерованная закладка 1" Line="113" NumIndex="1" MarkerType="mtNumBookmark" Comment="xlStWriteToMatrix(nrow, 1, 'Отчет о предполагаемый'); column++;"/>
+			<Marker FileName="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_GetUnitList.Vpp" Caption="Нумерованная закладка 1" Line="96" NumIndex="1" MarkerType="mtNumBookmark" Comment="Procedure FillPS1_VetisAPI_GetProductList(_ExcelFileOut: string; _empty : string);"/>
+			<Marker FileName="Source\VetisAPI_Viewer_SpKau.VIP" Caption="Нумерованная закладка 1" Line="184" NumIndex="1" MarkerType="mtNumBookmark" Comment="coVETIS_ProductType     : { // VETIS.ProductType"/>
+			<Marker FileName="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_GETSTOCK_UUID_By_GUID.Vpp" Caption="Нумерованная закладка 1" Line="51" NumIndex="1" MarkerType="mtNumBookmark" Comment="MyWriteLN('$StockGUID = &quot;'++'&quot;');"/>
+			<Marker FileName="Source\VetisAPI_Viewer_STOCK.vip" Caption="Нумерованная закладка 2" Line="436" NumIndex="2" MarkerType="mtNumBookmark" Comment="_VetisDiscrepancy.batchID               :="/>
+			<Marker FileName="Source\VetisAPI_Viewer_STOCK.vip" Caption="Нумерованная закладка 1" Line="443" NumIndex="1" MarkerType="mtNumBookmark" Comment="_VetisDiscrepancy.packingTypeGUID4      := tVETIS_PackingCodeType2New.nrec,coAttrNam_GUID);"/>
+			<Marker FileName="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_getStockEntryVersionListRequest.Vpp" Caption="Нумерованная закладка 1" Line="329" NumIndex="1" MarkerType="mtNumBookmark" Comment="_ExcelFileOut"/>
+			<Marker FileName="VetisAPI.prj" Caption="Нумерованная закладка 1" Line="151" NumIndex="1" MarkerType="mtNumBookmark" Comment="coPS1_GetDocList = 'Идентификатор упаковки(2)'"/>
+			<Marker FileName="Source\VetisAPI_PowerShell.vip" Caption="Нумерованная закладка 1" Line="341" NumIndex="1" MarkerType="mtNumBookmark"/>
+			<Marker FileName="Source\VetisAPI_PowerShell_GetRequestToAPIVetis_getDocumentList.Vpp" Caption="Нумерованная закладка 1" Line="229" NumIndex="1" MarkerType="mtNumBookmark" Comment="MyWriteLN('                                        &lt;bs:beginDate&gt;2020-09-01T00:00:00+03:00&lt;/bs:beginDate&gt;                                                                                                       ');"/>
+			<Marker FileName="Source\VetisAPI_Viewer_DocList.vip" Caption="Нумерованная закладка 1" Line="52" NumIndex="1" MarkerType="mtNumBookmark" Comment=", SpKau tVETIS_DocumentType"/>
+			<Marker FileName="Source\VetisAPI_Viewer_DocList.vip" Caption="Нумерованная закладка 2" Line="253" NumIndex="2" MarkerType="mtNumBookmark" Comment="ATL_Vetis_DocSpRefStat.Status          'Статус'    ('',,): [3], Protect;"/>
+			<Marker FileName="Source\CRPT_API_Native.vip" Caption="Нумерованная закладка 1" Line="160" NumIndex="1" MarkerType="mtNumBookmark"/>
+		</MarkerList>
+		<BreakPointList>
+			<BreakPoint FileName="alter_vschet.prj" Line="78"/>
+			<BreakPoint FileName="Source\CRPT_API_PowerShell_GetToken.Vpp" Line="75"/>
+		</BreakPointList>
+		<CompileMessengerList>
+			<CompileMessenger Name="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45697,6129560301" DateTimeCompile="8,79513900144957E-5" StateHistory="False">
+				<CompileMessageList>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" SourceLine="7" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetKituStatus входящий параметр: _OleGenerateGUID:String не используется." SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetKituStatus.Vpp" SourceLine="61" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" Line="250" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_isExistCis_new.Vpp" SourceLine="98" SourceColumn="3">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" Line="252" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Значение преобразовано к строке" SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_isExistCis_new.Vpp" SourceLine="98" SourceColumn="90">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" Line="252" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_API_POWERSHELL.CheckFileFillValues&quot;, объявленный в C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\VETISAPI_POWERSHELL_OPENFILEEXCELSEARCHCELLS.VPP(72), не был использован" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell.VIP" SourceLine="289" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_GetKituDocType.Vpp" SourceLine="1" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Viewer_InfoTools.VIP" Line="24" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_InfoToolsLoader.VIP" SourceLine="17" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" SourceLine="6" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_CreateDoc входящий параметр: _par5:String не используется." SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_CreateDoc.Vpp" SourceLine="119" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" Line="210" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetDocumentStatus входящий параметр: _OleGenerateGUID:String не используется." SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetDocumentStatus.Vpp" SourceLine="86" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" Line="211" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetDocumentStatus входящий параметр: _par4:String не используется." SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetDocumentStatus.Vpp" SourceLine="86" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" Line="211" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetDocumentStatus входящий параметр: _par5:String не используется." SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetDocumentStatus.Vpp" SourceLine="86" SourceColumn="1">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" Line="211" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_API_POWERSHELLPOST.fillrecArray_CreateDoc&quot;, объявленный в C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_POWERSHELL_CREATEDOC.VPP(1), не был использован" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" SourceLine="247" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_API_POWERSHELLPOST.InsertCreateDoc&quot;, объявленный в C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_POWERSHELL_CREATEDOC.VPP(5), не был использован" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" SourceLine="247" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_API_POWERSHELLPOST.fillrecArrayByTypeTable&quot;, объявленный в C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP(213), не был использован" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" SourceLine="247" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_PRJ_tune.vip" SourceLine="91" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ImportDocs.VIP" SourceLine="24" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ImportDocs.VIP" Line="48" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ImportDocs.VIP" SourceLine="377" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ImportDocs.VIP" SourceLine="391" SourceColumn="63"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="31" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" Line="33" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="336" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="353" SourceColumn="63"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_API_AGGRDOCLIST.makeAggrDocHeader&quot;, объявленный в C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP(134), не был использован" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="449" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_API_AGGRDOCLIST.makePackContent&quot;, объявленный в C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP(233), не был использован" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="449" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" SourceLine="27" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" Line="30" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" SourceLine="201" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" SourceLine="209" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" SourceLine="217" SourceColumn="63"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="9" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\GALAKTIKA\_GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
+						<StackIncludeList>
+							<StackInclude FileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" Line="50" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
+					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="160" SourceColumn="17"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="165" SourceColumn="17"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="442" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="447" SourceColumn="63"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="12" SourceColumn="1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\_git\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="138" SourceColumn="7"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="220" SourceColumn="142"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="211" SourceColumn="131"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="345" SourceColumn="140"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="395" SourceColumn="144"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
+					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="383" SourceColumn="139"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="09.02.2025 14:42:47"/>
+				</CompileMessageList>
+			</CompileMessenger>
+		</CompileMessengerList>
+	</ProjectManager>
+</Viper>

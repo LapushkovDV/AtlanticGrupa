@@ -101,6 +101,9 @@ var TOA   : TotalOrganizationAttributes;
 #make "torg12\torg12_val.rtf"
 //TTN01new
 #make "ttnnew\p4_ttn_droga.rtf"
+#make "ttnnew\RTF4_TTN_ALL_20220301_TOVN_atlantic.rtf"
+#make "ttnnew\RTF4_TTN_ALL_20220301_TOVN_tander_puling.rtf"
+
 //Реестр сертификатов для Ленты и Метро
 #define RNum 'Номер'
 #doc
@@ -120,7 +123,7 @@ var TOA   : TotalOrganizationAttributes;
 // Складские очеты
 #make "sklad\sverka.slk" //Ведомость наличия с кодами SAP (barkod2) SLK
 #make "sklad\sklad1.slk" //Ведомость движения по складам SLK
-//  -------Присоединенная RTF-форма Счет-фактура - модифицированная стандартная форма. 
+//  -------Присоединенная RTF-форма Счет-фактура - модифицированная стандартная форма.
 #include s4Fact\droga_tbl.frn
 #make "s4Fact\s4fAshan.rtf" // 01 'Счет-фактура Ашан (RTF-формат)'
 #make "s4Fact\s4fGiper.rtf" // 02 'Счет-фактура Гиперглобус (RTF-формат)'
@@ -136,7 +139,7 @@ var TOA   : TotalOrganizationAttributes;
 //
 #make "s4Fact\s4fM26122011.rtf" //10 Счет-фактура МЕТРО (RTF-формат) с 26.12.2011
 #make "s4Fact\s4fA26122011.rtf" //11 'Счет-фактура Ашан (RTF-формат) с 26.12.2011'
-#make "s4Fact\s4fD26122011.rtf" //12 'Дрога_Счет-фактура_руб (RTF-формат) c 26.12.2011' 
+#make "s4Fact\s4fD26122011.rtf" //12 'Дрога_Счет-фактура_руб (RTF-формат) c 26.12.2011'
 #make "s4Fact\s4fE26122011.rtf" //13 'Дрога_Счет-фактура_стандарт  (RTF-формат) c 26.12.2011'
 #make "s4Fact\s4fZ26122011.rtf" //14  Счет-фактура Зельгрос (RTF-формат) с 26.12.2011
 //Присоединенная форма Ценовая спецификация договора. Печатается по Ctrl+P в окне договора

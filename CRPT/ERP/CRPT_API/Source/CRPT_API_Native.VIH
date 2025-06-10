@@ -1,0 +1,85 @@
+#ifndef _included_CRPT_API_NATIVE_
+#define _included_CRPT_API_NATIVE_
+
+#component "ATLANTIC"
+objInterface objCRPT_API_Native;
+  Procedure ClearCisesList;
+  Procedure AddCisToList(_Cis : string);
+  Function GetCisesListInfo(var _err : string) : boolean;
+  Function GetCisStatus (_Cis : string) : string;
+  Function GetCisUtitCounts (_Cis : string) : longint;
+end;
+
+vipInterface CRPT_API_Native implements objCRPT_API_Native
+  licensed(free);
+
+
+#end
+
+
+/*
+// box
+requestedCis        : 338386009600318394
+cis                 : 338386009600318394
+cisWithoutBrackets  : 338386009600318394
+gtin                : 03838600041164
+status              : INTRODUCED
+emissionDate        : 2025-01-14T13:59:58.454Z
+packageType         : LEVEL2
+ownerInn            : 7709191580
+children            : {01038386000411642152HSHFBSXSNE2, 01038386000411642152KRASSTR6SEH, 01038386000411642152GRAC4RXAVCB, 01038386000411642152GPEF3PCINYG...}
+tnVedEaes           : 2201101900
+emissionType        : FOREIGN
+specialAttributes   : @{introducedDate=2025-01-18T14:55:11.536Z; ftsDecisionCode=10; approvementDocument=}
+statusEx            : EMPTY
+productGroup        : water
+productGroupId      : 13
+extendedPackageType : BOX
+isMultipleSales     : False
+
+
+
+// group
+requestedCis        : 01038386000411642152HSHFBSXSNE2
+cis                 : 01038386000411642152HSHFBSXSNE2
+cisWithoutBrackets  : 01038386000411642152HSHFBSXSNE2
+gtin                : 03838600041164
+status              : INTRODUCED
+emissionDate        : 2025-01-13T05:53:46.028Z
+applicationDate     : 2025-01-14T13:30:31.723Z
+parent              : 338386009600318394
+packageType         : LEVEL1
+ownerInn            : 7709191580
+children            : {0103838600041157215EARAFD37TPA0, 0103838600041157215EAS7FWEWNYHA, 0103838600041157215EARCV1ASX84N, 0103838600041157215EAPT8635WEDC...}
+tnVedEaes           : 2201101900
+emissionType        : FOREIGN
+specialAttributes   : @{expirationDate=2026-01-13T00:00:00.000Z; introducedDate=2025-01-18T14:55:11.536Z; ftsDecisionCode=10; approvementDocument=}
+statusEx            : EMPTY
+productGroup        : water
+productGroupId      : 13
+extendedPackageType : GROUP
+isMultipleSales     : False
+
+
+
+// unit
+requestedCis        : 0103838600041157215EARAFD37TPA0
+cis                 : 0103838600041157215EARAFD37TPA0
+cisWithoutBrackets  : 0103838600041157215EARAFD37TPA0
+gtin                : 03838600041157
+producerInn         : 7709191580
+status              : INTRODUCED
+emissionDate        : 2025-01-07T19:36:11.564Z
+applicationDate     : 2025-01-14T13:14:43.077Z
+parent              : 01038386000411642152HSHFBSXSNE2
+packageType         : UNIT
+ownerInn            : 7709191580
+tnVedEaes           : 2201101900
+emissionType        : FOREIGN
+specialAttributes   : @{expirationDate=2026-01-13T00:00:00.000Z; introducedDate=2025-01-18T14:55:11.536Z; ftsDecisionCode=10; approvementDocument=}
+statusEx            : EMPTY
+productGroup        : water
+productGroupId      : 13
+extendedPackageType : UNIT
+isMultipleSales     : False
+*/

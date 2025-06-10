@@ -17,10 +17,12 @@ create view
 from
  ATL_MERCURY_HEAD
  , ATL_PickingRep_HEAD
+ , katorg GruzToAtl
 where
 ((
     katsopr.nrec == ATL_MERCURY_HEAD.CSOPR
 and katsopr.nrec == ATL_PickingRep_HEAD.CSOPR
+and katsopr.CGRUZTO == GruzToAtl.nrec
 ))
 ;
 #include Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp
