@@ -43,7 +43,7 @@ Procedure FillPS1_CrptAPI_isExistCis(_OleGenerateGUID: string; _cis : string); {
     MyWriteLN(' try {                                                                                  ');
     MyWriteLN('    $token = Get-Content -Path $tokenPath                                               ');
     MyWriteLN('    $headers = @{ Authorization = "Bearer " + $token}                                   ');
-    MyWriteLN('    $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/info?cis=$cis&pg=water" -Headers $headers | ConvertFrom-Json ');
+    MyWriteLN('    $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/identifytools/info?cis=$cis&pg=water" -Headers $headers  -UseBasicParsing  | ConvertFrom-Json ');
     MyWriteLN('   } catch {                                                                                                                ');
     MyWriteLN('     $errJSON = $error[0].ErrorDetails.Message | ConvertFrom-Json                                                ');
     MyWriteLN('     $Errcode = $errJSON.code                                                                                    ');
