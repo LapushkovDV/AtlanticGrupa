@@ -59,7 +59,7 @@ var TOA   : TotalOrganizationAttributes;
 
 //Расчет массы и объема по позиции документов
 #make "etc\getposmassvol.vip"
-
+//#include UpdFunc.vih
 //Ctrl+P Отчет по накладным Сбыт
 #component 'droga'
 #include torg12\droga_tbl.frn

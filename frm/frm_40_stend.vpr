@@ -263,8 +263,8 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="frm.prj" PosX="48" PosY="74" OpenEditor="True" Active="True"/>
-			<File Name="torg12\metro_fld.frn" PosX="63" PosY="16" OpenEditor="True"/>
+			<File Name="frm.prj" PosX="48" PosY="74" OpenEditor="True"/>
+			<File Name="torg12\metro_fld.frn" PosX="63" PosY="16" OpenEditor="True" Active="True"/>
 			<File Name="s4fact\sign_vip.frn" PosX="30" PosY="14" OpenEditor="True"/>
 			<File Name="torg12\atl_fld.frn" PosX="45" PosY="11" OpenEditor="True"/>
 			<File Name="etc\GetPosMassVol.vip" PosX="5" PosY="130" OpenEditor="True"/>
