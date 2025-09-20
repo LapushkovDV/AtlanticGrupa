@@ -673,7 +673,7 @@ var
                 'DeliveryNote': {
                   #Loop_oXML_chNodes(hAttrDoc, valueDoc, valueDocLen, k, hValueDoc)   //цикл по дочерним узлам DeliveryNote
                     case XMLDOMNode_get_NodeName(hValueDoc) of
-                      'DeliveryNoteNumber': sopr_num := GetTextValue(hValueDoc);
+                      'DeliveryNoteNumber': sopr_num := trim(GetTextValue(hValueDoc));
                       'DeliveryNoteDate': sopr_dat := strToDate(GetTextValue(hValueDoc), 'YYYY-MM-DD');
                     end; //case hValueDoc
                   #EndLoop_oXML_chNodes(valueDoc, hValueDoc) 
