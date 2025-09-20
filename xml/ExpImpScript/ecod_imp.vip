@@ -673,13 +673,16 @@ var
                 'DeliveryNote': {
                   #Loop_oXML_chNodes(hAttrDoc, valueDoc, valueDocLen, k, hValueDoc)   //цикл по дочерним узлам DeliveryNote
                     case XMLDOMNode_get_NodeName(hValueDoc) of
-                      'DeliveryNoteNumber': sopr_num := trim(GetTextValue(hValueDoc));
+                      'DeliveryNoteNumber': {
+                          sopr_num := trim(GetTextValue(hValueDoc));
+                          writeMessageLog(' <!> INFO: sopr_num = "'+ sopr_num+'"');
+                        }
                       'DeliveryNoteDate': sopr_dat := strToDate(GetTextValue(hValueDoc), 'YYYY-MM-DD');
                     end; //case hValueDoc
                   #EndLoop_oXML_chNodes(valueDoc, hValueDoc) 
                 }
               end; //case hAttrDoc
-            #EndLoop_oXML_chNodes(attrDoc, hAttrDoc) 
+            #EndLoop_oXML_chNodes(attrDoc, hAttrDoc)
           } //ReceivingAdvice-Reference
           'Order-Parties', 'ReceivingAdvice-Parties': {
             #Loop_oXML_chNodes(hPartDoc, attrDoc, attrDocLen, j, hAttrDoc)   //цикл по дочерним узлам
@@ -948,11 +951,13 @@ function proc_recadv: boolean;
 var qty: double;
 {
   result := false;
+  sopr_num := trim(sopr_num);
   if trim(sopr_num) <> ''
   {
   if (getfirst katsopr where ((201==vidsopr and sopr_dat==dsopr and sopr_num==nsopr)) != tsOk) {
     if (getfirst katsopr where ((201==vidsopr and year(sopr_dat)==yearsopr and sopr_num==nsopr)) != tsOk) {
       writeMessageLog(' <!> WARNING: couldn''t find katsopr (DesAdv #'+ sopr_num+ datetostr(sopr_dat, ' date: DD.MM.YYYY') + '). Try to find by DesAdv #'+sopr_num+'.');
+      writeMessageLog(' <!> info: sopr_num = "'+ sopr_num+ '"');
 		//Семенов: номер документа ДО=накладная с 2017г. уникальный.
 	    if (getfirst katsopr where ((201==vidsopr and sopr_num==nsopr)) != tsOk) {
         writeMessageLog(' <!> ERROR: couldn''t find any katsopr with DesAdv #'+ sopr_num);
