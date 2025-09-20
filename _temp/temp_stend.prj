@@ -23,27 +23,8 @@ LicenseControlInclude=""
 #include StatDefs.inc
 
 #define ComponentVersion  
-#include ExtAttr.vih
-#include DocProtector.vih
-
-#include ExtClass.vih
-#include ExtClass.var  // piExtClass
-#include countsal.vih
-#include NalogFun.vih
-#include DOfuns.vih
-#include DOfuns.var
-#include SpNext.vih
-#include SpNext.var
-#include GetKau.vih
-#include GetKau.var
-#include CreateTune.vih
-#include marker.vih
-#include UKSfuns.VIH
-#include SDfuns.VIH
-#include MSview.VIH
-#include AdrFunc.vih         // Функции работы с адресами
 
 
+#make "Source\UNIVERSAL_TOVN.rtf"
 
-
-#make "alter\Alter_GoNewMon.vip"
+#make "Source\FORM_M8_RTF_SKLAD_PRINTAKTSPIS.rtf"

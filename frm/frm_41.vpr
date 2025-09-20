@@ -18,6 +18,7 @@
 			<VipFiles>
 				<IncludeList>
 					$[AtlPath]\Source\
+					_\*
 					..\..\..\..\..\FRM\SRC\*
 					..\inc\*
 					..\..\SourceGal\*
@@ -267,9 +268,13 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="frm.prj" PosX="66" PosY="69" OpenEditor="True" Active="True"/>
+			<File Name="frm.prj" PosX="70" PosY="55" OpenEditor="True" Active="True"/>
 			<File Name="..\..\..\..\..\FRM\SRC\CompSrc\L\L_PRNSOPR\frm\ttnf_var.frn" PosX="95" PosY="64" OpenEditor="True"/>
 			<File Name="etc\getposmassvol.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="..\..\..\..\..\FRM\SRC\CompSrc\L\L_PRNSOPR\vip\GetPersSign.vih" PosX="57" PosY="14" OpenEditor="True"/>
+			<File Name="..\..\..\..\..\FRM\SRC\CompSrc\L\L_PRNSOPR\frm\GetPersSign.frn" PosX="19" PosY="47" OpenEditor="True"/>
+			<File Name="_\GetPersSign1.frn" PosX="13" PosY="57" OpenEditor="True"/>
+			<File Name="_\universal_fld1.frn" PosX="8" PosY="99" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="frm.prj" Priority="0">
@@ -310,7 +315,7 @@
 			<BreakPoint FileName="alter\ALTER_DiadocExportDoc.vip" Line="1"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="45865,3418176042" DateTimeCompile="0,000740266201319173" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="45879,4782827662" DateTimeCompile="0,000606122681347188" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : EanBarCode" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\C\C_COMMON\VIP\WORKARCHIVE\EanBarCode.vih" SourceLine="17" SourceColumn="25">
 						<StackIncludeList>
@@ -3138,58 +3143,63 @@
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="38" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
+					<CompileMessage MessageType="mtHint" MessageText="Уже есть зарегистрированная переменная с именем : OSDFUNS" SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\FRM\_\GetPersSign1.frn" SourceLine="19" SourceColumn="18">
+						<StackIncludeList>
+							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\FRM\_\universal.rtf" Line="30" Column="1"/>
+						</StackIncludeList>
+					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationJuridicalInfo" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="18" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
-							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="61" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationTaxationInfo" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="36" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
-							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="61" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationAccountsInfo" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="48" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
-							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="61" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationBanksList" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="59" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
-							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="61" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationDefaultBank" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="72" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
-							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="61" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : HistoryNameInfo" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="79" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
-							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="61" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : OrganizationIndividualInfo" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\OrganizationInfo.vih" SourceLine="85" SourceColumn="3">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.obj" Line="13" Column="1"/>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" Line="11" Column="1"/>
-							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="61" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : TotalOrganizationAttributes" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_KATORG\VIP\TOTALORGANIZATIONATTRIBUTES\TotalOrganizationAttributes.vih" SourceLine="16" SourceColumn="3">
 						<StackIncludeList>
-							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="54" Column="1"/>
+							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="61" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="При формальном описании интерфейса L_BASEDOC::GETPOSMASSVOLDO пропущено описание параметров" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\ETC\GetPosMassVol.vip" SourceLine="68" SourceColumn="5"/>
@@ -3458,7 +3468,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GAL" SourceLine="99" SourceColumn="87"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GA" SourceLine="101" SourceColumn="87"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="27.07.2025 8:13:17"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="10.08.2025 11:29:36"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

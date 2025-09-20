@@ -1,0 +1,387 @@
+!Поля для универсального передаточного документа (universal.rtf)
+.function IsNullEI: boolean;
+begin
+  result := (boDoc_SD_Prn_UPD_LineNullEI) and ((CodeOtpEd = '') or (CodeOtpEd = '-'));
+end.
+!получить цену спецификации 4.
+.Function GetPrice : string;
+var _fPrice : double;
+begin
+ Result := '-';
+ if (IsNullEI ) Exit;
+ if (abs(Double(DoubleToStr(КолФ, Kol_Pr)) ) < 0.0001) Exit;
+ //ERP-2297 нужна цена как в акте 1124.39, но из за округления налога и суммы по спецификации
+ //round(1124.40*0.25*0.2,2)+Round(1124.40*0.25,2) = round(1124.39*0.25*0.2,2)+Round(1124.39*0.25,2)
+ if КолФ<1 // сохраним для большого кол-ва
+   _fPrice := ЦНацБН;
+ else
+   _fPrice := (СтНакСН - СтНДСНак) / КолФ;
+
+ Result :=  if(abs(Double(DoubleToStr(_fPrice, Cena_PrU))) < 0.0001
+                           , '-'
+                           , DoubleToStr(_fPrice, Cena_PrU));
+
+ end.
+! Получить строку для НДС - спецификация
+.Function GetNDSSP : string;
+begin
+   /*
+  if (oPrnSoprFun.GetSFDopInf(СчФакт_НРек, накладная_нрек)
+            , '-'
+            ,if (ПризнакНДС = word(0)
+                      , sGetTune('Doc.SD.AbbrField.NoNDSSummZero')
+                      , if (СтНДСНак = 0, sGetTune('Doc.SD.AbbrField.NDSSummZero'), DoubleToStr(СтНДСНак, Cena_PrU))
+                )
+     )
+  */
+  /*
+  if (oPrnSoprFun.GetSFDopInf(СчФакт_НРек, накладная_нрек)
+        , 'без НДС'
+        ,if (ПризнакНДС = word(0)
+          , if(СчФакт_НРек <> 0,'без НДС', sGetTune('Doc.SD.AbbrField.NoNDSSummZero') )
+          , if (СтНДСНак = 0
+             , sGetTune('Doc.SD.AbbrField.NDSSummZero')
+             , DoubleToStr(СтНДСНак, Cena_PrU))))
+             */
+  /*
+  Result := if (oPrnSoprFun.GetSFDopInf(СчФакт_НРек, накладная_нрек)
+            , sGetTune('Doc.SD.AbbrField.NoNDSSummZero')
+            , if (СтНДСНак = 0, sGetTune('Doc.SD.AbbrField.NDSSummZero'), DoubleToStr(СтНДСНак, Cena_PrU))
+     );
+  */
+  Result := if (oPrnSoprFun.GetSFDopInf(СчФакт_НРек, накладная_нрек)
+                , '-'
+                , if (ПризнакНДС = word(0)
+                      , sGetTune('Doc.SD.AbbrField.NoNDSSummZero')
+                      , if (СтНДСНак = 0, sGetTune('Doc.SD.AbbrField.NDSSummZero'), DoubleToStr(СтНДСНак, Cena_PrU))
+                     )
+               );
+ end.
+! Получить строку для НДС - итоги
+.Function GetNDSIT : string;
+begin
+  //if (oPrnSoprFun.GetSFDopInf(СчФакт_НРек, накладная_нрек) or Sum2Itog =0, if(СчФакт_НРек=0,'-','без НДС'), DoubleToStr(Sum2Itog, Cena_PrU))
+  Result := if (oPrnSoprFun.GetSFDopInf(СчФакт_НРек, накладная_нрек)
+                 , '-'
+                 , if(lPriznakNDS =0
+                    , sGetTune('Doc.SD.AbbrField.NoNDSSummZero')
+                    , if(Sum2Itog =0, sGetTune('Doc.SD.AbbrField.NDSSummZero')
+                                 , DoubleToStr(Sum2Itog, Cena_PrU)
+                        )
+                     )
+              );
+//FR3
+/*
+[IIF(<fr_dochead."SFDopInf"> , <fr_prndata."NoNDSSummZero">
+                             , IIF( <fr_dochead."ANDSNak"> =0
+                                 ,<fr_prndata."NDSSummZero">
+                                 ,DoubleToStr(SUM(<FR_DOCSPECIF."SUMNDSVALWOF">,DetaillData1), <FR_ROUNDS."RCENA_PRU">)))]
+
+*/
+ end.
+!Поля
+.fields
+  Ean13ToEanGnivcTTF(GenerateBarCodeEx(coKatSopr, накладная_нрек))
+  oPrnSoprFun.GetSchFactNum (накладная_нрек)
+  oPrnSoprFun.GetSchFactDate(накладная_нрек)
+  '@'   //символ в конце строки "Приложение №1 к письму ФНС России от 21.10.2013 г. № ММВ-20-3/96@"
+#ifdef _UNIVERSAL_
+    if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactIsp(СчФакт_НРек, 2), '-')
+    if (СчФакт_НРек <> 0 and oPrnSoprFun.GetSchFactIsp(СчФакт_НРек, 2) <> '-', oPrnSoprFun.GetSchFactIsp(СчФакт_НРек, 3), '-')
+#else
+  #ifndef _UNIVERSAL02_
+    if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactIsp(СчФакт_НРек, 0), '-')
+    if (СчФакт_НРек <> 0 and oPrnSoprFun.GetSchFactIsp(СчФакт_НРек, 0) <> '-', oPrnSoprFun.GetSchFactIsp(СчФакт_НРек, 1), '-')
+  #end
+#end
+  //продавец
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetOrgFullName(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 0), 8, 0, Дата), (oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 1) + oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 2)))
+  LTrim(LTrim(if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 0, 0), #AdrFieldsUrUPD(Поставщик,Поставщик_СТАРАНА_КОД)), ','), ' ')
+  if (bPrintPostAddr
+     ,if(oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 0, 1)<>'',', '+ chr(13)+chr(10)+'Почтовый '+oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 0, 1),'')
+     ,'')
+
+  oPrnSoprFun.GetFieldValue(накладная_нрек , coKatSopr, 'УПД_СТАТУС' )  //ERP-13040 if (СчФакт_НРек <> 0, '1', '2')
+
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactOrgUNN(СчФакт_НРек, 0), (ПоставщикУНН + ' / ' + ПоставщикКПП))
+  //грузоотправитель
+  if (СчФакт_НРек <> 0, if (Признак_МЦ <> 2, if(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 0) <> oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 2),
+                                                                                                 oPrnSoprFun.GetOrgFullName(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 2), 8, 0, Дата), 'он же'), '-'),
+                        if (Признак_МЦ <> 2, (oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 1) + oPrnSoprFun.GetOrgFullName(накладная_нрек, 1, 2)), '-'))
+  if (СчФакт_НРек <> 0, if (Признак_МЦ <> 2, if(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 0) <> oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 2),
+                                                                                                 oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 2, 0), ''), ''),
+                        if (Признак_МЦ <> 2, #AdrFields(Грузоотправитель,Грузоотправитель_СТАРАНА_КОД), ''))
+  //грузополучатель
+  if (СчФакт_НРек <> 0, if (Признак_МЦ <> 2, oPrnSoprFun.GetOrgFullName(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 3), 8, 0, Дата), '-'),
+                        if (Признак_МЦ <> 2, (oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 1) + oPrnSoprFun.GetOrgFullName(накладная_нрек, 2, 2)), '-'))
+  if (СчФакт_НРек <> 0, if (Признак_МЦ <> 2, oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 3, 0), ''),
+                        if (Признак_МЦ <> 2, #AdrFields(Грузополучатель,Грузополучатель_СТАРАНА_КОД), ''))
+
+  if (oPrnSoprFun.FindPlatEx(СчФакт_НРек , PlatKolRow , PlatArray)<>'', PlatArray[1], '№ - от -')
+  if (PlatKolRow >1 ,  PlatArray[2], '')
+  if (PlatKolRow >2 ,  PlatArray[3], '')
+  if (PlatKolRow >3 ,  PlatArray[4], '')
+  if (PlatKolRow >4 ,  PlatArray[5], '')
+
+#ifdef _UNIVERSAL5949_
+// если есть СФ. накладные будут искаться по ней, если нет, текущая накладная.
+#ifdef _Universal21516_
+// без номеров позиций
+  if (oPrnSoprFun.FindSoprEx2(накладная_нрек , SoprKolRow , SoprArray)<>'', SoprArray[1], '№ пп - № - от -')
+#else
+  if (oPrnSoprFun.FindSoprEx(накладная_нрек , SoprKolRow , SoprArray)<>'', SoprArray[1], '№ пп - № - от -')
+#endif
+  if (SoprKolRow >1 ,  SoprArray[2], '')
+  if (SoprKolRow >2 ,  SoprArray[3], '')
+  if (SoprKolRow >3 ,  SoprArray[4], '')
+  if (SoprKolRow >4 ,  SoprArray[5], '')
+#endif
+  //покупатель
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetOrgFullName(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 1), 8, 0, Дата), (oPrnSoprFun.GetOrgFullName(накладная_нрек, 3, 1) + oPrnSoprFun.GetOrgFullName(накладная_нрек, 3, 2)))
+  LTrim(LTrim(if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 1, 0), #AdrFieldsUrUPD(Получатель,Получатель_СТАРАНА_КОД)), ','), ' ')
+  if (bPrintPostAddr
+       ,if(oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 1, 1)<>'',', '+ chr(13)+chr(10)+'Почтовый '+oPrnSoprFun.GetSchFactOrgAddr(СчФакт_НРек, 1, 1),'')
+       ,'')
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetSchFactOrgUNN(СчФакт_НРек, 1), (ПолучательУНН + ' / ' + ГрузополучательКПП))   //ПИР 101.58197
+
+  //Валюта: наименование, код
+  if (oPrnSoprFun.GetValName(Валюта_нрек) = '', Trim(sGetTune('Nalog.Rus.NDE_FullName')), oPrnSoprFun.GetValNameUPD(Валюта_нрек))
+  if (oPrnSoprFun.GetValCode(Валюта_нрек) = '', sGetTune('NDE.RUBLISO') , oPrnSoprFun.GetValCode(Валюта_нрек))
+#ifndef _UNIVERSAL02_
+  oPrnSoprFun.GetFullIGKEx(накладная_нрек, СчФакт_НРек)
+#end
+
+#ifdef _Universal6549_
+  КодМЦ
+  Nom
+#else
+  Nom
+  КодМЦ
+#end
+  Название
+#ifdef _UNIVERSAL_
+  if (ТНВЭД ='', '-', ТНВЭД)
+#end
+  if (CodeOtpEd ='', '-', CodeOtpEd)
+  if (bHideEdIzm, '', if (IsNullEI, '-', if (ОтпЕд = '', '-', ОтпЕд))) // 2a
+  if (bHideKol, '', if (IsNullEI, '-', if(abs(Double(DoubleToStr(КолФ, Kol_Pr)) ) < 0.0001, '-', DoubleToStr(КолФ, Kol_Pr))))  // 3
+  if (bHidePrice, '', GetPrice) // 4
+  DoubleToStr(СтНакСН - СтНДСНак, Cena_PrU)
+  sSpAkcizSumma
+
+  sSpNalogStavka
+  GetNDSSP
+  if (oPrnSoprFun.GetSFDopInf(СчФакт_НРек, накладная_нрек), '-',DoubleToStr(СтНакСН , Cena_PrU))
+  //------------
+  //if (if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 0)) = '-', if (bHideGTD, '', '-'), if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 0)))
+  //if (if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 1)) = '-', if (bHideGTD, '', '-'), if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 1)))
+  //if (if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 2)) = '-', if (bHideGTD, '', '-'), if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 2)))
+  // перенес заполнение в universal_sum.frn
+  if(SpCountryCode<>'', SpCountryCode,'-')
+  if(SpCountryName<>'', SpCountryName,'-')
+  if(SpGTD        <>'', SpGTD        ,'-')
+
+#ifdef _UNIVERSAL5949_
+  // заполнение в universal_sum.frn
+  if(SpKodEdPros<>'' ,SpKodEdPros,'-')      //12б код единицы измерения
+  if(SpABBREdPros<>'',SpABBREdPros,'-')     //12а сокращенное наименование единицы измерения
+  if(SpKolPros =0    , '-',DoubleToStr(SpKolPros, Kol_Pr))        //13
+#ifdef _Universal12259_
+  //возьмем СтНакСН - СтНДСНак
+#ifdef _Universal21516_
+  if(SpKolPros <>0 and SpSumProsWONds <> 0 , DoubleToStr(Round(SpSumProsWONds,0), Cena_PrU0)        ,'-')
+#else
+  if(SpKolPros <>0 and SpSumProsWONds <> 0 , DoubleToStr(SpSumProsWONds, Cena_PrU)        ,'-')
+#endif //_Universal21516_
+#endif //_Universal12259_
+
+#ifdef _Universal21516_
+  //ERP-12830 распределение услуг по МЦ  >>>>>>>>>>>>>>>>>>>
+  vDocRef.KatMc.Name
+  vDocRef.KatParty.RNPT
+  if(SpKodEdPros<>'' ,SpKodEdPros,'-')      //12б код единицы измерения
+  if(SpABBREdPros<>'',SpABBREdPros,'-')     //12а сокращенное наименование единицы измерения
+  if(SpKolPros =0    , '-',DoubleToStr(SpKolPros, Kol_Pr))        //13
+  if(SpKolPros <>0 and SpSumProsWONds <> 0 , DoubleToStr(Round(SpSumProsWONds,0), Cena_PrU0)        ,'-')
+  //ERP-12830 распределение услуг по МЦ  <<<<<<<<<<<<<<
+#endif //_Universal21516_
+
+#endif //_UNIVERSAL5949_
+
+#ifdef _Universal6406_
+  #ifdef _Universal6549_
+    КодМЦ
+    Nom
+  #else
+    Nom
+    КодМЦ
+  #end
+  Название
+#ifdef _UNIVERSAL_
+  if (ТНВЭД ='', '-', ТНВЭД)
+#end
+  if (CodeOtpEd ='', '-', CodeOtpEd)
+  if (bHideEdIzm, '', if (IsNullEI, '-', if (ОтпЕд = '', '-', ОтпЕд))) // 2a
+  if (bHideKol, '', if (IsNullEI, '-', if(abs(Double(DoubleToStr(КолФ, Kol_Pr)) ) < 0.0001, '-', DoubleToStr(КолФ, Kol_Pr))))  // 3
+  if (bHidePrice, '', GetPrice) // 4
+  DoubleToStr(СтНакСН - СтНДСНак, Cena_PrU)
+  sSpAkcizSumma
+
+  sSpNalogStavka
+  GetNDSSP
+  if (oPrnSoprFun.GetSFDopInf(СчФакт_НРек, накладная_нрек), '-',DoubleToStr(СтНакСН , Cena_PrU))
+  //------------
+  //if (if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 0)) = '-', if (bHideGTD, '', '-'), if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 0)))
+  //if (if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 1)) = '-', if (bHideGTD, '', '-'), if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 1)))
+  //if (if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 2)) = '-', if (bHideGTD, '', '-'), if (СчФакт_НРек = 0, '-', oPrnSoprFun.PrnSoprGTD(Признак_МЦ, СчФакт_НРек, спецификацияМЦ_нрек, 2)))
+  if (oPrnSoprFun.GetCountryGTDInfo(СчФакт_НРек, спецификацияМЦ_нрек,Признак_МЦ
+              ,SpCountryName
+              ,SpCountryCode
+              ,SpGTD) , if(SpCountryCode<>'', SpCountryCode,'-') ,'-' )
+  if(SpCountryName<>'', SpCountryName,'-')
+  if(SpGTD        <>'', SpGTD        ,'-')
+#end
+
+
+  //------------ Итоги
+  if (bHideSumNoNDS, '', DoubleToStr(Sum1Itog, Cena_PrU))
+  GetNDSIT
+
+  if (oPrnSoprFun.GetSFDopInf(СчФакт_НРек, накладная_нрек), '-', DoubleToStr(Sum3Itog, Cena_PrU))
+
+#ifdef _Universal6406_
+  //------------ Итоги
+  if (bHideSumNoNDS, '', DoubleToStr(Sum1Itog, Cena_PrU))
+  GetNDSIT
+  if (oPrnSoprFun.GetSFDopInf(СчФакт_НРек, накладная_нрек), '-', DoubleToStr(Sum3Itog, Cena_PrU))
+#end
+  //количество листов
+  //if (Nom - 36 > 0 , DoubleToStr(Trunc((Nom - 36)/56) + 2, '666'),'1')
+  GetCountPage()
+
+  //------------ Подписи
+  //ERP-984 - меняем в Check_IP 1 на 8
+  if (oPrnSoprFun.Check_IP(накладная_нрек, 8), '',if(sFIO1 <> '', sFIO1, Директор))
+  oPrnSoprFun.GetGlBuhName(накладная_нрек, if(sFIO2 <> '', sFIO2, Главный_бухгалтер))
+ // if (НомерДовер <>'' or LongInt(ДатаДовер) <> LongInt(0), 'По доверенности № ' + НомерДовер + DateToStr(ДатаДовер, 'от DD mon YYYYг.'), '')
+  if (oPrnSoprFun.Check_IP(накладная_нрек, 8), if(sFIO1 <> '', sFIO1, Директор),'')         //Руководитель для ИП
+  if (oPrnSoprFun.Check_IP(накладная_нрек, 8), oPrnSoprFun.Write_IP(накладная_нрек, 8),'')  //Атрибут "Реквизиты ИП"
+
+  oPrnSoprFun.GetOsnovPerUPD(накладная_нрек)
+  
+#ifdef _UNIVERSAL04_
+  vKatSoprMemTTN.fr_VolumeSort.npp
+  vKatSoprMemTTN.fr_VolumeSort.nameMC
+  vKatSoprMemTTN.fr_VolumeSort.Ident
+  vKatSoprMemTTN.fr_VolumeSort.num
+#end
+
+#ifdef _Universal21516_
+  GetTranspSved
+#endif
+  //Груз передал / услуги, результаты работ, права сдал
+  if(sPost4 <> '', sPost4, отпуск_разрешил_должность)
+  if(sFIO4  <> '', sFIO4 , отпуск_разрешил)
+
+  //Груз получил / услуги, результаты работ, права принял
+  if(sPost6<>'',sPost6, if (НомерДовер  <> '', ДовЛицоДолжность, ''))
+  if(sPost6<>'',sFio6 , if (НомерДовер  <> '', ДовЛицо, ''))
+
+  //if (Дата_Отгрузки = Date(0,0,0), '', DateToStr(Дата_Отгрузки, 'DD'))
+  //if (Дата_Отгрузки = Date(0,0,0), '', DateToStr(Дата_Отгрузки, 'Mon'))
+  //if (Дата_Отгрузки = Date(0,0,0), '', DateToStr(Дата_Отгрузки, 'YY'))
+  SubStr(DATE_OTGR_ISX,1,2)  // Дата_Отгрузки
+  if(DATE_OTGR_ISX<>'', DateToStr(StrToDate(DATE_OTGR_ISX,'DD.MM.YYYY'),'Mon'),'')  // Дата_Отгрузки
+  SubStr(DATE_OTGR_ISX,9,2)  // Дата_Отгрузки
+
+  if (oPrnSoprFun.NumData(накладная_нрек, 0)<> '', 'Транспортная накладная № ' + oPrnSoprFun.NumData(накладная_нрек, 0) + ' от '+ oPrnSoprFun.NumData(накладная_нрек, 1), '')
++ if (bPrintDopSF, ' ' + oPrnSoprFun.GetFieldValue(СчФакт_НРек, coSchFact, 'SCHFACT_NAZN' ) , '')  //ERP-21876
+  //Ответственный за правильность оформления факта хозяйственной жизни
+  sPost3
+  sFIO3
+
+  //Ответственный за правильность оформления факта хозяйственной жизни (контрагент)
+  if(sPost5<>'',sPost5,if (НомерДовер  <> '', '', ДовЛицоДолжность))
+  if(sPost5<>'',sFio5 ,if (НомерДовер  <> '', '', ДовЛицо))
+
+  //ERP-20838 - 16 строка всегда выводим собственную организацию
+  //if (СчФакт_НРек <> 0, oPrnSoprFun.GetOrgFullName(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 0), 8, 0, Дата), (oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 1) + oPrnSoprFun.GetOrgFullName(накладная_нрек, 0, 2)))
+  //if (СчФакт_НРек <> 0, ', ИНН/КПП: ' + oPrnSoprFun.GetSchFactOrgUNN(СчФакт_НРек, 0), (', ИНН/КПП: ' + ПоставщикУНН + ' / ' + ПоставщикКПП))
+  oPrnSoprFun.GetOrgFullName(coGetTune('MyOrg'), 8, 1, Дата) + oPrnSoprFun.GetOrgFullName(coGetTune('MyOrg'), 8, 2, Дата)
+  ', ИНН/КПП: ' + oPrnSoprFun.GetOrgFullName(coGetTune('MyOrg'), 8, 3, Дата)  + ' / ' + oPrnSoprFun.GetOrgFullName(coGetTune('MyOrg'), 8, 4, Дата)
+
+  if (СчФакт_НРек <> 0, oPrnSoprFun.GetOrgFullName(oPrnSoprFun.GetSchFactOrgNRec(СчФакт_НРек, 1), 8, 0, Дата), (oPrnSoprFun.GetOrgFullName(накладная_нрек, 3, 1) + oPrnSoprFun.GetOrgFullName(накладная_нрек, 3, 2)))
+  if (СчФакт_НРек <> 0, ', ИНН/КПП: ' + oPrnSoprFun.GetSchFactOrgUNN(СчФакт_НРек, 3), (', ИНН/КПП: ' + ПолучательУНН + ' / ' + ГрузополучательКПП))
+
+  Спецсимвол
+.endfields
+.begin
+  var wDirect: word = 0;
+  case тип_родительского_документа of
+    211, 201, 114: wDirect := 1;
+    111, 101:      wDirect := 2;
+  end;
+
+  if (wGetTune('Doc.SD.Prn.UPD.SetParamPrint') = 1)
+  {
+    if (RunInterface('SchfReeP'
+      , wDirect    //pDirect
+      , word(0)    //pSwitcher
+      , word(0)    //pSchFactTipNum
+      , word(0)    //pByNumEnable
+      ,''          //pNum1
+      ,''          //pNum2
+      , word(0)    //pYear
+      , ZeroDate   //pd1
+      , ZeroDate   //pd2
+      , word(0)    //pFilterParam
+      , longint(0) //pBou
+      , longint(0) //pDoc
+      , comp(0)    //pSchfKatOrg
+      , comp(0)    //pSchfStepDoc
+      , word(0)    //pFiltVal
+      , comp(0)    //pSchfVal
+      , word(0)    //pGroup
+      , word(0)    //pSort
+      , word(0)    //pPrintParam
+      , wParamPrint//pPrintField
+      , word(0)    //pPrint_Stav
+      , comp(0)    //cDopNalog
+      ,1, 1, 1, 1
+      , word(0)    //pFormat
+      ,''          //sFeeSigners
+      , word(0)    //pSignersParam
+      , comp(0)    //cKatKod_Footnote
+      , 1          //pHideFilter
+    ) = cmCancel)
+    {
+#IFDEF _Universal_
+#IFDEF _Universal06_
+      Universal06.fExit;
+#ELSE
+#IFDEF _Universal05_
+      Universal05.fExit;
+#ELSE
+#IFDEF _Universal03_
+      Universal03.fExit;
+#else
+      Universaldlv.fExit;
+#ENDIF
+#ENDIF
+#ENDIF
+#ENDIF
+      exit;
+    }
+  }
+
+  if (wParamPrint > 0)
+  {
+    bPrintPostAddr := ((wParamPrint and 1)    > 0);
+    bPrintDopSF    := ((wParamPrint and 2)    > 0);
+    bHideSumNoNDS  := ((wParamPrint and 64)   > 0);
+    bHideEdIzm     := ((wParamPrint and 128)  > 0);
+    bHideKol       := ((wParamPrint and 256)  > 0);
+    bHidePrice     := ((wParamPrint and 512)  > 0);
+    bHideGTD       := ((wParamPrint and 1024) > 0);
+  }
+end.
