@@ -267,13 +267,9 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="60" PosY="70" OpenEditor="True" Active="True"/>
-			<File Name="alter\Alter_iDiaDocSend.vip" PosX="49" PosY="56" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="78" PosY="171" OpenEditor="True"/>
-			<File Name="alter\ALTER_ON_NSCHFDOPPR.vip" PosX="20" PosY="41" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="57" PosY="45" OpenEditor="True"/>
-			<File Name="alter\alter_l_basedoc_vschet.vip" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="cnf\L_BASEDOC_VSCHET.cnf" PosX="38" PosY="292" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="39" PosY="188" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="20" PosY="262" OpenEditor="True" Active="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="60" PosY="329" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">

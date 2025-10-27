@@ -113,9 +113,9 @@ Function RequestCisesListInfo(_CISESLIST: tptr;var _err : string) : tptr; {
     var _JSONBODY_CISESLISTSTRING : tptr = HttpConnect_JSONObjectToString(httpCon, _CISESLIST);
 
 
-//    HttpConnect_SaveToFileEx(httpCon, _JSONBODY_CISESLISTSTRING, GetErrFile('JSONBODY_CISESLISTSTRING'), cpUTF8, false);
-//    HttpConnect_SaveToFileEx(httpCon, lAddUrl, GetErrFile('lAddUrl'), cpUTF8, false);
-//    HttpConnect_SaveToFileEx(httpCon, lHeader, GetErrFile('lHeader'), cpUTF8, false);
+    HttpConnect_SaveToFileEx(httpCon, _JSONBODY_CISESLISTSTRING, GetErrFile('JSONBODY_CISESLISTSTRING'), cpUTF8, false);
+    HttpConnect_SaveToFileEx(httpCon, lAddUrl, GetErrFile('lAddUrl'), cpUTF8, false);
+    HttpConnect_SaveToFileEx(httpCon, lHeader, GetErrFile('lHeader'), cpUTF8, false);
 
    var lResponse: TPtr;
     _try
