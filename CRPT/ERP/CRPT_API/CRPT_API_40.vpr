@@ -266,10 +266,11 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="CRPT_API.prj" PosX="30" PosY="109" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_Native.vip" PosX="23" PosY="200" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_ImportDocs.vip" PosX="40" PosY="335" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_Native.vip" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_ImportDocs.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="..\..\..\_AggregateRes\Source\Loadorder\LoadOrder_CRPT.vip" PosX="27" PosY="234" OpenEditor="True"/>
-			<File Name="Source\CRPT_API_InfoToolsLoader.VIP" PosX="84" PosY="167" OpenEditor="True" Active="True"/>
+			<File Name="Source\CRPT_API_InfoToolsLoader.VIP" PosX="21" PosY="142" OpenEditor="True"/>
+			<File Name="Source\CRPT_API_PowerShell_GetDocumentStatus.Vpp" PosX="68" PosY="64" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="CRPT_API.prj" Priority="0">
@@ -308,7 +309,7 @@
 			<BreakPoint FileName="Source\CRPT_API_ImportDocs.VIP" Line="26"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45951,4953272107" DateTimeCompile="0,00014732638373971" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45990,3647652662" DateTimeCompile="0,000547233794350177" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3105,17 +3106,17 @@
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" Line="210" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetDocumentStatus входящий параметр: _OleGenerateGUID:String не используется." SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetDocumentStatus.Vpp" SourceLine="86" SourceColumn="1">
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetDocumentStatus входящий параметр: _OleGenerateGUID:String не используется." SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetDocumentStatus.Vpp" SourceLine="87" SourceColumn="1">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" Line="211" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetDocumentStatus входящий параметр: _par4:String не используется." SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetDocumentStatus.Vpp" SourceLine="86" SourceColumn="1">
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetDocumentStatus входящий параметр: _par4:String не используется." SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetDocumentStatus.Vpp" SourceLine="87" SourceColumn="1">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" Line="211" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetDocumentStatus входящий параметр: _par5:String не используется." SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetDocumentStatus.Vpp" SourceLine="86" SourceColumn="1">
+					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - FillPS1_CrptAPI_GetDocumentStatus входящий параметр: _par5:String не используется." SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShell_GetDocumentStatus.Vpp" SourceLine="87" SourceColumn="1">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" Line="211" Column="1"/>
 						</StackIncludeList>
@@ -3176,7 +3177,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="395" SourceColumn="144"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="383" SourceColumn="139"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="21.10.2025 11:53:29"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="29.11.2025 8:46:03"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

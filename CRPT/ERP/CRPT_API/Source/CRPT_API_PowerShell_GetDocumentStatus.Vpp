@@ -32,7 +32,8 @@ MyWriteLN('Function GetResponse() {                                             
 MyWriteLN('    try {                                                                                                    ');
 MyWriteLN('        $token = Get-Content -Path $tokenPath                                                                ');
 MyWriteLN('        $headers = @{Authorization = "Bearer " + $token}                                                     ');
-MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/doc/$docOid/body?pg=water" -Headers $headers -ContentType "application/json;charset=UTF-8" -Method Get  -UseBasicParsing ');
+//MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://ismp.crpt.ru/api/v4/facade/doc/$docOid/body?pg=water" -Headers $headers -ContentType "application/json;charset=UTF-8" -Method Get  -UseBasicParsing ');
+MyWriteLN('        $response = Invoke-WebRequest  -Uri "https://markirovka.crpt.ru/api/v4/true-api/doc/$docOid/info" -Headers $headers -ContentType "application/json;charset=UTF-8" -Method Get  -UseBasicParsing');
 MyWriteLN('                                                                                                              ');
 MyWriteLN('        If ( $response.StatusCode -eq 200) {                                                                  ');
 MyWriteLN('          $responseObj = ConvertFrom-Json $response.Content;                                                  ');
@@ -64,8 +65,8 @@ if (_par3 = 'LP_CANCEL_SHIPMENT') {
       }
     end;
     MyWriteLN('                           set f$docDateTime = ''''''+$responseObj.docDate+'''''',                        ');
-    MyWriteLN('                               f$status      = ''''''+$responseObj.downloadStatus+'''''',                 ');
-    MyWriteLN('                               f$statusDescr = ''''''+$responseObj.downloadDesc+'''''',                   ');
+    MyWriteLN('                               f$status      = ''''''+$responseObj.Status+'''''',                 ');
+    MyWriteLN('                               f$statusDescr = ''''''+$responseObj.errors+'''''',                   ');
     MyWriteLN('                               f$sender      = ''''''+$responseObj.senderName+''''''                      ');
     MyWriteLN('                          where f$nrec        = dbo.toComp('+_par2+')''                                   ');
 }
