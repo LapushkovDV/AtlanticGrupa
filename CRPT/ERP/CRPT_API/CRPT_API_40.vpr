@@ -309,7 +309,7 @@
 			<BreakPoint FileName="Source\CRPT_API_ImportDocs.VIP" Line="26"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45990,3647652662" DateTimeCompile="0,000547233794350177" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45990,3727986343" DateTimeCompile="0,000164328703249339" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText=" онстанта &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируетс€" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3177,7 +3177,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="395" SourceColumn="144"/>
 					<CompileMessage MessageType="mtWarning" MessageText="–азное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="383" SourceColumn="139"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="29.11.2025 8:46:03"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="29.11.2025 8:57:04"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
