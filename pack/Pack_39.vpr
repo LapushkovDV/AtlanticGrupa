@@ -272,7 +272,7 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<FileList>
-			<File Name="pack.prj" PosX="24" PosY="11" OpenEditor="True" Active="True"/>
+			<File Name="pack.prj" PosX="44" PosY="13" OpenEditor="True" Active="True"/>
 			<File Name="DrogaFunc\drogaFunc.vip" PosX="58" PosY="25" OpenEditor="True"/>
 		</FileList>
 		<MarkerList>
