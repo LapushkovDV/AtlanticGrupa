@@ -1288,11 +1288,11 @@ var
           releaseDump(node);
          if _kor {
            if korfact.dfact < date(01,01,2019) then createEcodCell(ChildTwo, 'TaxRate', '18.00')
-           if korfact.dfact < date(01,01,2026) then createEcodCell(ChildTwo, 'TaxRate', '20.00');
+           if korfact.dfact >= date(01,01,2019) and korfact.dfact < date(01,01,2026) then createEcodCell(ChildTwo, 'TaxRate', '20.00');
            if korfact.dfact >= date(01,01,2026) then createEcodCell(ChildTwo, 'TaxRate', '22.00');
           } else {
            if schfact.dfact < date(01,01,2019) then createEcodCell(ChildTwo, 'TaxRate', '18.00')
-           if schfact.dfact < date(01,01,2026) then createEcodCell(ChildTwo, 'TaxRate', '20.00');
+           if schfact.dfact >= date(01,01,2019) and schfact.dfact < date(01,01,2026) then createEcodCell(ChildTwo, 'TaxRate', '20.00');
            if schfact.dfact >= date(01,01,2026) then createEcodCell(ChildTwo, 'TaxRate', '22.00');
           }
 
