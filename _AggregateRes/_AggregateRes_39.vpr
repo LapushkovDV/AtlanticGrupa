@@ -261,14 +261,14 @@
 					<DatabaseID>gal_abm</DatabaseID>
 					<SqlServerParameters>ncacn_ip_tcp:RUMOGAL-P01.atlantic.grupa[32777]</SqlServerParameters>
 					<HwKeyTransport>1</HwKeyTransport>
-					<HwKeyDirectory>10.2.1.151:33333</HwKeyDirectory>
+					<HwKeyDirectory>10.2.0.117:55555</HwKeyDirectory>
 					<LicFileName>..\..\..\..\..\..\Sup910\exe\License.lic</LicFileName>
 				</VipDatabase>
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="_AggregateRes.prj" PosX="39" PosY="188" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="20" PosY="262" OpenEditor="True" Active="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="66" PosY="177" OpenEditor="True" Active="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="60" PosY="329" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
@@ -310,7 +310,7 @@
 			<BreakPoint FileName="alter\ALTER_DiadocExportDoc.vip" Line="1"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="45865,3195886574" DateTimeCompile="0,000793287035776302" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="46035,7414564815" DateTimeCompile="0,000812037033028901" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3302,7 +3302,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\F_PLPORREP!!FRREEPD dtsReestr Реестр документов (в валюте платежа) ATLANTIC.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\F_PLPORREP!!FRREEPD dtsReestr Реестр документов (в валюте платежа) ATLANTIC.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="27.07.2025 7:41:21"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="13.01.2026 17:48:52"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

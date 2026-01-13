@@ -267,7 +267,7 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="xml.prj" PosX="49" PosY="25" OpenEditor="True" Active="True"/>
+			<File Name="xml.prj" PosX="38" PosY="26" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="xml.prj" Priority="0">
@@ -308,7 +308,7 @@
 			<BreakPoint FileName="alter\ALTER_DiadocExportDoc.vip" Line="1"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="46021,4352637037" DateTimeCompile="0,000673796297633089" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\xml\xml.prj" DateTimeStart="46035,7467294676" DateTimeCompile="0,000400162032747176" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3250,7 +3250,7 @@
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_getGroupName входящий параметр: level:Word не используется." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="160" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции(процедуре) - m_USERREPORT_ECOD_RECADV_SFERAEDI_IUserReport_visibleInModule входящий параметр: ind:Byte не используется." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\xml\EXPIMPSCRIPT\ecod_user.vip" SourceLine="174" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="30.12.2025 10:27:45"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="13.01.2026 17:55:52"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

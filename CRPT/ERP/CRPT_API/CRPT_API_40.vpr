@@ -265,7 +265,7 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="CRPT_API.prj" PosX="30" PosY="109" OpenEditor="True" Active="True"/>
+			<File Name="CRPT_API.prj" PosX="7" PosY="82" OpenEditor="True" Active="True"/>
 			<File Name="Source\CRPT_API_Native.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="Source\CRPT_API_ImportDocs.vip" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="..\..\..\_AggregateRes\Source\Loadorder\LoadOrder_CRPT.vip" PosX="27" PosY="234" OpenEditor="True"/>
@@ -309,7 +309,7 @@
 			<BreakPoint FileName="Source\CRPT_API_ImportDocs.VIP" Line="26"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="45990,3727986343" DateTimeCompile="0,000164328703249339" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\CRPT_API.prj" DateTimeStart="46035,7427235532" DateTimeCompile="0,000424594909418374" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3126,42 +3126,42 @@
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_API_POWERSHELLPOST.fillrecArrayByTypeTable&quot;, объявленный в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP(213), не был использован" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_PowerShellPost.VIP" SourceLine="247" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_PRJ_tune.vip" SourceLine="91" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ImportDocs.VIP" SourceLine="24" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ImportDocs.VIP" Line="48" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ImportDocs.VIP" SourceLine="377" SourceColumn="63"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ImportDocs.VIP" SourceLine="391" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ImportDocs.VIP" SourceLine="377" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ImportDocs.VIP" SourceLine="391" SourceColumn="63"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="31" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" Line="33" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="336" SourceColumn="63"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="353" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="336" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="353" SourceColumn="63"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_API_AGGRDOCLIST.makeAggrDocHeader&quot;, объявленный в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP(134), не был использован" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="449" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_API_AGGRDOCLIST.makePackContent&quot;, объявленный в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP(233), не был использован" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_AggrDocsList.VIP" SourceLine="449" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" SourceLine="27" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" Line="30" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" SourceLine="201" SourceColumn="63"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" SourceLine="209" SourceColumn="63"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" SourceLine="217" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" SourceLine="201" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" SourceLine="209" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ShipmentDocsList.VIP" SourceLine="217" SourceColumn="63"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="9" SourceColumn="1"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_KituInfoInterface.Vpp" SourceLine="65" SourceColumn="63">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" Line="50" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
 					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="160" SourceColumn="17"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Ожидалось: &quot;;&quot;" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="165" SourceColumn="17"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="442" SourceColumn="63"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="447" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="442" SourceColumn="63"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Разное количество фактических (1) и формальных (2) параметров при вызове ATLANTIC::CRPT_API_POWERSHELL " SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_ReceiptDocsList.VIP" SourceLine="447" SourceColumn="63"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="12" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\CRPT\ERP\CRPT_API\SOURCE\CRPT_API_Native.VIP" SourceLine="138" SourceColumn="7"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
@@ -3177,7 +3177,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="395" SourceColumn="144"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\G" SourceLine="383" SourceColumn="139"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="29.11.2025 8:57:04"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="13.01.2026 17:50:08"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

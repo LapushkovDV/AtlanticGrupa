@@ -272,14 +272,14 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<FileList>
-			<File Name="pack.prj" PosX="44" PosY="13" OpenEditor="True" Active="True"/>
+			<File Name="pack.prj" PosX="77" PosY="14" OpenEditor="True" Active="True"/>
 			<File Name="DrogaFunc\drogaFunc.vip" PosX="58" PosY="25" OpenEditor="True"/>
 		</FileList>
 		<MarkerList>
 			<Marker FileName="FILLTMPTBL\FillTmpTbl.frm" Caption="Нумерованная закладка 1" Line="143" NumIndex="1" MarkerType="mtNumBookmark" Comment="recNakl.Class_OsnOtp     := substr(recNakl.Class_OsnOtp, 1, pos('ДО ', recNakl.Class_OsnOtp)- 2);"/>
 		</MarkerList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\pack.prj" DateTimeStart="45993,7935675347" DateTimeCompile="0,000494965272082482" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\pack.prj" DateTimeStart="46035,7457326736" DateTimeCompile="0,000586770831432659" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3134,10 +3134,11 @@
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T (маршруты).fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T (маршруты).fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata [Атлантик] Форма 1-T.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata Исправительный универсальный передаточный  документ c 16.08.2024.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata Исправительный универсальный передаточный  документ c 16.08.2024.fr3&quot;."/>
+					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata Универсальный передаточный документ с 16.08.2024.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_PRNSOPR!!PRNTOVNFORFASTREP fr_prndata Универсальный передаточный документ с 16.08.2024.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="02.12.2025 19:03:27"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="13.01.2026 17:54:42"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
