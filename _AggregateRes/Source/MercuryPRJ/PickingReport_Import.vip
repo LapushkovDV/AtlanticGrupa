@@ -122,6 +122,7 @@ procedure InsertTmpHead(_line,_filename: string);
       set tmpPickingRep_Head.ErrDescr := tmpPickingRep_Head.ErrDescr + '|'+ ' ERROR!! не нашли накладную к ДО "' +tmpPickingRep_Head.Nakl_Num+ '"' ;
      update current tmpPickingRep_Head;
   }
+  mylog(' InsertTmpHead tmpPickingRep_Head.Nakl_Num = ' + tmpPickingRep_Head.Nakl_Num + ' tmpPickingRep_Head.cSopr=' + string(tmpPickingRep_Head.cSopr));
 }
 function ClearSecurityTrash(_string : string): string;
 {
@@ -171,11 +172,13 @@ procedure InsertTmpSpec(_line : string);
      }
     update current tmpPickingRep_Head;
     update current tmpPickingRep_SP;
+    mylog( 'InsertTmpSpec tmpPickingRep_SP.ErrDescr = '+ tmpPickingRep_SP.ErrDescr);
 }
 
 
 procedure CheckFileFillValues(_FilePath, _filename : string);
 {
+  mylog('procedure CheckFileFillValues('+_FilePath+',' +_filename+ ')');
   var _fileLine : string;
  if existFile(_FilePath+_filename) { //try discover file
         _try {
@@ -184,6 +187,7 @@ procedure CheckFileFillValues(_FilePath, _filename : string);
           while not fSrc.eof() do {
             _cntLine++;
             fSrc.readLn(_fileLine);
+            mylog('readline=' + _fileLine);
             _fileLine := replace( replace(_fileLine,';;','; ;'),';;','; ;'); //крутит крушу у функции extractdelimitedword иначе 0_0
             if _cntLine = 1 then InsertTmpHead(_fileLine,_filename);
             InsertTmpSpec(_fileLine);
@@ -192,6 +196,9 @@ procedure CheckFileFillValues(_FilePath, _filename : string);
         _finally {
           fSrc.close;
         }
+    }
+    else {
+      mylog('error! file not exist!');
     }
 }
 
@@ -505,6 +512,7 @@ HandleEvent
         if(MatchesMask(File_input,_MaskFileName))
          if not IsDirectory(Folder_input+File_input)
          {
+           MyLog('-------------------------------------');
            MyLog('Файл ' + Folder_input+File_input);
            CheckFileFillValues(Folder_input, File_input);
            _foundFileCount++;

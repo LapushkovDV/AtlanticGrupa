@@ -263,7 +263,7 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="frm.prj" PosX="6" PosY="14" OpenEditor="True" Active="True"/>
+			<File Name="frm.prj" PosX="85" PosY="16" OpenEditor="True" Active="True"/>
 			<File Name="torg12\metro_fld.frn" PosX="63" PosY="16" OpenEditor="True"/>
 			<File Name="s4fact\sign_vip.frn" PosX="30" PosY="14" OpenEditor="True"/>
 			<File Name="torg12\atl_fld.frn" PosX="45" PosY="11" OpenEditor="True"/>
@@ -280,7 +280,7 @@
 			</ProjectCompileFile>
 		</ProjectItems>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="46035,7444435185" DateTimeCompile="0,000753240739868488" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" DateTimeStart="46036,3473683681" DateTimeCompile="0,000768206016800832" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : EanBarCode" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\C\C_COMMON\VIP\WORKARCHIVE\EanBarCode.vih" SourceLine="17" SourceColumn="25">
 						<StackIncludeList>
@@ -1067,943 +1067,943 @@
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;MaxVarianceCount&quot; уже определена : MaxVarianceCount : Byte = 10; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="321" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;MaxVarianceCount&quot; уже определена : MaxVarianceCount : Byte = 10; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="325" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;MaxWorkingHours&quot; уже определена : MaxWorkingHours : Byte = 100; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="325" SourceColumn="23">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;MaxWorkingHours&quot; уже определена : MaxWorkingHours : Byte = 100; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="329" SourceColumn="23">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtaChange&quot; уже определена : wtaChange : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="330" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtaChange&quot; уже определена : wtaChange : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="334" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtaDepartment&quot; уже определена : wtaDepartment : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="331" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtaDepartment&quot; уже определена : wtaDepartment : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="335" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ByCurrency&quot; уже определена : ByCurrency : Word = 906; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="333" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ByCurrency&quot; уже определена : ByCurrency : Word = 906; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="337" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;UkrCurrency&quot; уже определена : UkrCurrency : Word = 980; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="334" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;UkrCurrency&quot; уже определена : UkrCurrency : Word = 980; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="338" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;RuCurrency&quot; уже определена : RuCurrency : Word = 810; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="335" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;RuCurrency&quot; уже определена : RuCurrency : Word = 810; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="339" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;WeekEndMark&quot; уже определена : WeekEndMark : String = В; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="340" SourceColumn="34">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;WeekEndMark&quot; уже определена : WeekEndMark : String = В; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="344" SourceColumn="34">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;DefaultSickMark&quot; уже определена : DefaultSickMark : String = Б; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="341" SourceColumn="34">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;DefaultSickMark&quot; уже определена : DefaultSickMark : String = Б; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="345" SourceColumn="34">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;DefaultVacationMark&quot; уже определена : DefaultVacationMark : String = О; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="342" SourceColumn="34">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;DefaultVacationMark&quot; уже определена : DefaultVacationMark : String = О; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="346" SourceColumn="34">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;SickSpecialValue&quot; уже определена : SickSpecialValue : Byte = 255; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="346" SourceColumn="34">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;SickSpecialValue&quot; уже определена : SickSpecialValue : Byte = 255; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="350" SourceColumn="34">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;VacationSpecialValue&quot; уже определена : VacationSpecialValue : Byte = 254; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="347" SourceColumn="34">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;VacationSpecialValue&quot; уже определена : VacationSpecialValue : Byte = 254; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="351" SourceColumn="34">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;FiredSpecialValue&quot; уже определена : FiredSpecialValue : Byte = 253; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="348" SourceColumn="34">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;FiredSpecialValue&quot; уже определена : FiredSpecialValue : Byte = 253; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="352" SourceColumn="34">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;BusinessTripSpecialValue&quot; уже определена : BusinessTripSpecialValue : Byte = 252; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="349" SourceColumn="34">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;BusinessTripSpecialValue&quot; уже определена : BusinessTripSpecialValue : Byte = 252; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="353" SourceColumn="34">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;DayLongAbsenceSpecialValue&quot; уже определена : DayLongAbsenceSpecialValue : Byte = 251; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="350" SourceColumn="34">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;DayLongAbsenceSpecialValue&quot; уже определена : DayLongAbsenceSpecialValue : Byte = 251; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="354" SourceColumn="34">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;psoMonth&quot; уже определена : psoMonth : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="357" SourceColumn="16">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;psoMonth&quot; уже определена : psoMonth : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="361" SourceColumn="16">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;psoQuarter&quot; уже определена : psoQuarter : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="358" SourceColumn="16">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;psoQuarter&quot; уже определена : psoQuarter : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="362" SourceColumn="16">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;psoHalfYear&quot; уже определена : psoHalfYear : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="359" SourceColumn="16">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;psoHalfYear&quot; уже определена : psoHalfYear : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="363" SourceColumn="16">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;psoYear&quot; уже определена : psoYear : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="360" SourceColumn="16">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;psoYear&quot; уже определена : psoYear : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="364" SourceColumn="16">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkChange&quot; уже определена : vkChange : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="367" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkChange&quot; уже определена : vkChange : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="371" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkDecrease&quot; уже определена : vkDecrease : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="369" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkDecrease&quot; уже определена : vkDecrease : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="373" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkIncrease&quot; уже определена : vkIncrease : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="371" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkIncrease&quot; уже определена : vkIncrease : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="375" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkIrregularity&quot; уже определена : vkIrregularity : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="373" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkIrregularity&quot; уже определена : vkIrregularity : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="377" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkRefinement&quot; уже определена : vkRefinement : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="375" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkRefinement&quot; уже определена : vkRefinement : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="379" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkInformation&quot; уже определена : vkInformation : Byte = 5; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="377" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vkInformation&quot; уже определена : vkInformation : Byte = 5; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="381" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akNone&quot; уже определена : akNone : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="382" SourceColumn="24">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akNone&quot; уже определена : akNone : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="386" SourceColumn="24">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akHandCorrection&quot; уже определена : akHandCorrection : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="384" SourceColumn="24">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akHandCorrection&quot; уже определена : akHandCorrection : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="388" SourceColumn="24">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akBusinessTrip&quot; уже определена : akBusinessTrip : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="386" SourceColumn="25">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akBusinessTrip&quot; уже определена : akBusinessTrip : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="390" SourceColumn="25">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akVacationRecall&quot; уже определена : akVacationRecall : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="388" SourceColumn="25">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akVacationRecall&quot; уже определена : akVacationRecall : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="392" SourceColumn="25">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akDuty&quot; уже определена : akDuty : Byte = 128; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="390" SourceColumn="26">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akDuty&quot; уже определена : akDuty : Byte = 128; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="394" SourceColumn="26">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akSickList&quot; уже определена : akSickList : Word = 256; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="392" SourceColumn="26">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akSickList&quot; уже определена : akSickList : Word = 256; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="396" SourceColumn="26">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akVacation&quot; уже определена : akVacation : Word = 512; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="394" SourceColumn="26">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akVacation&quot; уже определена : akVacation : Word = 512; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="398" SourceColumn="26">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akWeekendMark&quot; уже определена : akWeekendMark : Word = 768; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="396" SourceColumn="26">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akWeekendMark&quot; уже определена : akWeekendMark : Word = 768; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="400" SourceColumn="26">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akTableAbsence&quot; уже определена : akTableAbsence : Word = 1024; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="398" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akTableAbsence&quot; уже определена : akTableAbsence : Word = 1024; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="402" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akIrregularity&quot; уже определена : akIrregularity : Word = 2048; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="400" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akIrregularity&quot; уже определена : akIrregularity : Word = 2048; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="404" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akRefinement&quot; уже определена : akRefinement : Word = 4096; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="402" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akRefinement&quot; уже определена : akRefinement : Word = 4096; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="406" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akOvertimeWorkOrder&quot; уже определена : akOvertimeWorkOrder : Word = 8192; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="404" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akOvertimeWorkOrder&quot; уже определена : akOvertimeWorkOrder : Word = 8192; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="408" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akWeekendWorkOrder&quot; уже определена : akWeekendWorkOrder : Word = 8193; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="406" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akWeekendWorkOrder&quot; уже определена : akWeekendWorkOrder : Word = 8193; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="410" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akTrainingOrder&quot; уже определена : akTrainingOrder : Word = 8194; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="408" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akTrainingOrder&quot; уже определена : akTrainingOrder : Word = 8194; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="412" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akTrainingTransferOrder&quot; уже определена : akTrainingTransferOrder : Word = 8195; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="410" SourceColumn="31">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akTrainingTransferOrder&quot; уже определена : akTrainingTransferOrder : Word = 8195; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="414" SourceColumn="31">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akInformation&quot; уже определена : akInformation : Word = 8196; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="412" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akInformation&quot; уже определена : akInformation : Word = 8196; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="416" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akHoursAbsenceOrder&quot; уже определена : akHoursAbsenceOrder : Word = 8197; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="414" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;akHoursAbsenceOrder&quot; уже определена : akHoursAbsenceOrder : Word = 8197; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="418" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoHours&quot; уже определена : wtdoHours : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="423" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoHours&quot; уже определена : wtdoHours : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="427" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoDays&quot; уже определена : wtdoDays : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="425" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoDays&quot; уже определена : wtdoDays : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="429" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoChanges&quot; уже определена : wtdoChanges : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="427" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoChanges&quot; уже определена : wtdoChanges : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="431" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoAbsences&quot; уже определена : wtdoAbsences : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="429" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoAbsences&quot; уже определена : wtdoAbsences : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="433" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoMovableVariances&quot; уже определена : wtdoMovableVariances : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="431" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoMovableVariances&quot; уже определена : wtdoMovableVariances : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="435" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoSystemVariances&quot; уже определена : wtdoSystemVariances : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="432" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoSystemVariances&quot; уже определена : wtdoSystemVariances : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="436" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoMonthlyAbsences&quot; уже определена : wtdoMonthlyAbsences : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="434" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoMonthlyAbsences&quot; уже определена : wtdoMonthlyAbsences : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="438" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoSystemAbsences&quot; уже определена : wtdoSystemAbsences : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="436" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoSystemAbsences&quot; уже определена : wtdoSystemAbsences : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="440" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoPermanentChanges&quot; уже определена : wtdoPermanentChanges : Byte = 128; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="438" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoPermanentChanges&quot; уже определена : wtdoPermanentChanges : Byte = 128; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="442" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoSchedules&quot; уже определена : wtdoSchedules : Word = 256; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="440" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoSchedules&quot; уже определена : wtdoSchedules : Word = 256; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="444" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoPADetails&quot; уже определена : wtdoPADetails : Word = 512; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="442" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoPADetails&quot; уже определена : wtdoPADetails : Word = 512; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="446" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoPADetailsPermanent&quot; уже определена : wtdoPADetailsPermanent : Word = 1024; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="444" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoPADetailsPermanent&quot; уже определена : wtdoPADetailsPermanent : Word = 1024; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="448" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoBaseIns&quot; уже определена : wtdoBaseIns : Word = 2048; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="446" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoBaseIns&quot; уже определена : wtdoBaseIns : Word = 2048; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="450" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoAll&quot; уже определена : wtdoAll : Word = 3963; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="448" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;wtdoAll&quot; уже определена : wtdoAll : Word = 3963; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="452" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apWorking&quot; уже определена : apWorking : String = Рабочие; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="453" SourceColumn="35">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apWorking&quot; уже определена : apWorking : String = Рабочие; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="457" SourceColumn="35">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apEveningHours&quot; уже определена : apEveningHours : String = Вечерние; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="454" SourceColumn="36">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apEveningHours&quot; уже определена : apEveningHours : String = Вечерние; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="458" SourceColumn="36">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apNightHours&quot; уже определена : apNightHours : String = Ночные; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="455" SourceColumn="34">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apNightHours&quot; уже определена : apNightHours : String = Ночные; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="459" SourceColumn="34">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apHolidayHours&quot; уже определена : apHolidayHours : String = Праздничные; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="456" SourceColumn="39">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apHolidayHours&quot; уже определена : apHolidayHours : String = Праздничные; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="460" SourceColumn="39">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apWorkingHolidayHours&quot; уже определена : apWorkingHolidayHours : String = Праздничные, рабочие по плану; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="457" SourceColumn="57">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apWorkingHolidayHours&quot; уже определена : apWorkingHolidayHours : String = Праздничные, рабочие по плану; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="461" SourceColumn="57">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apWeekendHolidayHours&quot; уже определена : apWeekendHolidayHours : String = Праздничные, не рабочие по плану; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="458" SourceColumn="60">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apWeekendHolidayHours&quot; уже определена : apWeekendHolidayHours : String = Праздничные, не рабочие по плану; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="462" SourceColumn="60">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apWeekendHours&quot; уже определена : apWeekendHours : String = Выходные; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="459" SourceColumn="36">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apWeekendHours&quot; уже определена : apWeekendHours : String = Выходные; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="463" SourceColumn="36">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apOverworkHours&quot; уже определена : apOverworkHours : String = Сверхурочные; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="460" SourceColumn="40">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apOverworkHours&quot; уже определена : apOverworkHours : String = Сверхурочные; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="464" SourceColumn="40">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apOverworkHoursRest&quot; уже определена : apOverworkHoursRest : String = Сверхурочные (остаток); повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="461" SourceColumn="50">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apOverworkHoursRest&quot; уже определена : apOverworkHoursRest : String = Сверхурочные (остаток); повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="465" SourceColumn="50">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apICOrdinary&quot; уже определена : apICOrdinary : String = Работа в обычных условиях; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="462" SourceColumn="53">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apICOrdinary&quot; уже определена : apICOrdinary : String = Работа в обычных условиях; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="466" SourceColumn="53">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apICHarmful&quot; уже определена : apICHarmful : String = Работа во вредных условиях; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="463" SourceColumn="54">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apICHarmful&quot; уже определена : apICHarmful : String = Работа во вредных условиях; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="467" SourceColumn="54">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apICExtraHarmful&quot; уже определена : apICExtraHarmful : String = Работа в особо вредных условиях; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="464" SourceColumn="59">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apICExtraHarmful&quot; уже определена : apICExtraHarmful : String = Работа в особо вредных условиях; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="468" SourceColumn="59">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apHolidayHoursForLeave&quot; уже определена : apHolidayHoursForLeave : String = Праздничные за отгул; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="465" SourceColumn="48">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apHolidayHoursForLeave&quot; уже определена : apHolidayHoursForLeave : String = Праздничные за отгул; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="469" SourceColumn="48">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apWeekendHoursForLeave&quot; уже определена : apWeekendHoursForLeave : String = Выходные за отгул; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="466" SourceColumn="45">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;apWeekendHoursForLeave&quot; уже определена : apWeekendHoursForLeave : String = Выходные за отгул; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="470" SourceColumn="45">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;asPaymentKind&quot; уже определена : asPaymentKind : String = ВидОплаты; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="471" SourceColumn="32">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;asPaymentKind&quot; уже определена : asPaymentKind : String = ВидОплаты; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="475" SourceColumn="32">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;asPercent&quot; уже определена : asPercent : String = Процент; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="472" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;asPercent&quot; уже определена : asPercent : String = Процент; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="476" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;asTotalHours&quot; уже определена : asTotalHours : String = Итого часов за период; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="473" SourceColumn="44">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;asTotalHours&quot; уже определена : asTotalHours : String = Итого часов за период; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="477" SourceColumn="44">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;asTotalDays&quot; уже определена : asTotalDays : String = Итого дней за период; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="474" SourceColumn="43">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;asTotalDays&quot; уже определена : asTotalDays : String = Итого дней за период; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="478" SourceColumn="43">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;eaTotalWorkingHours&quot; уже определена : eaTotalWorkingHours : String = Рабочие.Итого часов за период; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="479" SourceColumn="53">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;eaTotalWorkingHours&quot; уже определена : eaTotalWorkingHours : String = Рабочие.Итого часов за период; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="483" SourceColumn="53">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;eaTotalWorkingDays&quot; уже определена : eaTotalWorkingDays : String = Рабочие.Итого дней за период; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="480" SourceColumn="52">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;eaTotalWorkingDays&quot; уже определена : eaTotalWorkingDays : String = Рабочие.Итого дней за период; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="484" SourceColumn="52">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfAvgFactorManualEntry&quot; уже определена : tfAvgFactorManualEntry : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="486" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfAvgFactorManualEntry&quot; уже определена : tfAvgFactorManualEntry : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="490" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfRegionalFactorStored&quot; уже определена : tfRegionalFactorStored : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="488" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfRegionalFactorStored&quot; уже определена : tfRegionalFactorStored : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="492" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfWeekendsStored&quot; уже определена : tfWeekendsStored : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="490" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfWeekendsStored&quot; уже определена : tfWeekendsStored : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="494" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfPermanentLsData&quot; уже определена : tfPermanentLsData : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="492" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfPermanentLsData&quot; уже определена : tfPermanentLsData : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="496" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfIndependentTerritoryCon&quot; уже определена : tfIndependentTerritoryCon : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="494" SourceColumn="31">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfIndependentTerritoryCon&quot; уже определена : tfIndependentTerritoryCon : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="498" SourceColumn="31">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfWageRateInsalubrityTerritorialStored&quot; уже определена : tfWageRateInsalubrityTerritorialStored : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="496" SourceColumn="44">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfWageRateInsalubrityTerritorialStored&quot; уже определена : tfWageRateInsalubrityTerritorialStored : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="500" SourceColumn="44">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfHolidayStored&quot; уже определена : tfHolidayStored : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="498" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfHolidayStored&quot; уже определена : tfHolidayStored : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="502" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfForLeaveStored&quot; уже определена : tfForLeaveStored : Byte = 128; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="500" SourceColumn="23">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;tfForLeaveStored&quot; уже определена : tfForLeaveStored : Byte = 128; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="504" SourceColumn="23">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;htNone&quot; уже определена : htNone : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="505" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;htNone&quot; уже определена : htNone : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="509" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;htHoliday&quot; уже определена : htHoliday : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="506" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;htHoliday&quot; уже определена : htHoliday : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="510" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;htMovedSaturday&quot; уже определена : htMovedSaturday : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="507" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;htMovedSaturday&quot; уже определена : htMovedSaturday : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="511" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;htWorking&quot; уже определена : htWorking : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="508" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;htWorking&quot; уже определена : htWorking : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="512" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;htMovedSunday&quot; уже определена : htMovedSunday : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="509" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;htMovedSunday&quot; уже определена : htMovedSunday : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="513" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchBrigade&quot; уже определена : pchBrigade : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="515" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchBrigade&quot; уже определена : pchBrigade : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="519" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchCategory&quot; уже определена : pchCategory : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="516" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchCategory&quot; уже определена : pchCategory : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="520" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchRejim&quot; уже определена : pchRejim : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="517" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchRejim&quot; уже определена : pchRejim : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="521" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchPosition&quot; уже определена : pchPosition : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="518" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchPosition&quot; уже определена : pchPosition : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="522" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchSysPay&quot; уже определена : pchSysPay : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="519" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchSysPay&quot; уже определена : pchSysPay : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="523" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchCorrectCoeff&quot; уже определена : pchCorrectCoeff : Byte = 128; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="520" SourceColumn="23">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchCorrectCoeff&quot; уже определена : pchCorrectCoeff : Byte = 128; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="524" SourceColumn="23">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchTarif&quot; уже определена : pchTarif : Word = 256; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="521" SourceColumn="23">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchTarif&quot; уже определена : pchTarif : Word = 256; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="525" SourceColumn="23">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchCurrency&quot; уже определена : pchCurrency : Word = 512; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="522" SourceColumn="23">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchCurrency&quot; уже определена : pchCurrency : Word = 512; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="526" SourceColumn="23">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchTarStav&quot; уже определена : pchTarStav : Word = 1024; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="523" SourceColumn="24">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchTarStav&quot; уже определена : pchTarStav : Word = 1024; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="527" SourceColumn="24">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchRazr&quot; уже определена : pchRazr : Word = 2048; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="524" SourceColumn="24">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchRazr&quot; уже определена : pchRazr : Word = 2048; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="528" SourceColumn="24">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchKTY&quot; уже определена : pchKTY : Word = 4096; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="525" SourceColumn="24">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchKTY&quot; уже определена : pchKTY : Word = 4096; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="529" SourceColumn="24">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchOsnOpl&quot; уже определена : pchOsnOpl : Word = 8192; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="526" SourceColumn="24">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchOsnOpl&quot; уже определена : pchOsnOpl : Word = 8192; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="530" SourceColumn="24">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchRegionPercent&quot; уже определена : pchRegionPercent : Word = 16384; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="527" SourceColumn="25">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchRegionPercent&quot; уже определена : pchRegionPercent : Word = 16384; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="531" SourceColumn="25">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchNorthCategory&quot; уже определена : pchNorthCategory : Word = 32768; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="528" SourceColumn="25">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchNorthCategory&quot; уже определена : pchNorthCategory : Word = 32768; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="532" SourceColumn="25">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchSHPZ&quot; уже определена : pchSHPZ : LongInt = 65536; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="529" SourceColumn="25">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchSHPZ&quot; уже определена : pchSHPZ : LongInt = 65536; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="533" SourceColumn="25">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchTXO&quot; уже определена : pchTXO : LongInt = 131072; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="530" SourceColumn="26">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchTXO&quot; уже определена : pchTXO : LongInt = 131072; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="534" SourceColumn="26">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchParameter&quot; уже определена : pchParameter : LongInt = 262144; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="531" SourceColumn="26">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchParameter&quot; уже определена : pchParameter : LongInt = 262144; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="535" SourceColumn="26">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchExtrAnalitik&quot; уже определена : pchExtrAnalitik : LongInt = 524288; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="532" SourceColumn="26">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchExtrAnalitik&quot; уже определена : pchExtrAnalitik : LongInt = 524288; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="536" SourceColumn="26">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchTerrUsl&quot; уже определена : pchTerrUsl : LongInt = 1048576; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="533" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchTerrUsl&quot; уже определена : pchTerrUsl : LongInt = 1048576; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="537" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchPodr&quot; уже определена : pchPodr : LongInt = 2097152; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="534" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchPodr&quot; уже определена : pchPodr : LongInt = 2097152; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="538" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchIF&quot; уже определена : pchIF : LongInt = 4194304; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="535" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchIF&quot; уже определена : pchIF : LongInt = 4194304; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="539" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchKPS&quot; уже определена : pchKPS : LongInt = 8388608; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="536" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchKPS&quot; уже определена : pchKPS : LongInt = 8388608; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="540" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchStavka&quot; уже определена : pchStavka : LongInt = 16777216; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="537" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchStavka&quot; уже определена : pchStavka : LongInt = 16777216; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="541" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchAllChanges&quot; уже определена : pchAllChanges : LongInt = 33554428; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="545" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchAllChanges&quot; уже определена : pchAllChanges : LongInt = 33554428; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="546" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchError&quot; уже определена : pchError : LongInt = 1610612736; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="548" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchError&quot; уже определена : pchError : LongInt = 1610612736; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="549" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchTranslucent&quot; уже определена : pchTranslucent : LongInt = 1073741824; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="550" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pchTranslucent&quot; уже определена : pchTranslucent : LongInt = 1073741824; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="551" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ctPermanent&quot; уже определена : ctPermanent : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="556" SourceColumn="24">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ctPermanent&quot; уже определена : ctPermanent : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="563" SourceColumn="24">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ctTemporary&quot; уже определена : ctTemporary : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="557" SourceColumn="24">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ctTemporary&quot; уже определена : ctTemporary : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="564" SourceColumn="24">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ctArchivePermanent&quot; уже определена : ctArchivePermanent : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="558" SourceColumn="24">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ctArchivePermanent&quot; уже определена : ctArchivePermanent : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="565" SourceColumn="24">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ctArchiveTemporary&quot; уже определена : ctArchiveTemporary : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="559" SourceColumn="24">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ctArchiveTemporary&quot; уже определена : ctArchiveTemporary : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="566" SourceColumn="24">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ocmDefault&quot; уже определена : ocmDefault : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="566" SourceColumn="16">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ocmDefault&quot; уже определена : ocmDefault : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="573" SourceColumn="16">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ocmDaily&quot; уже определена : ocmDaily : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="568" SourceColumn="16">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ocmDaily&quot; уже определена : ocmDaily : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="575" SourceColumn="16">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ocmSummed&quot; уже определена : ocmSummed : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="570" SourceColumn="16">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ocmSummed&quot; уже определена : ocmSummed : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="577" SourceColumn="16">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ocmMixed&quot; уже определена : ocmMixed : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="572" SourceColumn="16">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ocmMixed&quot; уже определена : ocmMixed : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="579" SourceColumn="16">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrClassifierFail&quot; уже определена : icrClassifierFail : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="579" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrClassifierFail&quot; уже определена : icrClassifierFail : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="586" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrListCodeSpecialCon&quot; уже определена : icrListCodeSpecialCon : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="581" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrListCodeSpecialCon&quot; уже определена : icrListCodeSpecialCon : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="588" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrUnharmfulSpecialCon&quot; уже определена : icrUnharmfulSpecialCon : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="582" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrUnharmfulSpecialCon&quot; уже определена : icrUnharmfulSpecialCon : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="589" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrSubStrKPS&quot; уже определена : icrSubStrKPS : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="583" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrSubStrKPS&quot; уже определена : icrSubStrKPS : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="590" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrPPSPercent&quot; уже определена : icrPPSPercent : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="584" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrPPSPercent&quot; уже определена : icrPPSPercent : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="591" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrSpecialConRefFilled&quot; уже определена : icrSpecialConRefFilled : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="585" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrSpecialConRefFilled&quot; уже определена : icrSpecialConRefFilled : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="592" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrSpecialConRefEmpty&quot; уже определена : icrSpecialConRefEmpty : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="586" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrSpecialConRefEmpty&quot; уже определена : icrSpecialConRefEmpty : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="593" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrWouldBeHarmful&quot; уже определена : icrWouldBeHarmful : Word = 256; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="588" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrWouldBeHarmful&quot; уже определена : icrWouldBeHarmful : Word = 256; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="595" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrWouldBeExtraHarmful&quot; уже определена : icrWouldBeExtraHarmful : Word = 512; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="589" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrWouldBeExtraHarmful&quot; уже определена : icrWouldBeExtraHarmful : Word = 512; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="596" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrSexFail&quot; уже определена : icrSexFail : Word = 1024; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="591" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrSexFail&quot; уже определена : icrSexFail : Word = 1024; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="598" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrRetirementAge&quot; уже определена : icrRetirementAge : Word = 8192; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="593" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrRetirementAge&quot; уже определена : icrRetirementAge : Word = 8192; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="600" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr30Days&quot; уже определена : icr30Days : Word = 16384; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="594" SourceColumn="31">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr30Days&quot; уже определена : icr30Days : Word = 16384; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="601" SourceColumn="31">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrFinalResultHarmful&quot; уже определена : icrFinalResultHarmful : LongInt = 131072; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="596" SourceColumn="36">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrFinalResultHarmful&quot; уже определена : icrFinalResultHarmful : LongInt = 131072; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="603" SourceColumn="36">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrFinalResultExtraHarmful&quot; уже определена : icrFinalResultExtraHarmful : LongInt = 262144; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="597" SourceColumn="36">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icrFinalResultExtraHarmful&quot; уже определена : icrFinalResultExtraHarmful : LongInt = 262144; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="604" SourceColumn="36">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_BaseInsalubrity&quot; уже определена : icr2_BaseInsalubrity : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="600" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_BaseInsalubrity&quot; уже определена : icr2_BaseInsalubrity : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="607" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_HoursMoreHarmful&quot; уже определена : icr2_HoursMoreHarmful : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="601" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_HoursMoreHarmful&quot; уже определена : icr2_HoursMoreHarmful : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="608" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_HoursLessHarmful&quot; уже определена : icr2_HoursLessHarmful : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="602" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_HoursLessHarmful&quot; уже определена : icr2_HoursLessHarmful : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="609" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_AbsencesHours&quot; уже определена : icr2_AbsencesHours : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="603" SourceColumn="27">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_AbsencesHours&quot; уже определена : icr2_AbsencesHours : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="610" SourceColumn="27">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_Absence&quot; уже определена : icr2_Absence : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="604" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_Absence&quot; уже определена : icr2_Absence : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="611" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_SickListDayBefore&quot; уже определена : icr2_SickListDayBefore : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="605" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_SickListDayBefore&quot; уже определена : icr2_SickListDayBefore : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="612" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_VacationDayBefore&quot; уже определена : icr2_VacationDayBefore : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="606" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_VacationDayBefore&quot; уже определена : icr2_VacationDayBefore : Byte = 64; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="613" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_FullDay&quot; уже определена : icr2_FullDay : Byte = 128; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="607" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_FullDay&quot; уже определена : icr2_FullDay : Byte = 128; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="614" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_NotFullDay&quot; уже определена : icr2_NotFullDay : Word = 256; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="608" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_NotFullDay&quot; уже определена : icr2_NotFullDay : Word = 256; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="615" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_NotWorking&quot; уже определена : icr2_NotWorking : Word = 512; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="609" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_NotWorking&quot; уже определена : icr2_NotWorking : Word = 512; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="616" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_80Percent&quot; уже определена : icr2_80Percent : Word = 1024; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="610" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_80Percent&quot; уже определена : icr2_80Percent : Word = 1024; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="617" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_AbsencesAtWeekend&quot; уже определена : icr2_AbsencesAtWeekend : Word = 2048; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="611" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_AbsencesAtWeekend&quot; уже определена : icr2_AbsencesAtWeekend : Word = 2048; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="618" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_HarmfulAbsence&quot; уже определена : icr2_HarmfulAbsence : Word = 4096; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="612" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_HarmfulAbsence&quot; уже определена : icr2_HarmfulAbsence : Word = 4096; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="619" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_NearestDayBefore&quot; уже определена : icr2_NearestDayBefore : Word = 8192; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="613" SourceColumn="30">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_NearestDayBefore&quot; уже определена : icr2_NearestDayBefore : Word = 8192; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="620" SourceColumn="30">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_HoursMajority&quot; уже определена : icr2_HoursMajority : Word = 16384; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="614" SourceColumn="31">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_HoursMajority&quot; уже определена : icr2_HoursMajority : Word = 16384; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="621" SourceColumn="31">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_FinalResultHarmful&quot; уже определена : icr2_FinalResultHarmful : LongInt = 524288; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="616" SourceColumn="38">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_FinalResultHarmful&quot; уже определена : icr2_FinalResultHarmful : LongInt = 524288; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="623" SourceColumn="38">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_FinalResultExtraHarmful&quot; уже определена : icr2_FinalResultExtraHarmful : LongInt = 1048576; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="617" SourceColumn="39">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;icr2_FinalResultExtraHarmful&quot; уже определена : icr2_FinalResultExtraHarmful : LongInt = 1048576; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="624" SourceColumn="39">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ir2strDefault&quot; уже определена : ir2strDefault : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="622" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ir2strDefault&quot; уже определена : ir2strDefault : Byte = 0; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="629" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ir2strProOnly&quot; уже определена : ir2strProOnly : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="623" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ir2strProOnly&quot; уже определена : ir2strProOnly : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="630" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ir2strContraOnly&quot; уже определена : ir2strContraOnly : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="624" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;ir2strContraOnly&quot; уже определена : ir2strContraOnly : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="631" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="59" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
@@ -2591,331 +2591,331 @@
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peUchocr&quot; уже определена : peUchocr : Byte = 36; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="58" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peUchocr&quot; уже определена : peUchocr : Byte = 36; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="59" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pematp&quot; уже определена : pematp : Byte = 37; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="59" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pematp&quot; уже определена : pematp : Byte = 37; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="60" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pePushDays&quot; уже определена : pePushDays : Byte = 43; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="63" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pePushDays&quot; уже определена : pePushDays : Byte = 43; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="65" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pe49&quot; уже определена : pe49 : Byte = 44; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="64" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pe49&quot; уже определена : pe49 : Byte = 44; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="66" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pe42_45&quot; уже определена : pe42_45 : Byte = 45; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="65" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pe42_45&quot; уже определена : pe42_45 : Byte = 45; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="67" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pe46&quot; уже определена : pe46 : Byte = 46; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="66" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pe46&quot; уже определена : pe46 : Byte = 46; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="68" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peVxodMonFZ&quot; уже определена : peVxodMonFZ : Byte = 47; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="68" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peVxodMonFZ&quot; уже определена : peVxodMonFZ : Byte = 47; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="70" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peReshS&quot; уже определена : peReshS : Byte = 48; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="69" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peReshS&quot; уже определена : peReshS : Byte = 48; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="71" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peTimeForN&quot; уже определена : peTimeForN : Byte = 49; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="70" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peTimeForN&quot; уже определена : peTimeForN : Byte = 49; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="72" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peActualTimeForPayment&quot; уже определена : peActualTimeForPayment : Byte = 51; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="71" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peActualTimeForPayment&quot; уже определена : peActualTimeForPayment : Byte = 51; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="73" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peShareCosts&quot; уже определена : peShareCosts : Byte = 52; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="72" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peShareCosts&quot; уже определена : peShareCosts : Byte = 52; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="74" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pePpsFully&quot; уже определена : pePpsFully : Byte = 59; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="77" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pePpsFully&quot; уже определена : pePpsFully : Byte = 59; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="80" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peLongServiceHoursForPS&quot; уже определена : peLongServiceHoursForPS : Byte = 60; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="78" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peLongServiceHoursForPS&quot; уже определена : peLongServiceHoursForPS : Byte = 60; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="81" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFixAfterProbation&quot; уже определена : peFixAfterProbation : Byte = 70; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="84" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFixAfterProbation&quot; уже определена : peFixAfterProbation : Byte = 70; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="87" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peInsWelfareCalc&quot; уже определена : peInsWelfareCalc : Byte = 71; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="85" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peInsWelfareCalc&quot; уже определена : peInsWelfareCalc : Byte = 71; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="88" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peRecalcSDZ&quot; уже определена : peRecalcSDZ : Byte = 72; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="86" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peRecalcSDZ&quot; уже определена : peRecalcSDZ : Byte = 72; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="89" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peUnhelthComp&quot; уже определена : peUnhelthComp : Byte = 73; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="87" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peUnhelthComp&quot; уже определена : peUnhelthComp : Byte = 73; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="90" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peUnCondition&quot; уже определена : peUnCondition : Byte = 74; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="88" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peUnCondition&quot; уже определена : peUnCondition : Byte = 74; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="91" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peAsconaBonus&quot; уже определена : peAsconaBonus : Byte = 75; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="89" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peAsconaBonus&quot; уже определена : peAsconaBonus : Byte = 75; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="92" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pendfl1&quot; уже определена : pendfl1 : Byte = 80; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="96" SourceColumn="14">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pendfl1&quot; уже определена : pendfl1 : Byte = 80; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="99" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peAlim&quot; уже определена : peAlim : Byte = 90; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="98" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peAlim&quot; уже определена : peAlim : Byte = 90; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="103" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormT13&quot; уже определена : peFormT13 : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="101" SourceColumn="20">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormT13&quot; уже определена : peFormT13 : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="107" SourceColumn="20">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormF201Kaz&quot; уже определена : peFormF201Kaz : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="102" SourceColumn="20">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormF201Kaz&quot; уже определена : peFormF201Kaz : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="108" SourceColumn="20">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peNalReg&quot; уже определена : peNalReg : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="103" SourceColumn="20">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peNalReg&quot; уже определена : peNalReg : Byte = 3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="109" SourceColumn="20">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormZUM&quot; уже определена : peFormZUM : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="104" SourceColumn="20">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormZUM&quot; уже определена : peFormZUM : Byte = 4; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="110" SourceColumn="20">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormF60001Kaz&quot; уже определена : peFormF60001Kaz : Byte = 5; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="105" SourceColumn="20">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormF60001Kaz&quot; уже определена : peFormF60001Kaz : Byte = 5; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="111" SourceColumn="20">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormF60002Kaz&quot; уже определена : peFormF60002Kaz : Byte = 6; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="106" SourceColumn="20">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormF60002Kaz&quot; уже определена : peFormF60002Kaz : Byte = 6; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="112" SourceColumn="20">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormF60003Kaz&quot; уже определена : peFormF60003Kaz : Byte = 7; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="107" SourceColumn="20">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormF60003Kaz&quot; уже определена : peFormF60003Kaz : Byte = 7; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="113" SourceColumn="20">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormF10018Kaz&quot; уже определена : peFormF10018Kaz : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="108" SourceColumn="20">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormF10018Kaz&quot; уже определена : peFormF10018Kaz : Byte = 8; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="114" SourceColumn="20">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormFSS4&quot; уже определена : peFormFSS4 : Byte = 9; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="109" SourceColumn="20">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormFSS4&quot; уже определена : peFormFSS4 : Byte = 9; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="115" SourceColumn="20">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peNalReg1&quot; уже определена : peNalReg1 : Byte = 10; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="110" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peNalReg1&quot; уже определена : peNalReg1 : Byte = 10; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="116" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormFSS4_8&quot; уже определена : peFormFSS4_8 : Byte = 11; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="111" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormFSS4_8&quot; уже определена : peFormFSS4_8 : Byte = 11; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="117" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormFSS4_11&quot; уже определена : peFormFSS4_11 : Byte = 12; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="112" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormFSS4_11&quot; уже определена : peFormFSS4_11 : Byte = 12; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="118" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormFSS4_9&quot; уже определена : peFormFSS4_9 : Byte = 13; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="113" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormFSS4_9&quot; уже определена : peFormFSS4_9 : Byte = 13; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="119" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peBankSpr&quot; уже определена : peBankSpr : Byte = 14; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="114" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peBankSpr&quot; уже определена : peBankSpr : Byte = 14; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="120" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormFSS4a&quot; уже определена : peFormFSS4a : Byte = 15; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="115" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormFSS4a&quot; уже определена : peFormFSS4a : Byte = 15; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="121" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormESN&quot; уже определена : peFormESN : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="116" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormESN&quot; уже определена : peFormESN : Byte = 16; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="122" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peDoxdivident&quot; уже определена : peDoxdivident : Byte = 17; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="117" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peDoxdivident&quot; уже определена : peDoxdivident : Byte = 17; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="123" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peMatVigoda&quot; уже определена : peMatVigoda : Byte = 18; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="118" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peMatVigoda&quot; уже определена : peMatVigoda : Byte = 18; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="124" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pePF_RFRep&quot; уже определена : pePF_RFRep : Byte = 22; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="123" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;pePF_RFRep&quot; уже определена : pePF_RFRep : Byte = 22; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="129" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormN57T_Tarif&quot; уже определена : peFormN57T_Tarif : Byte = 23; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="124" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormN57T_Tarif&quot; уже определена : peFormN57T_Tarif : Byte = 23; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="130" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormN57T_Rai&quot; уже определена : peFormN57T_Rai : Byte = 24; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="125" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormN57T_Rai&quot; уже определена : peFormN57T_Rai : Byte = 24; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="131" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormN57T_WTime&quot; уже определена : peFormN57T_WTime : Byte = 25; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="126" SourceColumn="22">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peFormN57T_WTime&quot; уже определена : peFormN57T_WTime : Byte = 25; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="132" SourceColumn="22">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peBonusUv&quot; уже определена : peBonusUv : Byte = 26; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="128" SourceColumn="15">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peBonusUv&quot; уже определена : peBonusUv : Byte = 26; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="134" SourceColumn="15">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peSocV&quot; уже определена : peSocV : Byte = 27; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="129" SourceColumn="15">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peSocV&quot; уже определена : peSocV : Byte = 27; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="135" SourceColumn="15">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peImuV&quot; уже определена : peImuV : Byte = 28; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="130" SourceColumn="15">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peImuV&quot; уже определена : peImuV : Byte = 28; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="136" SourceColumn="15">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peReturnBuildContribution&quot; уже определена : peReturnBuildContribution : Byte = 31; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="133" SourceColumn="31">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peReturnBuildContribution&quot; уже определена : peReturnBuildContribution : Byte = 31; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="139" SourceColumn="31">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peReturnInsuranceContribution&quot; уже определена : peReturnInsuranceContribution : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="134" SourceColumn="35">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peReturnInsuranceContribution&quot; уже определена : peReturnInsuranceContribution : Byte = 32; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="140" SourceColumn="35">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peStorn2_NDFL&quot; уже определена : peStorn2_NDFL : Byte = 34; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="136" SourceColumn="19">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peStorn2_NDFL&quot; уже определена : peStorn2_NDFL : Byte = 34; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="142" SourceColumn="19">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peDoh_Spr&quot; уже определена : peDoh_Spr : Byte = 35; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="137" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peDoh_Spr&quot; уже определена : peDoh_Spr : Byte = 35; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="143" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peP4_notRabTime&quot; уже определена : peP4_notRabTime : Byte = 36; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="138" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peP4_notRabTime&quot; уже определена : peP4_notRabTime : Byte = 36; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="144" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peDatV_6NDFL&quot; уже определена : peDatV_6NDFL : Byte = 38; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="140" SourceColumn="18">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peDatV_6NDFL&quot; уже определена : peDatV_6NDFL : Byte = 38; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="146" SourceColumn="18">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peP4_DopCheckWt&quot; уже определена : peP4_DopCheckWt : Byte = 39; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="141" SourceColumn="21">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peP4_DopCheckWt&quot; уже определена : peP4_DopCheckWt : Byte = 39; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="147" SourceColumn="21">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peDoh_NDFL&quot; уже определена : peDoh_NDFL : Byte = 40; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="142" SourceColumn="16">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peDoh_NDFL&quot; уже определена : peDoh_NDFL : Byte = 40; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="148" SourceColumn="16">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peTaxDeductionKaz&quot; уже определена : peTaxDeductionKaz : Byte = 41; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="143" SourceColumn="23">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;peTaxDeductionKaz&quot; уже определена : peTaxDeductionKaz : Byte = 41; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\PaymentEnterings.inc" SourceLine="149" SourceColumn="23">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="113" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
@@ -3035,19 +3035,19 @@
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vltAbsenceFactOtpusk&quot; уже определена : vltAbsenceFactOtpusk : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\Otpusk.inc" SourceLine="54" SourceColumn="28">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vltAbsenceFactOtpusk&quot; уже определена : vltAbsenceFactOtpusk : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\Otpusk.inc" SourceLine="56" SourceColumn="28">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="114" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vaaCancelled&quot; уже определена : vaaCancelled : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\Otpusk.inc" SourceLine="61" SourceColumn="18">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vaaCancelled&quot; уже определена : vaaCancelled : Byte = 1; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\Otpusk.inc" SourceLine="63" SourceColumn="18">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="114" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vaaRecovery&quot; уже определена : vaaRecovery : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\Otpusk.inc" SourceLine="63" SourceColumn="16">
+					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;vaaRecovery&quot; уже определена : vaaRecovery : Byte = 2; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\Otpusk.inc" SourceLine="65" SourceColumn="16">
 						<StackIncludeList>
 							<StackInclude FileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\GalNet.inc" Line="114" Column="1"/>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="6" Column="1"/>
@@ -3088,7 +3088,7 @@
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="31" Column="1"/>
 						</StackIncludeList>
 					</CompileMessage>
-					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iPrnSoprFunMem" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_PRNSOPR\VIP\PrnSoprFun.vih" SourceLine="1050" SourceColumn="29">
+					<CompileMessage MessageType="mtWarning" MessageText="Такой тип уже есть : iPrnSoprFunMem" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\COMPSRC\L\L_PRNSOPR\VIP\PrnSoprFun.vih" SourceLine="1080" SourceColumn="29">
 						<StackIncludeList>
 							<StackInclude FileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\frm\frm.prj" Line="35" Column="1"/>
 						</StackIncludeList>
@@ -3433,7 +3433,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GAL" SourceLine="99" SourceColumn="87"/>
 					<CompileMessage MessageType="mtWarning" MessageText="и еще" SourceFileName="C:\GA" SourceLine="101" SourceColumn="87"/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="13.01.2026 17:53:05"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="14.01.2026 8:21:19"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
