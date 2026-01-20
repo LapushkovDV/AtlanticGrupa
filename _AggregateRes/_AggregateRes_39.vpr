@@ -268,7 +268,7 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="_AggregateRes.prj" PosX="43" PosY="187" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="56" PosY="515" OpenEditor="True" Active="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="85" PosY="405" OpenEditor="True" Active="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="60" PosY="329" OpenEditor="True"/>
 			<File Name="alter\Alter_PrnTovnForFastRep.vip" PosX="35" PosY="13" OpenEditor="True"/>
 		</FileList>
@@ -303,7 +303,7 @@
 			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 2" Line="87" NumIndex="2" MarkerType="mtNumBookmark" Comment="spsopr_forGroup_mc"/>
 			<Marker FileName="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\ON_NSCHFDOPPR.vip" Caption="Нумерованная закладка 1" Line="899" NumIndex="1" MarkerType="mtNumBookmark" Comment="case TmpSchFact.TipUser of"/>
 			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 1" Line="196" NumIndex="1" MarkerType="mtNumBookmark" Comment="if TmpKatOrg.Unn = '7721546864' // вайлдберриз"/>
-			<Marker FileName="Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="190" NumIndex="1" MarkerType="mtNumBookmark" Comment="mylog('readline=' + _fileLine);"/>
+			<Marker FileName="Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="405" NumIndex="1" MarkerType="mtNumBookmark" Comment="mylog(' не найдена накладная в системе ' +tmpPickingRep_Head.)"/>
 		</MarkerList>
 		<BreakPointList>
 			<BreakPoint FileName="alter_vschet.prj" Line="78"/>
@@ -311,7 +311,7 @@
 			<BreakPoint FileName="alter\ALTER_DiadocExportDoc.vip" Line="1"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="46036,5804040509" DateTimeCompile="0,000487152778077871" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="46036,5823118519" DateTimeCompile="0,000535370367288124" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3156,7 +3156,7 @@
 					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) GetMCBySapCode локальная переменная _empty:Boolean, объявленная в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip(74), не используется." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="74" SourceColumn="47"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) getKatSoprByDocNumber локальная переменная _empty:Boolean, объявленная в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip(91), не используется." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="91" SourceColumn="47"/>
 					<CompileMessage MessageType="mtInfo" MessageText="В функции (процедуре) m_CRPT_PICKINGREPORT_IMPORT_objPickingReport_Import_CheckCisInCRPTbyATL_PickingRep_HEAD локальная переменная _err:String, объявленная в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Im" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="353" SourceColumn="4"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_PICKINGREPORT_IMPORT.CheckCisInCRPT&quot;, объявленный в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip(206), не был использован" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="538" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Метод интерфейса &quot;CRPT_PICKINGREPORT_IMPORT.CheckCisInCRPT&quot;, объявленный в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip(206), не был использован" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_Import.vip" SourceLine="539" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="5" SourceColumn="1"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Кнопка &quot;Добавить ручные данные&quot; будет в одну строку высотой !" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="281" SourceColumn="3"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\MERCURYPRJ\PickingReport_View.vip" SourceLine="301" SourceColumn="1"/>
@@ -3303,7 +3303,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\F_PLPORREP!!FRREEPD dtsReestr Реестр документов (в валюте платежа) ATLANTIC.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\F_PLPORREP!!FRREEPD dtsReestr Реестр документов (в валюте платежа) ATLANTIC.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="14.01.2026 13:56:29"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="14.01.2026 13:59:18"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

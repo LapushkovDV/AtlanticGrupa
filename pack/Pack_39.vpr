@@ -274,7 +274,7 @@
 		<FileList>
 			<File Name="pack.prj" PosX="31" PosY="20" OpenEditor="True"/>
 			<File Name="DrogaFunc\drogaFunc.vip" PosX="58" PosY="25" OpenEditor="True"/>
-			<File Name="FillTmpTbl\FillTmpTbl.frm" PosX="49" PosY="37" OpenEditor="True" Active="True"/>
+			<File Name="FillTmpTbl\FillTmpTbl.frm" PosX="38" PosY="27" OpenEditor="True" Active="True"/>
 		</FileList>
 		<MarkerList>
 			<Marker FileName="FILLTMPTBL\FillTmpTbl.frm" Caption="Нумерованная закладка 1" Line="143" NumIndex="1" MarkerType="mtNumBookmark" Comment="recNakl.Class_OsnOtp     := substr(recNakl.Class_OsnOtp, 1, pos('ДО ', recNakl.Class_OsnOtp)- 2);"/>

@@ -400,7 +400,10 @@ procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
 
 procedure RasprPalletesBySpSopr;
 {
- // MyLog('Файлы загружены, начинаем распределение паллет по спецификация');
+  MyLog('Файлы загружены, начинаем распределение паллет по спецификация');
+ _loop tmpPickingRep_Head where tmpPickingRep_Head.cSopr = 0h {
+   mylog(' не найдена накладная в системе Nakl_Num = ' +tmpPickingRep_Head.Nakl_Num);
+ }
   _loop tmpPickingRep_Head where tmpPickingRep_Head.cSopr <> 0h
   if getfirst fastfirstrow katsopr where  (( tmpPickingRep_Head.cSopr == katsopr.nrec)) = tsOK
   {
