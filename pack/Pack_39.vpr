@@ -274,13 +274,13 @@
 		<FileList>
 			<File Name="pack.prj" PosX="31" PosY="20" OpenEditor="True"/>
 			<File Name="DrogaFunc\drogaFunc.vip" PosX="58" PosY="25" OpenEditor="True"/>
-			<File Name="FillTmpTbl\FillTmpTbl.frm" PosX="38" PosY="27" OpenEditor="True" Active="True"/>
+			<File Name="FillTmpTbl\FillTmpTbl.frm" PosX="47" PosY="34" OpenEditor="True" Active="True"/>
 		</FileList>
 		<MarkerList>
 			<Marker FileName="FILLTMPTBL\FillTmpTbl.frm" Caption="Нумерованная закладка 1" Line="143" NumIndex="1" MarkerType="mtNumBookmark" Comment="recNakl.Class_OsnOtp     := substr(recNakl.Class_OsnOtp, 1, pos('ДО ', recNakl.Class_OsnOtp)- 2);"/>
 		</MarkerList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\pack.prj" DateTimeStart="46036,3456912847" DateTimeCompile="0,000257789346505888" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\pack.prj" DateTimeStart="46041,5301877315" DateTimeCompile="0,000564583329833113" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3139,7 +3139,7 @@
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS [Атлантик] Пакет документов.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 01 октября 2017г).fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\pack\Fr3\L_SF!!SCHFREES DTS Корректировочный счет-фактура (с 2017г).fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="14.01.2026 8:18:10"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="19.01.2026 12:44:17"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

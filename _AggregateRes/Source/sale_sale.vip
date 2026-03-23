@@ -15,7 +15,7 @@ show at (,,65,22);
 const
 //defaultShablonPath = '%StartPath%DrogaResources\XLT\Droga_SalesRep_.xlt';
   defaultShablonPath = '%StartPath%xls\ATL\sale_new.xltm';
-  stNDS = 0.18;
+  stNDS = 0.22;
 end; //const
 ! ----------------------------------------------------------------------------
 table struct tData  ( //tData  - для первого листа
