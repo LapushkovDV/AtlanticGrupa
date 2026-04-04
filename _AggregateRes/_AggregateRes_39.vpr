@@ -271,7 +271,7 @@
 			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="193" PosY="448" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="60" PosY="329" OpenEditor="True"/>
 			<File Name="alter\Alter_PrnTovnForFastRep.vip" PosX="35" PosY="13" OpenEditor="True"/>
-			<File Name="Source\sale_sale.vip" PosX="7" PosY="246" OpenEditor="True" Active="True"/>
+			<File Name="Source\sale_sale.vip" PosX="40" PosY="246" OpenEditor="True" Active="True"/>
 			<File Name="Source\sale_func.vpp" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="Source\sale_sale.tbl" PosX="41" PosY="5" OpenEditor="True"/>
 		</FileList>
@@ -315,7 +315,7 @@
 			<BreakPoint FileName="alter\ALTER_DiadocExportDoc.vip" Line="1"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="46109,2822739583" DateTimeCompile="0,000503819443110842" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="46116,3246243403" DateTimeCompile="0,000514548613864463" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3292,9 +3292,9 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Модификатор GetFirst выполняется для всей логической таблицы." SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_SapCode.slk" SourceLine="92" SourceColumn="31"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_SapCode.slk" SourceLine="92" SourceColumn="29"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="21" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Локальная переменная pickedKol:Integer, объявленная в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip(887), не используется." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="955" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная iSumVozvr:Double интерфейса DROGA::SALESREPORT, объявленная в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip(144), не была использована" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="1013" SourceColumn="5"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Таблица &quot;ATTRPRICE&quot;, включенная в логическую таблицу &quot;V01&quot; интерфейса &quot;SALESREPORT&quot;, не была явно использована" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="1013" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Локальная переменная pickedKol:Integer, объявленная в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip(894), не используется." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="962" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Переменная iSumVozvr:Double интерфейса DROGA::SALESREPORT, объявленная в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip(144), не была использована" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="1020" SourceColumn="5"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Таблица &quot;ATTRPRICE&quot;, включенная в логическую таблицу &quot;V01&quot; интерфейса &quot;SALESREPORT&quot;, не была явно использована" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="1020" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_check.vip" SourceLine="38" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_user.vip" SourceLine="7" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_user.vip" SourceLine="46" SourceColumn="1"/>
@@ -3307,7 +3307,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\F_PLPORREP!!FRREEPD dtsReestr Реестр документов (в валюте платежа) ATLANTIC.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\F_PLPORREP!!FRREEPD dtsReestr Реестр документов (в валюте платежа) ATLANTIC.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="28.03.2026 6:47:12"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="04.04.2026 7:48:12"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

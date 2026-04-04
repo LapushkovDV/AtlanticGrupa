@@ -243,7 +243,7 @@ bounds _plat2channel as
 
 file myFile;
 procedure mylog(_str : string); {
- exit;
+ if username <> 'dmitry.lapushkov' then exit;
  if _log = '' then _log := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'SALE_SALE_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
   logstrtofile(_log,_str);
 }
@@ -466,11 +466,17 @@ var
 
       if (cContract > 0) // --- есть контрактный допник
         if (getFirst spDC = tsOk) { //из спецификации
-
+          mylog('     if (getFirst spDC = tsOk) = ');
           kOtpEd := getKOtpEd(spDC.cOtpEd);  //коэф. пересчета в уч. единицу
           //if not grossPriceFound or (channelDC = channel) { // если нет GROSS PRICE или каналы ДО и ДС совпадают
           prDC := (spDC.price/ kOtpEd- if(dogDC.vhodNal = 1, spDC.sumNDS/ (kOtpEd* spDC.kol), 0) )* kValDC;
-          mylog('     if (getFirst spDC = tsOk) = ' + string(prDC));
+          mylog('         spDC.price = ' + string(spDC.price));
+          mylog('         kOtpEd = ' + string(kOtpEd));
+          mylog('         dogDC.vhodNal = ' + string(dogDC.vhodNal));
+          mylog('         spDC.sumNDS = '+ string(spDC.sumNDS));
+          mylog('         spDC.kol = ' + string(spDC.kol));
+          mylog('         kValDC = ' + string(kValDC));
+          mylog('         prDC = ' + string(prDC));
           //}
           //else prDc := prGP;
         } else {//SpDocs
