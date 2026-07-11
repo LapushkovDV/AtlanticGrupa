@@ -268,10 +268,12 @@
 		</DatabaseConfiguration>
 		<FileList>
 			<File Name="_AggregateRes.prj" PosX="1" PosY="1" OpenEditor="True"/>
-			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="49" PosY="414" OpenEditor="True"/>
+			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="193" PosY="448" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="60" PosY="329" OpenEditor="True"/>
 			<File Name="alter\Alter_PrnTovnForFastRep.vip" PosX="35" PosY="13" OpenEditor="True"/>
-			<File Name="Source\sale_sale.vip" PosX="29" PosY="753" OpenEditor="True" Active="True"/>
+			<File Name="Source\sale_sale.vip" PosX="40" PosY="246" OpenEditor="True" Active="True"/>
+			<File Name="Source\sale_func.vpp" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="Source\sale_sale.tbl" PosX="41" PosY="5" OpenEditor="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -289,8 +291,6 @@
 			<Marker FileName="_AggregateRes.prj" Caption="Нумерованная закладка 1" Line="166" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\ReportSumDeclarationToDO.vip" Caption="Нумерованная закладка 1" Line="113" NumIndex="1" MarkerType="mtNumBookmark" Comment="xlStWriteToMatrix(nrow, 1, 'Отчет о предполагаемый'); column++;"/>
 			<Marker FileName="Source\Report_Org_VetisGUIDS.vip" Caption="Нумерованная закладка 1" Line="70" NumIndex="1" MarkerType="mtNumBookmark" Comment="exit"/>
-			<Marker FileName="Source\sale_func.vpp" Caption="Нумерованная закладка 1" Line="86" NumIndex="1" MarkerType="mtNumBookmark" Comment="if bDetail {"/>
-			<Marker FileName="Source\sale_sale.vip" Caption="Нумерованная закладка 1" Line="509" NumIndex="1" MarkerType="mtNumBookmark" Comment="tData.cMC     := spSopr.cMcUsl,"/>
 			<Marker FileName="Source\debitor\DEBITOR.VIP" Caption="Нумерованная закладка 1" Line="510" NumIndex="1" MarkerType="mtNumBookmark"/>
 			<Marker FileName="Source\MercuryPRJ\MercuryPRJ_Import.vip" Caption="Нумерованная закладка 1" Line="252" NumIndex="1" MarkerType="mtNumBookmark" Comment="if _ExpImpScript_Droga.doc2xml(31);"/>
 			<Marker FileName="Source\loadorder\LoadOrder.vip" Caption="Нумерованная закладка 1" Line="740" NumIndex="1" MarkerType="mtNumBookmark" Comment="basedoc.NAME    := if(isvalidall(tnDogovor_ins),'Договор ',''); // 'Загружено автоматически';"/>
@@ -305,6 +305,9 @@
 			<Marker FileName="..\..\..\..\Users\Дмитрий\YandexDisk\Work\!Gal_Source\Z_M_L_F_C_20230112\CompSrc\L\L_SoprDoc\vip\Export\ON_NSCHFDOPPR.vip" Caption="Нумерованная закладка 1" Line="899" NumIndex="1" MarkerType="mtNumBookmark" Comment="case TmpSchFact.TipUser of"/>
 			<Marker FileName="alter\ALTER_DiadocExportDoc.vip" Caption="Нумерованная закладка 1" Line="196" NumIndex="1" MarkerType="mtNumBookmark" Comment="if TmpKatOrg.Unn = '7721546864' // вайлдберриз"/>
 			<Marker FileName="Source\MercuryPRJ\PickingReport_Import.vip" Caption="Нумерованная закладка 1" Line="405" NumIndex="1" MarkerType="mtNumBookmark" Comment="mylog(' не найдена накладная в системе ' +tmpPickingRep_Head.)"/>
+			<Marker FileName="Source\sale_func.vpp" Caption="Нумерованная закладка 1" Line="151" NumIndex="1" MarkerType="mtNumBookmark" Comment="xlDoWriteToMatrix(j, 25, (tData.net1- tData.sum)/ tData.net1);"/>
+			<Marker FileName="Source\sale_sale.vip" Caption="Нумерованная закладка 2" Line="180" NumIndex="2" MarkerType="mtNumBookmark" Comment="// and priceKl.nrec /== attrPrice.cRec"/>
+			<Marker FileName="Source\sale_sale.vip" Caption="Нумерованная закладка 1" Line="437" NumIndex="1" MarkerType="mtNumBookmark" Comment="kOtpEd := getKOtpEd(priceSp.cOtpEd);  //коэф. пересчета в уч. единицу"/>
 		</MarkerList>
 		<BreakPointList>
 			<BreakPoint FileName="alter_vschet.prj" Line="78"/>
@@ -312,7 +315,7 @@
 			<BreakPoint FileName="alter\ALTER_DiadocExportDoc.vip" Line="1"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="46036,5872358218" DateTimeCompile="0,000541956018423662" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="46116,3246243403" DateTimeCompile="0,000514548613864463" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3289,9 +3292,9 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Модификатор GetFirst выполняется для всей логической таблицы." SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_SapCode.slk" SourceLine="92" SourceColumn="31"/>
 					<CompileMessage MessageType="mtWarning" MessageText="Был пустой блок операторов." SourceFileName="C:\GALAKTIKA\GALAKTIKA\RES\SRC\GIT\ATLANTICGRUPA\_AGGREGATERES\FRM\price_SapCode.slk" SourceLine="92" SourceColumn="29"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="21" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Локальная переменная pickedKol:Integer, объявленная в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip(861), не используется." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="929" SourceColumn="1"/>
-					<CompileMessage MessageType="mtInfo" MessageText="Переменная iSumVozvr:Double интерфейса DROGA::SALESREPORT, объявленная в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip(138), не была использована" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="986" SourceColumn="5"/>
-					<CompileMessage MessageType="mtWarning" MessageText="Таблица &quot;ATTRPRICE&quot;, включенная в логическую таблицу &quot;V01&quot; интерфейса &quot;SALESREPORT&quot;, не была явно использована" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="986" SourceColumn="5"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Локальная переменная pickedKol:Integer, объявленная в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip(894), не используется." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="962" SourceColumn="1"/>
+					<CompileMessage MessageType="mtInfo" MessageText="Переменная iSumVozvr:Double интерфейса DROGA::SALESREPORT, объявленная в C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip(144), не была использована" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="1020" SourceColumn="5"/>
+					<CompileMessage MessageType="mtWarning" MessageText="Таблица &quot;ATTRPRICE&quot;, включенная в логическую таблицу &quot;V01&quot; интерфейса &quot;SALESREPORT&quot;, не была явно использована" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_sale.vip" SourceLine="1020" SourceColumn="5"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_check.vip" SourceLine="38" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_user.vip" SourceLine="7" SourceColumn="1"/>
 					<CompileMessage MessageType="mtInfo" MessageText="Компиляция ведется без файла контроля лицензий!" SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\SOURCE\sale_user.vip" SourceLine="46" SourceColumn="1"/>
@@ -3304,7 +3307,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\F_PLPORREP!!FRREEPD dtsReestr Реестр документов (в валюте платежа) ATLANTIC.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\F_PLPORREP!!FRREEPD dtsReestr Реестр документов (в валюте платежа) ATLANTIC.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="14.01.2026 14:06:24"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="04.04.2026 7:48:12"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>
