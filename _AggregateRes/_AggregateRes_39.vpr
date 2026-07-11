@@ -267,13 +267,15 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="1" PosY="1" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="37" PosY="203" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="193" PosY="448" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="60" PosY="329" OpenEditor="True"/>
 			<File Name="alter\Alter_PrnTovnForFastRep.vip" PosX="35" PosY="13" OpenEditor="True"/>
-			<File Name="Source\sale_sale.vip" PosX="40" PosY="246" OpenEditor="True" Active="True"/>
+			<File Name="Source\sale_sale.vip" PosX="40" PosY="219" OpenEditor="True"/>
 			<File Name="Source\sale_func.vpp" PosX="1" PosY="1" OpenEditor="True"/>
 			<File Name="Source\sale_sale.tbl" PosX="41" PosY="5" OpenEditor="True"/>
+			<File Name="alter\alter_L_SKLAD_SOPINMOV.vip" PosX="7" PosY="10" OpenEditor="True"/>
+			<File Name="cnf\L_SKLAD_SOPINMOV.cnf" PosX="26" PosY="71" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">

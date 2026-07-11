@@ -62,6 +62,18 @@ object 'L_SKLAD::SOPINMOV' : InterfaceWindow {
       ButtonType = 0;
     } // 'Field: KATNAZNA.NAME' : Column
 
+    object 'Field: KATSOPR.NAME' : Column {
+      Original = False;
+      Visible = True;
+      Hidden = False;
+      Protect = True;
+      StatusCtx = 0;
+      Title = 'Примечание';
+      FieldName = 'Field: KATSOPR.NAME';
+      Index = 9;
+      DefaultWidth = 20;
+      ButtonType = 0;
+    } // 'Field: KATNAZNA.NAME' : Column
   } // BRSELECTNAKL : Browser
 
 } // L_SKLAD::SOPINMOV : InterfaceWindow
