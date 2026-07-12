@@ -376,7 +376,7 @@ function GetSoprHozByBaseDoc(_cBaseDoc : comp): comp;
 procedure InsertATL_PickingRep_Spec(_cBaseDoc : comp; _SSCC : string; _Prod_date : date);
 {
 
-    if getfirst ATL_PickingRep_HEAD where ((_cBaseDoc == ATL_PickingRep_HEAD.cBaseDoc)) <> tsOK
+    if getfirst ATL_PickingRep_HEAD where ((_cBaseDoc == ATL_PickingRep_HEAD.cBaseDoc and false == ATL_PickingRep_HEAD.isArchive (noindex))) <> tsOK
      {
         clearbuffer(tnATL_PickingRep_HEAD);
         ATL_PickingRep_HEAD.cSopr    := 0h;
@@ -384,6 +384,8 @@ procedure InsertATL_PickingRep_Spec(_cBaseDoc : comp; _SSCC : string; _Prod_date
         ATL_PickingRep_HEAD.Nakl_Num := '';
         ATL_PickingRep_HEAD.isOK     := true;
         ATL_PickingRep_HEAD.cBaseDoc := _cBaseDoc;
+        ATL_PickingRep_HEAD.createDateTime := _DateTime1(cur_date, cur_time);
+        ATL_PickingRep_HEAD.isArchive := false;
        insert current ATL_PickingRep_HEAD;
      }
  // на МЦ спозиционировались ранее при вставке спецификации

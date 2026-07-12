@@ -8,6 +8,9 @@ objInterface objCRPT_API_Native;
   Function GetCisesListInfo(var _err : string) : boolean;
   Function GetCisStatus (_Cis : string) : string;
   Function GetCisUtitCounts (_Cis : string) : longint;
+  function CreateJSONlongstring_DocDisaggregation(httpCon : tptr; _uitu : string; _logLong : tptr) : tptr;
+  function CreateDocInCrpt_aggrDisAggr(_typeDoc: string; _DocLongString : tptr; _logLong : tptr) : string;
+  Function GetDocumentStatus(_docId : string; _logLong : tptr) : string;
 end;
 
 vipInterface CRPT_API_Native implements objCRPT_API_Native

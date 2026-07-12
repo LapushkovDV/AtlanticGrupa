@@ -125,6 +125,7 @@ where
    and 0 <<= StatLog_prev.TIMEOPER (noindex)
    and katsopr.nrec == ATL_MERCURY_HEAD.CSOPR
    and katsopr.nrec == ATL_PickingRep_HEAD.CSOPR
+   and        false == ATL_PickingRep_HEAD.isArchive (noindex)
  ))
  bounds CurDOinMark _cCurrDO == BaseDoc.nrec (noindex)
  ;

@@ -14,6 +14,7 @@ from
 where ((
          katsopr.nrec == ATL_MERCURY_HEAD.CSOPR
 and      katsopr.nrec == ATL_PickingRep_HEAD.CSOPR
+            and false == ATL_PickingRep_HEAD.isArchive (noindex)
       ))
 ;
 #include Source\MercuryPRJ\MercuryPRJ_PickingReport_fun.vpp

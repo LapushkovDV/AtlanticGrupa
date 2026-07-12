@@ -15,6 +15,14 @@ table Struct tmpPickingRep_Head = ATL_PickingRep_HEAD
 ;
 table Struct tmpPickingRep_SP = ATL_PickingRep_Spec
 ;
+table struct tDisaggregate (
+    SAPCODE : string
+  , SSCCWMS : string
+ )
+ with index (
+  ind0 = SAPCODE + SSCCWMS
+ )
+ ;
 create view
 var
  _file : string;
@@ -47,6 +55,7 @@ from
  , katOtped katOtpedShtuka
  , katOtped
  , katmc katmc_chk
+ , tDisaggregate
 ;
 file fSrc;
 
@@ -115,6 +124,9 @@ procedure InsertTmpHead(_line,_filename: string);
   tmpPickingRep_Head.Nakl_Num := getValueByNumberCol(_line,coFileSp_col_Nsopr);
   tmpPickingRep_Head.isOK     := true;
   tmpPickingRep_Head.cBaseDoc := getBaseDocByKatSopr(getKatSoprByDocNumber(getValueByNumberCol(_line,coFileSp_col_Nsopr)));
+  tmpPickingRep_Head.createDateTime := _DateTime1(cur_date, cur_time);
+  tmpPickingRep_Head.isArchive := false;
+
  insert current tmpPickingRep_Head;
  if tmpPickingRep_Head.cSopr = 0h and tmpPickingRep_Head.Nakl_Num <> '' then
   {
@@ -393,8 +405,15 @@ procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
 
     }
 
+
   SendMailErrorCodes(_cATL_PickingRep_HEAD);
+
+
+
   stopvisual;
+
+
+
 }
 
 
@@ -433,6 +452,95 @@ procedure RasprPalletesBySpSopr;
        } // _loop tmpPickingRep_sp where ((tmpPickingRep_Head.nrec == tmpPickingRep_sp.cHead))
     CopyMoveFile(Folder_input+ ATL_PickingRep_head.Filename,Folder_To + datetostr(cur_date,'\YYYY\MM\DD-MM-YYYY\')+ATL_PickingRep_head.Filename, true, ecmfClientFrom  + ecmfClientTo );
     CheckCisInCRPTbyATL_PickingRep_HEAD(ATL_PickingRep_HEAD.nrec);
+
+    // проверяем необходимость расформировывать и сформировавывать заново
+    if getfirst katsopr_Chk where ((ATL_PickingRep_HEAD.cSopr == katsopr_Chk.nrec)) = tsok {
+     if extAttr.sGetAttr(coKatOrg, katsopr.corg , 'Сборка неполных паллет в КИТУ') = '1' // надо разбирать и собирать заново
+          and ATL_PickingRep_HEAD.wStatus = 1 { //и в ЧЗ все проверено
+          MyLog('!!!');
+          MyLog('Сборка неполных паллет в КИТУ = ДА');
+          MyLog('Запускаем формирование DISAGGREGATION_DOCUMENT и AGGREGATION_DOCUMENT');
+          MyLog('смотрите логи в след версии pickingreport');
+          var iCRPT_API_Native : CRPT_API_Native new;
+
+               var m_service : tptr = HttpConnect_CreateEx('http://ya.ru', '', '', true);
+               var _logLong: TPtr = HttpConnect_CreateLongString(httpCon);
+
+               _logLong := HttpConnect_LoadFromFile(httpCon, _logFile, 866);
+
+
+
+         delete all tDisaggregate;
+          if (getfirst ATL_PickingRep_Spec_chk where (( ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec_chk.cHead
+                                                                and isArchive == false (noindex) ))
+                                   and upcase(ATL_PickingRep_Spec_chk.datamatrix) <> 'FULL' ) = tsOK {
+           var _docOk : boolean = true;
+            _loop ATL_PickingRep_Spec_chk where (( ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec_chk.cHeadand isArchive == false (noindex) ))
+                                   and upcase(ATL_PickingRep_Spec_chk.datamatrix) <> 'FULL' )  {
+               if getfirst tDisaggregate where ((ATL_PickingRep_Spec_chk.SAPCODE == tDisaggregate.SAPCODE
+                                             and ATL_PickingRep_Spec_chk.SSCCWMS == tDisaggregate.SSCCWMS)) <> tsOK {
+                  insert tDisaggregate set
+                     tDisaggregate.SAPCODE := ATL_PickingRep_Spec_chk.SAPCODE
+                   , tDisaggregate.SSCCWMS := ATL_PickingRep_Spec_chk.SSCCWMS
+                  ;
+                }
+
+              }
+                  mylog('Начинаем формировать документы DISAGGREGATION_DOCUMENT';
+                  HttpConnect_AddValueToLongString(httpCon, 'Начинаем формировать документы DISAGGREGATION_DOCUMENT', _logLong);
+
+             _loop tDisaggregate {
+
+               var _DocLongString : tptr = iCRPT_API_Native.CreateJSONlongstring_DocDisaggregation(httpCon, tDisaggregate.SSCCWMS, _logLong);
+                if _DocLongString = 0 then {
+                  mylog('не удалось сформировать документ DISAGGREGATION_DOCUMENT SSCCWMS = ' + tDisaggregate.SSCCWMS);
+                  HttpConnect_AddValueToLongString(httpCon, 'не удалось сформировать документ DISAGGREGATION_DOCUMENT SSCCWMS = ' + tDisaggregate.SSCCWMS, _logLong);
+                  break;
+                }
+               var _docID : string = iCRPT_API_Native.CreateDocInCrpt_aggrDisAggr('DISAGGREGATION_DOCUMENT', _DocLongString, _logLong);
+               if _docID = '' {
+                  mylog('не удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS);
+                  HttpConnect_AddValueToLongString(httpCon, 'не удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS, _logLong);
+                 break;
+               }
+                  mylog('удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS + ' _docID = ' + _docID);
+                  HttpConnect_AddValueToLongString(httpCon, 'удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS + ' _docID = ' + _docID, _logLong);
+
+               var _timePrev : time = curTime;
+               var _IterCount : word = 0;
+               do {
+                 if sub_time(cur_time, _timeBeg) > time(0,0,5,0) {// раз в 5 сек
+                  _IterCount++;
+                  var _status : string = iCRPT_API_Native.GetDocumentStatus(_docID, _logLong);
+                  mylog('Опрашиваем статус документа через API _status = ' + _status);
+                  HttpConnect_AddValueToLongString(httpCon, 'Опрашиваем статус документа через API _status = ' + _status, _logLong);
+                  if upcase(_status) = 'CHECKED_OK' then  {
+                      break;
+                    }
+                  if _IterCount > 20 then {
+                    _docOk := false;
+                    break;
+                   }
+                 }
+                 _timePrev := curTime;
+               } while true
+               if not _docOk {
+                    mylog('Статус документа так и не стал CHECKED_OK. Прерываем формирование доков. Опросили 20 раз с интервалом 5 сек. ');
+                    HttpConnect_AddValueToLongString(httpCon, 'Статус документа так и не стал CHECKED_OK. Прерываем формирование доков. Опросили 20 раз с интервалом 5 сек. ', _logLong);
+                 break;
+               }
+             }
+
+
+
+
+           }
+         }
+       }
+
+
+     }
+
 
     MyLog('Обработка файла завершена');
     MyLog('***');

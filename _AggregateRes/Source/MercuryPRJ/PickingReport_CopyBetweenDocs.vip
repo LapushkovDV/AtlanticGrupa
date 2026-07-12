@@ -56,13 +56,16 @@ from
  , tBdKS
 where ((root == tBdKS.typedoc
 and tBdKS.cPkrHead == PkRH.nrec
+and false == PkRH.isArchive (noindex)
 
  and PkRH.nrec == ATL_PickingRep_HEAD.nrec
+
   and PkRH.cPickingRepLog == PkRLog.nrec
   and      PkRH.nrec == PkRSp.cHead
   and     PkRSp.cMc == KatMc.Nrec
 
-   and  _cPkRH_Ins ==  PkRH_ins.nrec
+   and  _cPkRH_Ins == PkRH_ins.nrec
+   and false == PkRH_ins.isArchive (noindex)
    and PkRH_ins.cPickingRepLog == PkRLog_Ins.nrec
   and      PkRH_ins.nrec == PkRSp_ins.cHead
 
@@ -136,10 +139,10 @@ cmDefault: {
 
    Case _TypeDoc of
     1 : {
-         if getfirst PkRH_ins where ((_cDoc == PkRH_ins.cBaseDoc)) = tsOK then set _cPkRH_Ins := PkRH_ins.nrec;
+         if getfirst PkRH_ins where ((_cDoc == PkRH_ins.cBaseDoc and false == PkRH_ins.isArchive (noindex))) = tsOK then set _cPkRH_Ins := PkRH_ins.nrec;
        }
     2 : {
-         if getfirst PkRH_ins where ((_cDoc == PkRH_ins.cSopr)) = tsOK then set _cPkRH_Ins := PkRH_ins.nrec;
+         if getfirst PkRH_ins where ((_cDoc == PkRH_ins.cSopr and false == PkRH_ins.isArchive (noindex))) = tsOK then set _cPkRH_Ins := PkRH_ins.nrec;
       }
     else
      {
@@ -154,6 +157,9 @@ cmDefault: {
       PkRH_ins.Nakl_Num := '';
       PkRH_ins.isOK     := true;
       PkRH_ins.cBaseDoc := if(_TypeDoc = 2, _cDoc,0h);
+      PkRH_ins.createDateTime := _DateTime1(cur_date, cur_time);
+      PkRH_ins.isArchive := false;
+
     insert current PkRH_ins;
     set _cPkRH_Ins := PkRH_ins.nrec;
   }
@@ -223,7 +229,7 @@ procedure filltBdKS;
      MysqlAddStr(hstr, '  , Coalesce(PkRH.nrec,#comp(0)) as cPkrHead');
       MysqlAddStr(hstr, 'from          ');
       MysqlAddStr(hstr, ' basedoc bd   ');
-      MysqlAddStr(hstr, 'left join ATL_PickingRep_HEAD PkRH on bd.nrec = PkRH.cBaseDoc');
+      MysqlAddStr(hstr, 'left join ATL_PickingRep_HEAD PkRH on bd.nrec = PkRH.cBaseDoc and PkRH.isArchive = false');
       MysqlAddStr(hstr, 'where bd.viddoc = 101  ');
       MysqlAddStr(hstr, '  and bd.ddoc >= #date('+datetostr(_datB,'DD,MM,YYYY') +')');
       MysqlAddStr(hstr, '  and bd.ddoc <= #date('+datetostr(_datE,'DD,MM,YYYY') +')');
@@ -238,7 +244,7 @@ if _typeDoc = 1 then       MysqlAddStr(hstr, '  and bd.nrec <> #comp('+String(_c
       MysqlAddStr(hstr, '  , ks.nsopr as nodoc    ');
      MysqlAddStr(hstr, '  , Coalesce(PkRH.nrec,#comp(0)) as cPkrHead  ');
       MysqlAddStr(hstr, '  from katsopr ks ');
-      MysqlAddStr(hstr, 'left join ATL_PickingRep_HEAD PkRH on ks.nrec = PkRH.cSopr');
+      MysqlAddStr(hstr, 'left join ATL_PickingRep_HEAD PkRH on ks.nrec = PkRH.cSopr and PkRH.isArchive = false');
       MysqlAddStr(hstr, 'where ks.vidsopr= 600 ');
       MysqlAddStr(hstr, 'and ks.dsopr >= #date('+datetostr(_datB,'DD,MM,YYYY') +')');
       MysqlAddStr(hstr, 'and ks.dsopr <= #date('+datetostr(_datE,'DD,MM,YYYY') +')');

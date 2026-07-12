@@ -270,6 +270,28 @@ Procedure FillInsertTables;
   end;
 } // PROCEdURE FillInsertTableeNaklSFO(_log: string);
 
+Procedure FillPS1_CrptAPI_SignDoc(_OleGenerateGUID: string; _NameSrcSig : string); {
+
+    var _DocPath     : string = GetStringParameter('Files', 'OutputFilesDirectory', 0) + extractdelimitedword(_NameSrcSig,1,';');
+    var _DocPathSign : string = GetStringParameter('Files', 'OutputFilesDirectory', 0) + extractdelimitedword(_NameSrcSig,2,';');
+
+    MyWriteLN('[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12');
+    MyWriteLN('$scriptPath = $MyInvocation.MyCommand.Path | Split-Path -Parent                ');
+    MyWriteLN('$crtf = "'+sGetTune('USERTUNE.CRPT_PRJ.CryptoCrtf')+'";                        ');
+    MyWriteLN('$dataPath = '+_DocPath+';                                                         ');
+    MyWriteLN('$signedDocPath = '+_DocPathSign+';                                             ');
+    MyWriteLN('csptest -sfsign -sign -in $dataPath -out $signedDocPath -MY $crtf -base64 -add');
+
+
+}
+Function SignDoc(_NameInOutputFilesDirectory : string): string;  {
+
+ var _SigNameInOutputFilesDirectory : string = _NameInOutputFilesDirectory
+ #BodyProcedureGetRqst(SignDoc, _NameInOutputFilesDirectory +';'+_SigNameInOutputFilesDirectory)
+
+ result := if (ExistFile(GetStringParameter('Files', 'OutputFilesDirectory', 0) +_SigNameInOutputFilesDirectory),_SigNameInOutputFilesDirectory, '');
+}
+
 HandleEvent
 cmInit:
 {
