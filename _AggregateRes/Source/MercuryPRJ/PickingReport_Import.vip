@@ -454,6 +454,7 @@ procedure RasprPalletesBySpSopr;
     CheckCisInCRPTbyATL_PickingRep_HEAD(ATL_PickingRep_HEAD.nrec);
 
     // проверяем необходимость расформировывать и сформировавывать заново
+    /*
     if getfirst katsopr_Chk where ((ATL_PickingRep_HEAD.cSopr == katsopr_Chk.nrec)) = tsok {
      if extAttr.sGetAttr(coKatOrg, katsopr.corg , 'Сборка неполных паллет в КИТУ') = '1' // надо разбирать и собирать заново
           and ATL_PickingRep_HEAD.wStatus = 1 { //и в ЧЗ все проверено
@@ -463,7 +464,7 @@ procedure RasprPalletesBySpSopr;
           MyLog('смотрите логи в след версии pickingreport');
           var iCRPT_API_Native : CRPT_API_Native new;
 
-               var m_service : tptr = HttpConnect_CreateEx('http://ya.ru', '', '', true);
+               var httpCon : tptr = HttpConnect_CreateEx('http://ya.ru', '', '', true);
                var _logLong: TPtr = HttpConnect_CreateLongString(httpCon);
 
                _logLong := HttpConnect_LoadFromFile(httpCon, _logFile, 866);
@@ -471,12 +472,11 @@ procedure RasprPalletesBySpSopr;
 
 
          delete all tDisaggregate;
-          if (getfirst ATL_PickingRep_Spec_chk where (( ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec_chk.cHead
-                                                                and isArchive == false (noindex) ))
+          if (getfirst ATL_PickingRep_Spec_chk where (( ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec_chk.cHead))
                                    and upcase(ATL_PickingRep_Spec_chk.datamatrix) <> 'FULL' ) = tsOK {
            var _docOk : boolean = true;
-            _loop ATL_PickingRep_Spec_chk where (( ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec_chk.cHeadand isArchive == false (noindex) ))
-                                   and upcase(ATL_PickingRep_Spec_chk.datamatrix) <> 'FULL' )  {
+            _loop ATL_PickingRep_Spec_chk where (( ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec_chk.cHead))
+                                   and upcase(ATL_PickingRep_Spec_chk.datamatrix) <> 'FULL'   {
                if getfirst tDisaggregate where ((ATL_PickingRep_Spec_chk.SAPCODE == tDisaggregate.SAPCODE
                                              and ATL_PickingRep_Spec_chk.SSCCWMS == tDisaggregate.SSCCWMS)) <> tsOK {
                   insert tDisaggregate set
@@ -537,9 +537,9 @@ procedure RasprPalletesBySpSopr;
            }
          }
        }
+       */
 
 
-     }
 
 
     MyLog('Обработка файла завершена');

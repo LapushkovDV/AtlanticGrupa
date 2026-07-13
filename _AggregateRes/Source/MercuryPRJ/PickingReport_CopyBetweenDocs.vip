@@ -229,7 +229,7 @@ procedure filltBdKS;
      MysqlAddStr(hstr, '  , Coalesce(PkRH.nrec,#comp(0)) as cPkrHead');
       MysqlAddStr(hstr, 'from          ');
       MysqlAddStr(hstr, ' basedoc bd   ');
-      MysqlAddStr(hstr, 'left join ATL_PickingRep_HEAD PkRH on bd.nrec = PkRH.cBaseDoc and PkRH.isArchive = false');
+      MysqlAddStr(hstr, 'left join ATL_PickingRep_HEAD PkRH on bd.nrec = PkRH.cBaseDoc and PkRH.isArchive = 0');
       MysqlAddStr(hstr, 'where bd.viddoc = 101  ');
       MysqlAddStr(hstr, '  and bd.ddoc >= #date('+datetostr(_datB,'DD,MM,YYYY') +')');
       MysqlAddStr(hstr, '  and bd.ddoc <= #date('+datetostr(_datE,'DD,MM,YYYY') +')');
@@ -244,7 +244,7 @@ if _typeDoc = 1 then       MysqlAddStr(hstr, '  and bd.nrec <> #comp('+String(_c
       MysqlAddStr(hstr, '  , ks.nsopr as nodoc    ');
      MysqlAddStr(hstr, '  , Coalesce(PkRH.nrec,#comp(0)) as cPkrHead  ');
       MysqlAddStr(hstr, '  from katsopr ks ');
-      MysqlAddStr(hstr, 'left join ATL_PickingRep_HEAD PkRH on ks.nrec = PkRH.cSopr and PkRH.isArchive = false');
+      MysqlAddStr(hstr, 'left join ATL_PickingRep_HEAD PkRH on ks.nrec = PkRH.cSopr and PkRH.isArchive = 0');
       MysqlAddStr(hstr, 'where ks.vidsopr= 600 ');
       MysqlAddStr(hstr, 'and ks.dsopr >= #date('+datetostr(_datB,'DD,MM,YYYY') +')');
       MysqlAddStr(hstr, 'and ks.dsopr <= #date('+datetostr(_datE,'DD,MM,YYYY') +')');
