@@ -9,6 +9,8 @@ objInterface objCRPT_API_Native;
   Function GetCisStatus (_Cis : string) : string;
   Function GetCisUtitCounts (_Cis : string) : longint;
   function CreateJSONlongstring_DocDisaggregation(httpCon : tptr; _uitu : string; _logLong : tptr) : tptr;
+  function CreateJSONlongstring_DocAggregation(httpCon : tptr; _unitSerialNumber : string; _sntins : tptr;  _logLong : tptr) : tptr;  // _sntins  - array
+  function checkDoc(httpCon : tptr; _docID : string; _logLong : tptr) : boolean;
   function CreateDocInCrpt_aggrDisAggr(_typeDoc: string; _DocLongString : tptr; _logLong : tptr) : string;
   Function GetDocumentStatus(_docId : string; _logLong : tptr) : string;
 end;

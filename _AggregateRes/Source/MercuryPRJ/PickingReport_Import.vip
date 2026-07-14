@@ -44,6 +44,9 @@ from
  , tmpPickingRep_SP
  , ATL_PickingRep_HEAD
  , ATL_PickingRep_Spec
+ , ATL_PickingRep_HEAD ATL_PickingRep_HEAD_new
+ , ATL_PickingRep_Spec ATL_PickingRep_Spec_new
+
  , ATL_PickingRep_HEAD ATL_PickingRep_HEAD_chk
  , ATL_PickingRep_Spec ATL_PickingRep_Spec_chk
  , ATL_PickingRep_Spec ATL_PickingRep_Spec_chk2
@@ -51,6 +54,7 @@ from
  , SpSopr SpSopr_Chk
 // , ATL_PickingRep_Spec ATL_PickingRep_Spec_1
  , ATL_PickingRep_LOG
+ , ATL_PickingRep_LOG ATL_PickingRep_LOGchk
  , kated
  , katOtped katOtpedShtuka
  , katOtped
@@ -315,6 +319,8 @@ procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
   startnewvisual(vtRotateVisual,vftimer+vfbreak+vfconfirm,'CheckCisInCRPTbyATL_PickingRep_HEAD',0);
   if getfirst ATL_PickingRep_HEAD_chk where ((_cATL_PickingRep_HEAD == ATL_PickingRep_HEAD_chk.nrec)) <> tsOK then exit;
 
+
+
   update current ATL_PickingRep_HEAD_chk set ATL_PickingRep_HEAD_chk.wStatus := 1;
 /*
  _loop ATL_PickingRep_Spec_chk where (( _cATL_PickingRep_HEAD == ATL_PickingRep_Spec_chk.cHead))
@@ -405,8 +411,7 @@ procedure CheckCisInCRPTbyATL_PickingRep_HEAD(_cATL_PickingRep_HEAD: comp);
 
     }
 
-
-  SendMailErrorCodes(_cATL_PickingRep_HEAD);
+ if ATL_PickingRep_HEAD_chk.isarchive = false then  SendMailErrorCodes(_cATL_PickingRep_HEAD); // для  архивных просто проверяем статусы строк,а ошибки гнать не надо на мыло
 
 
 
@@ -454,10 +459,12 @@ procedure RasprPalletesBySpSopr;
     CheckCisInCRPTbyATL_PickingRep_HEAD(ATL_PickingRep_HEAD.nrec);
 
     // проверяем необходимость расформировывать и сформировавывать заново
-    /*
+
     if getfirst katsopr_Chk where ((ATL_PickingRep_HEAD.cSopr == katsopr_Chk.nrec)) = tsok {
      if extAttr.sGetAttr(coKatOrg, katsopr.corg , 'Сборка неполных паллет в КИТУ') = '1' // надо разбирать и собирать заново
           and ATL_PickingRep_HEAD.wStatus = 1 { //и в ЧЗ все проверено
+
+
           MyLog('!!!');
           MyLog('Сборка неполных паллет в КИТУ = ДА');
           MyLog('Запускаем формирование DISAGGREGATION_DOCUMENT и AGGREGATION_DOCUMENT');
@@ -474,77 +481,126 @@ procedure RasprPalletesBySpSopr;
          delete all tDisaggregate;
           if (getfirst ATL_PickingRep_Spec_chk where (( ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec_chk.cHead))
                                    and upcase(ATL_PickingRep_Spec_chk.datamatrix) <> 'FULL' ) = tsOK {
+
+              update current ATL_PickingRep_HEAD set ATL_PickingRep_HEAD.isArchive := true;
+                ATL_PickingRep_HEAD_new.buffer    := ATL_PickingRep_HEAD.buffer;
+                ATL_PickingRep_HEAD_new.nrec      := 0h;
+                ATL_PickingRep_HEAD_new.isArchive := false;
+                ATL_PickingRep_HEAD_new.CREATEDATETIME := _curdatetime;
+              insert current ATL_PickingRep_HEAD_new;
+
            var _docOk : boolean = true;
-            _loop ATL_PickingRep_Spec_chk where (( ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec_chk.cHead))
-                                   and upcase(ATL_PickingRep_Spec_chk.datamatrix) <> 'FULL'   {
-               if getfirst tDisaggregate where ((ATL_PickingRep_Spec_chk.SAPCODE == tDisaggregate.SAPCODE
-                                             and ATL_PickingRep_Spec_chk.SSCCWMS == tDisaggregate.SSCCWMS)) <> tsOK {
-                  insert tDisaggregate set
-                     tDisaggregate.SAPCODE := ATL_PickingRep_Spec_chk.SAPCODE
-                   , tDisaggregate.SSCCWMS := ATL_PickingRep_Spec_chk.SSCCWMS
-                  ;
+            _loop ATL_PickingRep_Spec_chk where (( ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec_chk.cHead)) {
+
+              if upcase(ATL_PickingRep_Spec_chk.datamatrix) <> 'FULL' {
+                   if getfirst tDisaggregate where ((ATL_PickingRep_Spec_chk.SAPCODE == tDisaggregate.SAPCODE
+                                                 and ATL_PickingRep_Spec_chk.SSCCWMS == tDisaggregate.SSCCWMS)) <> tsOK {
+                      insert tDisaggregate set
+                         tDisaggregate.SAPCODE := ATL_PickingRep_Spec_chk.SAPCODE
+                       , tDisaggregate.SSCCWMS := ATL_PickingRep_Spec_chk.SSCCWMS
+                      ;
+                    }
+                } else { //datamatrix = full переносим как есть
+                    ATL_PickingRep_Spec_new.buffer  := ATL_PickingRep_Spec_chk.buffer;
+                    ATL_PickingRep_Spec_new.CHEAD   := ATL_PickingRep_HEAD_new.nrec;
+                  insert current ATL_PickingRep_Spec_new;
                 }
 
               }
-                  mylog('Начинаем формировать документы DISAGGREGATION_DOCUMENT';
+                  mylog('Начинаем формировать документы DISAGGREGATION_DOCUMENT');
                   HttpConnect_AddValueToLongString(httpCon, 'Начинаем формировать документы DISAGGREGATION_DOCUMENT', _logLong);
 
+              var _docsIsOk : boolean = true;
              _loop tDisaggregate {
 
                var _DocLongString : tptr = iCRPT_API_Native.CreateJSONlongstring_DocDisaggregation(httpCon, tDisaggregate.SSCCWMS, _logLong);
                 if _DocLongString = 0 then {
                   mylog('не удалось сформировать документ DISAGGREGATION_DOCUMENT SSCCWMS = ' + tDisaggregate.SSCCWMS);
                   HttpConnect_AddValueToLongString(httpCon, 'не удалось сформировать документ DISAGGREGATION_DOCUMENT SSCCWMS = ' + tDisaggregate.SSCCWMS, _logLong);
+                  _docsIsOk := false;
                   break;
                 }
                var _docID : string = iCRPT_API_Native.CreateDocInCrpt_aggrDisAggr('DISAGGREGATION_DOCUMENT', _DocLongString, _logLong);
                if _docID = '' {
                   mylog('не удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS);
                   HttpConnect_AddValueToLongString(httpCon, 'не удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS, _logLong);
+                  _docsIsOk := false;
                  break;
                }
                   mylog('удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS + ' _docID = ' + _docID);
                   HttpConnect_AddValueToLongString(httpCon, 'удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS + ' _docID = ' + _docID, _logLong);
+                if not iCRPT_API_Native.checkDoc(httpCon, _docID, _logLong) then {
+                  _docsIsOk := false;
+                  break;
+                 }
 
-               var _timePrev : time = curTime;
-               var _IterCount : word = 0;
-               do {
-                 if sub_time(cur_time, _timeBeg) > time(0,0,5,0) {// раз в 5 сек
-                  _IterCount++;
-                  var _status : string = iCRPT_API_Native.GetDocumentStatus(_docID, _logLong);
-                  mylog('Опрашиваем статус документа через API _status = ' + _status);
-                  HttpConnect_AddValueToLongString(httpCon, 'Опрашиваем статус документа через API _status = ' + _status, _logLong);
-                  if upcase(_status) = 'CHECKED_OK' then  {
-                      break;
+                  mylog('Начинаем формировать документы AGGREGATION_DOCUMENT');
+                  HttpConnect_AddValueToLongString(httpCon, 'Начинаем формировать документы AGGREGATION_DOCUMENT', _logLong);
+                   var _sntins: tptr = HttpConnect_JsonArrayCreate(httpCon);
+                   var _SSCCWMS_Count : longint = 0;
+                    _loop ATL_PickingRep_Spec_chk where (( ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec_chk.cHead))
+                                   and ATL_PickingRep_Spec_chk.SSCCWMS = tDisaggregate.SSCCWMS   {
+                      HttpConnect_JsonArrayAddString(httpCon, _sntins, ATL_PickingRep_Spec_chk.datamatrix); // наполняем массив элементами для агрегации
+                      _SSCCWMS_Count := _SSCCWMS_Count + ATL_PickingRep_Spec_chk.count;
+                       ATL_PickingRep_Spec_new.buffer  := ATL_PickingRep_Spec_chk.buffer;
+                       ATL_PickingRep_Spec_new.nrec    := 0h;
+                       ATL_PickingRep_Spec_new.CHEAD   := ATL_PickingRep_HEAD_new.nrec;
                     }
-                  if _IterCount > 20 then {
-                    _docOk := false;
+                  mylog('массив sntins набран');
+                  HttpConnect_AddValueToLongString(httpCon, 'массив sntins набран', _logLong);
+                  _DocLongString := iCRPT_API_Native.CreateJSONlongstring_DocAggregation(httpCon, tDisaggregate.SSCCWMS, _sntins, _logLong);
+                  if _DocLongString = 0 then {
+                    mylog('не удалось сформировать документ AGGREGATION_DOCUMENT SSCCWMS = ' + tDisaggregate.SSCCWMS);
+                    HttpConnect_AddValueToLongString(httpCon, 'не удалось сформировать документ AGGREGATION_DOCUMENT SSCCWMS = ' + tDisaggregate.SSCCWMS, _logLong);
+                    _docsIsOk := false;
+                    break;
+                  }
+
+                  _docID := iCRPT_API_Native.CreateDocInCrpt_aggrDisAggr('AGGREGATION_DOCUMENT', _DocLongString, _logLong);
+                   if _docID = '' {
+                      mylog('не удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS);
+                      HttpConnect_AddValueToLongString(httpCon, 'не удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS, _logLong);
+                     _docsIsOk := false;
+                     break;
+                   }
+                  mylog('удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS + ' _docID = ' + _docID);
+                  HttpConnect_AddValueToLongString(httpCon, 'удалось сформировать документ через API ЧЗ SSCCWMS = ' + tDisaggregate.SSCCWMS + ' _docID = ' + _docID, _logLong);
+                  if not iCRPT_API_Native.checkDoc(httpCon, _docID, _logLong) then {
+                    _docsIsOk := false;
                     break;
                    }
-                 }
-                 _timePrev := curTime;
-               } while true
-               if not _docOk {
-                    mylog('Статус документа так и не стал CHECKED_OK. Прерываем формирование доков. Опросили 20 раз с интервалом 5 сек. ');
-                    HttpConnect_AddValueToLongString(httpCon, 'Статус документа так и не стал CHECKED_OK. Прерываем формирование доков. Опросили 20 раз с интервалом 5 сек. ', _logLong);
-                 break;
-               }
-             }
+                  ATL_PickingRep_Spec_new.count      := _SSCCWMS_Count;
+                  ATL_PickingRep_Spec_new.datamatrix := 'FULL';
+                  ATL_PickingRep_Spec_new.SSCCMANUF  := ATL_PickingRep_Spec_new.SSCCWMS;
+                insert current ATL_PickingRep_Spec_new;
+             } //_loop tDisaggregate {
+              if not _docsIsOk  {
+                update current ATL_PickingRep_HEAD_new set wstatus := 2;
+              }
+                CheckCisInCRPTbyATL_PickingRep_HEAD(ATL_PickingRep_HEAD.nrec);
+                CheckCisInCRPTbyATL_PickingRep_HEAD(ATL_PickingRep_HEAD_new.nrec);
+
+               Insert ATL_PickingRep_LOGchk set
+                 ATL_PickingRep_LOGchk.LogDate  := _curDateTime //"Дата-время запуска задания"
+               , ATL_PickingRep_LOGchk.Email    := sGetTune('USERTUNE.MERCURYPRJ.E-MAILS') //String "E-Mails"
+               , ATL_PickingRep_LOGchk.cEmail   := sGetTune('USERTUNE.MERCURYPRJ.COPYE-MAILS') //String "Copy Emails"
+               , ATL_PickingRep_LOGchk.State    := 1; // "0draft,1readyToSend,2send,3NotNeedToSen"
+              ;
+               var _logFileLong : string = GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'Import_PickingRep_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+               HttpConnect_SaveToFileEx(httpCon, _logLong, _logFileLong, 866, false);
+               ImportFileToMemo(ATL_PickingRep_LOGchk.Log, _logFileLong, false);
+              Update current ATL_PickingRep_LOGchk;
+              update current ATL_PickingRep_HEAD_new set ATL_PickingRep_HEAD_new.CPICKINGREPLOG := ATL_PickingRep_LOGchk.nrec;
 
 
+           }  //  if (getfirst ATL_PickingRep_Spec_chk where (( ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec_chk.cHead)) and upcase(ATL_PickingRep_Spec_chk.datamatrix) <> 'FULL' ) = tsOK {
+         } // адо разбирать и собирать заново и в ЧЗ все проверено
 
-
-           }
-         }
-       }
-       */
-
-
-
+      } // if getfirst katsopr_Chk where ((ATL_PickingRep_HEAD.cSopr == katsopr_Chk.nrec)) = tsok {
 
     MyLog('Обработка файла завершена');
     MyLog('***');
-  } // _loop tmpPickingRep_Head where tmpPickingRep_Head.cSopr <> 0h
+  }  // _loop tmpPickingRep_Head where tmpPickingRep_Head.cSopr <> 0h
 }
 
 HandleEvent

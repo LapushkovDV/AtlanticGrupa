@@ -287,6 +287,33 @@ function EncodelongStringToBase64(_longstr : tptr) : tptr; {
   result := _longValue64;
 }
 
+function checkDoc(httpCon : tptr; _docID : string; _logLong : tptr) : boolean; {
+  result := false;
+   var _timePrev : time = cur_Time;
+     var _IterCount : word = 0;
+     do {
+       if sub_time(cur_time, _timePrev) > time(0,0,6,0) {// раз в 5 сек
+        _IterCount++;
+        var _status : string = GetDocumentStatus(_docID, _logLong);
+        mylog(timetostr(cur_time,'HH:MM:SS') + 'Опрашиваем статус документа через API _status = ' + _status);
+        HttpConnect_AddValueToLongString(httpCon, timetostr(cur_time,'HH:MM:SS') + 'Опрашиваем статус документа через API _status = ' + _status, _logLong);
+        if upcase(_status) = 'CHECKED_OK' then  {
+            result := true;
+            break;
+          }
+        if _IterCount > 20 then {
+          break;
+         }
+       }
+       _timePrev := cur_Time;
+     } while true
+
+     if not result {
+          mylog('Статус документа так и не стал CHECKED_OK. Прерываем формирование доков. Опросили 20 раз с интервалом 6 сек. ');
+          HttpConnect_AddValueToLongString(httpCon, 'Статус документа так и не стал CHECKED_OK. Прерываем формирование доков. Опросили 20 раз с интервалом 6 сек. ', _logLong);
+     }
+}
+
 function CreateJSONlongstring_DocDisaggregation(httpCon : tptr; _uitu : string; _logLong : tptr) : tptr; {
    HttpConnect_AddValueToLongString (httpCon, 'function CreateJSON_DocDisaggregation', _logLong);
    var _resJSON : tptr =  HttpConnect_JsonObjectCreate(httpCon);
@@ -304,6 +331,28 @@ function CreateJSONlongstring_DocDisaggregation(httpCon : tptr; _uitu : string; 
    HttpConnect_AddLongValueToLongString(httpCon, _resJsonLongString, _logLong);
    HttpConnect_AddValueToLongString (httpCon, ' ', _logLong);
   result := _resJsonLongString;
+}
+
+function CreateJSONlongstring_DocAggregation(httpCon : tptr; _unitSerialNumber : string; _sntins : tptr;  _logLong : tptr) : tptr; {
+   HttpConnect_AddValueToLongString (httpCon, 'function CreateJSONlongstring_DocAggregation', _logLong);
+   var _resJSON : tptr =  HttpConnect_JsonObjectCreate(httpCon);
+   var _aggregationUnitsArray: tptr = HttpConnect_JsonArrayCreate(httpCon);
+   var _aggregationUnitsJson : tptr =  HttpConnect_JsonObjectCreate(httpCon);
+
+   HttpConnect_JsonObjectAddString(httpCon, _resJSON, 'participant_inn', '7709191580');
+
+   HttpConnect_JsonObjectAddString(httpCon, _aggregationUnitsJson, 'unitSerialNumber', _unitSerialNumber);
+   HttpConnect_JsonObjectAddObject(httpCon, _aggregationUnitsJson, 'sntins', _sntins); //добавляем массив к json
+
+   HttpConnect_JsonObjectAddObject(httpCon, _resJSON, 'aggregationUnits', _aggregationUnitsJson); //добавляем json с массивом элементов к итоговому JSON
+
+   var _resJsonLongString : tptr = HttpConnect_JSONObjectToJSON (httpCon, _resJSON);
+
+   HttpConnect_AddValueToLongString (httpCon, 'Result:', _logLong);
+   HttpConnect_AddLongValueToLongString(httpCon, _resJsonLongString, _logLong);
+   HttpConnect_AddValueToLongString (httpCon, ' ', _logLong);
+  result := _resJsonLongString;
+
 }
 
 function CreateDocInCrpt_aggrDisAggr(_typeDoc: string; _DocLongString : tptr; _logLong : tptr) : string; {
