@@ -1,0 +1,7 @@
+Alter table ::ATL_PickingRep_HEAD
+Add
+(
+   CreateDateTime : datetime "Дата-время создания"
+ , isArchive      : boolean "Архив true - да"
+)
+;
