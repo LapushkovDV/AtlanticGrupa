@@ -61,11 +61,13 @@ from
     and (KatMc3.ISARCH = 0)
  ))
 bounds byKatSopr KatSopr.Nrec == PkRH.cSopr
+                    //and false == PkRH.isArchive (noindex)
 
 bounds byBaseDoc BaseDoc.Nrec == PkRH.cBaseDoc
+                    //and false == PkRH.isArchive (noindex)
              and BaseDoc.Nrec == STepDoc.cBasedoc
              and StepDoc.Nrec == KatSopr.cStepDoc
-
+//order by PkRH.CreateDateTime desc
 
 ;
 
@@ -255,9 +257,20 @@ show at (,4,,);
    MemoID = mlog PkRLog.Log 'Лог импорта файла PickingReport'  :Protect ;
 end; // Panel
 end;
+
 Window winShowPickingRepData 'Просмотр загруженных данных PickingReport по накладной', cyan;
+Browse brShowPickingRepDataSpSopr1 (,,sci1Esc);
+ Show at (,1,29,5);
+ table PkRH;
+ fields
+  if(PkRH.isArchive, 'Архив ','') + _DateTimeToStr(PkRH.CreateDateTime, 'DD.MM.YY HH:NN:SS')
+
+   'Версии pickingReport. Дата создания' ('Версии pickingReport. Дата создания записи'):protect
+        ,   {Font = {backcolor = if(PkRH.isArchive, colorerror,0);Bold = (PkRH.isArchive = false);} };
+end;  // Browse brShowPickingRepData1SpSopr
+
 Screen scrShowPickingRepDataKatSopr  (,,sci1Esc);
-show at (,,,4);
+show at (30,,,5);
 Fields
  if (isValidAll(tnKatSopr),KatSopr.NSopr + ' от ' + DateToStr(KatSopr.dSopr, 'DD/MM/YYYY')+ if (IsValidAll(tnBaseDoc),' / ',''),'') +
  if (IsValidAll(tnBaseDoc), 'ДО '+Basedoc.NoDoc + ' от ' + DateToStr(BAseDoc.dDoc, 'DD/MM/YYYY'),''): protect;
@@ -272,12 +285,12 @@ buttons
   cmValue6,,,'Проверить коды в CRPT',,;
   cmValue1,,,'Удалить загруженные данные',,;
 <<
-       Накладная .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Дата, время загрузки данных PickingReport .@@@@@@@@@@@@@@@@@@@@   <.    LOG импорта       .>
-  Данные из файла PickingReport
- Номер накладной .@@@@@@@@@@@@@                                                                                             <.Добавить ручные данные.> <.Загрузить из другого документа.>
-            Файл .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                                                           <.Проверить коды в CRPT .>
-
- Описание ошибки .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                         <.Удалить данные PickingReport.>
+       Накладная .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ Дата, время загрузки данных PickingReport .@@@@@@@@@@@@@@@@@@@@   <.         LOG импорта          .>
+  Данные из файла PickingReport                                                                                             <.    Добавить ручные данные    .>
+ Номер накладной .@@@@@@@@@@@@@                                                                                             <.Загрузить из другого документа.>
+            Файл .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@                                                                           <.     Проверить коды в CRPT    .>
+                                                                                                                            <. Удалить данные PickingReport .>
+ Описание ошибки .@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 >>
 end;
 Handleevent
@@ -288,7 +301,7 @@ cmValue3: {
 
 cmInit :
 {
-
+  if getfirst PkRH = tsOK {}
 /* if BoGetTune('USERTUNE.MercuryPRJ.CantDeleteWMSDATA')
   then disablecommand(cmValue1)
   else EnableCommand(cmValue1);
@@ -338,14 +351,14 @@ cmValue2:
 end;
 
 Screen scrShowPickingRepDataSpSopr1 (,,sci1Esc);
-show at (,5,57,5);
+show at (,6,57,6);
 <<
    Позиции накладной
 >>
 end;
 
   Browse brShowPickingRepDataSpSopr1 (,,sci1Esc);
-   Show at (,6,57,);
+   Show at (,7,57,);
    table SpSopr1;
    fields
     SpSopr1.npp    '№ пп'('Номер по порядку в накладной'):[2],protect;
@@ -356,14 +369,14 @@ end;
   end;  // Browse brShowPickingRepData1SpSopr
 
 Screen scrShowPickingRepDataSpSopr2(,,sci1Esc);
-show at (59,5,,5);
+show at (59,6,,6);
 <<
    Данные загруженного файла
 >>
 end;
 
    Browse brShowPickingRepDataPkRSp2(,,sci18Esc);
-   Show at (59,6,,);
+   Show at (59,7,,);
    table PkRSp2;
    fields
     if(PkRSp2.IsManual,'+','')   'ручн.'    ('добавлено вручную'): [1],protect;
@@ -449,6 +462,9 @@ Procedure ShowPickingReportData(_cSopr, _cBaseDoc : comp) ;
           ATL_PickingRep_HEAD.Nakl_Num := '';
           ATL_PickingRep_HEAD.isOK     := true;
           ATL_PickingRep_HEAD.cBaseDoc := _cBaseDocMain;
+          ATL_PickingRep_HEAD.createDateTime := _DateTime1(cur_date, cur_time) ;
+          ATL_PickingRep_HEAD.isArchive := false ;
+
          insert current ATL_PickingRep_HEAD;
      }
    }

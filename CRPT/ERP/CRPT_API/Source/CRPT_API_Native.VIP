@@ -29,9 +29,10 @@ Create view
 from
   tCisesList
 ;
+File _responseFile;
 
 Function GenerateNewFile: string; {
- result := GetStringParameter('Files','OutputFilesDirectory',0)+ '\CISESLIST_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS-SSS')+olegenerateguid;
+ result := GetStringParameter('Files','OutputFilesDirectory',0)+ '\CRPT_API_Native_'+DateToStr(cur_date,'YYYYMMDD')+'_'+timetostr(cur_time,'HHMMSS-SSS')+olegenerateguid;
 }
 
 function GetErrFile(subname : string = '') : string; {
@@ -271,5 +272,231 @@ Function GetCisUtitCounts (_Cis : string) : longint; {
  result := _result;
 }
 
+function EncodelongStringToBase64(_longstr : tptr) : tptr; {
+  var m_service : tptr = HttpConnect_CreateEx('http://ya.ru', '', '', true);
+
+   var _FilePath       : string = GenerateNewFile+'_.txt';
+   var _FilePathEncode : string = GenerateNewFile + '_encodebase64.txt';
+
+  HttpConnect_SaveToFileEx( m_service , _longstr, _FilePath, cpUTF8, false);
+
+  EncodeFileToBase64(_FilePath, _FilePathEncode);
+  var _longValue64 : tptr = HttpConnect_LoadFromFile(m_service, _FilePathEncode, cpUTF8) ;
+  deletefile(_FilePathEncode);
+  deletefile(_FilePath);
+  result := _longValue64;
+}
+
+function CreateJSONlongstring_DocDisaggregation(httpCon : tptr; _uitu : string; _logLong : tptr) : tptr; {
+   HttpConnect_AddValueToLongString (httpCon, 'function CreateJSON_DocDisaggregation', _logLong);
+   var _resJSON : tptr =  HttpConnect_JsonObjectCreate(httpCon);
+   var _productLIst: tptr = HttpConnect_JsonArrayCreate(httpCon);
+   var _uituJSON : tptr =  HttpConnect_JsonObjectCreate(httpCon);
+
+   HttpConnect_JsonObjectAddString(httpCon, _resJSON, 'participant_inn', '7709191580');
+   HttpConnect_JsonObjectAddString(httpCon, _uituJSON, 'uitu', _uitu);
+   HttpConnect_JsonArrayAddObject(httpCon, _productLIst, _uituJSON);
+   HttpConnect_JsonObjectAddObject(httpCon, _resJSON, 'products_list', _productLIst);
+
+   var _resJsonLongString : tptr = HttpConnect_JSONObjectToJSON (httpCon, _resJSON);
+
+   HttpConnect_AddValueToLongString (httpCon, 'Result:', _logLong);
+   HttpConnect_AddLongValueToLongString(httpCon, _resJsonLongString, _logLong);
+   HttpConnect_AddValueToLongString (httpCon, ' ', _logLong);
+  result := _resJsonLongString;
+}
+
+function CreateDocInCrpt_aggrDisAggr(_typeDoc: string; _DocLongString : tptr; _logLong : tptr) : string; {
+   result := '';
+  var address : string = 'https://ismp.crpt.ru';
+  var httpCon: TPtr = HttpConnect_CreateEx(address, '', '', True);
+
+   HttpConnect_AddValueToLongString (httpCon, 'function CreateDocInCrpt_aggrDisAggr:', _logLong);
+
+  var _resJSONDoc : tptr =  HttpConnect_JsonObjectCreate(httpCon);
+  HttpConnect_JsonObjectAddString(httpCon, _resJSONDoc, 'document_format', 'MANUAL');
+  HttpConnect_JsonObjectAddString(httpCon, _resJSONDoc, 'type', _typeDoc);
+
+  var _DocLongStringBase64 : tptr = EncodelongStringToBase64(_DocLongString);
+   HttpConnect_JsonObjectAddLongString(httpCon, _resJSONDoc, 'product_document', _DocLongStringBase64);
+
+   var _nameSrc : string = '_typeDoc' + olegenerateguid+'.txt';
+   var _FilePath : string = GetStringParameter('Files','OutputFilesDirectory',0) + _nameSrc;
+    HttpConnect_SaveToFileEx( httpCon , _DocLongString, _FilePath, cpUTF8, false);
+   var _SigDocName : string = iCRPT_API_PowerShell.SignDoc(_nameSrc);
+   _FilePath := GetStringParameter('Files','OutputFilesDirectory',0) + _SigDocName;
+   var _SigDoclongValue : tptr = HttpConnect_LoadFromFile(httpCon, _FilePath, cpUTF8) ;
+
+   HttpConnect_JsonObjectAddLongString(httpCon, _resJSONDoc, 'signature', _SigDoclongValue);
+  var _resJsonLongString : tptr = HttpConnect_JSONObjectToJSON (httpCon, _resJSONDoc);
+
+   HttpConnect_AddValueToLongString (httpCon, 'body for request:', _logLong);
+   HttpConnect_AddLongValueToLongString(httpCon, _resJsonLongString, _logLong);
+   HttpConnect_AddValueToLongString (httpCon, ' ', _logLong);
+
+
+
+
+  var lAddUrl: TPtr = HttpConnect_CreateLongString(httpCon);
+  var lHeader: TPtr = HttpConnect_CreateLongString(httpCon);
+
+  HttpConnect_AddValueToLongString(httpCon, '/api/v3/lk/documents/create?pg=water', lAddUrl);
+
+    HttpConnect_ResponseLogEnable(httpCon);
+    HttpConnect_SetUserAgent(httpCon, 'Mozilla/5.0');
+
+    HttpConnect_AddValueToLongString(httpCon, 'Content-Type: application/json' + chr(13), lHeader);
+    HttpConnect_AddValueToLongString(httpCon, 'Accept: application/json' + chr(13), lHeader);
+
+    var lToken: TPtr = HttpConnect_CreateLongString(httpCon);
+
+    var _TokenFilePath : string = iCRPT_API_PowerShell.GetTokenPath;
+
+    MyLog('GetCisesListInfo GetTokenPath OK');
+
+    var lTokenValue : tptr = HttpConnect_LoadFromFile (httpCon, _TokenFilePath, cpUTF8);
+
+
+    HttpConnect_AddValueToLongString(httpCon, 'Authorization: Bearer ', lToken);
+    HttpConnect_AddLongValueToLongString(httpCon, lTokenValue, lToken);
+
+    HttpConnect_SolidStringInLongString(httpCon, lToken);
+
+    HttpConnect_AddLongValueToLongString(httpCon, lToken, lHeader);
+
+   HttpConnect_AddValueToLongString (httpCon, 'lAddUrl:', _logLong);
+   HttpConnect_AddLongValueToLongString(httpCon, lAddUrl, _logLong);
+   HttpConnect_AddValueToLongString (httpCon, 'lHeader:', _logLong);
+   HttpConnect_AddLongValueToLongString(httpCon, lHeader, _logLong);
+
+
+  var lResponse: TPtr;
+    _try
+    {
+      _try
+      {
+
+         lResponse := HttpConnect_SendRequestPostJSON(httpCon, lAddUrl, lHeader, _resJsonLongString, false);
+         HttpConnect_AddValueToLongString (httpCon, 'HttpConnect_SendRequestPostJSON OK', _logLong);
+         HttpConnect_AddValueToLongString (httpCon, 'lResponse', _logLong);
+         HttpConnect_AddLongValueToLongString(httpCon, lResponse, _logLong);
+         var _FilePath : string = GetStringParameter('Files','OutputFilesDirectory',0) + '\CreateDocInCrpt_response'+olegenerateguid+'.txt';
+         HttpConnect_SaveToFileEx(httpCon, lResponse, _FilePath, cpUTF8, false);
+         _responseFile.OpenFile(_FilePath, stOpenRead);
+         _responseFile.ReadLn(result); // Владислав Юрченко утверждает, что в ответе просто ID  созданного документа без структуры.
+         _responseFile.Close;
+         //HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false);
+         //MyLog('GetCisesListInfo HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false); OK');
+      }
+      _except else {
+         HttpConnect_AddValueToLongString (httpCon, 'HttpConnect_SendRequestPostJSON ERROR', _logLong);
+        exit;
+      }
+      _finally {
+        //HttpConnect_DestroyLongString(httpCon, lResponse);
+      }
+    }
+    _finally
+    {
+      HttpConnect_DestroyLongString(httpCon, lHeader);
+      HttpConnect_DestroyLongString(httpCon, lToken);
+      HttpConnect_DestroyLongString(httpCon, lAddUrl);
+    }
+
+   if HttpConnect_LastError(httpCon) <> 0 then  {
+      HttpConnect_AddValueToLongString (httpCon, 'ERROR Response ' + HttpConnect_LastErrorText(httpCon), _logLong);
+      var _fileErr : string = GetErrFile('errResponseCreateDocInCrpt_aggrDisAggr');
+      HttpConnect_AddValueToLongString (httpCon, 'ERROR in ' + _fileErr, _logLong);
+      HttpConnect_ResponseLogToFile(httpCon, _fileErr);
+      exit;
+    }
+}
+
+Function GetDocumentStatus(_docId : string; _logLong : tptr) : string; {
+   var address : string = 'https://markirovka.crpt.ru';
+  var httpCon: TPtr = HttpConnect_CreateEx(address, '', '', True);
+
+  HttpConnect_AddValueToLongString (httpCon, 'function GetDocumentStatus', _logLong);
+
+//  var lAddUrl: TPtr = HttpConnect_CreateLongString(httpCon);
+  var lHeader: TPtr = HttpConnect_CreateLongString(httpCon);
+
+//  HttpConnect_AddValueToLongString(httpCon, '/api/v3/lk/documents/create?pg=water', lAddUrl);
+
+    HttpConnect_ResponseLogEnable(httpCon);
+    HttpConnect_SetUserAgent(httpCon, 'Mozilla/5.0');
+
+    HttpConnect_AddValueToLongString(httpCon, 'Content-Type: application/json' + chr(13), lHeader);
+    HttpConnect_AddValueToLongString(httpCon, 'Accept: application/json' + chr(13), lHeader);
+
+    var lToken: TPtr = HttpConnect_CreateLongString(httpCon);
+
+    var _TokenFilePath : string = iCRPT_API_PowerShell.GetTokenPath;
+
+    MyLog('GetCisesListInfo GetTokenPath OK');
+
+    var lTokenValue : tptr = HttpConnect_LoadFromFile (httpCon, _TokenFilePath, cpUTF8);
+
+
+    HttpConnect_AddValueToLongString(httpCon, 'Authorization: Bearer ', lToken);
+    HttpConnect_AddLongValueToLongString(httpCon, lTokenValue, lToken);
+
+    HttpConnect_SolidStringInLongString(httpCon, lToken);
+
+    HttpConnect_AddLongValueToLongString(httpCon, lToken, lHeader);
+
+//   HttpConnect_AddValueToLongString (httpCon, 'lAddUrl:', _logLong);
+//   HttpConnect_AddLongValueToLongString(httpCon, lAddUrl, _logLong);
+   HttpConnect_AddValueToLongString (httpCon, 'lHeader:', _logLong);
+   HttpConnect_AddLongValueToLongString(httpCon, lHeader, _logLong);
+
+
+  var lResponse: TPtr;
+    _try
+    {
+      _try
+      {
+
+         lResponse := HttpConnect_EDISendRequest(httpCon, '/api/v4/true-api/doc/'+_docId+'/info', lHeader,'', 'GET'); // без lHeader надо попробовать
+         HttpConnect_AddValueToLongString (httpCon, 'HttpConnect_EDISendRequest '+address+'/api/v4/true-api/doc/', _logLong);
+         HttpConnect_AddValueToLongString (httpCon, 'lResponse', _logLong);
+         HttpConnect_AddLongValueToLongString(httpCon, lResponse, _logLong);
+         var _FilePath : string = GetStringParameter('Files','OutputFilesDirectory',0) + '\CreateDocInCrpt_response'+olegenerateguid+'.txt';
+         HttpConnect_SaveToFileEx(httpCon, lResponse, _FilePath, cpUTF8, false);
+
+         var lResponseJSON : tptr = HttpConnect_JsonObjectCreate(httpCon);
+
+         lResponseJSON := HttpConnect_JSONObjectByLongString(httpCon, lResponse);
+         result := HttpConnect_JsonObjectValueByName(httpCon, lResponseJSON, 'Status');
+         HttpConnect_AddValueToLongString (httpCon, 'result = ' + result, _logLong);
+
+         //HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false);
+         //MyLog('GetCisesListInfo HttpConnect_SaveToFileEx(httpCon, lResponse, GetErrFile, cpUTF8, false); OK');
+      }
+      _except else {
+         HttpConnect_AddValueToLongString (httpCon, 'HttpConnect_SendRequestPostJSON ERROR', _logLong);
+        exit;
+      }
+      _finally {
+        //HttpConnect_DestroyLongString(httpCon, lResponse);
+      }
+    }
+    _finally
+    {
+      HttpConnect_DestroyLongString(httpCon, lHeader);
+      HttpConnect_DestroyLongString(httpCon, lToken);
+//      HttpConnect_DestroyLongString(httpCon, lAddUrl);
+    }
+
+   if HttpConnect_LastError(httpCon) <> 0 then  {
+      HttpConnect_AddValueToLongString (httpCon, 'ERROR Response ' + HttpConnect_LastErrorText(httpCon), _logLong);
+      var _fileErr : string = GetErrFile('errResponseGetDocumentStatus');
+      HttpConnect_AddValueToLongString (httpCon, 'ERROR in ' + _fileErr, _logLong);
+      HttpConnect_ResponseLogToFile(httpCon, _fileErr);
+      exit;
+    }
+
+
+}
 
 End. // Interface

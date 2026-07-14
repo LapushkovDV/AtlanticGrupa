@@ -118,7 +118,7 @@ procedure Check_TmpSpSopr ;
 
       так что просто перенаправимся на основную накладную
       */
-      if getfirst ATL_PickingRep_HEAD where ((_cSopr == ATL_PickingRep_HEAD.cSopr)) = tsOK
+      if getfirst ATL_PickingRep_HEAD where ((_cSopr == ATL_PickingRep_HEAD.cSopr and false == ATL_PickingRep_HEAD.isArchive (noindex) )) = tsOK
       {
         var _SapCode : string = katmc_check.Barkod2;
 

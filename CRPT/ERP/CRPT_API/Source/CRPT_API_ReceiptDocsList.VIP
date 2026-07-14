@@ -157,12 +157,12 @@ Procedure GetKituFromFile; {
     //CheckErrors;
     StopVisual('', 0);
 
-    updatetable #ReceiptDoc;
+    updatetable; #ReceiptDoc;
     SetDefaultReceiptDoc();
     insert current ReceiptDoc;
     set ReceiptDoc.withdrawal_type = 7;
 
-    updatetable #ReceiptDoc;
+    updatetable; #ReceiptDoc;
     _loop tCodesFromCsv {
        //message(tCodesFromCsv.sKituFromCsv +' |'+ tCodesFromCsv.scsvFilePath);
        //message(String(cellValue)) ;

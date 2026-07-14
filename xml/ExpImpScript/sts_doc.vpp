@@ -41,7 +41,7 @@
          var _cBaseDoc : comp   =  comp(parseWord(str, 2, ';')); //признак товар услуга
          var _sapCode  : string = katmc.barkod2;
          var _SSCCCodesFirst : boolean = true;
-          if getfirst ATL_PickingRep_HEAD where ((_cBaseDoc == ATL_PickingRep_HEAD.cBaseDoc)) = tsOK
+          if getfirst ATL_PickingRep_HEAD where ((_cBaseDoc == ATL_PickingRep_HEAD.cBaseDoc and false == ATL_PickingRep_HEAD.isArchive (noindex))) = tsOK
            {
              _loop ATL_PickingRep_Spec where ((ATL_PickingRep_HEAD.nrec == ATL_PickingRep_Spec.cHead))
                                            and ATL_PickingRep_Spec.sapCode = _sapCode
