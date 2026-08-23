@@ -613,6 +613,12 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
      if (doc_type = 201 or doc_type = 31)  //  Дмитрий Путилов сказал, что без условий, только наклкдные и всеа .. нееее.  все-таки нашли условие - не всем контрагентам надо
       {
         var _sapCode  : string = katmc.barkod2;
+        _coAttr_EDI_MakeLabelInXML := 0;
+
+        case cogetattr(coKatMc, katmc.nrec,  'Режим прослеживаемости (ЧЗ)') of
+          03E80000000035D3h : _coAttr_EDI_MakeLabelInXML := 1 // Поэкземплярный учет
+          03E80000000035D2h : _coAttr_EDI_MakeLabelInXML := 2 // ОСУ
+        end;
 
         mylog('_coAttr_EDI_MakeLabelInXML = ' + _coAttr_EDI_MakeLabelInXML);
       if _coAttr_EDI_MakeLabelInXML = 2  //Сортовой_учет

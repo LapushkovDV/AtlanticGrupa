@@ -46,6 +46,19 @@ Procedure MyLog(_Str: string);
 
 //Function Export(_cDiaDocsToSend : comp   ; _pKatOrgReceipt : comp = 0   ; _pDiaOrgReceipt : comp = 0   ; _sDPPS          : string = ''//ERP-5184 "ДатаПрин" DD.MM.YYYY
 //   ) : boolean;
+function getTypeUchetByMC(_cMc: comp) : word; cacheable;
+{
+ var _varAttr_EDI_MakeLabelInXML : comp = extAttr.coGetAttr(coKatMc, katsopr.cOrg , coAttr_EDI_MakeLabelInXML_NEW);
+ var _coAttr_EDI_MakeLabelInXML : word = 0;
+      mylog('_varAttr_EDI_MakeLabelInXML = '+_varAttr_EDI_MakeLabelInXML);
+
+        case cogetattr(coKatMc, _cMc,  'Режим прослеживаемости (ЧЗ)') of
+          03E80000000035D3h : _coAttr_EDI_MakeLabelInXML := 1 // Поэкземплярный учет
+          03E80000000035D2h : _coAttr_EDI_MakeLabelInXML := 2 // ОСУ
+        end;
+       mylog('getTypeUchetByMC _coAttr_EDI_MakeLabelInXML = ' + _coAttr_EDI_MakeLabelInXML);
+ result := _coAttr_EDI_MakeLabelInXML;
+}
 function getTypeUchet(_cOrg: comp) : word; cacheable;
 {
  var _varAttr_EDI_MakeLabelInXML : comp = extAttr.coGetAttr(coKatOrg, katsopr.cOrg , coAttr_EDI_MakeLabelInXML_NEW);
@@ -106,10 +119,11 @@ procedure Check_TmpSpSopr ;
    {
   MyLog(' katsopr.nrec ='+katsopr.nrec);
   MyLog(' katsopr.nsopr ='+katsopr.nsopr);
-  if getTypeUchet(katsopr.corg) <> 0 //  т.е. хоть какой то учет (сортовой или поэкземплярный)
+  if true // теперь по каждой МЦ будем смотреть getTypeUchet(katsopr.corg) <> 0 //  т.е. хоть какой то учет (сортовой или поэкземплярный)
    _loop SpSopr
     if getfirst katmc_check = tsOK
     {
+              MyLog(' katmc_check.name= '+katmc_check.name    );
       var _cSopr : comp = katsopr.nrec;
       if katsopr.wadoc = 23 then _cSopr := katsopr.cAdoc; // в случае корр накладно все данные в основной накладной...
       mylog('katsopr.wadoc  = ' + katsopr.wadoc );
@@ -164,7 +178,8 @@ procedure Check_TmpSpSopr ;
               MyLog(' ИдентТрансУпак TmpSerNom.KM2 = '+TmpSerNom.KM2    ); //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
 #end
 
-           if getTypeUchet(katsopr.corg) = 1   // поэкземплярный учет
+
+           if getTypeUchetByMC(katmc_check.nrec) = 1   // поэкземплярный учет
            {
            _loop ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
                                                          and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
@@ -182,7 +197,7 @@ procedure Check_TmpSpSopr ;
              }
            }
 
-           if getTypeUchet(katsopr.corg) = 2    // сортовой учет
+           if getTypeUchetByMC(katmc_check.nrec) = 2    // сортовой учет
            if( getfirst ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
                                                                 and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
                                                   ))
