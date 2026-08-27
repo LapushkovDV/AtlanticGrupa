@@ -111,7 +111,7 @@ var     extAttr: iExtAttr;
 #make "alter\ALTER_iDiadocSend_tune.vip"
 
 #make "alter\alter_DolgOpl.vip"
-#make "alter\Alter_BookPrZkPrint.vip"
+//# make "alter\Alter_BookPrZkPrint.vip"   // в 2026 отключаем, т.к. галактика наконец исправила косяк
 
 #make "alter\alter_l_basedoc_vschet.vip"
 #make "alter\alter_l_basedoc_vschetB.vip"
