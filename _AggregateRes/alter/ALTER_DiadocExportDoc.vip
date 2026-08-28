@@ -132,24 +132,7 @@ procedure Check_TmpSpSopr ;
 
       так что просто перенаправимся на основную накладную
       */
-      if getfirst ATL_PickingRep_HEAD where ((_cSopr == ATL_PickingRep_HEAD.cSopr and false == ATL_PickingRep_HEAD.isArchive (noindex) )) = tsOK
-      {
         var _SapCode : string = katmc_check.Barkod2;
-
-       MyLog(' ATL_PickingRep_HEAD.wStatus ='+ATL_PickingRep_HEAD.wStatus );
-         if ATL_PickingRep_HEAD.wStatus  = 1  //  'ЧЗ проверен'
-         {
-           if( getfirst ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
-                                                                and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
-                                                  ))
-             ) <> tsOK
-             {
-              if katmc_check.cGroupMC <>  03E8000000000019h // '410203' Паштеты в новом дизайне - по ним такие ошибки не должны идти
-               {
-                Write_Mess(' не найден SapCode "'+_SapCode+'" в позициях PickingReport');
-               }
-             }
-
 
 
 #declare insertTmpSerNom
@@ -178,30 +161,7 @@ procedure Check_TmpSpSopr ;
               MyLog(' ИдентТрансУпак TmpSerNom.KM2 = '+TmpSerNom.KM2    ); //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
 #end
 
-
-           if getTypeUchetByMC(katmc_check.nrec) = 1   // поэкземплярный учет
-           {
-           _loop ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
-                                                         and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
-                                         ))
-             {
-               clearbuffer(tnTmpSerNom);
-
-               if upcase(ATL_PickingRep_SPEC.DataMatrix) = 'FULL'
-                      or ATL_PickingRep_SPEC.DataMatrix = ''
-                 then TmpSerNom.KM2 := ATL_PickingRep_SPEC.SSCCManuf                     //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
-                 else TmpSerNom.KM1 := '<![CDATA['+ATL_PickingRep_SPEC.DataMatrix + ']]>'; //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
-                   var _CSPSopr : comp = SpSopr.nrec ;
-                   var _CSPSCHF : comp = SpSopr.CSPSCHF;
-                #insertTmpSerNom
-             }
-           }
-
-           if getTypeUchetByMC(katmc_check.nrec) = 2    // сортовой учет
-           if( getfirst ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
-                                                                and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
-                                                  ))
-             ) = tsOK
+          if getTypeUchetByMC(katmc_check.nrec) = 2    // сортовой учет
              {
                clearbuffer(tnTmpSerNom);
                var _cEdShtuka :comp = get_cEdShtuka('ШТУКА');
@@ -273,6 +233,50 @@ procedure Check_TmpSpSopr ;
                         }
                      }
              }
+
+      if getfirst ATL_PickingRep_HEAD where ((_cSopr == ATL_PickingRep_HEAD.cSopr and false == ATL_PickingRep_HEAD.isArchive (noindex) )) = tsOK
+      {
+
+       MyLog(' ATL_PickingRep_HEAD.wStatus ='+ATL_PickingRep_HEAD.wStatus );
+
+
+
+         if ATL_PickingRep_HEAD.wStatus  = 1  //  'ЧЗ проверен'
+         {
+           if( getfirst ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
+                                                                and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
+                                                  ))
+             ) <> tsOK
+             {
+              if katmc_check.cGroupMC <>  03E8000000000019h // '410203' Паштеты в новом дизайне - по ним такие ошибки не должны идти
+               {
+                Write_Mess(' не найден SapCode "'+_SapCode+'" в позициях PickingReport');
+               }
+             }
+
+
+
+
+
+           if getTypeUchetByMC(katmc_check.nrec) = 1   // поэкземплярный учет
+           {
+           _loop ATL_PickingRep_SPEC where ((ATL_PickingRep_Head.nrec == ATL_PickingRep_SPEC.cHead
+                                                         and _SapCode == ATL_PickingRep_SPEC.SapCode (NoIndex)
+                                         ))
+             {
+               clearbuffer(tnTmpSerNom);
+
+               if upcase(ATL_PickingRep_SPEC.DataMatrix) = 'FULL'
+                      or ATL_PickingRep_SPEC.DataMatrix = ''
+                 then TmpSerNom.KM2 := ATL_PickingRep_SPEC.SSCCManuf                     //ИдентТрансУпак Уникальный идентификатор транспортной упаковки
+                 else TmpSerNom.KM1 := '<![CDATA['+ATL_PickingRep_SPEC.DataMatrix + ']]>'; //НомУпак Уникальный идентификатор вторичной (потребительской)/третичной (заводской, транспортной) упаковки
+                   var _CSPSopr : comp = SpSopr.nrec ;
+                   var _CSPSCHF : comp = SpSopr.CSPSCHF;
+                #insertTmpSerNom
+             }
+           }
+
+
          }
          else {
            MyLog(' статус ошибка... пропускаем документ');
