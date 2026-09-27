@@ -297,7 +297,7 @@ _nppSPSOPR++;
    _InvoiceQuantity :=if(  _coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice))
                            , string(_qtyLenta, 0, 3)
                            , string(_qty, 0, 3)
-                          )
+                          ) ;
     createEcodCell(ChildTwo, 'InvoiceQuantity', _InvoiceQuantity); //spsopr.KolFact
     _kol_in_pos := _InvoiceQuantity;
   }
@@ -379,11 +379,11 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
              if ATL_MERCURY_SPEC.UUID <> '' {
                _ReleaseDatePeriod := datetostr(strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD'),'YYYY-MM-DD')+'-'+datetostr(strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD'),'YYYY-MM-DD');
                 createEcodCell(ChildTwo, 'ReleaseDatePeriod',_ReleaseDatePeriod);
-                createEcodCell(ChildTwo, 'BestBeforeDatePeriod',_ReleaseDatePeriod)
+                createEcodCell(ChildTwo, 'BestBeforeDatePeriod',_ReleaseDatePeriod) ;
 
                 createEcodCell(ChildProductExpiry, 'ProductPackageId', 1);
                 var _DATECREATE : date = strtodate(ATL_MERCURY_SPEC.DATECREATE,'YYYYMMDD');
-                var _DATEEXPIRE : date = strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD')
+                var _DATEEXPIRE : date = strtodate(ATL_MERCURY_SPEC.DATEEXPIRE,'YYYYMMDD');
                 createEcodCell(ChildProductExpiry, 'ProductExpiryDate',datetostr(_DATEEXPIRE,'YYYY-MM-DD'));
                 createEcodCell(ChildProductExpiry, 'ProductionDate'   ,datetostr(_DATECREATE,'YYYY-MM-DD'));
                 createEcodCell(ChildProductExpiry, 'TotalShelfLifePeriod',abs(calcdaysbetweendates(_DATEEXPIRE,_DATECREATE,true)));
@@ -662,6 +662,8 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
                          releaseDump(ChildTwo);
                       }
                       else {
+                        /* 20260927 Владислав Юрченко: для ОСУ иные поля будут     <PackageType>CQE</PackageType>    <PackageNumber>1280</PackageNumber>
+
                          var _labelKol : string =  doubletostr(_kol_in_pos*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
                          var _labelGTIN : string = replace(lpad(katOtpedShtuka.bkod,14),' ','0');
 
@@ -676,6 +678,17 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
                              createEcodCell(ChildThree, 'Number','02'+_labelGTIN+'37'+_labelKol);
                              releaseDump(ChildThree);
                          releaseDump(ChildTwo);
+                         */
+
+
+                         node     := XMLDOMDoc_CreateElement(xmlDoc, 'Package-Reference');
+                         ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
+                         var _labelKol : string =  doubletostr(_kol_in_pos*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
+                         mylog('PackageType = CQE, PackageNumber = ' + _labelKol);
+                          createEcodCell(ChildThree, 'PackageType','CQE');
+                          createEcodCell(ChildThree, 'PackageNumber', _labelKol);
+                         releaseDump(ChildTwo);
+
                        }
                      }
                 }
