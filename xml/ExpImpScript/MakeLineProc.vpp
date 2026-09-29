@@ -685,8 +685,8 @@ if _coAttr_EdiDesadvBox <> 1 or (_isInvoice) // для метро не надо
                          ChildTwo := XMLDOMNode_AppendChild(ChildOne, node);
                          var _labelKol : string =  doubletostr(_kol_in_pos*KATOTPED.KOEF/katOtpedShtuka.KOEF,'66666666');
                          mylog('PackageType = CQE, PackageNumber = ' + _labelKol);
-                          createEcodCell(ChildThree, 'PackageType','CQE');
-                          createEcodCell(ChildThree, 'PackageNumber', _labelKol);
+                          createEcodCell(ChildTwo, 'PackageType','CQE');
+                          createEcodCell(ChildTwo, 'PackageNumber', _labelKol);
                          releaseDump(ChildTwo);
 
                        }
