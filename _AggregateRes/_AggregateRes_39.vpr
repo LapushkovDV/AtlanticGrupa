@@ -267,13 +267,14 @@
 			</ConfigurationList>
 		</DatabaseConfiguration>
 		<FileList>
-			<File Name="_AggregateRes.prj" PosX="103" PosY="114" OpenEditor="True"/>
+			<File Name="_AggregateRes.prj" PosX="23" PosY="147" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_View.vip" PosX="35" PosY="346" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_Import.vip" PosX="40" PosY="446" OpenEditor="True"/>
 			<File Name="alter\alter_SoprDoc.vip" PosX="51" PosY="29" OpenEditor="True"/>
 			<File Name="Source\MercuryPRJ\PickingReport_CopyBetweenDocs.vip" PosX="7" PosY="212" OpenEditor="True"/>
-			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="57" PosY="242" OpenEditor="True" Active="True"/>
+			<File Name="alter\ALTER_DiadocExportDoc.vip" PosX="75" PosY="244" OpenEditor="True"/>
 			<File Name="alter\Alter_BookPrZkPrint.vip" PosX="108" PosY="105" OpenEditor="True"/>
+			<File Name="alter\Alter_TTNDOC.vip" PosX="1" PosY="170" OpenEditor="True" Active="True"/>
 		</FileList>
 		<ProjectItems>
 			<ProjectCompileFile FileName="_AggregateRes.prj" Priority="0">
@@ -316,7 +317,7 @@
 			<BreakPoint FileName="alter\ALTER_DiadocExportDoc.vip" Line="1"/>
 		</BreakPointList>
 		<CompileMessengerList>
-			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="46265,603995706" DateTimeCompile="0,000680219905916601" StateHistory="False">
+			<CompileMessenger Name="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\_AggregateRes.prj" DateTimeStart="46298,3332983912" DateTimeCompile="0,000567349539778661" StateHistory="False">
 				<CompileMessageList>
 					<CompileMessage MessageType="mtWarning" MessageText="Константа &quot;stMask&quot; уже определена : stMask : Integer = -3; повторное определение игнорируется" SourceFileName="C:\GALAKTIKA\GALAKTIKA\FRM\SRC\INC\ZARPL\WT.INC" SourceLine="11" SourceColumn="12">
 						<StackIncludeList>
@@ -3313,7 +3314,7 @@
 					<CompileMessage MessageType="mtWarning" MessageText="Разное количеств" SourceLine="-1" SourceColumn="-1"/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\ATLANTIC!!EXPORTREESTRCERTIFPDF dtsPrint_ReestrCertificates Безымянный.fr3&quot;."/>
 					<CompileMessage MessageType="mtFR" MessageText="Добавлен: &quot;C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\F_PLPORREP!!FRREEPD dtsReestr Реестр документов (в валюте платежа) ATLANTIC.fr3&quot;." SourceFileName="C:\Galaktika\Galaktika\res\src\GIT\AtlanticGrupa\_AggregateRes\Fr3\F_PLPORREP!!FRREEPD dtsReestr Реестр документов (в валюте платежа) ATLANTIC.fr3&quot;."/>
-					<CompileMessage MessageType="mtEndCompile" MessageText="31.08.2026 14:30:44"/>
+					<CompileMessage MessageType="mtEndCompile" MessageText="03.10.2026 8:00:46"/>
 				</CompileMessageList>
 			</CompileMessenger>
 		</CompileMessengerList>

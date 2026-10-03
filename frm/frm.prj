@@ -108,6 +108,7 @@ var TOA   : TotalOrganizationAttributes;
 #make "torg12\torg12_val.rtf"
 //TTN01new
 #make "ttnnew\p4_ttn_droga.rtf"
+#make "p4_ttn_droga_report_etrn.rtf"
 #make "ttnnew\RTF4_TTN_ALL_20220301_TOVN_atlantic.rtf"
 #make "ttnnew\RTF4_TTN_ALL_20220301_TOVN_tander_puling.rtf"
 

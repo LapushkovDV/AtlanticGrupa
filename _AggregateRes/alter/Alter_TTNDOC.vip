@@ -151,4 +151,21 @@ cmdelonprotect:
 }
 end;
 */
+
+handleevent
+cminit: {
+ if Inherited::handleevent(cminit) = heAbort  {
+    stop;abort;exit;
+  }
+
+ update current TTNDoc set
+    TTNDoc.tPunPBeg := if(TTNDoc.tPunPBeg = time(0,0,0,0), time( 5,0,0,0),TTNDoc.tPunPBeg) //('Время начала погрузки'                    , , ): {InputMask = '%[0:23]{99}\:%[0:59]{99}'},
+  , TTNDoc.tPunPEnd := if(TTNDoc.tPunPEnd = time(0,0,0,0), time( 6,0,0,0),TTNDoc.tPunPEnd) //('Время окончания погрузки'                 , , ): {InputMask = '%[0:23]{99}\:%[0:59]{99}'},
+  , TTNDoc.tPunRBeg := if(TTNDoc.tPunRBeg = time(0,0,0,0), time(10,0,0,0),TTNDoc.tPunRBeg) //('Время начала разгрузки'                   , , ): {InputMask = '%[0:23]{99}\:%[0:59]{99}'},
+  , TTNDoc.tPunREnd := if(TTNDoc.tPunREnd = time(0,0,0,0), time(11,0,0,0),TTNDoc.tPunREnd) //('Время окончания разгрузки'                , , ): {InputMask = '%[0:23]{99}\:%[0:59]{99}'},
+ ;
+
+}
+end;
+
 end. // interface
