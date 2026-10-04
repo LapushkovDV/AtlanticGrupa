@@ -1,6 +1,304 @@
 #component "L_SOPRDOC"
 
 alter interface ON_NSCHFDOPPR;
+var _Log : string= '';
+overload
+  Function DopSvedTov(_Node: comp; _NodeName: string): comp;
+end;
+
+
+Procedure MyLog(_Str: string);
+{
+ if _Log = '' then _Log := GetStringParameter('Files', 'OutputFilesDirectory', 0) + 'alter_ON_NSCHFDOPPR_'+DateToStr(Cur_date, 'YYYYMMDD') + '_' + timetostr(Cur_time, 'HH.MM.SS') + '_' + UserName + '.log';
+ LogStrtoFile(_log,DateToStr(Cur_date, 'YYYY.MM.DD') + '_' + timetostr(Cur_time, 'HH:MM:SS') + ': ' + _Str);
+}
+
+function getTypeUchetByMC(_cMc: comp) : word; cacheable;
+{
+
+ var _coAttr_EDI_MakeLabelInXML : word = 0;
+        case cogetattr(coKatMc, _cMc,  'Режим прослеживаемости (ЧЗ)') of
+          03E80000000035D3h : _coAttr_EDI_MakeLabelInXML := 1 // Поэкземплярный учет
+          03E80000000035D2h : _coAttr_EDI_MakeLabelInXML := 2 // ОСУ
+        end;
+       mylog('getTypeUchetByMC _coAttr_EDI_MakeLabelInXML = ' + _coAttr_EDI_MakeLabelInXML);
+ result := _coAttr_EDI_MakeLabelInXML;
+}
+
+
+//ДопСведТов Дополнительные сведения об отгруженных товарах (о выполненных работах, оказанных услугах), переданных имущественных правах (ДопСведТов)
+
+/*
+lapushkov_dv
+
+придется целиком перекрывать функцию эту: внутри порверки прям на н\таблицы идут и это  не дает возможности точечно обойти все
+
+*/
+Function DopSvedTov(_Node: comp; _NodeName: string): comp;
+{
+
+  MyLog('Function DopSvedTov(_Node: comp; _NodeName: string): comp;');
+  MyLog('boGetTune(USERTUNE.DIADOC.USEATLANTICTABLE) = ' + string(boGetTune('USERTUNE.DIADOC.USEATLANTICTABLE')));
+  MyLog('sVersion = ' + sVersion);
+
+ if boGetTune('USERTUNE.DIADOC.USEATLANTICTABLE') then
+  {
+
+  result := AddNode(_Node, _NodeName);
+  //вместо GetInfoGTD(sNum, 1) sCountry
+  if sCountry = ''
+    if sCountryCode <> ''
+      sCountry := GetStateNameByCode(sCountryCode);
+
+  if IsExistSF
+  {
+    AttribOptional(result, 'ПрТовРаб', if (TmpSpSchF.PrMc = 1 , '1', '3')); // Признак Товар/Работа/Услуга/Право/Иное
+    AttribOptional(result, 'ДопПризн', '');                    // Дополнительная информация о признаке
+    AttribOptional(result, 'КодТов', TmpSpSchF.BarKod);        // Характеристика/код/артикул/сорт товара (выполненных работ, оказанных услуг), переданных имущественных прав
+    if sVersion = '5.01'
+      AttribOptional(result, 'НаимЕдИзм', TmpSpSchF.OtpEd);      // Наименование единицы измерения (условное обозначение национальное, графа 2а счета-фактуры)
+  }
+  else
+  {
+    AttribOptional(result, 'ПрТовРаб', if (TmpSpSopr.PrMc = 1 , '1', '3')); // Признак Товар/Работа/Услуга/Право/Иное
+    AttribOptional(result, 'ДопПризн', '');                    // Дополнительная информация о признаке
+    AttribOptional(result, 'КодТов', TmpSpSopr.BarKod);        // Характеристика/код/артикул/сорт товара (выполненных работ, оказанных услуг), переданных имущественных прав
+    if sVersion = '5.01'
+      AttribOptional(result, 'НаимЕдИзм', TmpSpSopr.OtpEd);      // Наименование единицы измерения (условное обозначение национальное, графа 2а счета-фактуры)
+  }
+
+  if sCountry <> ''
+    if sVersion < '5.03'
+      AttribOptional(result, 'КрНаимСтрПр', sCountry);// Краткое наименование страны происхождения товара (графа 10а счета-фактуры)
+    else
+      AddNode(result, 'КрНаимСтрПр', sCountry);// Краткое наименование страны происхождения товара (графа 10а счета-фактуры)
+
+  AttribOptional(result, 'НадлОтп', '');                       // Количество надлежит отпустить
+  AttribOptional(result, 'КорСчДебет', '');                    // Корреспондирующие счета: дебет
+  AttribOptional(result, 'КорСчКредит', '');                   // Корреспондирующие счета: кредит
+
+  var _boXar :boolean = false;
+
+  if IsExistSF
+  { _boXar := TmpSpSchF.Name<>'';
+  }
+  else
+  { _boXar := TmpSpSopr.Name<>'';
+  }
+
+  var _sGtin : string = '';
+  var _cMC   : comp   = 0 ;
+
+  if IsExistSF
+  {
+    if TmpSpSchF.PrMc=1
+      _cMC := TmpSpSchF.cMcUsl
+  }
+  else
+  {
+     if TmpSpSopr.PrMc=1
+      _cMC := TmpSpSopr.cMcUsl
+  }
+
+  if _cMC <> ''
+    if Getfirst Katmc where (( _cMC == KatMc.Nrec)) <> tsok
+      _cMC := 0;
+    else
+    {
+     // тут меняем на наш вариант: определение ОСУ идет во ВА
+     if getTypeUchetByMC(_cMC)= 2
+       if Getfirst TmpSerNom where ((coSpSopr == TmpSerNom.wTable
+                           and TmpSpSopr.NRec == TmpSerNom.cRec)) = tsOK
+           then _sGtin := substr(TmpSerNom.km1,3,14)
+
+      /*
+      if (KatMC.wSerialReg and 2 +4 ) <> 0
+        _sGtin := oLinkKMMC.GetValue(coKatMC, _cMC, 'ACTIVE_DATE;' + DateToStr(DDocument,'YYYYMMDD') );
+      */
+    }
+   mylog('TmpSpSopr.nrec=' + string(TmpSpSopr.nrec,0,0));
+   mylog('katmc: ' + Katmc.barkod2 + ' ' + Katmc.name);
+   mylog(' _sGtin = ' + _sGtin);
+
+  if wExpProductDescription>0 //(not _boXar) //ERP-638
+  { //Характеристика/описание товара (в том числе графа 1 счета-фактуры) (ХарактерТов)
+    //Обязателен при отсутствии НаимТов и КодТов и АртикулТов.
+    //При осуществлении закупок для обеспечения государственных и муниципальных нужд описание товара приводится в соответствии с Каталогом товаров, работ, услуг (если есть в Каталоге)
+    var _bofind : boolean = False;
+    if _cMC <> 0
+    {
+      case wExpProductDescription of
+      1,3: // Закладка L_MCU::KATMC.WKATMC.TXTMEMO = AllMemo.Mem
+      {
+        if getfirst AllMemo where ((
+                               coKatMC   == AllMemo.wTable
+                           AND _cMC      == AllMemo.cRec
+                           )) = tsok
+        {
+          _boFind := ExportMemo2Attr(result, coAllMemo,'ХарактерТов' ,2 ,1000 );
+        }
+      }
+      end;
+      if not _bofind
+      case wExpProductDescription of
+      2,3:
+      {
+        _bofind := True;
+        AttribOptional(result, 'ХарактерТов', KatMc.REMMC);
+      }
+      end;
+
+      _boXar := _bofind;
+    } //if _cMC <> 0
+    if not _bofind
+      AttribOptional(result, 'ХарактерТов', '');
+  }
+  if not _boXar
+  {
+    //Сорт товара (СортТов)
+    AttribOptional(result, 'СортТов', '');
+    //Серия товара	СерияТов
+    if sVersion <> '5.02'
+      AttribOptional(result, 'СортТов', '');
+
+    //Артикул товара (АртикулТов)
+    //Обязателен при отсутствии НаимТов и ХарактерТов и КодТов
+    AttribOptional(result, 'АртикулТов', '');
+
+  }
+
+  var _lkolOSU : longint = -1;
+  //Глобальный идентификационный номер товарной продукции	ГТИН	A	T(=14)	НК
+  //"Принимает код согласно единой международной базе ГС1 (код GTIN).
+  //Элемент обязателен при передаче сведений о маркированном товаре в объемно-сортовом периоде прослеживаемости товаров средствами идентификации"
+  if sVersion <> '5.01'
+    if _sGtin <> ''
+    {
+      var _wTable : word =0;
+      var _cRec   : comp =0;
+      var _cMC    : comp =0;
+      if IsExistSF
+      { _wTable := coSpSchF;
+        _crec   := TmpSpSchF.NRec;
+        _cMC    := TmpSpSchF.cMcUsl;
+      }
+      else
+      { _wTable := coSpSopr;
+        _crec   := TmpSpSopr.NRec;
+        _cMC    := TmpSpSopr.cMcUsl;
+      }
+      if _crec = 0 then Exit;
+
+      //  только для обмьемно сортового учета
+      //ERP-27820 ГТИН и КолВедМарк или НомУпак
+      //НомУпак если несколько записей.
+      _lkolOSU := 0;
+
+      if (Getfirst TmpSerNom where ((
+                      _wTable == TmpSerNom.wTable
+                  and _cRec   == TmpSerNom.cRec
+                  and ( //TmpSerNom.KM<>''  or TmpSerNom.KM2<>''
+                    TmpSerNom.KM1<>'' //НомУпак - объемно-сортовой учет: GTIM нужен
+                  )
+                )) ordered by index TmpSerNom01 = tsok )
+      {
+
+
+         _lkolOSU := longint(substr(TmpSerNom.KM1,19,10));
+         mylog('_lkolOSU = ' + string(_lkolOSU));
+        // и тут меняем принцип определения количества _lkolOSU := longint(iserialKM.CalcKol_OSU_IN_GTIN(DDocument, _cMC , TmpSerNom.KM1,False ) );
+
+        if (GetNext TmpSerNom where ((
+                        _wTable == TmpSerNom.wTable
+                    and _cRec   == TmpSerNom.cRec
+                    and ( //TmpSerNom.KM<>''  or TmpSerNom.KM2<>''
+                      TmpSerNom.KM1<>'' //НомУпак - объемно-сортовой учет: GTIM нужен
+                    )
+                  )) ordered by index TmpSerNom01 = tsok )
+          _lkolOSU := 0;
+      }
+
+      if (_LKolOSU <> 0)
+        AttribOptional(result, 'ГТИН', _sGtin);  // ? TmpSerNom.KM1
+
+    }
+  //ERP-638
+  //Код каталога (КодКат)
+  //Заполняется при осуществлении закупок для обеспечения государственных и муниципальных нужд
+  AttribOptional(result, 'КодТов','');
+  //Код вида товара (КодВидТов)	КодВидТов	А	T(=10)
+  //Принимает значение согласно Товарной номенклатуре внешнеэкономической деятельности (ТН ВЭД).
+  //Обязательно указание значения в случае отражения в счете-фактуре товаров, вывезенных за пределы территории Российской Федерации на территорию государства-члена Евразийского экономического союза.
+  //При отсутствии значения ставится знак ""-"" (дефис) (визуализируется как прочерк)
+  AttribOptional(result, 'КодВидТов',VED_MAIN);
+
+  if sVersion <> '5.01'
+  {
+    //Код вида продукции	КодВидПр	A	N(=3)	НК	Принимает значение:
+  	//				630 - Дизельное топливо   |
+  	//				640 - Моторные масла для дизельных и (или) карбюраторных (инжекторных) двигателей   |
+  	//				650 - Прямогонный бензин   |
+  	//				665 - Автомобильный бензин класса 5   |
+  	//				671 - Авиационный керосин   |
+  	//				672 - Бензол   |
+  	//				673 - Параксилол   |
+  	//				674 - Ортоксилол   |
+  	//				676 - Автомобильный бензин, не соответствующий классу 5   |
+  	//				677 - Средние дистилляты    |
+  	//				680 - Этан   |
+  	//				681 - Сжиженные углеводородные газы
+    AttribOptional(result, 'КодВидПр','');
+
+    //Код товара по ОКДП 2
+    //КодТовОКДП2	А	Т(2-12)	НК
+    //Указывается в соответствии с кодами, установленными Общероссийским классификатором продукции по видам экономической деятельности (ОКПД 2)
+    if _cMC <> 0
+      if sVersion < '5.03'
+        AttribOptional(result, 'КодТовОКДП2',KatMc.OKDP);
+      else
+        AttribOptional(result, 'КодТовОКПД2',KatMc.OKDP);
+
+    //Дополнительная информация к продукции по видам операций
+    //ДопИнфПВидО	А	T(=5)	НУ	При <СпОбстФДОП>=10000 принимает значение в соответствии с Перечнем.
+    //"СпОбстФДОП только 1,2,3,4,5,6 Не понятно что за 10000"
+    AttribOptional(result, 'ДопИнфПВидО','');
+
+
+    //Сведения о сопроводительных документах по товару (работам, услугам и имущественным правам)
+    //СопрДокТов	С		НМ	"Типовой элемент <РеквДокТип>.
+    //Состав элемента представлен в таблице 5.41"
+
+    //Данные налогового учета в отношении расчета амортизации по передаваемому объекту
+    //НалУчАморт	С		Н	Состав элемента представлен в таблице 5.16 Заполняется для <Функция> = ДОП | СЧФДОП в случае продажи/передачи в уставный капитал объектов основных средств, бывших в употреблении, в целях применения новым собственником положений пунктов 7 и 12 статьи 258 НК
+    AddNalUchAmort(result,'НалУчАморт');
+
+    //Сумма налога, восстановленного при передаче имущества, нематериальных активов и имущественных прав в качестве вклада в уставный капитал	СумНалВосст	С		НУ	"Типовой элемент <СумНДСТип>.
+    //Состав элемента представлен в таблице 5.54.
+    //Заполняется в соответствии с пунктом 3 статьи 170 НК"
+  }
+  //Сведения о товаре, подлежащем прослеживаемости
+  //СведПрослеж	С		НМ	Состав элемента представлен в таблице 5.17
+  //Элемент обязателен для товаров, включенных в систему прослеживаемости
+  SvedOtsl(result,'СведПрослеж'); // пока пусто
+
+  //Номер средств идентификации товаров
+  //НомСредИдентТов	С		НМ	Состав элемента представлен в таблице 5.18.
+  //Элемент обязателен для товаров, включенных в систему маркировки
+  //НомТовПрослеж было
+  if _sGTIN <> '' or _lKolOSU < 1
+    NomSredIndTov(result,'НомСредИдентТов', _lKolOSU); //ERP-1048 выгрузка кодов маркировки
+
+  //Дополнительные сведения о товаре, подлежащем идентификации и учету в государственной информационной системе
+  //СвГосСист	С		НМ	Состав элемента представлен в таблице 5.19
+  if sVersion <>'5.01'
+  {
+    AddSVGosSist(result, 'СвГосСист');
+  }
+ }   else {
+   inherited::DopSvedTov(_Node, _NodeName);
+ }
+}
+/*
 var _Log : string = '';
 
 overload
@@ -38,16 +336,18 @@ Function DopSvFHJ1(_Node: comp; _NodeName: string): comp;
     AttribOptional(result, 'ОбстФормСЧФ ' , _str);
   }
 /*изменения для вайлдберриз*/
+/*
   if FuncDoc='ДОП' {
     if TmpKatOrg.Unn = '7721546864' // вайлдберриз
      then AttribOptional(result, 'ОбстФормСЧФ ' , '4');
    }
 /*END изменения для вайлдберриз*/
-
+/*
   AttribOptional(result, 'СвФактор','');
   //ОснУстДенТреб Типовой элемент <ОснованиеТип>. Состав элемента представлен в таблице 5.48
   OsnUstDenTreb(result,'ОснУстДенТреб');
 } //Function DopSvFHJ1(_Node: comp; _NodeName: string): comp;
 handleevent
 end;
+*/
 end.
