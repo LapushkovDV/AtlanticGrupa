@@ -107,16 +107,27 @@ Function DopSvedTov(_Node: comp; _NodeName: string): comp;
     {
      // тут меняем на наш вариант: определение ОСУ идет во ВА
      if getTypeUchetByMC(_cMC)= 2
-       if Getfirst TmpSerNom where ((coSpSopr == TmpSerNom.wTable
+
+     if IsExistSF then {
+       if Getfirst TmpSerNom where ((coSPSCHF == TmpSerNom.wTable
+                           and TmpSpSchF.NRec == TmpSerNom.cRec)) = tsOK
+           then _sGtin := substr(TmpSerNom.km1,3,14)
+           }
+       else {
+          if Getfirst TmpSerNom where ((coSpSopr == TmpSerNom.wTable
                            and TmpSpSopr.NRec == TmpSerNom.cRec)) = tsOK
            then _sGtin := substr(TmpSerNom.km1,3,14)
+           }
 
       /*
       if (KatMC.wSerialReg and 2 +4 ) <> 0
         _sGtin := oLinkKMMC.GetValue(coKatMC, _cMC, 'ACTIVE_DATE;' + DateToStr(DDocument,'YYYYMMDD') );
       */
     }
+   mylog('IsExistSF = ' + string(IsExistSF));
    mylog('TmpSpSopr.nrec=' + string(TmpSpSopr.nrec,0,0));
+   mylog('TmpSpSchF.nrec=' + string(TmpSpSchF.nrec,0,0));
+
    mylog('katmc: ' + Katmc.barkod2 + ' ' + Katmc.name);
    mylog(' _sGtin = ' + _sGtin);
 
