@@ -253,7 +253,8 @@ _nppSPSOPR++;
   else
   if (doc_type = 31) //только для УПД
     createEcodCell(ChildTwo, 'LineItemInformation', 1);
-  createEcodCell(ChildTwo, 'EAN',if(_coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice)),_EANLEnta ,_EAN));   // KatOtped.bKod
+  //createEcodCell(ChildTwo, 'EAN',if(_coAttr_EDIInvoicLen = 1 or (_coAttr_EdiDesadvBox = 1 and not(_isInvoice)),_EANLEnta ,_EAN));   // KatOtped.bKod
+  createEcodCell(ChildTwo, 'EAN',if((_coAttr_EdiDesadvBox = 1 and not(_isInvoice)),_EANLEnta ,_EAN));   // 20261024 сказали для всех инвоис ставим штуки, а это учетная единица как раз
   createEcodCell(ChildTwo, 'BuyerItemCode', trim(extAttr.sGetAttrID(coKatMC, katMc.nRec, cAtrMc)));
   createEcodCell(ChildTwo, 'SupplierItemCode', katmc.barkod2);
 
