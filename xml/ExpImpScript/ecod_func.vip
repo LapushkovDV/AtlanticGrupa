@@ -497,10 +497,12 @@ var node, childOne, childTwo: longInt;
     releaseDump(childTwo); // _ Document
     releaseDump(childOne); // _ Documents
 
+/*
     if KatSopr.cOrg = 03E8000000000A48h //ˆ’……’ …˜…ˆŸ
      then {
        createEcodCell(hPartDoc, 'RegulatoryInformation','4');
      }
+*/
   }
   //Order
   node := XMLDOMDoc_CreateElement(xmlDoc, 'Order');
